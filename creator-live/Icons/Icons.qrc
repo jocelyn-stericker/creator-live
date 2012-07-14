@@ -1,0 +1,28 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>cl-insert-instrument.png</file>
+        <file>cl-add-setup.png</file>
+        <file>1301786966_metronome-music.png</file>
+        <file>creatorLive.jpeg</file>
+        <file>close.png</file>
+        <file>down.png</file>
+        <file>left.png</file>
+        <file>minimize.png</file>
+        <file>right.png</file>
+        <file>up.png</file>
+        <file>play.png</file>
+        <file>playClipped.png</file>
+        <file>clip.png</file>
+        <file>record.png</file>
+        <file>mute.png</file>
+        <file>app_vst.png</file>
+        <file>app_bpm.png</file>
+        <file>app_filter.png</file>
+        <file>app_loop.png</file>
+        <file>app_pitch.png</file>
+        <file>app_seq.png</file>
+        <file>app_samp.png</file>
+        <file>mixer.png</file>
+        <file>HandelGotDLig.ttf</file>
+    </qresource>
+</RCC>

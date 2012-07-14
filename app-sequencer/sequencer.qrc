@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>Icons/app_seq.png</file>
+        <file>Icons/app_loop.png</file>
+        <file alias="play.png">Icons/play.png</file>
+        <file alias="playClipped.png">Icons/playClipped.png</file>
+        <file alias="record.png">Icons/record.png</file>
+        <file alias="mute.png">Icons/mute.png</file>
+        <file alias="clip.png">Icons/clip.png</file>
+    </qresource>
+</RCC>

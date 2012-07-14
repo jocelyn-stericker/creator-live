@@ -1,0 +1,47 @@
+/*******************************************************
+
+    Part of the Creator Live Music Production Suite.
+Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
+
+                  All rights reserved.
+
+*******************************************************/
+
+#ifndef INSTRUMENTINTERFACE_H
+#define INSTRUMENTINTERFACE_H
+
+#include "live/object.h"
+
+namespace live {
+
+class LIBLIVECORESHARED_EXPORT InstrumentInterface
+{
+public:
+    virtual ~InstrumentInterface() {}
+    virtual QString name()=0;
+    virtual QString description()=0;
+    /** selectionWidget MUST:
+     *   - define signal 'void instrumentUpdated(ObjectPtr out, ObjectPtr loopback);'
+     *   - inherit QWidget
+     */
+    virtual QObject* selectionWidget(ObjectPtr current, ObjectPtr loopback)=0;
+
+    /** The name of the settings widget, as should appear in the Live menu,
+     *  or blank for null.
+     */
+    virtual QString settingsWidgetName()=0;
+
+    /** settingsWidget should be created when called.
+     *  when deleted, Creator Live should continue as before.
+     */
+    virtual QObject* settingsWidget()=0;
+
+    /** To include more than one instrument in a single plugin. */
+    virtual InstrumentInterface* next()=0;
+};
+
+}
+
+Q_DECLARE_INTERFACE(live::InstrumentInterface, "ca.nettek.live.instrumentInterface/0.01")
+
+#endif // INSTRUMENTINTERFACE_H

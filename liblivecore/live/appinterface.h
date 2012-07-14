@@ -1,0 +1,36 @@
+/*******************************************************
+
+    Part of the Creator Live Music Production Suite.
+Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
+
+                  All rights reserved.
+
+*******************************************************/
+
+#ifndef APPINTERFACE_H
+#define APPINTERFACE_H
+
+#include "live/object.h"
+#include <QObject>
+
+namespace live {
+
+class LIBLIVECORESHARED_EXPORT AppInterface
+{
+public:
+    virtual ~AppInterface() {}
+    virtual QString name() = 0;
+    virtual QString description() = 0;
+    virtual ObjectPtr newBackend() = 0;
+    virtual ObjectPtr loadBackend(const QByteArray& str) = 0;
+    /** newFrontend must return a class derived from AppFrame* on Qt platforms. AppFrame is defined in liblivewidgets. */
+    virtual QObject* newFrontend(ObjectPtr backend) = 0;
+    virtual QIcon icon() = 0;
+    virtual AppInterface* next() = 0; // for including multiple apps in one plugin
+};
+
+}
+
+Q_DECLARE_INTERFACE(live::AppInterface, "ca.nettek.live.appInterface/0.01")
+
+#endif // APPINTERFACE_H

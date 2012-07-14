@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>                                                                                                                              
+    <qnx >
+        <id>ca.nettek.creatorlive</id>
+        <name>Creator Live</name>
+        <versionNumber>0.3</versionNumber>
+        <description>A music performance and production suite</description>
+       
+        <initialWindow>
+            <systemChrome>none</systemChrome>
+            <transparent>false</transparent>
+            <autoOrients>false</autoOrients>
+            <aspectRatio>landscape</aspectRatio>
+        </initialWindow>
+     
+        <env var="QML_IMPORT_PATH" value="app/native/imports"/>
+        <env var="QT_PLUGIN_PATH" value="app/native/plugins"/>
+        <env var="LD_LIBRARY_PATH" value="app/native/lib"/>
+     
+        <arg>-platform</arg>
+        <arg>blackberry</arg>
+        <author>Nettek</author>
+        <authorId>gYAAgISyPff3icYT0zYNfxjXN6g</authorId>
+        <action system="true">run_native</action>
+        <action>play_audio</action>
+        <action>record_audio</action>
+        <action>access_shared</action>
+        <action>set_audio_volume</action>
+        <platformArchitecture>armle-v7</platformArchitecture>
+        <asset entry="true" path="creator-live/creator-live" type="Qnx/Elf">helloworld</asset>
+        <asset path="deploy/pbsplash.png">pbsplash.png</asset>
+        <asset path="deploy/pbicon.png">pbicon.png</asset>
+        <asset path="lib">lib</asset>
+        <asset path="plugins">plugins</asset>
+        <icon><image>pbicon.png</image></icon>
+        <splashscreen>pbsplash.png</splashscreen>
+    </qnx>
+

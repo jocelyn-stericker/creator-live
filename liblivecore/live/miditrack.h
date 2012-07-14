@@ -1,0 +1,121 @@
+/*******************************************************
+
+    Part of the Creator Live Music Production Suite.
+Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
+
+                  All rights reserved.
+
+*******************************************************/
+
+#ifndef MIDITRACK_H
+#define MIDITRACK_H
+
+#include "live/object.h"
+#include <QMutex>
+#include <QFile>
+#include "live/extern/midifile/MidiFile.h"
+#include "live/midieventcounter.h"
+
+namespace live {
+
+class LIBLIVECORESHARED_EXPORT MidiTrack : public QObject, public Object
+{
+    Q_OBJECT
+public:
+    LIVE_MIDI
+    LIVE_EFFECT
+    bool mOn() const{ return 1; }
+    bool aOn() const { return 0; }
+    MidiEventCounter* s_ec;
+    /*003*/ Bound<int> b_curPos;       //let s_curPos rep time in msec
+    /*004*/ Bound<int> b_lastPos;
+    /*005*/ Bound<int> b_recStart;     //msec at which recording began
+    /*006*/ Bound<int> b_systemTimeStart;  //system time in msec at which recording began
+    /*009*/ Bound<bool> b_record;
+    /*010*/ Bound<bool> b_overdub;
+    /*011*/ Bound<bool> b_playback;
+    /*012*/ Bound<bool> b_mute;
+private:
+    /*013*/ QList<Event*>* s_data;
+    /*014*/ int mTrack_id;
+    QMutex csMutex;
+    /*015B*/ static int lastId;
+    QList<Event> s_cache;
+    bool s_thru;    /*NOT SAVED, keep it that way*/
+
+public:
+    MidiTrack();
+    void _setThru(bool a) { s_thru=a; }
+    const bool& isRecord();
+    const bool& isOverdub();
+    const bool& isPlay();
+    const bool& isMute();
+    const int& pos();
+    QList<Event> getData() {
+        NOSYNC;
+        QList<Event> ret;
+        for(int i=0;i<s_data->size();i++) {
+            ret.push_back(*(*s_data)[i]);
+        }
+        return ret;
+    }
+    void remove(int a,int b) {
+        NOSYNC;
+        for(int i=s_data->size()-1; i>=0; i--)
+        {
+            if((*s_data)[i]->time.toTime_ms()>=a&&(*s_data)[i]->time.toTime_ms()<=b)
+            {
+                Event* buddy=(*s_data)[i]->buddy;
+                delete s_data->takeAt(i);
+                if(s_data->contains(buddy)) delete (*s_data).takeAt((*s_data).indexOf(buddy));
+                i=s_data->size();   //i.e., reset;
+                continue;
+            }
+        }
+    }
+private:
+    class EventListDeleter {
+    public:
+        QList<Event*>* s_e;
+        EventListDeleter(QList<Event*>* e) : s_e(e) {}
+        void run() {
+            while(s_e->size()) {
+                delete s_e->takeFirst();
+            }
+            delete s_e;
+            delete this;
+        }
+    };
+
+public slots:
+    void startRecord();
+    void stopRecord();
+    void startOverdub();
+    void stopOverdub();
+    void startPlayback();
+    void stopPlayback();
+    void startMute();
+    void stopMute();
+    void setPos(int pos);
+    void importFile(QString path);
+    void exportFile(QString path);
+    void mIn(const Event *data, ObjectChain&p);
+    void timeEvent();
+    virtual void clearData() {
+        NOSYNC;
+        EventListDeleter* eld=new EventListDeleter(s_data);
+        QtConcurrent::run(eld,&EventListDeleter::run);
+        s_data=new QList<Event*>;
+    }
+
+public:
+    QByteArray save();
+    static MidiTrack* load(const QByteArray&str);
+
+signals:
+    void dataUpdated();
+};
+
+}
+
+#endif // MIDITRACK_H

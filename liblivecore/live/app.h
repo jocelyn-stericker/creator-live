@@ -1,0 +1,40 @@
+/*******************************************************
+
+    Part of the Creator Live Music Production Suite.
+Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
+
+                  All rights reserved.
+
+*******************************************************/
+
+#ifndef APP_H
+#define APP_H
+
+#include <QStringList>
+#include "live/object.h"
+
+namespace live {
+
+class AppInterface;
+
+class LIBLIVECORESHARED_EXPORT app
+{
+protected:
+    static app* s_singleton;
+    QStringList s_appNames;
+    QList<AppInterface*> s_apps;
+    app() {}
+    ~app();
+
+public:
+    static void registerInterface(AppInterface* c);
+    static QStringList appNames();
+    static QList<AppInterface*> interfaces();
+    static ObjectPtr newBackend(QString name);
+    static QObject* newFrontend(QString name,ObjectPtr backend);
+    static ObjectPtr loadBackend(const QByteArray&);
+};
+
+}
+
+#endif // APP_H

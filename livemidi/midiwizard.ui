@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MidiWizard</class>
+ <widget class="QWizard" name="MidiWizard">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>576</width>
+    <height>574</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Wizard</string>
+  </property>
+  <widget class="QWizardPage" name="wizardPage">
+   <layout class="QVBoxLayout" name="verticalLayout_3">
+    <item>
+     <widget class="QLabel" name="label_12">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:24pt; color:#ffffff;&quot;&gt;Step 3. &lt;/span&gt;&lt;span style=&quot; font-size:24pt; color:#000000;&quot;&gt;Choose a MIDI output&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_11">
+      <property name="text">
+       <string>All your MIDI devices should be visible below. If not, please make sure your drivers are installed correctly.</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QListWidget" name="listWidget_out_3"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="wizardPage_2">
+   <layout class="QVBoxLayout" name="verticalLayout_4">
+    <item>
+     <widget class="QLabel" name="label_13">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:24pt; color:#ffffff;&quot;&gt;Step 4. &lt;/span&gt;&lt;span style=&quot; font-size:24pt; color:#000000;&quot;&gt;Configure your MIDI setup&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_14">
+      <property name="text">
+       <string>Tip: You can use channels to have many instruments sound on the same physical device. It is advised that each track has its own channel. Not all MIDI instruments support all programs.</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="lineEdit">
+        <property name="placeholderText">
+         <string>Search...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="comboBox">
+        <item>
+         <property name="text">
+          <string>Channel A</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Channel B</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Channel C</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Channel D</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Channel E</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Channel F</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Channel G</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Channel H</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Channel I</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Percussion (Channel J)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Channel K</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Channel L</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Channel M</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Channel N</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Channel O</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Channel P</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>No other track is currently using this channel!</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QListWidget" name="listWidget_out_4"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Program:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Channel:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>15</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="wizardPage1">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QLabel" name="label_7">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:24pt; color:#ffffff;&quot;&gt;Step 5. &lt;/span&gt;&lt;span style=&quot; font-size:24pt; color:#000000;&quot;&gt;Choose a return&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_8">
+      <property name="text">
+       <string>Tip: If your MIDI device has an audio out, you can plug it back into your computer and select it here. You can manage your audio inputs by selecting &quot;Audio Setup...&quot; from the Creator Live menu. You may need to have a special setup to avoid ground loops. If you do not have an audio return, choose &quot;No Input&quot;</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QListWidget" name="listWidget_out"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="wizardPage2">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QLabel" name="label_10">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:24pt; color:#ffffff;&quot;&gt;Step 6. &lt;/span&gt;&lt;span style=&quot; font-size:24pt; color:#000000;&quot;&gt;Choose an output&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_9">
+      <property name="text">
+       <string>Tip: You can manage your audio outputs by choosing &quot;Audio Setup...&quot; from the &quot;Creator Live&quot; menu. If your MIDI device has an audio out, you can plug it back into your computer. Please note that you may have to have a special setup to avoid ground loops.</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QListWidget" name="listWidget_out_2"/>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

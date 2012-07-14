@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/vstIcons">
+        <file>cl-add-setup.png</file>
+    </qresource>
+</RCC>
