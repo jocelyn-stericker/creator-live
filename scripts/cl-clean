@@ -1,0 +1,2 @@
+#!/bin/sh
+( (echo -e '############ REVIEW THE FOLLOWING CHANGES ############\n' && git clean -X -d -n ) | more) && echo -e "\n\nDo you wish to make these changes?"; select yn in "Yes" "No"; do case $yn in Yes) git clean -X -d -f | more;exit;; No) exit;; esac; done;

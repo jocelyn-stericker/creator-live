@@ -7,5 +7,10 @@ ui_*
 moc_*
 Makefile
 bridge/bridge
+CMakeCache.txt
+CMakeFiles
 creator-live/creator-live
 pluginTester/appTester
+cmake_install.cmake
+*.depends
+build

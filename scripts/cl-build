@@ -1,0 +1,58 @@
+#!/bin/sh
+STARTDIR = "`pwd`"
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $DIR/..
+
+if [ ! -d ".git" ]; then
+    echo -e "\nERROR: cl-build must be inside the second level of the Creator Live git repository.\n";
+    cd $STARTDIR
+    exit 1;
+fi
+cd `git rev-parse --show-toplevel`
+if [ ! -d "build" ]; then
+    mkdir build
+    if [ $? != 0 ]; then
+        echo -e "\nERROR: Quitting due to fatal error...\n";
+	cd $STARTDIR
+        exit 1;
+    fi
+fi
+cd build
+
+echo -e "Which platform do you want to build for?"
+select yn in "QNX" "Linux";
+do case $yn in
+QNX)
+    if [ ! -f ".qnx_build" ]; then
+        rm -rf *
+    fi
+    rm .linux_build
+    touch .qnx_build
+    cmake -DCMAKE_TOOLCHAIN_FILE=../playbook/QNX.cmake .. && make -j6;
+    break;;
+Linux)
+    if [ ! -f ".linux_build" ]; then
+        rm -rf *
+    fi
+    rm .qnx_build
+    touch .linux_build
+    cmake .. && make -j6;
+    break;;
+*)
+    echo -e "\nERROR: Invalid answer...\n";
+    cd $STARTDIR
+    exit 1;;
+esac;
+done;
+
+if [ $? == 0 ]; then
+    cd ..
+    echo -e "\nSUCCESS: To run Creator Live, try `pwd`/build/creator-live/creator-live\n";
+else
+    echo -e "ERROR: Failed to build Creator Live...\n";
+    cd $STARTDIR
+    exit 1;
+fi
+
+cd $STARTDIR

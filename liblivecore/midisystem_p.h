@@ -107,6 +107,8 @@ public:
     QList< MidiOut*> outputs;
     MidiNull* null;
 
+    QList< int       > idqueue;
+    QList< live::ObjectChain > fromqueue;
     QList<live::Event*> withheld_ev;
     QList<live::ObjectChain> withheld_p;
     QList<live::ObjectPtr> withheld_obj;

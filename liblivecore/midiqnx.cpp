@@ -86,14 +86,12 @@ void SecretMidi::cancel(live::ObjectPtr from)
     NOSYNC;
     for(int i=0; i<fromqueue.size(); i++)
     {
-        if(!pmqueue[i]->timestamp) continue;
         bool ok=0;
         for(int j=0;j<fromqueue[i].size();j++) {
             if(fromqueue[i][j].data()==from.data()) {ok=1;break;}
         }
         if(ok)
         {
-            pmqueue.removeAt(i);
             idqueue.removeAt(i);
             fromqueue.removeAt(i);
             i--;
@@ -207,7 +205,6 @@ void MidiOut::mIn(const live::Event *ev, live::ObjectChain&p)
     else
     {
         SecretMidi::me->queue(ev,device,p);
-        // pmouts and outputs are equiv. in different systems
     }
 }
 
@@ -226,9 +223,9 @@ live::ObjectPtr live::midi::getNull()
 
 int live::midi::getTime_msec()
 {
-    struct timespec ts;
+    timespec ts;
     clock_gettime(CLOCK_REALTIME,&ts);
-    return (ts.sec-1341653917)*1000+ts.nsec/1000000;    // <- look at all those zeros we don't care about :)
+    return (ts.tv_sec-1341653917)*1000+ts.tv_nsec/1000000;    // <- look at all those zeros we don't care about :)
 }
 
 live::Time live::midi::getTime()
