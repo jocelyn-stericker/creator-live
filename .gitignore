@@ -1,0 +1,11 @@
+*.so*
+*.pro.user
+*.[oa]
+*~
+qrc_*
+ui_*
+moc_*
+Makefile
+bridge/bridge
+creator-live/creator-live
+pluginTester/appTester

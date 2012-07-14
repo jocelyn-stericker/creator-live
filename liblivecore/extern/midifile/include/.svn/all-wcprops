@@ -1,0 +1,65 @@
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/2/trunk/External/midifile/include
+END
+Array.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/2/trunk/External/midifile/include/Array.cpp
+END
+SigCollection.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/2/trunk/External/midifile/include/SigCollection.cpp
+END
+sigConfiguration.h
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/2/trunk/External/midifile/include/sigConfiguration.h
+END
+Options.h
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/2/trunk/External/midifile/include/Options.h
+END
+Array.h
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/2/trunk/External/midifile/include/Array.h
+END
+SigCollection.h
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/!svn/ver/2/trunk/External/midifile/include/SigCollection.h
+END
+MidiFile.h
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/2/trunk/External/midifile/include/MidiFile.h
+END
+.make
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/2/trunk/External/midifile/include/.make
+END
+Options_private.h
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/2/trunk/External/midifile/include/Options_private.h
+END
+FileIO.h
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/2/trunk/External/midifile/include/FileIO.h
+END
