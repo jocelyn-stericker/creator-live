@@ -34,6 +34,7 @@ list (APPEND bridge_qrc
 list (APPEND bridge_libs
     livecore
     livewidgets
+    context-dj # tmp
 )
 
 ################## PLATFORM-SPECIFIC CODE ##################
@@ -67,6 +68,7 @@ include_directories (
 
 link_directories (
     ${CMAKE_BINARY_DIR}/lib/
+    ${CMAKE_BINARY_DIR}/plugins/    # tmp
 )
 
 qt4_wrap_cpp (bridge_moc ${bridge_h_qobject})

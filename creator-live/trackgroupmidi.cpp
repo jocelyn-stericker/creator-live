@@ -45,7 +45,7 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
         ui_colourSelect[i]->setProperty("filter_id",i);
         ui_colourSelect[i]->setStyleSheet("*{padding:0px;}");
         QPixmap solidPixmap(8,8);
-        solidPixmap.fill(song::current->colours[i]); //FIXME
+        solidPixmap.fill(song::current()->colours[i]); //FIXME
         QIcon solidIcon(solidPixmap);
         ui_colourSelect[i]->setIcon(solidIcon);
         ui_topLayout->addWidget(ui_colourSelect[i]);
@@ -109,7 +109,7 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
     for(int i=0;i<5;i++) {
         s_midiFilters[i]=new MidiFilter;
     }
-    song::current->midiMaps.insert(c_input,s_midiFilters[0]);
+    song::current()->midiMaps.insert(c_input,s_midiFilters[0]);
 
     ui_instLabel->setObjectName("ui_instLabel");
     ui_instView->setObjectName("ui_instView");
@@ -213,9 +213,9 @@ void TrackGroupMidi::reactToPianoKeyUpdate()
         }
         else
         {
-            QColour col = song::current->colours[ s_selectedFilter ]; //FIXME
+            QColour col = song::current()->colours[ s_selectedFilter ]; //FIXME
             x->setBrush( QBrush( (xid==1||xid==3||xid==6||xid==8||xid==10)?col.darker(250):col ) ); //1,3... are black keys
-            song::current->midiMaps.value(s_input)->b_filterForNote[x->id()]=s_selectedFilter;
+            song::current()->midiMaps.value(s_input)->b_filterForNote[x->id()]=s_selectedFilter;
             return;
         }
     }
@@ -323,7 +323,7 @@ void TrackGroupMidi::changeActiveMode(bool really)
     }
     Q_ASSERT(sender()&&!sender()->property("mode_id").isNull());
     s_selectedMode=sender()->property("mode_id").toInt();
-    song::current->midiMaps.insert(s_input,s_midiFilters[s_selectedMode]);
+    song::current()->midiMaps.insert(s_input,s_midiFilters[s_selectedMode]);
 
     changeActiveMode_2(s_selectedMode);
 }

@@ -60,7 +60,7 @@ LiveApplication::LiveApplication(int& argc,char** argv) :
     }
 #endif
 
-    song::current=new song("Default System");
+    song::setCurrent( new song("Default System") );
 
     midi::refresh();
 
@@ -73,10 +73,10 @@ LiveApplication::LiveApplication(int& argc,char** argv) :
         QPluginLoader loader(qApp->applicationDirPath()+"/../plugins/"+fileName);
         QObject *plugin = loader.instance();
         if(plugin) {
-            std::cerr<<"Something good happened";
+            std::cerr<<"Trying to load plugin...\n";
             AppInterface* appi=qobject_cast<AppInterface*>(plugin);
             if(appi) do app::registerInterface(appi); while((appi=appi->next()));
-        } else qDebug()<<qPrintable(loader.errorString())<<"!!";
+        } else qDebug()<<"Couldn't load plugin:"<<qPrintable(loader.errorString());
     }
 
 #else

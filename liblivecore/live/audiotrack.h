@@ -69,6 +69,7 @@ public:
     const bool& isPlay() const;
     const bool& isMute() const;
     float pos() const;
+    float length() const;
 
 private:
     class AudioDataDestroyer {

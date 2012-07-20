@@ -17,12 +17,12 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 live_widgets::MetroSpinbox::MetroSpinbox(QWidget *parent) :
     live_widgets::SpinBox(parent), s_toggle(0)
 {
-    live::song::current->metronome->registerSync(this);
+    live::song::current()->metronome->registerSync(this);
 }
 
 live_widgets::MetroSpinbox::~MetroSpinbox()
 {
-    live::song::current->metronome->unregisterSync(this);
+    live::song::current()->metronome->unregisterSync(this);
 }
 
 void live_widgets::MetroSpinbox::sync(const live::SyncData &data)

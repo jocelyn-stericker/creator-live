@@ -484,11 +484,11 @@ void SecretAudio::process()
         }
     }
 
-    if(live::song::current&&live::song::current->metronome) {
+    if(live::song::current()&&live::song::current()->metronome) {
 //#ifdef __linux
 //        QtConcurrent::run(SongSys::current->metronome,&Metronome::clock);
 //#else
-        live::song::current->metronome->clock();
+        live::song::current()->metronome->clock();
 //#endif
     }
 

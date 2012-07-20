@@ -10,7 +10,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "live/songsystem.h"
 
 QList<live::song*> live::song::universe;
-live::song* live::song::current=NULL;
+live::song* live::song::s_current=NULL;
 
 live::song::song(QString cname) : metronome(new Metronome(TimeSignature(4,4),120)),
     keySignature(new KeySignature('A',' ',KeySignature::Minor)), midiMaps(), name(cname)

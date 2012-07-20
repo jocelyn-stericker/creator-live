@@ -37,8 +37,6 @@ void IntroWizard::resizeEvent(QResizeEvent *e)
     float phi=(1+sqrt(5.0))/2.0;
     ui->Bframe->setFixedWidth(w/2.00/phi);
     ui->CFrame->setFixedWidth(w/2.00/phi/phi);
-    qDebug()<<"W:"<<w;
-    qDebug()<<ui->Alabel_create->width()<<ui->Bframe->width()<<ui->CFrame->width();
 
     if(e) QWidget::resizeEvent(e);
 }

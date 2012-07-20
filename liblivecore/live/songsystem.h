@@ -19,8 +19,17 @@ namespace live {
 
 class LIBLIVECORESHARED_EXPORT song
 {
+protected:
+    static song* s_current;
 public:
-    static song* current;
+    static song* current() {
+        if(!s_current) s_current=new song("Song");
+        return s_current;
+    }
+    static void setCurrent(song* s) {
+        s_current = s;
+    }
+
     static QList<song*> universe;
 
     Metronome* metronome;               /*003*/

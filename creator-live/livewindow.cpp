@@ -107,20 +107,20 @@ void LiveWindow::newProject(bool ask)
     hideInsert();
     if(ask&&!askForClose("Create new Project?","Create a new project anyway?")) return;
 
-    *song::current->keySignature=KeySignature('C', ' ', KeySignature::Major);
+    *song::current()->keySignature=KeySignature('C', ' ', KeySignature::Major);
 
-    song::current->metronome->setBpm(120);
-    if(song::current->metronome->active())
+    song::current()->metronome->setBpm(120);
+    if(song::current()->metronome->active())
     {
-        song::current->metronome->pause();
+        song::current()->metronome->pause();
     }
-    song::current->songName="Untitled";
+    song::current()->songName="Untitled";
     while(ui->sac_contents->count()) {
         delete ui->sac_contents->takeFirst();
     }
 
-    connect(ui->spinBox_bpm,SIGNAL(valueChanged(int)),&song::current->metronome->b_bpm,SLOT(set(int)));
-    connect(&song::current->metronome->b_bpm,SIGNAL(changeObserved(int,int)),this,SLOT(setBPM(int)));
+    connect(ui->spinBox_bpm,SIGNAL(valueChanged(int)),&song::current()->metronome->b_bpm,SLOT(set(int)));
+    connect(&song::current()->metronome->b_bpm,SIGNAL(changeObserved(int,int)),this,SLOT(setBPM(int)));
 
     if(ask) selectMode();
     if(ask) s_fileName="";
@@ -229,55 +229,55 @@ void LiveWindow::setKey(int a)
     ui->comboBox_key->setCurrentIndex(a);
     switch(a) {
     case 0:
-        *song::current->keySignature=KeySignature('F','b',KeySignature::Major);
+        *song::current()->keySignature=KeySignature('F','b',KeySignature::Major);
         break;
     case 1:
-        *song::current->keySignature=KeySignature('C','b',KeySignature::Major);
+        *song::current()->keySignature=KeySignature('C','b',KeySignature::Major);
         break;
     case 2:
-        *song::current->keySignature=KeySignature('G','b',KeySignature::Major);
+        *song::current()->keySignature=KeySignature('G','b',KeySignature::Major);
         break;
     case 3:
-        *song::current->keySignature=KeySignature('D','b',KeySignature::Major);
+        *song::current()->keySignature=KeySignature('D','b',KeySignature::Major);
         break;
     case 4:
-        *song::current->keySignature=KeySignature('A','b',KeySignature::Major);
+        *song::current()->keySignature=KeySignature('A','b',KeySignature::Major);
         break;
     case 5:
-        *song::current->keySignature=KeySignature('E','b',KeySignature::Major);
+        *song::current()->keySignature=KeySignature('E','b',KeySignature::Major);
         break;
     case 6:
-        *song::current->keySignature=KeySignature('B','b',KeySignature::Major);
+        *song::current()->keySignature=KeySignature('B','b',KeySignature::Major);
         break;
     case 7:
-        *song::current->keySignature=KeySignature('F',' ',KeySignature::Major);
+        *song::current()->keySignature=KeySignature('F',' ',KeySignature::Major);
         break;
     case 8:
-        *song::current->keySignature=KeySignature('C',' ',KeySignature::Major);
+        *song::current()->keySignature=KeySignature('C',' ',KeySignature::Major);
         break;
     case 9:
-        *song::current->keySignature=KeySignature('G',' ',KeySignature::Major);
+        *song::current()->keySignature=KeySignature('G',' ',KeySignature::Major);
         break;
     case 10:
-        *song::current->keySignature=KeySignature('D',' ',KeySignature::Major);
+        *song::current()->keySignature=KeySignature('D',' ',KeySignature::Major);
         break;
     case 11:
-        *song::current->keySignature=KeySignature('A',' ',KeySignature::Major);
+        *song::current()->keySignature=KeySignature('A',' ',KeySignature::Major);
         break;
     case 12:
-        *song::current->keySignature=KeySignature('E',' ',KeySignature::Major);
+        *song::current()->keySignature=KeySignature('E',' ',KeySignature::Major);
         break;
     case 13:
-        *song::current->keySignature=KeySignature('B',' ',KeySignature::Major);
+        *song::current()->keySignature=KeySignature('B',' ',KeySignature::Major);
         break;
     case 14:
-        *song::current->keySignature=KeySignature('F','#',KeySignature::Major);
+        *song::current()->keySignature=KeySignature('F','#',KeySignature::Major);
         break;
     case 15:
-        *song::current->keySignature=KeySignature('C','#',KeySignature::Major);
+        *song::current()->keySignature=KeySignature('C','#',KeySignature::Major);
         break;
     case 16:
-        *song::current->keySignature=KeySignature('G','#',KeySignature::Major);
+        *song::current()->keySignature=KeySignature('G','#',KeySignature::Major);
         break;
     default:
         qFatal("Unrecognized Key Signature");
@@ -288,7 +288,7 @@ void LiveWindow::setKey(int a)
 void LiveWindow::setBPM(int a)
 {
     ui->spinBox_bpm->setValue(a);
-    song::current->metronome->setBpm(a);
+    song::current()->metronome->setBpm(a);
 }
 
 void LiveWindow::toggleMetro(bool m)
@@ -296,11 +296,11 @@ void LiveWindow::toggleMetro(bool m)
     ui->pushButton_creatorLive->setChecked(m);
 //    ui->spinBox_bpm->setEnabled(!m);
     if(m) {
-        Q_ASSERT(!song::current->metronome->active());
-        song::current->metronome->start();
+        Q_ASSERT(!song::current()->metronome->active());
+        song::current()->metronome->start();
     } else {
-        Q_ASSERT(song::current->metronome->active());
-        song::current->metronome->pause();
+        Q_ASSERT(song::current()->metronome->active());
+        song::current()->metronome->pause();
     }
 }
 

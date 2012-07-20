@@ -198,12 +198,12 @@ QByteArray LiveWindow::save()
     verify(ret,(QString)"BEGIN Current song");
     if(IS_SAVE)
     {
-        xba=song::current->save();
+        xba=song::current()->save();
     }
     ret IO xba;
     if(IS_LOAD)
     {
-        song::current=song::load(xba);
+        song::setCurrent( song::load(xba) );
     }
     verify(ret,(QString)"END Current song");
 

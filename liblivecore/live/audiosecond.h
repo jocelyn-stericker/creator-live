@@ -149,6 +149,17 @@ public:
         }
     }
 
+    float length() const
+    {
+        float ret = s_data.size();
+        int i;
+        for(i = audio::sampleRate() - 1;i >= 0;++i) {
+            if (s_data.back()->s_data[i]!=0.0f) break;
+        }
+        ret -= float(audio::sampleRate() - i)/float(audio::sampleRate());
+        return ret;
+    }
+
     void lock() {
         s_readLock.lockForRead();
     }

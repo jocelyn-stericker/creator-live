@@ -1,5 +1,5 @@
 #!/bin/sh
-STARTDIR = "`pwd`"
+STARTDIR=`pwd`
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $DIR/..
@@ -29,7 +29,8 @@ QNX)
     fi
     rm .linux_build
     touch .qnx_build
-    cmake -DCMAKE_TOOLCHAIN_FILE=../playbook/QNX.cmake .. && make -j6;
+    cmake -DCMAKE_TOOLCHAIN_FILE=../playbook/QNX.cmake .. && make -j6
+    CMAKE_RET=$?
     break;;
 Linux)
     if [ ! -f ".linux_build" ]; then
@@ -38,6 +39,7 @@ Linux)
     rm .qnx_build
     touch .linux_build
     cmake .. && make -j6;
+    CMAKE_RET=$?
     break;;
 *)
     echo -e "\nERROR: Invalid answer...\n";
@@ -46,7 +48,7 @@ Linux)
 esac;
 done;
 
-if [ $? == 0 ]; then
+if [ $CMAKE_RET == 0 ]; then
     cd ..
     echo -e "\nSUCCESS: To run Creator Live, try `pwd`/build/creator-live/creator-live\n";
 else

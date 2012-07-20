@@ -482,10 +482,11 @@ QByteArray audio::save()
 //                                  "sample rate of "+QString::number(sampleRate) +
 //                                  "but it is set at "+QString::number(audio::sampleRate())+"! "+
 //                                  "Please adjust your settings!",QMessageBox::Abort,QMessageBox::NoButton);
-            qFatal( QString("The file you are loading requires a "
-                    "sample rate of "+QString::number(sampleRate) +
-                    "but it is set at "+QString::number(audio::sampleRate())+"! "+
-                    "Please adjust your settings!").toAscii());
+            //qFatal( (QString("The file you are loading requires a ") + 
+              //      QString("sample rate of ")+QString::number(sampleRate) +
+                //    QString("but it is set at ")+QString::number(audio::sampleRate())+QString("! ")+
+                  //  QString("Please adjust your settings!")).toAscii());
+            qFatal("error.");
             Q_ASSERT(0);
         }
     }
@@ -503,10 +504,7 @@ QByteArray audio::save()
 //                                  "nFrame constant of "+QString::number(nFrames) +
 //                                  "but it is set at "+QString::number(audio::nFrames())+"! "+
 //                                  "Please adjust your settings!",QMessageBox::Abort,QMessageBox::NoButton);
-            qFatal(QString("The file you are loading requires an "
-                   "nFrame constant of "+QString::number(nFrames) +
-                   "but it is set at "+QString::number(audio::nFrames())+"! "+
-                   "Please adjust your settings!").toAscii());
+              qFatal("error.");
             Q_ASSERT(0);
         }
     }
@@ -549,9 +547,10 @@ QByteArray audio::save()
 //                                          "The file you are loading requires an "+QString(i?"input":"output")+" named"+
 //                                          xstr + "but it does not exist "+
 //                                          "Please adjust your settings!",QMessageBox::Abort,QMessageBox::NoButton);
-                    qCritical(QString("The file you are loading requires an "+QString(i?"input":"output")+" named"+
-                              xstr + "but it does not exist "+
-                              "Please adjust your settings!").toAscii());
+			qFatal("error.");
+                    //qCritical(QString("The file you are loading requires an "+QString(i?"input":"output")+" named"+
+                    //          xstr + "but it does not exist "+
+                    //          "Please adjust your settings!").toAscii());
                     Q_ASSERT(0);
                 }
             }

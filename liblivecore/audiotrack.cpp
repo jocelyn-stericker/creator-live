@@ -11,9 +11,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 void live::AudioTrack::aThru(float*proc,int chan)
 {
-    //SYNC
+    // WARNING: This function must be threadsafe. It cannot unreasonable data to be set.
 
-    // be careful!!
     bool ok=1;
 
     float* RAW;
@@ -139,6 +138,11 @@ const bool& live::AudioTrack::isMute() const
 float live::AudioTrack::pos() const
 {
     return (float)s_curPos*1000.0f/(float)live::audio::sampleRate();
+}
+
+float live::AudioTrack::length() const
+{
+    return qMax(s_container[0]->length(), s_container[1]->length());
 }
 
 void live::AudioTrack::setVol(int vol)

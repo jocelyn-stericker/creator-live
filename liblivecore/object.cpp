@@ -15,6 +15,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "live/audio.h"
 #include "live/midievent.h"
 #include "live/mapping.h"
+#include "live/liblivecore_global.h"
 
 using namespace live_private;
 
@@ -130,14 +131,12 @@ void live::Object::mOut(const live::Event *data, live::ObjectChain &p)
     if(!SecretMidi::me) SecretMidi::me=new SecretMidi;
     if(data->time.sec!=-1&&(data->time.toTime_ms()-5>live::midi::getTime_msec()))
     {
-        qDebug()<<"Holding...";
         live::Event* x=new live::Event;
         *x=*data;
         SecretMidi::me->mWithhold(x,p,this);    //now owner.
     }
     else for(int i=0;i<mConnections.size();i++)
     {
-        qDebug()<<"Not holding...";
         live::Event*x=new live::Event;
         *x=*data;
         x->buddy=0;

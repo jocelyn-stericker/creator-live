@@ -22,7 +22,7 @@ public:
     QuantizedAction(QObject*reciever,const char*slot,int division=-1,QVariant data=QVariant()) :
         s_cb(-1), s_division(division), s_data(data),s_ok(1)
     {
-        song::current->metronome->registerSync(this);
+        song::current()->metronome->registerSync(this);
         if(s_data.isNull())
         {
             connect(this,SIGNAL(activated()),reciever,slot);
@@ -53,7 +53,7 @@ public:
     }
     ~QuantizedAction()
     {
-        song::current->metronome->unregisterSync(this);
+        song::current()->metronome->unregisterSync(this);
     }
 
 public slots:

@@ -6,6 +6,7 @@
 #include <QTcpSocket>
 #include "live/../midibridge.h"
 #include "live/../midisystem_p.h"
+#include "../context-dj/djcontext.h"
 
 int main(int argc, char *argv[])
 {
@@ -40,6 +41,9 @@ int main(int argc, char *argv[])
     a.setStyleSheet(QString(stylefile.readAll()));
 
     BridgeSettings w;
+
+    djcontext d;
+    d.show();
 
 //    live::object::get(live::MidiOnly|live::InputOnly)[1]->midiConnect(live::object::get(live::MidiOnly|live::OutputOnly)[1]);
     w.show();

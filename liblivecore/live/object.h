@@ -15,6 +15,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QMap>
 #include <QDebug>
 #include <QStringList>
+#include <QMutexLocker>
 #include <algorithm>
 
 #include "liblivecore_global.h"

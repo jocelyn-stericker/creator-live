@@ -27,6 +27,7 @@ Track::Track(live::ObjectPtr cinput, live::ObjectPtr coutput) :
     ui_spacerItem(0),
     ui_chainWidget(new ChainTypeWidget(this))
 {
+    Object::beginAsyncAction();
     /*MAKE CHANGES IN BELOW CONSTRUCTOR TOO!!!!*/
     ui_chainWidget->setGeometry(0,0,width(),3);
     ui_chainWidget->setFixedHeight(2);
@@ -63,6 +64,7 @@ Track::Track(live::ObjectPtr cinput, live::ObjectPtr coutput) :
     ui_outputName->setObjectName("ui_outputName");
     setObjectName("Track_"+QString::number(s_id));
     setGeometry(geometry());
+    Object::endAsyncAction();
 }
 
 Track::Track(Ambition* bp) :
@@ -77,6 +79,7 @@ Track::Track(Ambition* bp) :
     ui_spacerItem(0),
     ui_chainWidget(new ChainTypeWidget(this))
 {
+    Object::beginAsyncAction();
     ui_chainWidget->setGeometry(0,0,width(),3);
     ui_chainWidget->setFixedHeight(2);
     setAcceptDrops(1);
@@ -108,10 +111,12 @@ Track::Track(Ambition* bp) :
     MidiBindingQtSys::addWidget(this);
     ui_outputName->setObjectName("ui_outputName");
     setGeometry(geometry());
+    Object::endAsyncAction();
 }
 
 Track::~Track()
 {
+    Object::beginAsyncAction();
     qDebug()<<"DESTROY TRACK";
     delete ui_outputName;
     delete ui_mainLayout;
@@ -121,6 +126,7 @@ Track::~Track()
     }
 
     delete &s_ambition;
+    Object::endAsyncAction();
 }
 
 void Track::resizeEvent(QResizeEvent *e)
@@ -131,6 +137,7 @@ void Track::resizeEvent(QResizeEvent *e)
 
 void Track::remakeChainWidget()
 {
+    Object::beginAsyncAction();
     ui_chainWidget->reset();
     int i=0;
     foreach(QWidget* ui,s_appUi_)
@@ -138,20 +145,24 @@ void Track::remakeChainWidget()
         ui_chainWidget->setBack(ui->x()+ui->width(),s_ambition.at(i)->processingMidi(),s_ambition.at(i)->processingAudio());
         i++;
     }
+    Object::endAsyncAction();
 }
 
 void Track::clearUiPipeline()
 {
+    Object::beginAsyncAction();
     ui_mainLayout->removeWidget(ui_outputName);
     foreach(QWidget* ui,s_appUi_)
     {
         ui_mainLayout->removeWidget(ui);
     }
     ui_chainWidget->reset();
+    Object::endAsyncAction();
 }
 
 void Track::makeUiPipeline()
 {
+    Object::beginAsyncAction();
     foreach(QWidget* ui,s_appUi_)
     {
         ui_mainLayout->addWidget(ui);
@@ -162,10 +173,12 @@ void Track::makeUiPipeline()
     ui_mainLayout->addWidget(ui_outputName);
     setGeometry(geometry());
     remakeChainWidget();
+    Object::endAsyncAction();
 }
 
 void Track::dragEnterEvent(QDragEnterEvent *e)
 {
+    Object::beginAsyncAction();
     if(e->mimeData()->hasFormat("text/plain")&&app::appNames().contains(e->mimeData()->text()))
     {
         if(e->mimeData()->text()!="FILTER"||s_ambition.inputIsMidiObject())
@@ -177,10 +190,12 @@ void Track::dragEnterEvent(QDragEnterEvent *e)
     {
         e->acceptProposedAction();
     }
+    Object::endAsyncAction();
 }
 
 void Track::dropEvent(QDropEvent *e)
 {
+    Object::beginAsyncAction();
     if(e->mimeData()->hasFormat("application/x-qt-windows-mime;value=\"FileName\""))
     {
         live::ObjectPtr backend = app::newBackend("SEQUENCER");
@@ -261,21 +276,27 @@ void Track::dropEvent(QDropEvent *e)
     {
         qDebug()<<"Rejected "<<e->mimeData()->text()<<"(it is not a valid app name!!!)";
     }
+    Object::endAsyncAction();
 }
 
 void Track::setOutput(live::ObjectPtr output,live::ObjectPtr loopback)
 {
+    Object::beginAsyncAction();
     s_ambition.setOutput(output);
     s_ambition.setLoopbackOut(loopback);
+    Object::endAsyncAction();
 }
 
 void Track::setInput(live::ObjectPtr input)
 {
+    Object::beginAsyncAction();
     s_ambition.setInput(input);
+    Object::endAsyncAction();
 }
 
 void Track::addApp(int i,AppFrame* appUi,live::ObjectPtr app)
 {
+    Object::beginAsyncAction();
     if(s_th)
     {
         ui_mainLayout->removeWidget(s_th);
@@ -318,10 +339,12 @@ void Track::addApp(int i,AppFrame* appUi,live::ObjectPtr app)
     }
     adjustSize();
     update();
+    Object::endAsyncAction();
 }
 
 void Track::delApp(int i)
 {
+    Object::beginAsyncAction();
     //ONLY CALLED FROM logic_delApp. Do not actually delete app.
 
     s_ambition.removeFromChain(i);
@@ -355,11 +378,11 @@ void Track::delApp(int i)
     {
         ui_mainLayout->insertSpacerItem(s_appUi_.size(),ui_spacerItem=new QSpacerItem(0,0,QSizePolicy::MinimumExpanding));
     }
+    Object::endAsyncAction();
 }
 
 void Track::outputSelection()
 {
-
     if(s_ambition.inputIsAudioObject())
     {
         QStringList a;
@@ -404,7 +427,9 @@ void Track::outputSelection()
                     if(i!=-1&&i<object::get(AudioOnly|OutputOnly|NoRefresh).size()&&
                             object::get(AudioOnly|OutputOnly|NoRefresh)[i]->name()==ix)
                     {
+                        Object::beginAsyncAction();
                         setOutput(out,object::get(AudioOnly|OutputOnly|NoRefresh)[i]);
+                        Object::endAsyncAction();
                     }
                     else
                     {
@@ -414,7 +439,9 @@ void Track::outputSelection()
             }
             else if(out->name()==a[i])
             {
+                Object::beginAsyncAction();
                 setOutput(out);
+                Object::endAsyncAction();
             }
             else
             {
@@ -428,6 +455,7 @@ void Track::outputSelection()
 
 void Track::logic_appBack()
 {
+    Object::beginAsyncAction();
     AppFrame*x=qobject_cast<AppFrame*>(sender()->parent());
     Q_ASSERT(x);
     for(int i=0;i<s_appUi_.size();i++)
@@ -447,10 +475,12 @@ void Track::logic_appBack()
             }
         }
     }
+    Object::endAsyncAction();
 }
 
 void Track::logic_appDel()
 {
+    Object::beginAsyncAction();
     AppFrame*x=qobject_cast<AppFrame*>(sender()->parent());
     Q_ASSERT(x);
     for(int i=0;i<s_appUi_.size();i++)
@@ -462,10 +492,12 @@ void Track::logic_appDel()
             of->deleteLater();  //will delete of
         }
     }
+    Object::endAsyncAction();
 }
 
 void Track::logic_appNext()
 {
+    Object::beginAsyncAction();
     AppFrame*x=qobject_cast<AppFrame*>(sender()->parent());
     Q_ASSERT(x);
     for(int i=0;i<s_appUi_.size();i++)
@@ -485,4 +517,5 @@ void Track::logic_appNext()
             }
         }
     }
+    Object::endAsyncAction();
 }
