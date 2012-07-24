@@ -416,7 +416,7 @@ border-radius: 4px;
     </spacer>
    </item>
    <item row="0" column="7" rowspan="2">
-    <widget class="QSlider" name="verticalSlider_5">
+    <widget class="QSlider" name="verticalSlider_R2">
      <property name="minimumSize">
       <size>
        <width>113</width>
@@ -438,7 +438,7 @@ border-radius: 4px;
     </widget>
    </item>
    <item row="0" column="0" rowspan="2">
-    <widget class="QSlider" name="verticalSlider">
+    <widget class="QSlider" name="verticalSlider_L1">
      <property name="minimumSize">
       <size>
        <width>113</width>
@@ -469,7 +469,7 @@ border-radius: 4px;
        <number>0</number>
       </property>
       <item>
-       <widget class="QToolButton" name="toolButton_28">
+       <widget class="QToolButton" name="toolButton_S1R">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -489,7 +489,7 @@ border-bottom-right-radius: 0px;</string>
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="toolButton_27">
+       <widget class="QToolButton" name="toolButton_T1R">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -524,7 +524,7 @@ border-bottom-left-radius: 0px;</string>
        <number>0</number>
       </property>
       <item>
-       <widget class="QToolButton" name="toolButton_20">
+       <widget class="QToolButton" name="toolButton_T2L">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -547,7 +547,7 @@ border-bottom-right-radius: 0px;</string>
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="toolButton_19">
+       <widget class="QToolButton" name="toolButton_S2L">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -579,7 +579,7 @@ border-bottom-left-radius: 0px;</string>
        <number>0</number>
       </property>
       <item>
-       <widget class="QToolButton" name="toolButton_24">
+       <widget class="QToolButton" name="toolButton_S3R">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -602,7 +602,7 @@ border-bottom-right-radius: 0px;</string>
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="toolButton_23">
+       <widget class="QToolButton" name="toolButton_T3R">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -625,7 +625,7 @@ border-bottom-left-radius: 0px;</string>
     </widget>
    </item>
    <item row="5" column="8">
-    <widget class="QComboBox" name="comboBox_6">
+    <widget class="QComboBox" name="comboBox_3R">
      <property name="minimumSize">
       <size>
        <width>113</width>
@@ -646,7 +646,7 @@ border-bottom-left-radius: 0px;</string>
     </widget>
    </item>
    <item row="0" column="8" rowspan="2">
-    <widget class="QSlider" name="verticalSlider_6">
+    <widget class="QSlider" name="verticalSlider_R1">
      <property name="minimumSize">
       <size>
        <width>113</width>
@@ -683,7 +683,7 @@ border-bottom-left-radius: 0px;</string>
        <number>0</number>
       </property>
       <item>
-       <widget class="QToolButton" name="toolButton_17">
+       <widget class="QToolButton" name="toolButton_T1L">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -706,7 +706,7 @@ border-bottom-right-radius: 0px;</string>
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="toolButton_18">
+       <widget class="QToolButton" name="toolButton_S1L">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -729,7 +729,7 @@ border-bottom-left-radius: 0px;</string>
     </widget>
    </item>
    <item row="0" column="2" rowspan="2">
-    <widget class="QSlider" name="verticalSlider_3">
+    <widget class="QSlider" name="verticalSlider_L3">
      <property name="minimumSize">
       <size>
        <width>113</width>
@@ -751,7 +751,7 @@ border-bottom-left-radius: 0px;</string>
     </widget>
    </item>
    <item row="0" column="1" rowspan="2">
-    <widget class="QSlider" name="verticalSlider_2">
+    <widget class="QSlider" name="verticalSlider_L2">
      <property name="minimumSize">
       <size>
        <width>113</width>
@@ -773,7 +773,7 @@ border-bottom-left-radius: 0px;</string>
     </widget>
    </item>
    <item row="5" column="1">
-    <widget class="QComboBox" name="comboBox_2">
+    <widget class="QComboBox" name="comboBox_2L">
      <property name="minimumSize">
       <size>
        <width>113</width>
@@ -794,7 +794,7 @@ border-bottom-left-radius: 0px;</string>
     </widget>
    </item>
    <item row="4" column="4" rowspan="2">
-    <widget class="QSlider" name="horizontalSlider">
+    <widget class="QSlider" name="horizontalSlider_pan">
      <property name="minimumSize">
       <size>
        <width>0</width>
@@ -822,7 +822,7 @@ border-bottom-left-radius: 0px;</string>
        <number>0</number>
       </property>
       <item>
-       <widget class="QToolButton" name="toolButton_26">
+       <widget class="QToolButton" name="toolButton_S2R">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -842,7 +842,7 @@ border-bottom-right-radius: 0px;</string>
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="toolButton_25">
+       <widget class="QToolButton" name="toolButton_T2R">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -868,7 +868,7 @@ border-bottom-left-radius: 0px;</string>
     </widget>
    </item>
    <item row="5" column="0">
-    <widget class="QComboBox" name="comboBox">
+    <widget class="QComboBox" name="comboBox_1L">
      <property name="minimumSize">
       <size>
        <width>113</width>
@@ -898,7 +898,7 @@ border-bottom-left-radius: 0px;</string>
        <number>0</number>
       </property>
       <item>
-       <widget class="QToolButton" name="toolButton_22">
+       <widget class="QToolButton" name="toolButton_T3L">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -921,7 +921,7 @@ border-bottom-right-radius: 0px;</string>
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="toolButton_21">
+       <widget class="QToolButton" name="toolButton_S3L">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -947,7 +947,7 @@ border-bottom-left-radius: 0px;</string>
     </widget>
    </item>
    <item row="0" column="6" rowspan="2">
-    <widget class="QSlider" name="verticalSlider_4">
+    <widget class="QSlider" name="verticalSlider_R3">
      <property name="minimumSize">
       <size>
        <width>113</width>
@@ -969,7 +969,7 @@ border-bottom-left-radius: 0px;</string>
     </widget>
    </item>
    <item row="5" column="6">
-    <widget class="QComboBox" name="comboBox_4">
+    <widget class="QComboBox" name="comboBox_1R">
      <property name="minimumSize">
       <size>
        <width>113</width>
@@ -990,7 +990,7 @@ border-bottom-left-radius: 0px;</string>
     </widget>
    </item>
    <item row="5" column="2">
-    <widget class="QComboBox" name="comboBox_3">
+    <widget class="QComboBox" name="comboBox_3L">
      <property name="minimumSize">
       <size>
        <width>113</width>
@@ -1011,7 +1011,7 @@ border-bottom-left-radius: 0px;</string>
     </widget>
    </item>
    <item row="5" column="7">
-    <widget class="QComboBox" name="comboBox_5">
+    <widget class="QComboBox" name="comboBox_2R">
      <property name="minimumSize">
       <size>
        <width>113</width>
@@ -1057,7 +1057,7 @@ border-bottom-left-radius: 0px;</string>
        <number>0</number>
       </property>
       <item row="2" column="1">
-       <widget class="QToolButton" name="toolButton_10">
+       <widget class="QToolButton" name="toolButton_L6">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -1089,7 +1089,7 @@ margin: 0px;</string>
        </widget>
       </item>
       <item row="2" column="0">
-       <widget class="QToolButton" name="toolButton_9">
+       <widget class="QToolButton" name="toolButton_L5">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -1121,7 +1121,7 @@ margin: 0px;</string>
        </widget>
       </item>
       <item row="1" column="3">
-       <widget class="QToolButton" name="toolButton_7">
+       <widget class="QToolButton" name="toolButton_R4">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -1153,7 +1153,7 @@ margin: 0px;</string>
        </widget>
       </item>
       <item row="2" column="3">
-       <widget class="QToolButton" name="toolButton_11">
+       <widget class="QToolButton" name="toolButton_R6">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -1185,7 +1185,7 @@ margin: 0px;</string>
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QToolButton" name="toolButton_14">
+       <widget class="QToolButton" name="toolButton_L8">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -1217,7 +1217,7 @@ margin: 0px;</string>
        </widget>
       </item>
       <item row="0" column="3">
-       <widget class="QToolButton" name="toolButton_3">
+       <widget class="QToolButton" name="toolButton_R2">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -1249,7 +1249,7 @@ margin: 0px;</string>
        </widget>
       </item>
       <item row="1" column="4">
-       <widget class="QToolButton" name="toolButton_8">
+       <widget class="QToolButton" name="toolButton_R3">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -1281,7 +1281,7 @@ margin: 0px;</string>
        </widget>
       </item>
       <item row="3" column="3">
-       <widget class="QToolButton" name="toolButton_15">
+       <widget class="QToolButton" name="toolButton_R8">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -1313,7 +1313,7 @@ margin: 0px;</string>
        </widget>
       </item>
       <item row="3" column="0">
-       <widget class="QToolButton" name="toolButton_13">
+       <widget class="QToolButton" name="toolButton_L7">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -1361,7 +1361,7 @@ margin: 0px;</string>
        </spacer>
       </item>
       <item row="0" column="4">
-       <widget class="QToolButton" name="toolButton_2">
+       <widget class="QToolButton" name="toolButton_R1">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -1393,7 +1393,7 @@ margin: 0px;</string>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QToolButton" name="toolButton_4">
+       <widget class="QToolButton" name="toolButton_L2">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -1425,7 +1425,7 @@ margin: 0px;</string>
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QToolButton" name="toolButton_6">
+       <widget class="QToolButton" name="toolButton_L4">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -1457,7 +1457,7 @@ margin: 0px;</string>
        </widget>
       </item>
       <item row="2" column="4">
-       <widget class="QToolButton" name="toolButton_12">
+       <widget class="QToolButton" name="toolButton_R5">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -1489,7 +1489,7 @@ margin: 0px;</string>
        </widget>
       </item>
       <item row="0" column="0">
-       <widget class="QToolButton" name="toolButton">
+       <widget class="QToolButton" name="toolButton_L1">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -1521,7 +1521,7 @@ margin: 0px;</string>
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QToolButton" name="toolButton_5">
+       <widget class="QToolButton" name="toolButton_L3">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -1569,7 +1569,7 @@ margin: 0px;</string>
        </spacer>
       </item>
       <item row="3" column="4">
-       <widget class="QToolButton" name="toolButton_16">
+       <widget class="QToolButton" name="toolButton_R7">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>

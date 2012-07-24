@@ -431,7 +431,7 @@ border-radius: 4px;
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QFrame" name="frame">
+    <widget class="QFrame" name="frame_topL">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -452,7 +452,7 @@ border-radius: 4px;
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="2" column="4">
-       <widget class="QToolButton" name="toolButton_3">
+       <widget class="QToolButton" name="toolButton_midL">
         <property name="minimumSize">
          <size>
           <width>39</width>
@@ -471,7 +471,7 @@ border-radius: 4px;
        </widget>
       </item>
       <item row="3" column="4">
-       <widget class="QToolButton" name="toolButton_4">
+       <widget class="QToolButton" name="toolButton_lowL">
         <property name="minimumSize">
          <size>
           <width>39</width>
@@ -490,7 +490,7 @@ border-radius: 4px;
        </widget>
       </item>
       <item row="0" column="4">
-       <widget class="QToolButton" name="toolButton_5">
+       <widget class="QToolButton" name="toolButton_volL">
         <property name="minimumSize">
          <size>
           <width>39</width>
@@ -509,7 +509,7 @@ border-radius: 4px;
        </widget>
       </item>
       <item row="1" column="4">
-       <widget class="QToolButton" name="toolButton_2">
+       <widget class="QToolButton" name="toolButton_hiL">
         <property name="minimumSize">
          <size>
           <width>39</width>
@@ -528,7 +528,7 @@ border-radius: 4px;
        </widget>
       </item>
       <item row="0" column="3">
-       <widget class="QToolButton" name="toolButton_11">
+       <widget class="QToolButton" name="toolButton_snapL">
         <property name="minimumSize">
          <size>
           <width>39</width>
@@ -547,7 +547,7 @@ border-radius: 4px;
        </widget>
       </item>
       <item row="0" column="0">
-       <widget class="QToolButton" name="toolButton">
+       <widget class="QToolButton" name="playL">
         <property name="minimumSize">
          <size>
           <width>39</width>
@@ -566,7 +566,7 @@ border-radius: 4px;
        </widget>
       </item>
       <item row="1" column="0" rowspan="3" colspan="4">
-       <widget class="QWidget" name="widget_2" native="true">
+       <widget class="QWidget" name="widget_waveformL" native="true">
         <property name="styleSheet">
          <string notr="true">     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                       stop: 0 #3c3c3c, stop: 1 #262627);
@@ -575,7 +575,7 @@ border-radius: 4px;</string>
        </widget>
       </item>
       <item row="0" column="1" colspan="2">
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="label_trackL">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
           <horstretch>0</horstretch>
@@ -594,7 +594,7 @@ border-radius: 4px;</string>
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QFrame" name="frame_2">
+    <widget class="QFrame" name="frame_topR">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -615,7 +615,7 @@ border-radius: 4px;</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="0" column="0">
-       <widget class="QToolButton" name="toolButton_6">
+       <widget class="QToolButton" name="toolButton_volR">
         <property name="minimumSize">
          <size>
           <width>39</width>
@@ -634,7 +634,7 @@ border-radius: 4px;</string>
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QToolButton" name="toolButton_8">
+       <widget class="QToolButton" name="toolButton_hiR">
         <property name="minimumSize">
          <size>
           <width>39</width>
@@ -653,7 +653,7 @@ border-radius: 4px;</string>
        </widget>
       </item>
       <item row="2" column="0">
-       <widget class="QToolButton" name="toolButton_9">
+       <widget class="QToolButton" name="toolButton_midR">
         <property name="minimumSize">
          <size>
           <width>39</width>
@@ -672,7 +672,7 @@ border-radius: 4px;</string>
        </widget>
       </item>
       <item row="3" column="0">
-       <widget class="QToolButton" name="toolButton_10">
+       <widget class="QToolButton" name="toolButton_lowR">
         <property name="minimumSize">
          <size>
           <width>39</width>
@@ -691,7 +691,7 @@ border-radius: 4px;</string>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QToolButton" name="toolButton_12">
+       <widget class="QToolButton" name="toolButton_snapR">
         <property name="minimumSize">
          <size>
           <width>39</width>
@@ -710,7 +710,7 @@ border-radius: 4px;</string>
        </widget>
       </item>
       <item row="0" column="4">
-       <widget class="QToolButton" name="toolButton_7">
+       <widget class="QToolButton" name="toolButton_playR">
         <property name="minimumSize">
          <size>
           <width>39</width>
@@ -729,7 +729,7 @@ border-radius: 4px;</string>
        </widget>
       </item>
       <item row="1" column="1" rowspan="3" colspan="4">
-       <widget class="QWidget" name="widget_3" native="true">
+       <widget class="QWidget" name="widget_waveformR" native="true">
         <property name="styleSheet">
          <string notr="true">     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                       stop: 0 #3c3c3c, stop: 1 #262627);
@@ -738,7 +738,7 @@ border-radius: 4px;</string>
        </widget>
       </item>
       <item row="0" column="2" colspan="2">
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="label_trackR">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
           <horstretch>0</horstretch>

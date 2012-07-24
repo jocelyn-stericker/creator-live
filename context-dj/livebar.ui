@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1008</width>
+    <width>1006</width>
     <height>30</height>
    </rect>
   </property>
@@ -317,7 +317,7 @@ QToolButton::checked {
        </spacer>
       </item>
       <item>
-       <widget class="QToolButton" name="toolButton">
+       <widget class="QToolButton" name="toolButton_rec">
         <property name="styleSheet">
          <string notr="true">QToolButton {
     height:30;
@@ -361,7 +361,7 @@ QToolButton::checked {
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="toolButton_2">
+       <widget class="QToolButton" name="toolButton_overdub">
         <property name="styleSheet">
          <string notr="true">QToolButton {
     height:30;
@@ -405,7 +405,7 @@ QToolButton::checked {
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="toolButton_3">
+       <widget class="QToolButton" name="toolButton_stop">
         <property name="styleSheet">
          <string notr="true">QToolButton {
     height:30;
@@ -578,6 +578,11 @@ QComboBox:hover {
         <item>
          <property name="text">
           <string>Sample Mode</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Collection Settings</string>
          </property>
         </item>
        </widget>

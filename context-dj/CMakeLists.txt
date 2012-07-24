@@ -12,30 +12,33 @@
 cmake_minimum_required(VERSION 2.8)
 
 list (APPEND context-dj_cpp
+    collectioncontext.cpp
     djcontext.cpp
     effectstab.cpp
+    livebar.cpp
     sampletab.cpp
     tracktab.cpp
-    livebar.cpp
 )
 
 list (APPEND context-dj_h
 )
 
 list (APPEND context-dj_h_qobject
+    collectioncontext.h
     djcontext.h
     effectstab.h
+    livebar.h
     sampletab.h
     tracktab.h
-    livebar.h
 )
 
 list (APPEND context-dj_ui
+    collectioncontext.ui
     djcontext.ui
     effectstab.ui
     sampletab.ui
-    tracktab.ui
     livebar.ui
+    tracktab.ui
 )
 
 list (APPEND context-dj_qrc

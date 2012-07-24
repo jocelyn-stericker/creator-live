@@ -1,3 +1,12 @@
+/*******************************************************
+
+    Part of the Creator Live Music Production Suite.
+Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
+
+                  All rights reserved.
+
+*******************************************************/
+
 #include "livebar.h"
 #include "ui_livebar.h"
 
@@ -18,6 +27,9 @@ void LiveBar::modeChosen(int z)
 {
     switch(z)
     {
+    case 0:
+        emit noMode();
+        break;
     case 1:
         emit djMode();
         break;
@@ -26,6 +38,9 @@ void LiveBar::modeChosen(int z)
         break;
     case 3:
         emit sampleMode();
+        break;
+    case 4:
+        emit collectionMode();
         break;
     }
 }

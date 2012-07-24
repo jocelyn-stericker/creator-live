@@ -1,3 +1,12 @@
+/*******************************************************
+
+    Part of the Creator Live Music Production Suite.
+Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
+
+                  All rights reserved.
+
+*******************************************************/
+
 #ifndef TRACKTAB_H
 #define TRACKTAB_H
 
@@ -7,13 +16,13 @@ namespace Ui {
 class tracktab;
 }
 
-class tracktab : public QWidget
+class TrackTab : public QWidget
 {
     Q_OBJECT
     
 public:
-    explicit tracktab(QWidget *parent = 0);
-    ~tracktab();
+    explicit TrackTab(QWidget *parent = 0);
+    ~TrackTab();
     
 private:
     Ui::tracktab *ui;

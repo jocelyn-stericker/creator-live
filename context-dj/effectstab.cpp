@@ -1,14 +1,23 @@
+/*******************************************************
+
+    Part of the Creator Live Music Production Suite.
+Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
+
+                  All rights reserved.
+
+*******************************************************/
+
 #include "effectstab.h"
 #include "ui_effectstab.h"
 
-effectstab::effectstab(QWidget *parent) :
+EffectsTab::EffectsTab(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::effectstab)
 {
     ui->setupUi(this);
 }
 
-effectstab::~effectstab()
+EffectsTab::~EffectsTab()
 {
     delete ui;
 }

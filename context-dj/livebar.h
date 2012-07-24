@@ -1,3 +1,11 @@
+/*******************************************************
+
+    Part of the Creator Live Music Production Suite.
+Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
+
+                  All rights reserved.
+
+*******************************************************/
 #ifndef LIVEBAR_H
 #define LIVEBAR_H
 
@@ -19,9 +27,11 @@ public slots:
     void modeChosen(int z);
 
 signals:
+    void noMode();
     void djMode();
     void trackMode();
     void sampleMode();
+    void collectionMode();
 
 private:
     Ui::LiveBar *ui;

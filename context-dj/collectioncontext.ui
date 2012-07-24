@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>tracktab</class>
- <widget class="QWidget" name="tracktab">
+ <class>CollectionContext</class>
+ <widget class="QWidget" name="CollectionContext">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>988</width>
-    <height>376</height>
+    <width>984</width>
+    <height>372</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -274,7 +274,7 @@ QAbstractButton::checked {
 QSlider::groove:horizontal {
 border: 1px solid #bbb;
 background: white;
-height: 50px;
+height: 40px;
 border-radius: 4px;
 }
 
@@ -291,7 +291,7 @@ background: qlineargradient(x1: 0, y1: 0,    x2: 0, y2: 1,
 background: qlineargradient(x1: 0, y1: 0.2, x2: 1, y2: 1,
     stop: 0 #bbb, stop: 1 #555);
 border: 0px solid #777;
-height: 50px;
+height: 40px;
 border-radius: 4px;
 border-top-left-radius: 4px;
 border-top-right-radius: 0px;
@@ -318,7 +318,7 @@ background: qlineargradient(x1: 0, y1: 1,    x2: 0, y2: 0,
 background: qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0.2,
     stop: 0 #555, stop: 1 #bbb);
 border: 0px solid #777;
-height: 50px;
+height: 40px;
 border-top-left-radius: 0px;
 border-top-right-radius: 4px;
 border-bottom-left-radius: 0px;
@@ -392,21 +392,57 @@ border: 1px solid #aaa;
 border-radius: 4px;
 }</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="QLineEdit" name="lineEdit_search">
-     <property name="placeholderText">
-      <string>Search tracks...</string>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="3" column="1">
+    <widget class="QPushButton" name="pushButton_delete">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Delete Selected Place</string>
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="QListView" name="listView_tracks"/>
-   </item>
-   <item>
+   <item row="0" column="0" colspan="2">
     <widget class="QLabel" name="label_snarky">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
-      <string>&lt;center&gt;Tip: drag the aboce samples to one of the track decks. No kidding.</string>
+      <string>Where should Creator Live look for tracks, samples, and effects?</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" rowspan="4">
+    <widget class="QListWidget" name="listWidget_places"/>
+   </item>
+   <item row="1" column="1">
+    <widget class="QPushButton" name="pushButton_new">
+     <property name="text">
+      <string>New Place</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="4" column="1">
+    <widget class="QPushButton" name="pushButton_clear">
+     <property name="text">
+      <string>Clear All</string>
      </property>
     </widget>
    </item>
