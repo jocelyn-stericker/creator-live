@@ -9,11 +9,14 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include "djcontext.h"
 #include "ui_djcontext.h"
-#include "livebar.h"
 
+#include "collectioncontext.h"
 #include "effectstab.h"
 #include "sampletab.h"
+#include "livebar.h"
 #include "tracktab.h"
+
+using namespace live;
 
 DJContext::DJContext(QWidget *parent)
     : QWidget(parent)
@@ -41,6 +44,11 @@ DJContext::DJContext(QWidget *parent)
     connect(s_lb, SIGNAL(collectionMode()), this, SLOT(showCollection()));
 
     showSnarky();
+}
+
+DJContext::~DJContext()
+{
+    delete ui;
 }
 
 void DJContext::showSnarky()
@@ -88,7 +96,12 @@ void DJContext::showCollection()
     ui->label_snarky->hide();
 }
 
-DJContext::~DJContext()
+void DJContext::audioChanged_logic(QString s)
 {
-    delete ui;
+    s_out = object::fetch(s, AudioOnly | OutputOnly);
+}
+
+void DJContext::monitorChanged_logic(QString)
+{
+    // FIXME
 }

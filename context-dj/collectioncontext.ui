@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>984</width>
-    <height>372</height>
+    <width>982</width>
+    <height>370</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -403,6 +403,19 @@ border-radius: 4px;
      </property>
     </widget>
    </item>
+   <item row="1" column="0" rowspan="4">
+    <widget class="QListWidget" name="listWidget_places"/>
+   </item>
+   <item row="6" column="0">
+    <widget class="QComboBox" name="comboBox_audio"/>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Monitor output:</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0" colspan="2">
     <widget class="QLabel" name="label_snarky">
      <property name="sizePolicy">
@@ -416,13 +429,17 @@ border-radius: 4px;
      </property>
     </widget>
    </item>
-   <item row="1" column="0" rowspan="4">
-    <widget class="QListWidget" name="listWidget_places"/>
-   </item>
    <item row="1" column="1">
     <widget class="QPushButton" name="pushButton_new">
      <property name="text">
       <string>New Place</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Audio output:</string>
      </property>
     </widget>
    </item>
@@ -445,6 +462,9 @@ border-radius: 4px;
       <string>Clear All</string>
      </property>
     </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QComboBox" name="comboBox_monitor"/>
    </item>
   </layout>
  </widget>

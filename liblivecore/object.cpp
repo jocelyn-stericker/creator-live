@@ -376,6 +376,19 @@ live::ObjectPtr live::object::request(QString req, int flags)
     return m;
 }
 
+live::ObjectPtr live::object::fetch(QString req, int flags)
+{
+    QList<live::ObjectPtr> objList=get(flags);
+    for(int i=0;i<objList.size();i++) {
+        if(objList.at(i)->name()==req) {
+            return objList[i];
+        }
+    }
+
+    // no such object.
+    return live::ObjectPtr(0);
+}
+
 void live::ObjectChain::push_back(live::Object *o) {
     push_back(live::ObjectPtr(o));
 }

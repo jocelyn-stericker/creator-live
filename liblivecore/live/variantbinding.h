@@ -29,6 +29,7 @@ public slots:
     virtual void set(const QVariant&) = 0;
     virtual void set(const int&) = 0;
     virtual void set(const bool&) = 0;
+    virtual void set_(void*) = 0;
 signals:
     void changeObserved();
     void changeObserved(const QVariant&now,const QVariant&before);
@@ -84,6 +85,7 @@ public:
         QVariant a(s_t),b(that);
         s_t=that;
         if(a==that) return;
+        emit changeObserved();
         emit changeObserved(b,a);
         emit changeObserved(b.toString(),a.toString());
         emit changeObserved(b.toInt(),a.toInt());
@@ -95,6 +97,7 @@ public:
         s_t=that;
 
         if(a==b) return;
+        emit changeObserved();
         emit changeObserved(b,a);
         emit changeObserved(b.toString(),a.toString());
         emit changeObserved(b.toInt(),a.toInt());
@@ -111,6 +114,7 @@ public:
         s_t=qvariant_cast<U>(that);
 
         if(a==that) return;
+        emit changeObserved();
         emit changeObserved(that,a);
         emit changeObserved(that.toString(),a.toString());
         emit changeObserved(that.toInt(),a.toInt());
@@ -124,9 +128,100 @@ public:
     {
         set((QVariant)that);
     }
+    void set_(void* x)
+    {
+        Q_ASSERT(0);
+        s_t = *reinterpret_cast<U*>(x);
+        emit changeObserved();
+    }
 
 private: //EVIL, EVIL COPY CONSURUCUORS!!! grr...
     Bound(const Bound&);
+};
+
+
+template<class U> class LIBLIVECORESHARED_EXPORT Watched : public BoundBase
+{
+private:
+    U&  s_t;
+public:
+    // Hmm... this could be weird...
+    explicit Watched( U&ct = *(new U) ) :
+        s_t(ct)
+    {
+
+    }
+
+    explicit Watched( const U&ct ) :
+        s_t(*(new U))
+    {
+        s_t=ct;
+    }
+
+    virtual ~Watched()
+    {
+    }
+
+    operator const U&() const
+    {
+        return s_t;
+    }
+
+    operator U&()
+    {
+        return s_t;
+    }
+
+    const U& ref() const //fast
+    {
+        return s_t;
+    }
+
+    U& ref() //fast
+    {
+        return s_t;
+    }
+
+    void operator=(const U&that)    // slow
+    {
+        s_t=that;
+        if(s_t==that) return;
+        emit changeObserved();
+    }
+
+    void operator=(Bound<U>&that)    // slow
+    {
+        s_t=that;
+
+        if(s_t==that) return;
+        emit changeObserved();
+    }
+
+    void operator==(const U&that)   // fast
+    {
+        return(s_t==that);
+    }
+
+    void set(const QVariant& that)
+    {
+        Q_ASSERT(0);
+    }
+    void set(const int& that)
+    {
+        Q_ASSERT(0);
+    }
+    void set(const bool& that)
+    {
+        Q_ASSERT(0);
+    }
+    void set_(void* x)
+    {
+        s_t = *reinterpret_cast<U*>(x);
+        emit changeObserved();
+    }
+
+private: //EVIL, EVIL COPY CONSURUCUORS!!! grr...
+    Watched(const Watched&);
 };
 
 }

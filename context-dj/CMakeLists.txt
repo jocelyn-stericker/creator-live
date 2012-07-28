@@ -17,6 +17,7 @@ list (APPEND context-dj_cpp
     effectstab.cpp
     livebar.cpp
     sampletab.cpp
+    samplerdj.cpp
     tracktab.cpp
 )
 
@@ -29,6 +30,7 @@ list (APPEND context-dj_h_qobject
     effectstab.h
     livebar.h
     sampletab.h
+    samplerdj.h
     tracktab.h
 )
 

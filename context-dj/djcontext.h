@@ -10,12 +10,15 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef DJCONTEXT_H
 #define DJCONTEXT_H
 
+#include "live/object.h"
+#include "live/variantbinding.h"
+
 #include <QWidget>
 
-#include "effectstab.h"
-#include "sampletab.h"
-#include "tracktab.h"
-#include "collectioncontext.h"
+class EffectsTab;
+class SampleTab;
+class TrackTab;
+class CollectionContext;
 
 namespace Ui {
 class Ui_DJContext;
@@ -33,6 +36,8 @@ class DJContext : public QWidget
     LiveBar* s_lb;
     CollectionContext* s_cc;
 
+    live::Watched< live::ObjectPtr > s_out;
+
 public:
     explicit DJContext (QWidget *parent = 0);
     ~DJContext();
@@ -43,6 +48,9 @@ public slots:
     void showSample();
     void showTrack();
     void showCollection();
+
+    void audioChanged_logic(QString);
+    void monitorChanged_logic(QString);
 
 private:
     Ui::Ui_DJContext *ui;

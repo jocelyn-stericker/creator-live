@@ -118,7 +118,8 @@ void SamplerFrame::buttonLogic()
     else if(s_app.isPlayMode()&&midi::getTime_msec()-s_times[num-1]<100)
     {
         // play it until completion
-        s_app.s_audioTracks[0]->length();
+        // FIXME : add timer
+//        s_app.s_audioTracks[0]->length();
     }
     else
     {

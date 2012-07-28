@@ -364,7 +364,8 @@ public:
     static QList<ObjectPtr> get(int flags); //i.e., Flags
     static void clear(int flags);   //i.e., Flags
     static void set(ObjectPtr o);
-    static ObjectPtr request(QString req,int flags=0);  //This functions _will_ return something. If none exist, a mapping will be created.
+    static ObjectPtr request(QString req,int flags=0);  // This functions _will_ return something. If none exist, a mapping will be created.
+    static ObjectPtr fetch(QString req,int flags=0);  // This functions may return null
 signals:
     void stockChanged();
 public slots:
