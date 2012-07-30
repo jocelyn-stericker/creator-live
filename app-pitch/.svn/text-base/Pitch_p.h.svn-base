@@ -1,0 +1,41 @@
+/*****************************************************
+Pitch.r.h                                  rev. 110717
+
+  Part of the Creator Live Music Workstation Project
+  Copyright Joshua Netterfield  (trintith@gmail.com)
+
+                 All rights reserved.
+*****************************************************/
+
+#ifndef PITCHAPP_R_H
+#define PITCHAPP_R_H
+
+#ifndef BOOL
+#define BOOL bool
+#endif
+
+#include "src/Apps/Pitch/PitchApp.h"
+#include <soundtouch/SoundTouch.h>
+
+class PitchAppAudioR : public QObject, public Object {
+    Q_OBJECT
+    soundtouch::SoundTouch* s_soundTouch;
+    int s_latency;
+    float* s_inCache;
+    float* s_outCache;
+    QAtomicInt s_shiftPitchAction;
+public:
+    LIVE_HYBRID
+    LIVE_EFFECT
+    bool mOn() const{ return 0; }
+    bool aOn() const { return 1; }
+    PitchAppAudioR();
+    ~PitchAppAudioR();
+    float latency_msec();
+
+public slots:
+    void aIn(const float *data, int chan, ObjectChain&p);
+    void setPitchShift(int x);
+};
+
+#endif // PITCHAPP_R_H

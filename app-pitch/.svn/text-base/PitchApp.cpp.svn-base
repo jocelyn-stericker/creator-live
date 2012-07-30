@@ -1,0 +1,221 @@
+/*****************************************************
+Pitch.cpp                                  rev. 110720
+
+  Part of the Creator Live Music Workstation Project
+  Copyright Joshua Netterfield  (trintith@gmail.com)
+
+                 All rights reserved.
+*****************************************************/
+
+#include "src/Apps/Pitch/Pitch_p.h"
+
+int PitchApp::s_lastId=-1;
+
+PitchApp::PitchApp() :
+    Object("PITCH"),
+    s_audioR(new PitchAppAudioR),
+    s_stShift(0),
+    s_id(++s_lastId),
+    s_midiOn(1),
+    s_audioOn(1)
+{
+    *s_audioR>>*this;
+}
+
+PitchApp::~PitchApp()
+{
+    *s_audioR>>*this;
+    delete s_audioR;
+}
+
+const int& PitchApp::shiftAmount()
+{
+    return s_stShift;
+}
+
+void PitchApp::shiftUp()
+{
+    s_stShift++;
+}
+void PitchApp::shiftDown()
+{
+    s_stShift--;
+}
+
+void PitchApp::setShift(const int &s)
+{
+    s_stShift=s;
+    s_audioR->setPitchShift(s);
+}
+
+void PitchApp::aIn(const float *data, int chan, ObjectChain&p)
+{
+    if(!s_audioOn)
+    {
+        p.push_back(this);
+        aOut(data,chan,p);
+        p.pop_back();
+        return;
+    }
+    if(p.back()==s_audioR)
+    {
+        aOut(data,chan,p);
+    }
+    else
+    {
+        p.push_back(this);
+        s_audioR->aIn(data,chan,p);
+        p.pop_back();
+    }
+}
+
+void PitchApp::mIn(const Event *data, ObjectChain&p)
+{
+    if(!s_midiOn)
+    {
+        return;
+    }
+    Event* nd = new Event;
+
+    *nd = *data;
+    nd->setNote((qint16)((data->simpleStatus()==Event::NOTE_ON)||(data->simpleStatus()==Event::NOTE_OFF)?data->note()+s_stShift:data->note()));
+    p.push_back(this);
+    mOut(nd,p);   // DIRECT CONNECTION!?
+    p.pop_back();
+    delete nd;
+}
+
+void PitchApp::lcIn(const Command &datab, ObjectChain &p)
+{
+    Command data=datab;
+    if(data.command==Command::HybridOverMidiOverAudio)
+    {
+        s_audioOn=0; s_midiOn=1;
+        p.push_back(this);lcOut(datab,p);p.pop_back();
+        return;
+    }
+
+    if(data.command==Command::AudioOrDie||data.command==Command::AudioPreferedHint)
+    {
+        s_audioOn=1; s_midiOn=0;
+        p.push_back(this);
+        if(!data.forward)
+        {
+            Command datab=data;
+            datab.forward=1;
+            lcOut(datab,p);
+        }
+        else
+        {
+            lcOut(data,p);
+        }
+        p.pop_back();
+    }
+    else if(data.command==Command::MidiOrDie||data.command==Command::MidiPreferedHint)
+    {
+        s_audioOn=0; s_midiOn=1;
+        p.push_back(this);
+        if(!data.forward)
+        {
+            Command datab=data;
+            datab.forward=1;
+            lcOut(datab,p);
+        }
+        else
+        {
+            lcOut(data,p);
+        }
+        p.pop_back();
+    }
+    else if(data.command==Command::HybridOverAudio)
+    {
+        s_audioOn=1;s_midiOn=0;
+        Command datab=data;
+        datab.command=Command::AudioOrDie;
+        p.push_back(this);
+        lcOut(datab,p);
+        p.pop_back();
+    }
+    else
+    {
+        Object::lcIn(data,p);
+    }
+}
+
+PitchAppAudioR::PitchAppAudioR() : Object("Soundtouch PitchApp implementation"), s_soundTouch(new soundtouch::SoundTouch),
+    s_latency(0), s_inCache(new float[AudioSys::nFrames()*2]), s_outCache(new float[AudioSys::nFrames()*2])
+{
+    for(int i=0;i<AudioSys::nFrames()*2;i++) {
+        s_inCache[i]=0.0f;
+    }
+    s_soundTouch->setSampleRate(AudioSys::sampleRate());
+    s_soundTouch->setChannels(2);
+    s_soundTouch->setTempoChange(0);
+    s_soundTouch->setPitchSemiTones(0);
+    s_soundTouch->setRateChange(0);
+    s_soundTouch->setSetting(SETTING_USE_QUICKSEEK,1);
+    s_soundTouch->setSetting(SETTING_USE_AA_FILTER,0);
+    s_shiftPitchAction=999;
+}
+PitchAppAudioR::~PitchAppAudioR()
+{
+    delete s_soundTouch;
+    delete[] s_inCache;
+    delete[] s_outCache;
+}
+
+float PitchAppAudioR::latency_msec()
+{
+    return (float)s_latency/((float)AudioSys::sampleRate())*1000.0f;
+}
+
+void PitchAppAudioR::aIn(const float *data, int chan, ObjectChain&p)
+{
+    Q_ASSERT(chan<2);
+    if(s_shiftPitchAction!=999)
+    {
+        int x=s_shiftPitchAction.fetchAndStoreOrdered(999);
+        s_soundTouch->setPitchSemiTones(x);
+    }
+
+    float*proc=new float[AudioSys::nFrames()];
+    memcpy(proc,data,sizeof(float)*AudioSys::nFrames());
+
+    for(int i=0;i<AudioSys::nFrames();i++)
+    {
+        s_inCache[2*i+chan]=data[i];
+    }
+
+    if(chan)
+    {
+        s_soundTouch->putSamples(s_inCache,AudioSys::nFrames());
+        if((int)s_soundTouch->numSamples()>=AudioSys::nFrames()
+                ) {
+            s_soundTouch->receiveSamples(s_outCache,AudioSys::nFrames());
+            for(int i=0;i<AudioSys::nFrames();i++)
+            {
+                proc[i]=s_outCache[2*i+1];
+            }
+        } else {
+            for(int i=0;i<AudioSys::nFrames();i++)
+            {
+                proc[i]=0.0;
+            }
+        }
+    }
+    else
+    {
+        for(int i=0;i<AudioSys::nFrames();i++)
+        {
+            proc[i]=s_outCache[2*i];
+        }
+    }
+    p.push_back(this);
+    aOut(proc,chan,p);
+    p.pop_back();
+    delete[]proc;
+}
+void PitchAppAudioR::setPitchShift(int x) {
+    s_shiftPitchAction=x;
+}
+

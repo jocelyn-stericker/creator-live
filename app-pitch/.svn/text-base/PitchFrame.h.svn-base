@@ -1,0 +1,48 @@
+/*****************************************************
+PitchFrame.h                               rev. 110717
+
+  Part of the Creator Live Music Workstation Project
+  Copyright Joshua Netterfield  (trintith@gmail.com)
+
+                 All rights reserved.
+*****************************************************/
+
+#ifndef PITCHFRAME_H
+#define PITCHFRAME_H
+
+#include <QSpinBox>
+#include <QVBoxLayout>
+#include "PitchApp.h"
+#include "../App.h"
+#include "../AppFrame.h"
+
+class PitchFrame : public AppFrame
+{
+    Q_OBJECT
+    PitchApp* app;
+    QSpinBox ui_spinBox;
+    QVBoxLayout ui_vbox;
+public:
+    explicit PitchFrame(PitchApp* backend, QWidget *parent = 0);
+
+signals:
+
+public slots:
+    void syncState();
+};
+
+class PitchCreator : public AppCreator
+{
+public:
+  PitchCreator()
+  {
+      AppSys::registerCreator(this);
+  }
+  QString name() { return "PITCH"; }
+  ObjectPtr newBackend() { return new PitchApp(); }
+  AppFrame* newFrontend(ObjectPtr backend) { return new PitchFrame(live_cast_to_cptr<PitchApp*>(backend)); }
+  QIcon icon() { return QIcon(":/icons/app_pitch.png"); }
+  static PitchCreator evil;    //you should(n't) really do this!!!
+};
+
+#endif // PITCHFRAME_H

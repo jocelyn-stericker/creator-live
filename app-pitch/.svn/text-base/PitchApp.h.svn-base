@@ -1,0 +1,48 @@
+/*****************************************************
+Pitch.h                                    rev. 110716
+
+  Part of the Creator Live Music Workstation Project
+  Copyright Joshua Netterfield  (trintith@gmail.com)
+
+                 All rights reserved.
+*****************************************************/
+
+#ifndef PITCH_H
+#define PITCH_H
+
+#include "src/Framework/Sound.h"
+
+class PitchAppAudioR;
+
+class PitchApp : public QObject, public Object
+{
+    Q_OBJECT
+    PitchAppAudioR* s_audioR;
+public:
+    LIVE_HYBRID
+    LIVE_EFFECT
+    bool mOn() const{ return s_midiOn; }
+    bool aOn() const { return s_audioOn; }
+    friend class AppSys;
+    int s_stShift;  /*003*/
+    int s_id;       /*004*/
+    static int s_lastId;
+    bool s_midiOn, s_audioOn;
+
+public:
+    RELOADABLE(PitchApp)
+    PitchApp();
+    ~PitchApp();
+
+    const int& shiftAmount();
+
+public slots:
+    void shiftUp();
+    void shiftDown();
+    void setShift(const int& s);
+    void aIn(const float *data, int chan, ObjectChain&p);
+    void mIn(const Event *data, ObjectChain&p);
+    void lcIn(const Command &data, ObjectChain &p);
+};
+
+#endif // PITCH_H
