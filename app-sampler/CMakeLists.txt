@@ -30,6 +30,7 @@ list (APPEND app-sampler_ui
 )
 
 list (APPEND app-sampler_qrc
+    sampler_icons.qrc
 )
 
 ################## PLATFORM-SPECIFIC CODE ##################
@@ -53,7 +54,7 @@ include_directories (${cmake_binary_dir}
 
 qt4_wrap_cpp (app-sampler_moc ${app-sampler_h_qobject})
 qt4_wrap_ui (app-sampler_moc ${app-sampler_ui}) 
-qt4_add_resources (app-sampler_rcc ${livevst_qrc})
+qt4_add_resources (app-sampler_rcc ${app-sampler_qrc})
 
 add_library (app-sampler SHARED
     ${app-sampler_cpp}
