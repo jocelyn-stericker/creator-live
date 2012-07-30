@@ -1,6 +1,6 @@
 #include "live/midievent.h"
 
-qint16  live::Event::simpleStatus() const
+qint16 live::Event::simpleStatus() const
 {
     return (message/0x10)*0x10;
 }

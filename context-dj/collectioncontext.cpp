@@ -13,6 +13,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "live/audio.h"
 #include "live/object.h"
 
+#include <QTimer>
+
 using namespace live;
 
 CollectionContext::CollectionContext(DJContext *parent) :
@@ -24,7 +26,7 @@ CollectionContext::CollectionContext(DJContext *parent) :
 
     connect(live::object::singleton(), SIGNAL(stockChanged()), this, SLOT(stockChanged_logic()));
     connect_changeEvents();
-    stockChanged_logic();
+    QTimer::singleShot(0, this, SLOT(stockChanged_logic()));
 }
 
 CollectionContext::~CollectionContext()

@@ -24,7 +24,7 @@ DJContext::DJContext(QWidget *parent)
     , s_st(new SampleTab)
     , s_tt(new TrackTab)
     , s_lb(new LiveBar)
-    , s_cc(new CollectionContext)
+    , s_cc(new CollectionContext(this))
     , ui(new Ui::Ui_DJContext)
 {
     ui->setupUi(this);

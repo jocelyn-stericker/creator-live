@@ -36,7 +36,7 @@ class DJContext : public QWidget
     LiveBar* s_lb;
     CollectionContext* s_cc;
 
-    live::Watched< live::ObjectPtr > s_out;
+    live::ObjectPtr s_out;
 
 public:
     explicit DJContext (QWidget *parent = 0);
