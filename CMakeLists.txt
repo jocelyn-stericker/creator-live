@@ -15,6 +15,7 @@ project (creator-live)
 add_subdirectory (liblivecore) 
 add_subdirectory (liblivewidgets) 
 
+add_subdirectory (3rd-calf)
 add_subdirectory (app-sequencer)
 add_subdirectory (app-sampler) 
 add_subdirectory (context-dj)
@@ -27,6 +28,9 @@ add_subdirectory (creator-live)
 #add_subdirectory (pluginTester) 
 
 ####################### DEPENDENCIES ########################
+
+add_dependencies (app-calf liblivecore)
+add_dependencies (app-calf liblivewidgets)
 
 add_dependencies (app-sequencer liblivecore)
 add_dependencies (app-sequencer liblivewidgets)

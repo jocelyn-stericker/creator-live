@@ -1,0 +1,765 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FJFlangerFrame</class>
+ <widget class="QFrame" name="FJFlangerFrame">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>353</width>
+    <height>242</height>
+   </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>16777215</width>
+    <height>242</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Frame</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">* {
+    background: #4d4c4d;
+    font-family: handelgotdlig;
+    font-weight: 200;
+}
+
+
+
+ QComboBox {
+     border: 1px solid #141414;
+     border-radius: 4px;
+     padding: 1px 18px 1px 3px;
+     min-width: 6em;
+     color: #e8e8e8;
+ }
+
+ QComboBox:editable {
+    background: #5b5a5b
+ }
+
+ QComboBox:!editable, QComboBox::drop-down:editable {
+      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+      stop: 0 #3c3c3c, stop: 1 #262627);
+ }
+
+ /* QComboBox gets the &quot;on&quot; state when the popup is open */
+ QComboBox:!editable:on, QComboBox::drop-down:editable:on {
+     background: #5b5a5b
+ }
+
+ QComboBox:on { /* shift the text when the popup opens */
+     padding-top: 3px;
+     padding-left: 4px;
+ }
+
+ QComboBox::drop-down {
+     subcontrol-origin: padding;
+     subcontrol-position: top right;
+     width: 15px;
+
+     border-left-width: 1px;
+     border-left-color: darkgray;
+     border-left-style: solid; /* just a single line */
+     border-top-right-radius: 3px; /* same radius as the QComboBox */
+     border-bottom-right-radius: 3px;
+ }
+
+QComboBox QAbstractItemView {
+    border: 1px solid #141414;
+    selection-background-color: #5b5a5b;
+}
+
+ QSpinBox {
+     /*padding-right: 15px; make room for the arrows */
+     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #3c3c3c, stop: 1 #262627);
+    color: #e8e8e8;
+     border: none;
+     border-radius: 4px;
+     /*border-width: 3;*/
+}
+
+QSpinBox::up-button {
+    border: none;
+}
+
+QSpinBox::down-button {
+    border: none;
+}
+
+QLineEdit {
+    border: 1px solid #141414;
+    border-radius: 4px;
+    color: #e8e8e8;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                     stop: 0 #3c3c3c, stop: 1 #262627);
+    selection-background-color: #e8e8e8;
+    selection-color: #262627
+}
+
+QProgressBar {
+    border: 1px solid #141414;
+    border-radius: 4px;
+    text-align: center;
+ }
+
+
+ QProgressBar::chunk {
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #3c3c3c, stop: 1 #262627);
+    width: 20px;
+ }
+
+QFrame, QLabel, QToolTip {
+   color: #e5e5e5;
+   /*border: 1px solid #141414;*/
+}
+
+QFrame[style=&quot;plain&quot;] {
+    border: 100px solid pink;
+}
+
+QAbstractButton {
+   padding: 3px;
+   border: 1px solid #141414;
+   border-radius: 4px;
+   background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                     stop: 0 #3c3c3c, stop: 1 #262627);
+    color: #e8e8e8;
+}
+QAbstractButton::hover {
+   background-color: #5b5a5b;
+}
+
+QAbstractButton::disabled {
+    color: #262627;
+}
+
+QAbstractButton::checked {
+    background-color: #1c1c1c;
+}
+
+ QTabWidget::pane { /* The tab widget frame */
+     border-top: 1px solid #141414;
+     position: absolute;
+     top: -0.5em;
+ }
+
+ QTabWidget::tab-bar {
+     alignment: center;
+ }
+
+ /* Style the tab using the tab sub-control. Note that
+     it reads QTabBar _not_ QTabWidget */
+ QTabBar::tab {
+ background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                   stop: 0 #3c3c3c, stop: 1 #262627);
+
+    border: 1px solid #141414;
+
+     /*border: 2px solid #C4C4C3;
+     border-bottom-color: #C2C7CB; same as the pane color */
+     border-top-left-radius: 4px;
+     border-top-right-radius: 4px;
+     min-width: 8ex;
+     padding: 2px;
+     color: #e8e8e8;
+ }
+
+ QTabBar::tab:selected, QTabBar::tab:hover {
+     background: #5b5a5b;
+ }
+
+ QTabBar::tab:selected {
+     border-color: #5b5a5b;
+     color: #141414;
+     /*border-bottom-color: #C2C7CB; same as pane color */
+ }
+
+ QSlider::groove:horizontal {
+ border: 1px solid #141414;
+     height: 8px; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */
+     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                       stop: 0 #3c3c3c, stop: 1 #262627);
+     margin: 2px 0;
+ }
+
+ QSlider::handle:horizontal {
+ background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                   stop: 0 #3c3c3c, stop: 1 #262627);     border: 1px solid #5c5c5c;
+     width: 18px;
+     /*margin: -2px 0;  handle is placed by default on the contents rect of the groove. Expand outside the groove */
+     border-radius: 3px;
+ }
+
+  QScrollBar:vertical {
+      border: 0px solid transparent;
+      background: transparent;
+      width: 4px;
+      margin: 0px 0 0px 0;
+  }
+  QScrollBar::handle:vertical {
+      background: #e8e8e8;
+      min-width: 20px;
+      border: 2px solid #e8e8e8;
+      border-radius: 2px;
+  }
+  QScrollBar::add-line:vertical {
+      border: 0px solid transparent;
+      background: transparent;
+      height: 0px;
+      subcontrol-position: bottom;
+      subcontrol-origin: margin;
+  }
+
+  QScrollBar::sub-line:vertical {
+      border: 0px solid transparent;
+      background: transparent;
+      height: 0px;
+      subcontrol-position: top;
+      subcontrol-origin: margin;
+  }
+  QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+      border: 0px solid grey;
+      width: 0px;
+      height: 0px;
+      background: white;
+  }
+
+  QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+      background: none;
+  }
+
+
+
+  QScrollBar:horizontal {
+      border: 0px solid transparent;
+      background: transparent;
+      height: 4px;
+      margin: 0px 0 0px 0;
+  }
+  QScrollBar::handle:horizontal{
+      background: #e8e8e8;
+      min-height: 20px;
+      border: 2px solid #e8e8e8;
+      border-radius: 2px;
+  }
+  QScrollBar::add-line:horizontal {
+      border: 0px solid transparent;
+      background: transparent;
+      height: 0px;
+      subcontrol-position: bottom;
+      subcontrol-origin: margin;
+  }
+
+  QScrollBar::sub-line:horizontal {
+      border: 0px solid transparent;
+      background: transparent;
+      height: 0px;
+      subcontrol-position: top;
+      subcontrol-origin: margin;
+  }
+  QScrollBar::up-arrow:horizontal, QScrollBar::down-arrow:horizontal {
+      border: 0px solid grey;
+      width: 0px;
+      height: 0px;
+      background: white;
+  }
+
+  QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+      background: none;
+  }
+
+
+
+
+
+QSlider::groove:horizontal {
+border: 1px solid #bbb;
+background: white;
+height: 20px;
+border-radius: 4px;
+}
+
+QSlider::groove:vertical {
+border: 1px solid #bbb;
+background: white;
+width: 50px;
+border-radius: 4px;
+}
+
+QSlider::sub-page:horizontal {
+background: qlineargradient(x1: 0, y1: 0,    x2: 0, y2: 1,
+    stop: 0 #444, stop: 1 #bbb);
+background: qlineargradient(x1: 0, y1: 0.2, x2: 1, y2: 1,
+    stop: 0 #bbb, stop: 1 #555);
+border: 0px solid #777;
+height: 40px;
+border-radius: 4px;
+border-top-left-radius: 4px;
+border-top-right-radius: 0px;
+border-bottom-left-radius: 4px;
+border-bottom-right-radius: 0px;
+}
+
+QSlider::sub-page:vertical {
+background: qlineargradient(x1: 0, y1: 1,    x2: 0, y2: 0,
+    stop: 0 #bbb, stop: 1 #444);
+background: qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0.2,
+    stop: 0 #555, stop: 1 #bbb);
+border: 0px solid #777;
+width: 50px;
+border-top-left-radius: 4px;
+border-top-right-radius: 4px;
+border-bottom-left-radius: 0px;
+border-bottom-right-radius: 0px;
+}
+
+QSlider::add-page:horizontal {
+background: qlineargradient(x1: 0, y1: 1,    x2: 0, y2: 0,
+    stop: 0 #bbb, stop: 1 #444);
+background: qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0.2,
+    stop: 0 #555, stop: 1 #bbb);
+border: 0px solid #777;
+height: 40px;
+border-top-left-radius: 0px;
+border-top-right-radius: 4px;
+border-bottom-left-radius: 0px;
+border-bottom-right-radius: 4px;
+}
+
+QSlider::add-page:vertical {
+background: qlineargradient(x1: 0, y1: 1,    x2: 0, y2: 0,
+    stop: 0 #444, stop: 1 #bbb);
+background: qlineargradient(x1: 1, y1: 1, x2: 0, y2: 0.2,
+    stop: 0 #bbb, stop: 1 #555);
+border: 0px solid #777;
+width: 50px;
+border-top-left-radius: 0px;
+border-top-right-radius: 0px;
+border-bottom-left-radius: 4px;
+border-bottom-right-radius: 4px;
+}
+
+QSlider::handle:horizontal {
+     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #3c3c3c, stop: 1 #262627);
+border: 1px solid #777;
+width: 53px;
+margin-top: -2px;
+margin-bottom: -2px;
+border-radius: 10px;
+margin: 2px;
+}
+
+QSlider::handle:vertical {
+     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #3c3c3c, stop: 1 #262627);
+border: 1px solid #777;
+height: 33px;
+margin-top: -2px;
+margin-bottom: -2px;
+border-radius: 10px;
+margin: 2px;
+}
+
+QSlider::sub-page:horizontal:disabled {
+background: #bbb;
+border-color: #999;
+}
+
+QSlider::sub-page:vertical:disabled {
+background: #bbb;
+border-color: #999;
+}
+
+QSlider::add-page:horizontal:disabled {
+background: #eee;
+border-color: #999;
+}
+
+QSlider::add-page:vertical:disabled {
+background: #eee;
+border-color: #999;
+}
+
+QSlider::handle:horizontal:disabled {
+background: #eee;
+border: 1px solid #aaa;
+border-radius: 4px;
+}
+
+QSlider::handle:vertical:disabled {
+background: #eee;
+border: 1px solid #aaa;
+border-radius: 4px;
+}</string>
+  </property>
+  <property name="frameShape">
+   <enum>QFrame::StyledPanel</enum>
+  </property>
+  <property name="frameShadow">
+   <enum>QFrame::Raised</enum>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_3">
+   <property name="verticalSpacing">
+    <number>4</number>
+   </property>
+   <item row="0" column="0" rowspan="3">
+    <widget class="QSlider" name="verticalSlider_amount">
+     <property name="minimumSize">
+      <size>
+       <width>60</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>60</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">
+QSlider::handle:vertical {
+     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #3c3c3c, stop: 1 #FF2627);
+border: 1px solid #777;
+height: 33px;
+margin-top: -2px;
+margin-bottom: -2px;
+border-radius: 10px;
+margin: 2px;
+}
+</string>
+     </property>
+     <property name="maximum">
+      <number>100</number>
+     </property>
+     <property name="value">
+      <number>30</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_7">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Amount</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" rowspan="4">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="title">
+        <string>TImbre</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="QDial" name="dial_minDelay">
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="minimum">
+           <number>100</number>
+          </property>
+          <property name="maximum">
+           <number>10000</number>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QDial" name="dial_depth">
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="minimum">
+           <number>100</number>
+          </property>
+          <property name="maximum">
+           <number>10000</number>
+          </property>
+          <property name="value">
+           <number>500</number>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QDial" name="dial_fb">
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="minimum">
+           <number>-990</number>
+          </property>
+          <property name="maximum">
+           <number>990</number>
+          </property>
+          <property name="value">
+           <number>900</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label">
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Min. Delay</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLabel" name="label_2">
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Depth</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QLabel" name="label_3">
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Feedback</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox_2">
+       <property name="title">
+        <string>LFO</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="1" column="0">
+         <widget class="QDial" name="dial_rate">
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="minimum">
+           <number>10</number>
+          </property>
+          <property name="maximum">
+           <number>20000</number>
+          </property>
+          <property name="value">
+           <number>250</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QPushButton" name="pushButton_reset">
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Reset</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QDial" name="dial_phase">
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="minimum">
+           <number>0</number>
+          </property>
+          <property name="maximum">
+           <number>360</number>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Rate</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QLabel" name="label_5">
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Phase</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLabel" name="label_6">
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

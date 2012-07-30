@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="app_audioFilter.png">app-filter.png</file>
+        <file alias="app_phaser.png">app-phaser.png</file>
+        <file>app_reverb.png</file>
+        <file>app_flanger.png</file>
+    </qresource>
+</RCC>
