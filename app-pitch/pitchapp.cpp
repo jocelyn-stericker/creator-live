@@ -66,6 +66,13 @@ void PitchApp::aIn(const float *data, int chan, ObjectChain&p)
 
 void PitchApp::mIn(const Event *data, ObjectChain&p)
 {
+    if (!s_mOn) {
+        p.push_back(this);
+        mOut(data,p);
+        p.pop_back();
+        return;
+    }
+
     Event* nd = new Event;
 
     *nd = *data;
@@ -107,6 +114,14 @@ float PitchAppAudioR::latency_msec()
 void PitchAppAudioR::aIn(const float *data, int chan, ObjectChain&p)
 {
     Q_ASSERT(chan<2);
+
+    if (!s_aOn) {
+        p.push_back(this);
+        aOut(data,chan,p);
+        p.pop_back();
+        return;
+    }
+
     if(s_shiftPitchAction!=999)
     {
         int x=s_shiftPitchAction.fetchAndStoreOrdered(999);
