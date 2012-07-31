@@ -16,6 +16,7 @@ add_subdirectory (liblivecore)
 add_subdirectory (liblivewidgets) 
 
 add_subdirectory (3rd-calf)
+add_subdirectory (app-bpm)
 add_subdirectory (app-sequencer)
 add_subdirectory (app-sampler) 
 add_subdirectory (app-pitch) 
@@ -32,6 +33,9 @@ add_subdirectory (creator-live)
 
 add_dependencies (app-calf liblivecore)
 add_dependencies (app-calf liblivewidgets)
+
+add_dependencies (app-bpm liblivecore)
+add_dependencies (app-bpm liblivewidgets)
 
 add_dependencies (app-sequencer liblivecore)
 add_dependencies (app-sequencer liblivewidgets)

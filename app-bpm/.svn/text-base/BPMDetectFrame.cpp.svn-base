@@ -1,0 +1,43 @@
+/*****************************************************
+
+  Part of the Creator Live Music Workstation Project
+  Copyright Joshua Netterfield  (trintith@gmail.com)
+
+                 All rights reserved.
+*****************************************************/
+
+#include "src/Apps/BPMDetect/BPMDetectFrame.h"
+#include <QHBoxLayout>
+
+BPMDetectCreator BPMDetectCreator::evil;
+
+BPMDetectFrame::BPMDetectFrame(BPMDetectApp*backend,QWidget *parent) :
+    AppFrame(parent), app(*backend), ui_label(new RotatedLabel(this))
+{
+    setLayout(new QHBoxLayout);
+    layout()->addWidget(ui_label);
+    setMinimumWidth(50);
+    setMaximumWidth(50);
+    startTimer(200);
+    setObjectName("BPMDetectFrame_"+QString::number(app.s_id));
+    ui_label->setParent(this);
+}
+
+BPMDetectFrame::~BPMDetectFrame()
+{
+    app.deleteLater();
+}
+
+void BPMDetectFrame::timerEvent(QTimerEvent *)
+{
+    ui_label->setText(" "+QString::number(app.getBPM())+" BPM");
+}
+
+void BPMDetectFrame::resizeEvent(QResizeEvent *)
+{
+    if(width()>50)
+    {
+        setMinimumWidth(50);
+        setMaximumWidth(50);
+    }
+}

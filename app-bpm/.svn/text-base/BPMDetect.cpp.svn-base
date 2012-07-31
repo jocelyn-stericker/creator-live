@@ -1,0 +1,150 @@
+/*****************************************************
+BPMDetect.cpp                              rev. 110720
+
+  Part of the Creator Live Music Workstation Project
+  Copyright Joshua Netterfield  (trintith@gmail.com)
+
+                 All rights reserved.
+*****************************************************/
+
+#include "src/Apps/BPMDetect/BPMDetect.h"
+
+#include <math.h>
+
+int BPMDetectApp::s_lastId=-1;
+
+BPMDetectApp::BPMDetectApp() :
+    Object("BPMDetect"),
+    _bpmAudio(new soundtouch::BPMDetect(1,AudioSys::sampleRate())),
+    _bpmMidi(new AnaBeat()),
+    s_sync(0),
+    s_id(++s_lastId),
+    s_audioOn(1),
+    s_midiOn(1)
+{
+    _bpmMidi->start();
+}
+
+BPMDetectApp::~BPMDetectApp()
+{
+    delete _bpmAudio;
+    delete _bpmMidi;
+}
+
+const bool& BPMDetectApp::isSynced()
+{
+    return s_sync;
+}
+
+void BPMDetectApp::toggleSync()
+{
+    s_sync=!s_sync;
+}
+
+float BPMDetectApp::getBPM()
+{
+    //prefer AudioBPM
+    float ret(0.0);
+    float aBPM=_bpmAudio->getBpm();
+    if(aBPM)
+    {
+        ret=aBPM;
+    }
+    else
+    {
+        float mBPM=(float)_bpmMidi->predictedBPM();
+        ret=mBPM>0.0f?mBPM:0.0f;
+    }
+    if(ret&&s_sync)
+    {
+        SongSys::current->metronome->setBpm((int)round(ret));
+    }
+    return ret;
+}
+
+void BPMDetectApp::aIn(const float *data, int chan, ObjectChain&p)
+{
+    if(!chan&&s_audioOn)
+    {
+        _bpmAudio->inputSamples(data,AudioSys::nFrames());
+    }
+
+    if(!s_audioOn)
+    {
+        const int& nframes=AudioSys::nFrames();
+        float* alt = new float[nframes];
+        for(int i=0;i<nframes;i++) {
+            alt[i]=0;
+        }
+        p.push_back(this);
+        aOut(data,chan,p);
+        p.pop_back();
+        delete[] alt;
+    }
+    else
+    {
+        p.push_back(this);
+        aOut(data,chan,p);
+        p.pop_back();
+    }
+}
+
+void BPMDetectApp::mIn(const Event *data, ObjectChain&p)
+{
+    if(!s_midiOn)
+    {
+        return;
+    }
+    p.push_back(this);
+    _bpmMidi->mIn(data,p);
+    mOut(data,p);         //not implemented.
+    p.pop_back();
+}
+
+
+void BPMDetectApp::lcIn(const Command &datab, ObjectChain &p)
+{
+    Command data=datab;
+    if(data.command==Command::AudioOrDie||data.command==Command::AudioPreferedHint)
+    {
+        s_audioOn=1; s_midiOn=0;
+        p.push_back(this);
+        if(!data.forward)
+        {
+            Command datab=data;
+            datab.forward=1;
+            lcOut(datab,p);
+        }
+        else
+        {
+            lcOut(data,p);
+        }
+        p.pop_back();
+    }
+    else if(data.command==Command::MidiOrDie||data.command==Command::MidiPreferedHint)
+    {
+        s_audioOn=0; s_midiOn=1;
+        p.push_back(this);
+        if(!data.forward)
+        {
+            Command datab=data;
+            datab.forward=1;
+            lcOut(datab,p);
+        }
+        else
+        {
+            lcOut(data,p);
+        }
+        p.pop_back();
+    }
+    else if(data.command==Command::HybridOverAudio||data.command==Command::HybridOverMidiOverAudio)
+    {
+        data.command=Command::HybridOverMidiOverAudio;
+        s_audioOn=1; s_midiOn=1;
+        p.push_back(this); lcOut(data,p); p.pop_back();
+    }
+    else
+    {
+        Object::lcIn(data,p);
+    }
+}
