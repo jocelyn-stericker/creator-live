@@ -18,7 +18,7 @@ void live_widgets::ChainTypeWidget::paintEvent(QPaintEvent *e)
     bool a=0,b=0,c=0;
     QPainter p(this);
     p.setCompositionMode(QPainter::CompositionMode_Clear);
-    p.fillRect(e->rect(),QColor("white"));  //not actually white
+    p.fillRect(e->rect(),QColor("white")); // not actually white
     p.setCompositionMode(QPainter::CompositionMode_Source);
     int prev=0;
     for(int i=0;i<s_positions.size();i++)

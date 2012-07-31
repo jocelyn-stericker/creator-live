@@ -39,8 +39,6 @@ public:
     static int s_lastId;
 
     live_widgets::RotatedLabel* ui_outputName;
-    QHBoxLayout* ui_mainLayout;
-    QSpacerItem* ui_spacerItem;
     live_widgets::ChainTypeWidget* ui_chainWidget;
 
     Track(live::ObjectPtr cinput, live::ObjectPtr coutput);

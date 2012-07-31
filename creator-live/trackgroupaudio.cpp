@@ -20,7 +20,8 @@ TrackGroupAudio::TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent, bo
 {
     // init GUI
     mainLayout = new QHBoxLayout;
-    s_hathorView = new VScrollContainer(0);
+    s_hathorView = new VScrollContainer();
+    s_hathorView->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
     instLabel = new RotatedLabel;
     instLabel->setText(c_input->name());
@@ -39,14 +40,12 @@ TrackGroupAudio::TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent, bo
     xpush->setObjectName("xpush");
     s_hathorView->push_back(xpush);
     connect(xpush,SIGNAL(clicked()),this,SLOT(newHathorAuto()));
-    s_hathorView->back()->setMinimumWidth(400);
-    s_hathorView->compact=1;
     s_hathorView->updateItems();
-    //mainLayout->setSpacing(0);
 
-    instLabel->setMaximumWidth(15);
+    instLabel->setFixedWidth(15);
     mainLayout->addWidget(instLabel,0, Qt::AlignTop | Qt::AlignLeft);
     mainLayout->addWidget(s_hathorView);
+    s_hathorView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     this->setLayout( mainLayout );
 
@@ -55,6 +54,7 @@ TrackGroupAudio::TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent, bo
     instLabel->setObjectName("instLabel");
     s_hathorView->setObjectName("s_hathorView");
     AudioOutputChooser* aoo=new AudioOutputChooser(this);
+    aoo->setFixedWidth(15);
     mainLayout->addWidget(aoo);
     setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     s_hathorView->hide();

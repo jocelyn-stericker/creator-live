@@ -15,37 +15,25 @@ int Track::s_lastId=-1;
 using namespace live;
 using namespace live_widgets;
 
-Track::Track(live::ObjectPtr cinput, live::ObjectPtr coutput) :
-    BindableParent(this),
-    s_th(new TrackHint),
-    s_ambition(*(new Ambition(cinput,ObjectChain(),coutput))),
-    s_appUi_(),
-    s_id(++s_lastId),
-
-    ui_outputName(new RotatedLabel(this)),
-    ui_mainLayout(new QHBoxLayout(this)),
-    ui_spacerItem(0),
-    ui_chainWidget(new ChainTypeWidget(this))
+Track::Track(live::ObjectPtr cinput, live::ObjectPtr coutput)
+    : BindableParent(this)
+    , s_th(new TrackHint)
+    , s_ambition(*(new Ambition(cinput,ObjectChain(),coutput)))
+    , s_appUi_()
+    , s_id(++s_lastId)
+    , ui_outputName(new RotatedLabel(this))
+    , ui_chainWidget(new ChainTypeWidget(this))
 {
     Object::beginAsyncAction();
     /*MAKE CHANGES IN BELOW CONSTRUCTOR TOO!!!!*/
     ui_chainWidget->setGeometry(0,0,width(),3);
     ui_chainWidget->setFixedHeight(2);
     setAcceptDrops(1);
-    setLayout(ui_mainLayout);
-    ui_mainLayout->setAlignment(Qt::AlignLeft);
     ui_outputName->setMinimumHeight(200);
     s_th->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-    ui_mainLayout->addWidget(s_th);
-//    ui_mainLayout->addWidget(ui_midiSelect=new OutputSelectionWidget);
-    ui_mainLayout->addWidget(ui_outputName,0,Qt::AlignRight);
-//    ui_mainLayout->addSpacerItem(ui_spacerItem=new QSpacerItem(0,0,QSizePolicy::MinimumExpanding));
 //    ui_midiSelect->hide();
-    Q_ASSERT(ui_mainLayout->setAlignment(ui_outputName,Qt::AlignRight));
-    ui_mainLayout->setSpacing(0);
 
     ui_outputName->setMaximumWidth(20);
-    this->setLayout(ui_mainLayout);
 
     ui_outputName->setText(s_ambition.b_output.ref());
     ui_outputName->setAlignment(Qt::AlignRight);
@@ -75,26 +63,19 @@ Track::Track(Ambition* bp) :
     s_id(-1),
 
     ui_outputName(new RotatedLabel(this)),
-    ui_mainLayout(new QHBoxLayout(this)),
-    ui_spacerItem(0),
     ui_chainWidget(new ChainTypeWidget(this))
 {
     Object::beginAsyncAction();
+    /*MAKE CHANGES IN BELOW CONSTRUCTOR TOO!!!!*/
     ui_chainWidget->setGeometry(0,0,width(),3);
     ui_chainWidget->setFixedHeight(2);
     setAcceptDrops(1);
-    setLayout(ui_mainLayout);
-    ui_mainLayout->setAlignment(Qt::AlignLeft);
     ui_outputName->setMinimumHeight(200);
-//    ui_mainLayout->addWidget(ui_midiSelect=new OutputSelectionWidget);
-    ui_mainLayout->addWidget(ui_outputName,50,Qt::AlignRight);
-//    ui_mainLayout->addSpacerItem(ui_spacerItem=new QSpacerItem(0,0,QSizePolicy::MinimumExpanding));
+    s_th->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    s_th->setGeometry(10, 0, width() - 20, height());
 //    ui_midiSelect->hide();
-    Q_ASSERT(ui_mainLayout->setAlignment(ui_outputName,Qt::AlignRight));
-    ui_mainLayout->setSpacing(0);
 
     ui_outputName->setMaximumWidth(20);
-    this->setLayout(ui_mainLayout);
 
     ui_outputName->setText(s_ambition.b_output.ref());
     ui_outputName->setAlignment(Qt::AlignRight);
@@ -109,7 +90,9 @@ Track::Track(Ambition* bp) :
     setMaximumHeight(250);
 //    connect(ui_midiSelect,SIGNAL(indexSet(int)),this,SLOT(selectOutput(int)));
     MidiBindingQtSys::addWidget(this);
+
     ui_outputName->setObjectName("ui_outputName");
+    setObjectName("Track_"+QString::number(s_id));
     setGeometry(geometry());
     Object::endAsyncAction();
 }
@@ -119,7 +102,6 @@ Track::~Track()
     Object::beginAsyncAction();
     qDebug()<<"DESTROY TRACK";
     delete ui_outputName;
-    delete ui_mainLayout;
     foreach(QWidget* a,s_appUi_)
     {
         delete a;
@@ -131,6 +113,11 @@ Track::~Track()
 
 void Track::resizeEvent(QResizeEvent *e)
 {
+    qDebug()<<"Track width:"<<width();
+    s_th->setGeometry(0, 0, width(), height());
+    clearUiPipeline();
+    makeUiPipeline();
+    remakeChainWidget();
     ui_chainWidget->setGeometry(0,0,width(),5);
     QWidget::resizeEvent(e);
 }
@@ -151,11 +138,6 @@ void Track::remakeChainWidget()
 void Track::clearUiPipeline()
 {
     Object::beginAsyncAction();
-    ui_mainLayout->removeWidget(ui_outputName);
-    foreach(QWidget* ui,s_appUi_)
-    {
-        ui_mainLayout->removeWidget(ui);
-    }
     ui_chainWidget->reset();
     Object::endAsyncAction();
 }
@@ -163,14 +145,35 @@ void Track::clearUiPipeline()
 void Track::makeUiPipeline()
 {
     Object::beginAsyncAction();
-    foreach(QWidget* ui,s_appUi_)
+    int count = s_appUi_.count();
+    int sizes[count];
+    for (int i = 0; i < s_appUi_.count(); ++i)
     {
-        ui_mainLayout->addWidget(ui);
-        ui->show();
-        ui->adjustSize();
+        sizes[i] = -1;
     }
-    adjustSize();
-    ui_mainLayout->addWidget(ui_outputName);
+    int sum = 0;
+    for (int i = 0; i < s_appUi_.count(); ++i)
+    {
+        QWidget* ui = s_appUi_[i];
+        if (ui->maximumWidth() < 1000) {
+            sizes[i] = ui->maximumWidth();
+            sum += sizes[i];
+        }
+        ui->show();
+    }
+    int widthForRemaining = (width() - sum) / count;
+    for (int i = 0; i < s_appUi_.size(); ++i) {
+        if (sizes[i] == -1)
+            sizes[i] = widthForRemaining;
+    }
+    int state_x = 0;
+    for (int i = 0; i < s_appUi_.count(); ++i)
+    {
+        QWidget* ui = s_appUi_[i];
+        ui->setGeometry(state_x, 0, sizes[i], height());
+        state_x += sizes[i];
+    }
+    ui_outputName->setGeometry(width() - 15, 0, 15, height());
     setGeometry(geometry());
     remakeChainWidget();
     Object::endAsyncAction();
@@ -299,20 +302,12 @@ void Track::addApp(int i,AppFrame* appUi,live::ObjectPtr app)
     Object::beginAsyncAction();
     if(s_th)
     {
-        ui_mainLayout->removeWidget(s_th);
         s_th->deleteLater();
         s_th=0;
     }
     if(app.valid())
     {
         s_ambition.insert(i,app);
-    }
-
-    if(ui_spacerItem)
-    {
-        ui_mainLayout->removeItem(ui_spacerItem);
-        delete ui_spacerItem;
-        ui_spacerItem=0;
     }
 
     connect(appUi->_tbBack,SIGNAL(clicked()),this,SLOT(logic_appBack()));
@@ -322,22 +317,7 @@ void Track::addApp(int i,AppFrame* appUi,live::ObjectPtr app)
     clearUiPipeline();
     appUi->setParent(this);
     s_appUi_.insert(i,appUi);
-    bool ok=1;
     makeUiPipeline();
-    for(int i=0;i<s_appUi_.size();i++)
-    {
-        s_appUi_[i]->adjustSize();
-        if(s_appUi_[i]->maximumWidth()>1500)
-        {
-            ok=0;
-            break;
-        }
-    }
-    if(ok)
-    {
-        ui_mainLayout->insertSpacerItem(s_appUi_.size(),ui_spacerItem=new QSpacerItem(0,0,QSizePolicy::MinimumExpanding));
-    }
-    adjustSize();
     update();
     Object::endAsyncAction();
 }
@@ -348,36 +328,11 @@ void Track::delApp(int i)
     //ONLY CALLED FROM logic_delApp. Do not actually delete app.
 
     s_ambition.removeFromChain(i);
-//    if(!s_ambition.chainSize())
-//    {
-//        ui_mainLayout->addSpacerItem(ui_spacerItem=new QSpacerItem(0,0,QSizePolicy::MinimumExpanding));
-//    }
 
     clearUiPipeline();
     s_appUi_.takeAt(i);
     makeUiPipeline();
 
-
-    if(ui_spacerItem)
-    {
-        ui_mainLayout->removeItem(ui_spacerItem);
-        delete ui_spacerItem;
-        ui_spacerItem=0;
-    }
-    bool ok=1;
-    for(int i=0;i<s_appUi_.size();i++)
-    {
-        s_appUi_[i]->adjustSize();
-        if(s_appUi_[i]->maximumWidth()>1500)
-        {
-            ok=0;
-            break;
-        }
-    }
-    if(ok)
-    {
-        ui_mainLayout->insertSpacerItem(s_appUi_.size(),ui_spacerItem=new QSpacerItem(0,0,QSizePolicy::MinimumExpanding));
-    }
     Object::endAsyncAction();
 }
 

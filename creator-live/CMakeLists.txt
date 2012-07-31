@@ -16,6 +16,7 @@ list (APPEND creator-live_cpp
     livewindow.cpp
     ambition.cpp
     track.cpp
+    trackgroup.cpp
     trackgroupaudio.cpp
     trackgroupmidi.cpp
     settingslinux.cpp

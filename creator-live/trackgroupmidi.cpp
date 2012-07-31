@@ -21,8 +21,9 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
 {
     // init GUI
     ui_mainLayout = new QHBoxLayout;
-    s_hathorView = new VScrollContainer(0);
+    s_hathorView = new VScrollContainer();
     s_hathorView->setObjectName("s_hathorView");
+    s_hathorView->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
     QVBoxLayout* ui_topLayout=new QVBoxLayout();
 

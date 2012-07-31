@@ -25,12 +25,14 @@ public:
     static int s_lastId;
 
     explicit TrackGroup(live::ObjectPtr  cinput, QWidget *parent = 0) :
-        QFrame(parent), BindableParent(this), s_input(cinput), s_id(++s_lastId)
+        QFrame(parent), BindableParent(this), s_input(cinput), s_hathorView(0), s_id(++s_lastId)
     {
         setFrameStyle(QFrame::NoFrame);
         setLineWidth(0);
         setObjectName("TrackGroup_"+QString::number(s_id));
     }
+
+    void resizeEvent(QResizeEvent *);
 
 signals:
 public slots:
