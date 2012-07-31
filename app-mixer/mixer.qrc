@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>app_mixer.png</file>
+    </qresource>
+</RCC>

@@ -17,6 +17,7 @@ add_subdirectory (liblivewidgets)
 
 add_subdirectory (3rd-calf)
 add_subdirectory (app-bpm)
+add_subdirectory (app-mixer)
 add_subdirectory (app-sequencer)
 add_subdirectory (app-sampler) 
 add_subdirectory (app-pitch) 
@@ -36,6 +37,9 @@ add_dependencies (app-calf liblivewidgets)
 
 add_dependencies (app-bpm liblivecore)
 add_dependencies (app-bpm liblivewidgets)
+
+add_dependencies (app-mixer liblivecore)
+add_dependencies (app-mixer liblivewidgets)
 
 add_dependencies (app-sequencer liblivecore)
 add_dependencies (app-sequencer liblivewidgets)
@@ -61,7 +65,9 @@ add_dependencies (bridge livemidi)
 
 add_dependencies (creator-live liblivecore)
 add_dependencies (creator-live liblivewidgets)
-add_dependencies (creator-live 3rd-calf)
+add_dependencies (creator-live app-bpm)
+add_dependencies (creator-live app-calf)
+add_dependencies (creator-live app-mixer)
 add_dependencies (creator-live app-sequencer)
 add_dependencies (creator-live app-sampler)
 add_dependencies (creator-live app-pitch)
