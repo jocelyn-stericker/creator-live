@@ -31,27 +31,21 @@ public:
     bool compact;
     int c;
     QVBoxLayout* s_vBox;
+    bool s_resizeable;
 public slots:
     void removeOne(QObject* a) { QList<QWidget*>::removeOne(qobject_cast<QWidget*>(a)); }
 public:
-    VScrollContainer() :
+    VScrollContainer(bool cresizeable=1) :
         BindableParent(this),
         s_sHathorView(new ShadowContainer),
         compact(0),
         c(0),
-        s_vBox(new QVBoxLayout(this))
+        s_vBox(new QVBoxLayout(this)),
+        s_resizeable(cresizeable)
     {
         live_widgets::MidiBindingQtSys::addWidget(this);
-//        s_vBox->setSizeConstraint(QLayout::SetMaximumSize);
+        s_vBox->setSizeConstraint(QLayout::SetMaximumSize);
         s_vBox->setContentsMargins(0,0,0,0);
-    }
-
-    void resizeEvent(QResizeEvent *)
-    {
-        qDebug()<<"VScroll WIDTH"<<width()<<this;
-        for(int i = 0; i < count(); ++i) {
-            qDebug()<<"CHILD WIDTH"<<at(i)->width()<<at(i);
-        }
     }
 
     ~VScrollContainer()
@@ -81,7 +75,6 @@ public:
                 qCritical()<<"WARNING: adding a null-named object of type"<<at(i)->metaObject()->className()<<"inside"<<objectName();
                 qCritical()<<"THIS IS A BUG WHICH MUST BE DEALT WITH OR SAVING WILL NOT ALWAYS WORK!";
             }
-            qDebug()<<"Adding"<<operator[](i);
             s_vBox->addWidget( operator [](i) );
             s_sHathorView->push_back( operator [](i) );
             mh+=operator[](i)->size().height();
@@ -89,7 +82,7 @@ public:
 
         if(compact)
         {
-            s_vBox->addSpacerItem(new QSpacerItem(0,0,QSizePolicy::Fixed, QSizePolicy::MinimumExpanding));
+            s_vBox->addSpacerItem(new QSpacerItem(0,0,QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
         }
 
         for(int i=0;i<children().size();i++)

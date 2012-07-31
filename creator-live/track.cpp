@@ -94,6 +94,8 @@ Track::Track(Ambition* bp) :
     ui_outputName->setObjectName("ui_outputName");
     setObjectName("Track_"+QString::number(s_id));
     setGeometry(geometry());
+
+    resizeEvent(0);
     Object::endAsyncAction();
 }
 
@@ -113,13 +115,14 @@ Track::~Track()
 
 void Track::resizeEvent(QResizeEvent *e)
 {
-    qDebug()<<"Track width:"<<width();
-    s_th->setGeometry(0, 0, width(), height());
+    if (s_th)
+        s_th->setGeometry(0, 0, width(), height());
     clearUiPipeline();
     makeUiPipeline();
     remakeChainWidget();
     ui_chainWidget->setGeometry(0,0,width(),5);
-    QWidget::resizeEvent(e);
+    if(e)
+        QWidget::resizeEvent(e);
 }
 
 void Track::remakeChainWidget()
@@ -145,8 +148,8 @@ void Track::clearUiPipeline()
 void Track::makeUiPipeline()
 {
     Object::beginAsyncAction();
-    int count = s_appUi_.count();
-    int sizes[count];
+    int remCount = s_appUi_.count();
+    int sizes[s_appUi_.count()];
     for (int i = 0; i < s_appUi_.count(); ++i)
     {
         sizes[i] = -1;
@@ -158,13 +161,16 @@ void Track::makeUiPipeline()
         if (ui->maximumWidth() < 1000) {
             sizes[i] = ui->maximumWidth();
             sum += sizes[i];
+            --remCount;
         }
         ui->show();
     }
-    int widthForRemaining = (width() - sum) / count;
-    for (int i = 0; i < s_appUi_.size(); ++i) {
-        if (sizes[i] == -1)
-            sizes[i] = widthForRemaining;
+    if (remCount) {
+        int widthForRemaining = (width() - sum) / remCount - 18;
+        for (int i = 0; i < s_appUi_.size(); ++i) {
+            if (sizes[i] == -1)
+                sizes[i] = widthForRemaining;
+        }
     }
     int state_x = 0;
     for (int i = 0; i < s_appUi_.count(); ++i)

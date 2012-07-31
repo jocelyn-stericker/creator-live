@@ -32,8 +32,6 @@ public:
         setObjectName("TrackGroup_"+QString::number(s_id));
     }
 
-    void resizeEvent(QResizeEvent *);
-
 signals:
 public slots:
     void newHathor(live::ObjectPtr coutput)
