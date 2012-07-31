@@ -67,7 +67,7 @@ LiveWindow::LiveWindow(QWidget *parent) :
     m->addAction("&Quit Creator Live",this,SLOT(close()));
 
     ui->pushButton_creatorLive->setMenu(m);
-    hideInsert();
+    hideInsert(0);
     newProject(0);
     selectMode();
 
@@ -100,12 +100,13 @@ LiveWindow::LiveWindow(QWidget *parent) :
 
 void LiveWindow::newProject(bool ask)
 {
+    hideInsert();
+    if(ask&&!askForClose("Create new Project?","Create a new project anyway?")) return;
+
     s_patches.clear();
     s_curPatch=0;
 
     s_patches.push_back(new Patch);
-    hideInsert();
-    if(ask&&!askForClose("Create new Project?","Create a new project anyway?")) return;
 
     *song::current()->keySignature=KeySignature('C', ' ', KeySignature::Major);
 
@@ -164,7 +165,6 @@ void LiveWindow::newInput()
 
 void LiveWindow::reactOnCreation(live::ObjectPtr s)
 {
-//    showInsert();
     curPatch()->widgets.removeOne(qobject_cast<QWidget*>(sender()));
     ui->sac_contents->removeOne(qobject_cast<QWidget*>(sender()));
     if(s->isMidiObject())
@@ -173,6 +173,7 @@ void LiveWindow::reactOnCreation(live::ObjectPtr s)
         curPatch()->widgets.push_back(h);
         ui->sac_contents->push_back(h);
         ui->sac_contents->updateItems();
+        connect(h, SIGNAL(outputSelected()), this, SLOT(showInsert()));
         h->show();
     }
     else if (s->isAudioObject())
@@ -181,20 +182,31 @@ void LiveWindow::reactOnCreation(live::ObjectPtr s)
         curPatch()->widgets.push_back(h);
         ui->sac_contents->push_back(h);
         ui->sac_contents->updateItems();
+        connect(h, SIGNAL(outputSelected()), this, SLOT(showInsert()));
         h->show();
     }
 }
 
-void LiveWindow::hideInsert()
+void LiveWindow::hideInsert(bool animate)
 {
     for(int i=0;i<3;i++) {
         QWidget* w=(i?((i==2)?ui->widget_insertTop:ui->widget_insertBottom):ui->scrollArea_2);
-        QPropertyAnimation* pa1=new QPropertyAnimation(w,"maximumHeight");
-        pa1->setStartValue(w->maximumHeight());
-        pa1->setEndValue(0);
-        pa1->start(QPropertyAnimation::DeleteWhenStopped);
+        if (animate) {
+            QPropertyAnimation* pa1=new QPropertyAnimation(w,"maximumHeight");
+            pa1->setStartValue(w->maximumHeight());
+            pa1->setEndValue(0);
+            pa1->start(QPropertyAnimation::DeleteWhenStopped);
+        } else {
+            w->setMaximumHeight(0);
+        }
     }
-
+    if(!ui->comboBox_mode->isEnabled()) {
+        ui->comboBox_mode->setEnabled(1);
+        ui->comboBox_mode->setCurrentIndex(1); // live
+        ui->comboBox_mode->setEnabled(0);
+    } else {
+        ui->comboBox_mode->setCurrentIndex(1); // live
+    }
 }
 
 void LiveWindow::showInsert()
@@ -205,6 +217,13 @@ void LiveWindow::showInsert()
         pa1->setStartValue(w->maximumHeight());
         pa1->setEndValue(i?15:85);
         pa1->start(QPropertyAnimation::DeleteWhenStopped);
+    }
+    if(!ui->comboBox_mode->isEnabled()) {
+        ui->comboBox_mode->setEnabled(1);
+        ui->comboBox_mode->setCurrentIndex(0); // insert
+        ui->comboBox_mode->setEnabled(0);
+    } else {
+        ui->comboBox_mode->setCurrentIndex(0); // insert
     }
 }
 

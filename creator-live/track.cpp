@@ -294,6 +294,8 @@ void Track::setOutput(live::ObjectPtr output,live::ObjectPtr loopback)
     s_ambition.setOutput(output);
     s_ambition.setLoopbackOut(loopback);
     Object::endAsyncAction();
+
+    emit outputSelected();
 }
 
 void Track::setInput(live::ObjectPtr input)

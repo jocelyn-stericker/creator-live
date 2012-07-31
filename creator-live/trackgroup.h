@@ -33,11 +33,21 @@ public:
     }
 
 signals:
+    void outputSelected();
+
 public slots:
     void newHathor(live::ObjectPtr coutput)
     {
-        s_hathorView->insert(s_hathorView->count()-1,new Track(s_input,coutput));
+        Track* t = 0;
+        s_hathorView->insert(s_hathorView->count()-1,t = new Track(s_input,coutput));
         s_hathorView->updateItems();
+        connect(t, SIGNAL(outputSelected()), this, SLOT(onFirstOutputSelected()));
+    }
+
+    void onFirstOutputSelected()
+    {
+        qDebug()<<"OS!";
+        disconnect(sender(),SIGNAL(outputSelected()),this,SLOT(onFirstOutputSelected()));
     }
 };
 

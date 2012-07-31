@@ -72,6 +72,7 @@ void TrackGroupAudio::setLastOutput(live::ObjectPtr obj)
             ok=1;
         }
     }
+    emit outputSelected();
     Q_ASSERT(ok);
 }
 

@@ -63,6 +63,8 @@ public slots:
     void logic_appBack();
     void logic_appDel();
     void logic_appNext();
+signals:
+    void outputSelected();
 public:
     QByteArray save();
     static Track* load(const QByteArray&);

@@ -64,7 +64,7 @@ public slots:
     void selectMode();
     void newInput();
     void reactOnCreation(live::ObjectPtr);
-    void hideInsert();
+    void hideInsert(bool animate = true);
     void showInsert();
     void setMode(int a);
     void setKey(int a);

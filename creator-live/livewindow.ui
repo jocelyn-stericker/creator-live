@@ -604,12 +604,12 @@ QComboBox:hover {
           </property>
           <item>
            <property name="text">
-            <string>Insert Mode</string>
+            <string>Insert</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>LIVE MODE</string>
+            <string>Live</string>
            </property>
           </item>
          </widget>
