@@ -64,8 +64,7 @@ live_widgets::AppFrame::AppFrame(QWidget *parent) :
 //    setMinimumSize(maximumSize());
 //    setMaximumSize(minimumSize());
 
-    setMinimumHeight(242);
-    setMaximumHeight(242);
+    setFixedHeight(342);
     setMinimumWidth(40);
 }
 

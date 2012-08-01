@@ -44,8 +44,7 @@ Track::Track(live::ObjectPtr cinput, live::ObjectPtr coutput)
             SLOT(setText(QString)));
 
     connect(ui_outputName,SIGNAL(clicked()),this,SLOT(outputSelection()));
-    setMinimumHeight(250);
-    setMaximumHeight(250);
+    setFixedHeight(350);
 //    connect(ui_midiSelect,SIGNAL(indexSet(int)),this,SLOT(selectOutput(int)));
     MidiBindingQtSys::addWidget(this);
 
@@ -86,8 +85,7 @@ Track::Track(Ambition* bp) :
             SLOT(setText(QString)));
 
     connect(ui_outputName,SIGNAL(clicked()),this,SLOT(outputSelection()));
-    setMinimumHeight(250);
-    setMaximumHeight(250);
+    setFixedHeight(350);
 //    connect(ui_midiSelect,SIGNAL(indexSet(int)),this,SLOT(selectOutput(int)));
     MidiBindingQtSys::addWidget(this);
 
