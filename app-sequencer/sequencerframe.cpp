@@ -155,7 +155,7 @@ void SequencerFrame::setMore(bool more)
     int sugWidth = 300;
     Track* t = dynamic_cast<Track*>(parent());
     if(t) {
-        sugWidth = t->widthFor(this);
+        sugWidth = t->getMaximumWidthFor(this);
     }
     QPropertyAnimation* paMin = new QPropertyAnimation(ui->frame_2, "minimumWidth");
     QPropertyAnimation* paMax = new QPropertyAnimation(ui->frame_2, "maximumWidth");

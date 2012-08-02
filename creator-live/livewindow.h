@@ -12,7 +12,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include <QMainWindow>
 #include "live/object.h"
-#include "ambition.h"
+#include "live/ambition.h"
 #include "live_widgets/midibindingqt.h"
 #include "live_widgets/bindableparent.h"
 
@@ -25,20 +25,24 @@ class VScrollContainer;
 class IntroWizard;
 }
 
+namespace live {
+class Ambition;
+}
+
 class LiveWindow : public QWidget, public live_widgets::BindableParent
 {
     Q_OBJECT
 public:
     class Patch {
     public:
-        QList< Ambition* > ambitions;
+        QList< live::Ambition* > ambitions;
         QList< QWidget* > widgets;
         void deactivate() {
-            foreach(Ambition* a, ambitions) a->unset();
+            foreach(live::Ambition* a, ambitions) a->unset();
             foreach(QWidget* w, widgets) w->hide();
         }
         void activate() {
-            foreach(Ambition* a, ambitions) a->set();
+            foreach(live::Ambition* a, ambitions) a->set();
             foreach(QWidget* w, widgets) w->show();
         }
     };
@@ -87,6 +91,9 @@ public slots:
 
     void updateRecent();
     void loadRecent();
+
+    void onAmbitionCreated(live::Ambition*);
+    void onAmbitionDestroyed(live::Ambition*);
 
 private:
     void closeEvent(QCloseEvent *);

@@ -66,11 +66,11 @@ list (APPEND liblivecore_h
     live/app.h 
     live/instrument.h 
     live/midieventcounter.h 
-    live/ambition.h
 )
 
 list (APPEND liblivecore_h_qobject
     live/anabeat.h 
+    live/ambition.h
     live/metronome.h 
     live/variantbinding.h 
     live/midibinding.h 

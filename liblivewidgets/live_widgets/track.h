@@ -11,7 +11,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define TRACK_H
 
 #include "live_widgets/appframe.h"
-#include "ambition.h"
+#include "live/ambition.h"
 
 #include "live_widgets/rotatedlabel.h"
 #include <QPushButton>
@@ -31,7 +31,7 @@ class Track : public QWidget, public live_widgets::BindableParent
     Q_OBJECT
 public:
     live_widgets::TrackHint* s_th;
-    Ambition& s_ambition;   /*003*/
+    live::Ambition& s_ambition;   /*003*/
 
     QList<live_widgets::AppFrame*> s_appUi_;  /*003B*/    //reintegrate
 
@@ -42,7 +42,7 @@ public:
     live_widgets::ChainTypeWidget* ui_chainWidget;
 
     Track(live::ObjectPtr cinput, live::ObjectPtr coutput);
-    Track(Ambition* bp);
+    Track(live::Ambition* bp);
     ~Track();
     void resizeEvent(QResizeEvent *e);
 

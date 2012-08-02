@@ -16,6 +16,7 @@ core_dotlive.cpp
 
 #include "live/app.h"
 #include "live/anabeat.h"
+#include "live/ambition.h"
 #include "live/asyncconnect.h"
 #include "live/audio.h"
 #include "live/audiotrack.h"
@@ -795,6 +796,85 @@ QByteArray Metronome::save()
     //////////////////////////////////////////////////////////////////
 
     /*007*/ (verify(ret,(QString)"END Metronome"));
+
+    RETURN;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Ambition //////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+#ifdef LOAD
+Ambition* Ambition::load(const QByteArray &str)
+#endif
+#ifdef SAVE
+QByteArray Ambition::save()
+#endif
+{
+    BEGIN;
+    Q_UNUSED(xbool);
+    Q_UNUSED(xint32);
+    Q_UNUSED(xba);
+
+    ret.setFloatingPointPrecision(QDataStream::SinglePrecision);
+
+    /*001*/
+    (verify(ret,(QString)"BEGIN Ambition"));
+
+    /*002*/
+    (verify(ret,(qint32 )110905));
+
+
+    //////////////////////////////////////////////////////////////////
+
+    Ambition* x=IS_SAVE?_THIS:0;
+#ifdef LOAD
+    QString cin_str,cout_str,cout_loopback_str;
+    int cchain_size;
+    QStringList cchain_str;
+
+    ret IO cin_str;
+    ObjectPtr cinput=object::request(cin_str,InputOnly);
+
+    ret IO cout_str;
+    ObjectPtr coutput=object::request(cout_str,Output);
+
+    ret IO cout_loopback_str;
+    ObjectPtr loopback=(cout_loopback_str=="__NO_LOOPBACK__")?0:object::request(cout_loopback_str,Output);
+
+    ret IO cchain_size;
+    ObjectChain chain;
+    for(int i=0;i<cchain_size;i++)
+    {
+        ret IO xba;
+        chain.push_back(app::loadBackend(xba));
+    }
+    x=new Ambition(cinput,chain,coutput,loopback);
+
+#else
+    Q_UNUSED(x);
+    ret IO this->s_input->name();
+    ret IO this->s_output->name();
+    if(s_loopbackOut.valid())
+    {
+        ret IO this->s_loopbackOut->name();
+    }
+    else
+    {
+        ret IO (QString)"__NO_LOOPBACK__";
+    }
+    ret IO this->s_chain.size();
+    for(int i=0;i<this->s_chain.size();i++)
+    {
+        ret IO x->at(i)->name();
+        ret IO x->at(i)->save();
+    }
+#endif
+
+    /*003*/
+    (verify(ret,(QString)"END Ambition"));
 
     RETURN;
 }

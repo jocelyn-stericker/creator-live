@@ -14,7 +14,6 @@ cmake_minimum_required(VERSION 2.8)
 list (APPEND creator-live_cpp
     main.cpp
     livewindow.cpp
-    ambition.cpp
     track.cpp
     trackgroup.cpp
     trackgroupaudio.cpp
@@ -27,7 +26,6 @@ list (APPEND creator-live_cpp
 )
 
 list (APPEND creator-live_h
-    ambition.h
 )
 
 list (APPEND creator-live_h_qobject

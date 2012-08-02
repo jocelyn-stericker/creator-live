@@ -9,8 +9,10 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include "live/ambition.h"
 
+using namespace live;
+
 Ambition::Ambition(live::ObjectPtr cinput,live::ObjectChain chain, live::ObjectPtr coutput, live::ObjectPtr cloop) : s_input(cinput),s_chain(chain),s_output(coutput),s_loopbackOut(cloop)
-{b_output=s_output->name(); setChain(s_chain); LiveWindow::singleton->curPatch()->ambitions.push_back(this); }
+{b_output=s_output->name(); setChain(s_chain); ambition::self()->notifyCreated(this); }
 
 Ambition::~Ambition()
 {
@@ -18,5 +20,33 @@ Ambition::~Ambition()
     {
         delete s_connections.takeFirst();
     }
-    LiveWindow::singleton->curPatch()->ambitions.removeOne(this);
+    ambition::self()->notifyDestroyed(this);
+}
+
+ambition* ambition::s_self = 0;
+
+ambition* ambition::self()
+{
+    return s_self ? s_self : (s_self = new ambition);
+}
+
+void ambition::notifyCreated(Ambition* a)
+{
+    self()->u_notifyCreated(a);
+}
+
+void ambition::notifyDestroyed(Ambition* a)
+{
+    self()->u_notifyDestroyed(a);
+}
+
+void ambition::u_notifyCreated(Ambition* a)
+{
+    emit created(a);
+
+}
+
+void ambition::u_notifyDestroyed(Ambition* a)
+{
+    emit destoryed(a);
 }

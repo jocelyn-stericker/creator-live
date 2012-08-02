@@ -20,13 +20,13 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include "liblivecore_global.h"
 
-class Ambition;
 class LiveWindow;
 
 namespace live_private { class SecretAudio; }
 
 namespace live {
 
+class Ambition;
 class Event;
 class ObjectPtr;
 class Object;
@@ -59,7 +59,6 @@ public:
 class LIBLIVECORESHARED_EXPORT Object
 {
     friend class ::LiveWindow;
-    friend class ::Ambition;
 public:
     /**
      * Create a Object with no connections and a descriptive name (like "Sequencer"), cname.
@@ -168,7 +167,7 @@ protected:
 
     friend class ObjectPtr;
     friend class live_private::SecretAudio;
-    friend class Ambition;
+    friend class live::Ambition;
     friend void doAudioConnect(const Object* a, const Object* b);
     friend void doMidiConnect(const Object* a, const Object* b);
     QList<ObjectPtr*> s_ptrList;

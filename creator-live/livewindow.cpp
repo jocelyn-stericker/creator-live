@@ -95,6 +95,9 @@ LiveWindow::LiveWindow(QWidget *parent) :
         dynamic_cast<QBoxLayout*>(ui->sac_insert->layout())->insertWidget(1,d);
     }
 
+    connect(ambition::self(), SIGNAL(created(Ambition*)), this, SLOT(onAmbitionCreated(Ambition*)));
+    connect(ambition::self(), SIGNAL(destoryed(Ambition*)), this, SLOT(onAmbitionDestroyed(Ambition*)));
+
     MidiBindingQtSys::addWidget(this);
 }
 
@@ -492,4 +495,14 @@ void LiveWindow::loadRecent()
     }
     newProject(0);
     load(f.readAll());
+}
+
+void LiveWindow::onAmbitionCreated(Ambition* a)
+{
+    curPatch()->ambitions.push_back(a);
+}
+
+void LiveWindow::onAmbitionDestroyed(Ambition* a)
+{
+    curPatch()->ambitions.removeOne(a);
 }

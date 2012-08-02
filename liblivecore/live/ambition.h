@@ -14,6 +14,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "live/variantbinding.h"
 #include <iostream>
 
+namespace live {
+
 class Connection
 {
     live::ObjectPtr a, b;
@@ -312,5 +314,23 @@ public:
         return s_chain[b];
     }
 };
+
+class ambition : public QObject
+{
+    Q_OBJECT
+    static ambition* s_self;
+public:
+    static ambition* self();
+    static void notifyCreated(Ambition*);
+    static void notifyDestroyed(Ambition*);
+protected:
+    void u_notifyCreated(Ambition*);
+    void u_notifyDestroyed(Ambition*);
+signals:
+    void created(Ambition*);
+    void destoryed(Ambition*);
+};
+
+} // namespace live
 
 #endif // AMBITION_H

@@ -7,7 +7,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "track.h"
+#include "live_widgets/track.h"
 #include "live/app.h"
 #include "live_widgets/trackhint.h"
 
