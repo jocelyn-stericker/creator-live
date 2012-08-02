@@ -60,6 +60,10 @@ SequencerFrame::SequencerFrame(SequencerApp* backend,QWidget *parent) :
     ui->play->setObjectName("play");
     ui->mute->setObjectName("mute");
     ui->record->setObjectName("record");
+
+    ui->leftButton->hide();
+    ui->rightButton->hide();
+    ui->horizontalFrame->hide();
 }
 
 SequencerFrame::~SequencerFrame()

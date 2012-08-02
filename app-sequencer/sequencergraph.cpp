@@ -10,6 +10,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "sequencergraph.h"
 #include "live_widgets/midibindingqt.h"
 #include "looperapp.h"
+#include <QBrush>
 #include <QPainter>
 #include <QPicture>
 #include <QMouseEvent>
@@ -121,7 +122,7 @@ void SequencerGraph::updateAudioData( int t1, int t2 )
     AudioContainer** DATA=audioTrack->acquireData();
 
     QColor red(255,0,0);
-    QColor black(0,0,0);
+    QColor white(255,255,255);
 
     for ( int i = 0; DATA&& i < 2; i++ )
     {
@@ -171,9 +172,9 @@ void SequencerGraph::updateAudioData( int t1, int t2 )
                     }
                 }
                 painter.fillRect( (j-s_initial)*wscale, 1000*hscale,
-                                  1, minx*1000*hscale,(qMax(qAbs(minx),maxx)>=1.0?red:black) );
+                                  1, minx*1000*hscale,(qMax(qAbs(minx),maxx)>=1.0?red:white) );
                 painter.fillRect( (j-s_initial)*wscale, 1000*hscale,
-                                  1, maxx*1000*hscale,(qMax(qAbs(minx),maxx)>=1.0?red:black) );
+                                  1, maxx*1000*hscale,(qMax(qAbs(minx),maxx)>=1.0?red:white) );
             }
             qDebug()<<"PROC:"<<c;
             painter.end();
@@ -219,9 +220,9 @@ void SequencerGraph::updateAudioData( int t1, int t2 )
                     }
                 }
                 painter.fillRect( (j-s_initial)*wscale, 1000*hscale,
-                                  1, minx*1000*hscale,(qMax(qAbs(minx),maxx)>=1.0?red:black) );
+                                  1, minx*1000*hscale,(qMax(qAbs(minx),maxx)>=1.0?red:white) );
                 painter.fillRect( (j-s_initial)*wscale, 1000*hscale,
-                                  1, maxx*1000*hscale,(qMax(qAbs(minx),maxx)>=1.0?red:black) );
+                                  1, maxx*1000*hscale,(qMax(qAbs(minx),maxx)>=1.0?red:white) );
             }
 //            qDebug()<<"PROC2"<<c;
             painter.end();
@@ -433,6 +434,8 @@ void SequencerGraph::paintEvent( QPaintEvent* ev )
 
     painter.scale( 1.0f/wscale, 1.0f );
 
+    painter.setPen(app->isRecord()?"red":"blue");
+    painter.setBrush(QBrush("red"));
     if ( midiOriginal )
     {
 //        midiOriginal->play( &painter );
@@ -447,7 +450,7 @@ void SequencerGraph::paintEvent( QPaintEvent* ev )
     if(lapp)
     {
         int loopTime=lapp->b_loopLength;
-        painter.drawLine( (float)loopTime/1000.0f*(float)audio::sampleRate()-s_initial, 0, (float)loopTime/1000.0f*(float)audio::sampleRate()-s_initial, 2000 );
+        painter.drawLine( (float)loopTime/1000.0f*(float)audio::sampleRate()-s_initial, 0, (float)loopTime/1000.0f*(float)audio::sampleRate()-s_initial, 2000);
 
     }
     painter.scale( 1.0f/wscale, 1.0f/hscale );

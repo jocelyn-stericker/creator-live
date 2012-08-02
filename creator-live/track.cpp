@@ -175,6 +175,7 @@ void Track::makeUiPipeline()
     {
         QWidget* ui = s_appUi_[i];
         ui->setGeometry(state_x, 0, sizes[i], height());
+        ui->setFixedHeight(height());
         state_x += sizes[i];
     }
     ui_outputName->setGeometry(width() - 15, 0, 15, height());

@@ -22,6 +22,7 @@
 #include "fjreverbframe.h"
 #include "./build/3rd-calf/ui_fjreverbframe.h"
 #include <QtPlugin>
+#include <QPropertyAnimation>
 
 using namespace live_widgets;
 
@@ -56,6 +57,8 @@ FJReverbFrame::FJReverbFrame(FJReverbApp *backend, QWidget *parent)
     connect(ui->verticalSlider_dryWet,SIGNAL(valueChanged(int)),this,SLOT(onWetDryBalance(int)));
     connect(ui->verticalSlider_preDelay,SIGNAL(valueChanged(int)),this,SLOT(onPredelay(int)));
     connect(ui->verticalSlider_roomSize,SIGNAL(valueChanged(int)),this,SLOT(onRoomSize(int)));
+
+    connect(ui->toolButton_more, SIGNAL(toggled(bool)), this, SLOT(setMore(bool)));
 }
 
 FJReverbFrame::~FJReverbFrame()
@@ -109,6 +112,53 @@ void FJReverbFrame::onPredelay(int f)
 void FJReverbFrame::onWetDryBalance(int f)
 {
     s_app.setWetDryBalance(f);
+}
+
+void FJReverbFrame::setMore(bool more)
+{
+    QPropertyAnimation* paMin = new QPropertyAnimation(this, "minimumWidth");
+    QPropertyAnimation* paMax = new QPropertyAnimation(this, "maximumWidth");
+    paMin->setStartValue(width());
+    paMax->setStartValue(width());
+    if (more) {
+        paMin->setEndValue(330);
+        paMax->setEndValue(330);
+        removeRounding();
+    } else {
+        paMin->setEndValue(56);
+        connect(paMin, SIGNAL(finished()), this, SLOT(addRounding()));
+        paMax->setEndValue(56);
+    }
+    paMin->setDuration(500);
+    paMax->setDuration(500);
+    paMin->setEasingCurve(QEasingCurve::InQuad);
+    paMax->setEasingCurve(QEasingCurve::InQuad);
+    paMin->start(QAbstractAnimation::DeleteWhenStopped);
+    paMax->start(QAbstractAnimation::DeleteWhenStopped);
+}
+
+void FJReverbFrame::addRounding()
+{
+    ui->frame->hide();
+    QString style = ui->pushButton_menu->styleSheet();
+    style.replace("border-top-right-radius: 0px;", "border-top-right-radius: 4px;");
+    ui->pushButton_menu->setStyleSheet(style);
+
+    style = ui->toolButton_more->styleSheet();
+    style.replace("border-bottom-right-radius: 0px;", "border-bottom-right-radius: 4px;");
+    ui->toolButton_more->setStyleSheet(style);
+}
+
+void FJReverbFrame::removeRounding()
+{
+    ui->frame->show();
+    QString style = ui->pushButton_menu->styleSheet();
+    style.replace("border-top-right-radius: 4px;", "border-top-right-radius: 0px;");
+    ui->pushButton_menu->setStyleSheet(style);
+
+    style = ui->toolButton_more->styleSheet();
+    style.replace("border-bottom-right-radius: 4px;", "border-bottom-right-radius: 0px;");
+    ui->toolButton_more->setStyleSheet(style);
 }
 
 Q_EXPORT_PLUGIN2(live::AppInterface, FJReverbCreator)

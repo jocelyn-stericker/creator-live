@@ -52,6 +52,11 @@ public slots:
     void onPredelay(int);
 
     void onWetDryBalance(int);
+
+    void setMore(bool);
+
+    void addRounding();
+    void removeRounding();
     
 private:
     Ui::FJReverbFrame *ui;
