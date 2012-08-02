@@ -48,6 +48,11 @@ public slots:
     void syncState();
     virtual void toggleMinimized();
 
+    void setMore(bool);
+
+    void addRounding();
+    void removeRounding();
+
 protected:
     void keyPressEvent(QKeyEvent *e) { graph.keyPressEvent(e); AppFrame::keyPressEvent(e); }
 

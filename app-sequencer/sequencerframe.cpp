@@ -12,9 +12,12 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "ui_sequencerframe.h"
 #include "live_widgets/midibindingqt.h"
 #include "live/asyncconnect.h"
+#include "live_widgets/track.h"
 
 #include <QtPlugin>
 #include <QMenu>
+
+#include <QPropertyAnimation>
 
 using namespace live;
 using namespace live_widgets;
@@ -64,6 +67,8 @@ SequencerFrame::SequencerFrame(SequencerApp* backend,QWidget *parent) :
     ui->leftButton->hide();
     ui->rightButton->hide();
     ui->horizontalFrame->hide();
+
+    connect(ui->toolButton_more, SIGNAL(toggled(bool)), this, SLOT(setMore(bool)));
 }
 
 SequencerFrame::~SequencerFrame()
@@ -143,6 +148,78 @@ void SequencerFrame::toggleMinimized()
     graph.updateAudioData();
     graph.updateMidiData();
     AppFrame::toggleMinimized();
+}
+
+void SequencerFrame::setMore(bool more)
+{
+    int sugWidth = 300;
+    Track* t = dynamic_cast<Track*>(parent());
+    if(t) {
+        sugWidth = t->widthFor(this);
+    }
+    QPropertyAnimation* paMin = new QPropertyAnimation(ui->frame_2, "minimumWidth");
+    QPropertyAnimation* paMax = new QPropertyAnimation(ui->frame_2, "maximumWidth");
+
+    QPropertyAnimation* paMinThis = new QPropertyAnimation(this, "minimumWidth");
+    QPropertyAnimation* paMaxThis = new QPropertyAnimation(this, "maximumWidth");
+
+    paMin->setStartValue(ui->frame_2->width());
+    paMax->setStartValue(ui->frame_2->width());
+    paMinThis->setStartValue(width());;
+    paMaxThis->setStartValue(width());
+    if (more) {
+        paMin->setEndValue(sugWidth - 53);
+        paMax->setEndValue(sugWidth - 53);
+
+        paMinThis->setEndValue(sugWidth);
+        paMaxThis->setEndValue(sugWidth);
+        removeRounding();
+    } else {
+        paMin->setEndValue(0);
+        paMax->setEndValue(0);
+        paMinThis->setEndValue(53);
+        paMaxThis->setEndValue(53);
+
+        connect(paMinThis, SIGNAL(finished()), this, SLOT(addRounding()));
+    }
+    paMin->setDuration(500);
+    paMax->setDuration(500);
+    paMinThis->setDuration(500);
+    paMaxThis->setDuration(500);
+
+    paMin->setEasingCurve(QEasingCurve::InQuad);
+    paMax->setEasingCurve(QEasingCurve::InQuad);
+    paMin->start(QAbstractAnimation::DeleteWhenStopped);
+    paMax->start(QAbstractAnimation::DeleteWhenStopped);
+    paMinThis->setEasingCurve(QEasingCurve::InQuad);
+    paMaxThis->setEasingCurve(QEasingCurve::InQuad);
+    paMinThis->start(QAbstractAnimation::DeleteWhenStopped);
+    paMaxThis->start(QAbstractAnimation::DeleteWhenStopped);
+
+}
+
+void SequencerFrame::addRounding()
+{
+    ui->frame_2->hide();
+    QString style = ui->menu->styleSheet();
+    style.replace("border-top-right-radius: 0px;", "border-top-right-radius: 4px;");
+    ui->menu->setStyleSheet(style);
+
+    style = ui->toolButton_more->styleSheet();
+    style.replace("border-bottom-right-radius: 0px;", "border-bottom-right-radius: 4px;");
+    ui->toolButton_more->setStyleSheet(style);
+}
+
+void SequencerFrame::removeRounding()
+{
+    ui->frame_2->show();
+    QString style = ui->menu->styleSheet();
+    style.replace("border-top-right-radius: 4px;", "border-top-right-radius: 0px;");
+    ui->menu->setStyleSheet(style);
+
+    style = ui->toolButton_more->styleSheet();
+    style.replace("border-bottom-right-radius: 4px;", "border-bottom-right-radius: 0px;");
+    ui->toolButton_more->setStyleSheet(style);
 }
 
 live::AppInterface* SequencerCreator::next()

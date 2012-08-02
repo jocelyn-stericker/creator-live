@@ -41,6 +41,7 @@ list (APPEND liblivecore_cpp
     app.cpp 
     instrument.cpp 
     midibridge.cpp
+    ambition.cpp
 )
 
 list (APPEND liblivecore_h
@@ -65,6 +66,7 @@ list (APPEND liblivecore_h
     live/app.h 
     live/instrument.h 
     live/midieventcounter.h 
+    live/ambition.h
 )
 
 list (APPEND liblivecore_h_qobject

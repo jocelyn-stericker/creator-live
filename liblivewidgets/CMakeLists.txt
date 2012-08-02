@@ -31,6 +31,7 @@ list (APPEND liblivewidgets_cpp
     newinput.cpp 
     trackhint.cpp 
     introwizard.cpp
+    track.cpp
 )
 
 list (APPEND liblivewidgets_h
@@ -58,6 +59,7 @@ list (APPEND liblivewidgets_h_qobject
     live_widgets/newinput.h 
     live_widgets/trackhint.h 
     live_widgets/introwizard.h
+    live_widgets/track.h
 )
 
 list (APPEND liblivewidgets_ui
