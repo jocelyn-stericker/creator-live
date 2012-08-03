@@ -31,6 +31,8 @@ public:
     explicit LooperFrame(LooperApp* backend, QWidget *parent = 0);
     ~LooperFrame();
 
+    bool expanding() const { return false; }
+
 public slots:
     void logicMute(bool x);
     void logicSub(bool x);

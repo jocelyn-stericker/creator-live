@@ -38,6 +38,8 @@ public:
     int s_id;                   /*004*/
     static int s_lastId;
 
+    bool s_busy;
+
     live_widgets::RotatedLabel* ui_outputName;
     live_widgets::ChainTypeWidget* ui_chainWidget;
 
@@ -52,7 +54,7 @@ public slots:
 
 private:
     void clearUiPipeline();
-    void makeUiPipeline();
+    void makeUiPipeline(bool smart = true);
 protected:
     void dragEnterEvent(QDragEnterEvent *e);
     void dropEvent(QDropEvent *e);
@@ -65,6 +67,8 @@ public slots:
     void logic_appBack();
     void logic_appDel();
     void logic_appNext();
+    void updateGeometriesIfNeeded();
+    void updateGeometriesOrDie();
 signals:
     void outputSelected();
 public:

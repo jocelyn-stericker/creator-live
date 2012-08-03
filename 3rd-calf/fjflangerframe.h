@@ -43,6 +43,8 @@ public:
     explicit FJFlangerFrame(FJFlangerApp* backend, QWidget *parent = 0);
     ~FJFlangerFrame();
 
+    bool expanding() const { return false; }
+
 public slots:
     void onDelay(int);
     void onDepth(int);

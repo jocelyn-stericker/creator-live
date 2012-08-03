@@ -28,6 +28,8 @@ public:
     explicit MixerFrame(MixerApp*backend,QWidget *parent = 0);
     ~MixerFrame();
 
+    bool expanding() const { return false; }
+
 private:
     Ui::MixerFrame *ui;
 };

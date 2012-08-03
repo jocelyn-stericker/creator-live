@@ -11,6 +11,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "live/app.h"
 #include "live_widgets/trackhint.h"
 
+#include <QCoreApplication>
+
 int Track::s_lastId=-1;
 using namespace live;
 using namespace live_widgets;
@@ -21,6 +23,7 @@ Track::Track(live::ObjectPtr cinput, live::ObjectPtr coutput)
     , s_ambition(*(new Ambition(cinput,ObjectChain(),coutput)))
     , s_appUi_()
     , s_id(++s_lastId)
+    , s_busy(0)
     , ui_outputName(new RotatedLabel(this))
     , ui_chainWidget(new ChainTypeWidget(this))
 {
@@ -138,14 +141,23 @@ void Track::remakeChainWidget()
 
 void Track::clearUiPipeline()
 {
-    Object::beginAsyncAction();
+    // not marked async, so be careful.
     ui_chainWidget->reset();
-    Object::endAsyncAction();
 }
 
-void Track::makeUiPipeline()
+void Track::makeUiPipeline(bool smart)
 {
-    Object::beginAsyncAction();
+    if (!smart) {
+        int stateX = 0;
+        for (int i = 0; i < s_appUi_.count(); ++i)
+        {
+            s_appUi_[i]->setGeometry(stateX, 0, s_appUi_[i]->width(), height());
+            stateX += s_appUi_[i]->width();
+        }
+        return;
+    }
+    // not marked async, so be careful.
+    s_busy = 1;
     int remCount = s_appUi_.count();
     int sizes[s_appUi_.count()];
     for (int i = 0; i < s_appUi_.count(); ++i)
@@ -155,8 +167,8 @@ void Track::makeUiPipeline()
     int sum = 0;
     for (int i = 0; i < s_appUi_.count(); ++i)
     {
-        QWidget* ui = s_appUi_[i];
-        if (ui->maximumWidth() < 1000) {
+        AppFrame* ui = s_appUi_[i];
+        if (!ui->expanding()) {
             sizes[i] = ui->maximumWidth();
             sum += sizes[i];
             --remCount;
@@ -174,14 +186,16 @@ void Track::makeUiPipeline()
     for (int i = 0; i < s_appUi_.count(); ++i)
     {
         QWidget* ui = s_appUi_[i];
-        ui->setGeometry(state_x, 0, sizes[i], height());
+        ui->setFixedWidth(sizes[i]);
         ui->setFixedHeight(height());
+        ui->setGeometry(state_x, 0, sizes[i], height());
         state_x += sizes[i];
     }
     ui_outputName->setGeometry(width() - 15, 0, 15, height());
     setGeometry(geometry());
     remakeChainWidget();
-    Object::endAsyncAction();
+    QCoreApplication::processEvents();
+    s_busy = 0;
 }
 
 void Track::dragEnterEvent(QDragEnterEvent *e)
@@ -316,6 +330,7 @@ void Track::addApp(int i,AppFrame* appUi,live::ObjectPtr app)
     {
         s_ambition.insert(i,app);
     }
+    connect(appUi, SIGNAL(sizeChanged()), this, SLOT(updateGeometriesIfNeeded()));
 
     connect(appUi->_tbBack,SIGNAL(clicked()),this,SLOT(logic_appBack()));
     connect(appUi->_tbClose,SIGNAL(clicked()),this,SLOT(logic_appDel()));
@@ -451,7 +466,7 @@ void Track::logic_appDel()
         {
             AppFrame* of=s_appUi_[i];
             delApp(i);
-            of->deleteLater();  //will delete of
+            of->deleteLater();
         }
     }
     Object::endAsyncAction();
@@ -482,16 +497,41 @@ void Track::logic_appNext()
     Object::endAsyncAction();
 }
 
+void Track::updateGeometriesIfNeeded()
+{
+    if (s_busy)
+        return;
+    clearUiPipeline();
+    makeUiPipeline(false);
+}
+
+void Track::updateGeometriesOrDie()
+{
+    clearUiPipeline();
+    makeUiPipeline();
+}
+
 int Track::getMaximumWidthFor(QWidget* w)
 {
     Object::beginAsyncAction();
 
-    int wi = width() - 18;
-    for(int i = 0; i < s_appUi_.size(); ++i)
+    int sum = 0;
+    int otherCount = 0;
+    for (int i = 0; i < s_appUi_.count(); ++i)
     {
-        if (s_appUi_[i] != w)
-            wi -= s_appUi_[i]->width();
+        AppFrame* ui = s_appUi_[i];
+
+        if (ui == w)
+            continue;
+
+        if (!ui->expanding())
+            sum += ui->maximumWidth();
+        else
+            ++otherCount;
+        ui->show();
     }
+
+    int wi = (width() - 18 - sum)/(otherCount + 1);
     Object::endAsyncAction();
 
     return wi;

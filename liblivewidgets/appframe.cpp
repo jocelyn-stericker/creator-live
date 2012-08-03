@@ -120,6 +120,9 @@ void live_widgets::AppFrame::resizeEvent(QResizeEvent *e)
         _tbClose->setGeometry(width()-4-_tbNext->width(),2,8,8);
     }
     QMetaObject::invokeMethod(parent(),"remakeChainWidget",Qt::DirectConnection);
+
+    emit sizeChanged();
+
     if(e) QWidget::resizeEvent(e);
 }
 

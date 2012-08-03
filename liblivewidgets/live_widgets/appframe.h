@@ -23,6 +23,7 @@ namespace live_widgets {
 class LIBLIVEWIDGETSSHARED_EXPORT AppFrame : public QFrame, public BindableParent
 {
     Q_OBJECT
+    Q_PROPERTY(int fixedWidth READ width WRITE setFixedWidth)
     ToolButton* _tbBack,* _tbClose,* _tbNext,* _tbMini;
     bool s_minimized;
 
@@ -33,6 +34,11 @@ public:
 
     void resizeEvent(QResizeEvent *);
     void moveEvent(QMoveEvent *);
+
+    virtual bool expanding() const = 0;
+
+signals:
+    void sizeChanged();
 
 public slots:
     virtual void toggleMinimized();

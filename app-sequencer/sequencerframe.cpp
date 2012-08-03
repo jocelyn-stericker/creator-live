@@ -16,6 +16,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include <QtPlugin>
 #include <QMenu>
+#include <QTimer>
 
 #include <QPropertyAnimation>
 
@@ -182,6 +183,9 @@ void SequencerFrame::setMore(bool more)
 
         connect(paMinThis, SIGNAL(finished()), this, SLOT(addRounding()));
     }
+
+    QTimer::singleShot(600, t, SLOT(updateGeometriesOrDie()));
+
     paMin->setDuration(500);
     paMax->setDuration(500);
     paMinThis->setDuration(500);

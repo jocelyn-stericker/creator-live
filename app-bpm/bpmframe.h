@@ -30,6 +30,8 @@ public:
     explicit BPMFrame(BPMApp* backend,QWidget *parent = 0);
     ~BPMFrame();
 
+    bool expanding() const { return false; }
+
 protected:
     void timerEvent(QTimerEvent *);
     void resizeEvent(QResizeEvent *);

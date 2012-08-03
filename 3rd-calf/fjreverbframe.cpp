@@ -23,6 +23,7 @@
 #include "./build/3rd-calf/ui_fjreverbframe.h"
 #include <QtPlugin>
 #include <QPropertyAnimation>
+#include <QTimer>
 
 using namespace live_widgets;
 
@@ -116,25 +117,20 @@ void FJReverbFrame::onWetDryBalance(int f)
 
 void FJReverbFrame::setMore(bool more)
 {
-    QPropertyAnimation* paMin = new QPropertyAnimation(this, "minimumWidth");
-    QPropertyAnimation* paMax = new QPropertyAnimation(this, "maximumWidth");
-    paMin->setStartValue(width());
-    paMax->setStartValue(width());
+    QPropertyAnimation* paFixed = new QPropertyAnimation(this, "fixedWidth");
+    paFixed->setStartValue(width());
     if (more) {
-        paMin->setEndValue(330);
-        paMax->setEndValue(330);
+        paFixed->setEndValue(330);
         removeRounding();
     } else {
-        paMin->setEndValue(56);
-        connect(paMin, SIGNAL(finished()), this, SLOT(addRounding()));
-        paMax->setEndValue(56);
+        paFixed->setEndValue(56);
+        connect(paFixed, SIGNAL(finished()), this, SLOT(addRounding()));
     }
-    paMin->setDuration(500);
-    paMax->setDuration(500);
-    paMin->setEasingCurve(QEasingCurve::InQuad);
-    paMax->setEasingCurve(QEasingCurve::InQuad);
-    paMin->start(QAbstractAnimation::DeleteWhenStopped);
-    paMax->start(QAbstractAnimation::DeleteWhenStopped);
+    paFixed->setDuration(500);
+    paFixed->setEasingCurve(QEasingCurve::InQuad);
+    paFixed->start(QAbstractAnimation::DeleteWhenStopped);
+
+    QTimer::singleShot(600, parent(), SLOT(updateGeometriesOrDie()));
 }
 
 void FJReverbFrame::addRounding()

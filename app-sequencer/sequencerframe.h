@@ -39,6 +39,8 @@ public:
     QAction* action_export;
     QAction* action_newToolchain;
 
+    bool expanding() const { return width() > 60; }
+
 public slots:
     void logicMute(bool x);
     void logicPlay(bool x);

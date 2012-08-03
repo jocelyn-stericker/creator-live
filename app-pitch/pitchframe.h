@@ -26,6 +26,8 @@ class PitchFrame : public live_widgets::AppFrame
 public:
     explicit PitchFrame(PitchApp* backend, QWidget *parent = 0);
 
+    bool expanding() const { return false; }
+
 signals:
 
 public slots:

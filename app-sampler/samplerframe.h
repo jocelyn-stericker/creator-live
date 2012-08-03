@@ -30,6 +30,8 @@ public:
     explicit SamplerFrame(SamplerApp* backend, QWidget *parent = 0);
     ~SamplerFrame();
 
+    bool expanding() const { return false; }
+
 public slots:
     void buttonLogic();
     void contextLogic(QPoint);

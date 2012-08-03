@@ -42,6 +42,8 @@ public:
     explicit FJReverbFrame(FJReverbApp* backend, QWidget *parent = 0);
     ~FJReverbFrame();
 
+    bool expanding() const { return false; }
+
 public slots:
     void onRoomSize(int);
     void onDiffusion(int);

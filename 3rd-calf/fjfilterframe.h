@@ -43,6 +43,8 @@ class FJFilterFrame : public live_widgets::AppFrame
 public:
     explicit FJFilterFrame(FJFilterApp* s_backend, QWidget *parent = 0);
     ~FJFilterFrame();
+
+    bool expanding() const { return false; }
     
 public slots:
     void onCutoff(int);

@@ -41,6 +41,8 @@ public:
     explicit FJPhaserFrame(FJPhaserApp *app, QWidget *parent = 0);
     ~FJPhaserFrame();
 
+    bool expanding() const { return false; }
+
 public slots:
     void onFreq(int);
     void onDepth(int);
