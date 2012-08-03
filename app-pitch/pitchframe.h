@@ -12,10 +12,10 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include <QVBoxLayout>
 #include "pitchapp.h"
-#include "live/app.h"
-#include "live/appinterface.h"
-#include "live_widgets/appframe.h"
-#include "live_widgets/spinbox.h"
+#include <live/app.h>
+#include <live/appinterface.h>
+#include <live_widgets/appframe.h>
+#include <live_widgets/spinbox.h>
 
 class PitchFrame : public live_widgets::AppFrame
 {

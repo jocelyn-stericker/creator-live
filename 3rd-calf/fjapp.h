@@ -23,9 +23,9 @@
 #include "3rd-calf/modules.h"
 #include "3rd-calf/utils.h"
 
-#include "live/audio.h"
-#include "live/midi.h"
-#include "live/midievent.h"
+#include <live/audio.h>
+#include <live/midi.h>
+#include <live/midievent.h>
 
 #ifndef FJAPP_H
 #define FJAPP_H
@@ -51,10 +51,10 @@ public:
         : live::Object(name, 0, 0)
         , r_nFrames(live::audio::nFrames())
     {
-        for(int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
             Module::outs[i] = s_out[i] = new float[r_nFrames];
         }
-        for(int i = 0; i < param_count; i++) {
+        for (int i = 0; i < param_count; i++) {
             Module::params[i] = &s_param[i];
         }
         clear_preset(); // giface.cpp
@@ -70,7 +70,7 @@ public:
     }
 
     void mIn(const live::Event *data, live::ObjectChain &p) {
-        switch(data->simpleStatus())
+        switch (data->simpleStatus())
         {
         case live::Event::NOTE_OFF:
             Module::note_off(data->data1, data->data2);
@@ -98,21 +98,21 @@ public:
         Module::ins[chan] = const_cast<float*>(data); // FIXME: Module::ins should be const.
         if (!chan) return;
 
-        if(s_changed) {
+        if (s_changed) {
             Module::params_changed();
             s_changed = 0;
         }
 
         unsigned mask = Module::process(0, r_nFrames, -1, -1); // returns mask
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             if (!(mask & (1 << i))) {
                 dsp::zero(Module::outs[i], r_nFrames);
             }
         }
 
         p.push_back(this);
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             aOut(s_out[i], i, p);
         }
         p.pop_back();

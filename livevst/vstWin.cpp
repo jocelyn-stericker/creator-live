@@ -55,7 +55,7 @@ extern "C"
         AEffect *effect, VstInt32 opcode, VstInt32, VstInt32, void *, float )
     {
         qDebug()<<opcode;
-        switch(opcode)
+        switch (opcode)
         {
         case audioMasterVersion:
             return 7;
@@ -146,7 +146,7 @@ Vst
 void Vst::init()
 {
     Q_ASSERT(!rep);
-    if(!SecretVst::singleton) new SecretVst;
+    if (!SecretVst::singleton) new SecretVst;
     Q_ASSERT(SecretVst::singleton);
 
     QMutexLocker lock(&csMutex);
@@ -156,23 +156,23 @@ void Vst::init()
     const int& nframes=AudioSys::nFrames();
     channelData = new float*[ rep->_vst->numInputs ];
     outData = new float*[ rep->_vst->numOutputs ];
-    for(int i=0;i<rep->_vst->numInputs;i++)
+    for (int i=0;i<rep->_vst->numInputs;i++)
     {
         channelData[i]=new float[nframes];
     }
-    for(int i=0;i<rep->_vst->numOutputs;i++)
+    for (int i=0;i<rep->_vst->numOutputs;i++)
     {
         outData[i]=new float[nframes];
     }
     chains=new ObjectChain[ rep->_vst->numOutputs ];
-    for(int i=0;i<rep->_vst->numOutputs/2;i++)
+    for (int i=0;i<rep->_vst->numOutputs/2;i++)
     {
         VstSidekick* l=new VstSidekick(rep,i,this,this,i*2);
         ObjectStore::set(l); //reg to unload...
         rep->s_sidekicks.push_back(l);
 
     }
-    if(rep)
+    if (rep)
     {
         show();
     }
@@ -181,7 +181,7 @@ void Vst::init()
 void Vst::show()
 {
     Q_ASSERT(rep);
-    if(rep->vstEditor)
+    if (rep->vstEditor)
     {
         return;
     }
@@ -191,7 +191,7 @@ void Vst::show()
 
 void Vst::hide()
 {
-    if(!rep->vstEditor)
+    if (!rep->vstEditor)
     {
         return;
     }
@@ -206,7 +206,7 @@ void Vst::aIn(const float* x, int chan, ObjectChain&s)
 
     //todo: should be mixer.
     const int& nframes = AudioSys::nFrames();
-    for(long frame = 0; frame < nframes; ++frame)
+    for (long frame = 0; frame < nframes; ++frame)
     {
         channelData[chan][frame] = x[frame];
     }
@@ -223,7 +223,7 @@ void Vst::PROC_VST()
     rep->processAudio( channelData, outData, nframes );
 
     rep->silenceChannel( channelData, rep->_vst->numInputs, nframes );
-    for(int i=0;i<rep->_vst->numOutputs;i++)
+    for (int i=0;i<rep->_vst->numOutputs;i++)
     {
         chains[i].push_back(this);
         aOut(outData[i],i,chains[i]);
@@ -237,7 +237,7 @@ void Vst::mIn(const Event *data, ObjectChain&p)
     mOut(data,p);
     p.pop_back();
 
-    if(data->simpleStatus()==-1) return;
+    if (data->simpleStatus()==-1) return;
     QMutexLocker lock(&csMutex);
     Q_UNUSED(lock);
 
@@ -253,12 +253,12 @@ void Vst::mIn(const Event *data, ObjectChain&p)
 QStringList Vst::getVstPaths()
 {
     return s_vstpaths_linux;
-//    if(s_vstCache) return *s_vstCache;
+//    if (s_vstCache) return *s_vstCache;
 //    QStringList vsts;
-//    for(int i=0; i<s_paths; i++)
+//    for (int i=0; i<s_paths; i++)
 //    {
 //        QStringList files = s_paths[i].entryList(QStringList("*.dll"));
-//        for(int j=0; j<files; j++)
+//        for (int j=0; j<files; j++)
 //        {
 //            //verify it's a VST
 //            AEffect *a = NULL;
@@ -274,14 +274,14 @@ QStringList Vst::getVstPaths()
 //            }
 //            if (!mainEntryPoint)
 //                mainEntryPoint= (vstPluginFuncPtr)GetProcAddress ((HMODULE) modulePtr, "main");
-//            if(!mainEntryPoint)
+//            if (!mainEntryPoint)
 //            {
 //                qDebug()<<s_paths[i].absolutePath()+"\\"+files[j]<<": NOT A VST";
 //                FreeLibrary((HINSTANCE__*)modulePtr);
 //                continue;
 //            }
 //            a = mainEntryPoint( hostCallback );
-//            if(a->magic!=kEffectMagic)
+//            if (a->magic!=kEffectMagic)
 //            {
 //                qDebug()<<s_paths[i].absolutePath()+"\\"+files[j]<<": NOT A VST";
 //                FreeLibrary((HINSTANCE__*)modulePtr);
@@ -305,9 +305,9 @@ VstR
 
 void VstR::silenceChannel(float **channelData, int numChannels, long numFrames)
 {
-    for(int channel = 0; channel < numChannels; ++channel)
+    for (int channel = 0; channel < numChannels; ++channel)
     {
-        for(long frame = 0; frame < numFrames; ++frame)
+        for (long frame = 0; frame < numFrames; ++frame)
         {
             channelData[channel][frame] = 0.0f;
         }
@@ -318,9 +318,9 @@ void VstR::processAudio(float **inputs, float **outputs, long numFrames)
 {
     QList<Event*> playNow;
     Time x=MidiSys::getTime()+Time(20);
-    for(int i=0; i<midiQueue; i++)
+    for (int i=0; i<midiQueue; i++)
     {
-        if(midiQueue[i]->time<x)
+        if (midiQueue[i]->time<x)
         {
             playNow.push_back(midiQueue.takeAt(i));
             i--;
@@ -328,14 +328,14 @@ void VstR::processAudio(float **inputs, float **outputs, long numFrames)
     }
 
     // fixme
-    if(playNow.size())
+    if (playNow.size())
     {
         midiEvents = (struct VstEvents*) malloc(
                          sizeof(struct VstEvents) + (playNow.size()>=2?playNow.size()+2:0)*sizeof(VstEvent*));
         midiEvents->numEvents = 0;
         midiEventCount=-1;
 
-        for(int i=0; i<playNow; i++)
+        for (int i=0; i<playNow; i++)
         {
             ++(midiEvents->numEvents);
             VstMidiEvent* event = new VstMidiEvent; // MEMORY LEAK
@@ -376,7 +376,7 @@ AEffect* SecretVst::s_loadPlugin(QString path)
 
     void* modulePtr = LoadLibraryA( (char*) path.toStdString().c_str() );
 
-    if(!modulePtr) return 0;
+    if (!modulePtr) return 0;
 
     vstPluginFuncPtr mainEntryPoint = (vstPluginFuncPtr) GetProcAddress(
                                           (HMODULE) modulePtr, "VSTPluginMain" );
@@ -384,7 +384,7 @@ AEffect* SecretVst::s_loadPlugin(QString path)
     if (!mainEntryPoint)
         mainEntryPoint= (vstPluginFuncPtr)GetProcAddress ((HMODULE) modulePtr, "main");
 
-    if(!mainEntryPoint) {
+    if (!mainEntryPoint) {
         FreeLibrary( (HMODULE) modulePtr);
         return 0;
     }
@@ -393,7 +393,7 @@ AEffect* SecretVst::s_loadPlugin(QString path)
     a = mainEntryPoint( hostCallback );
 
     s_initPlugin( a );
-    if(!a) {
+    if (!a) {
         FreeLibrary( (HMODULE) modulePtr);
         return 0;
     }
@@ -405,7 +405,7 @@ AEffect* SecretVst::s_loadPlugin(QString path)
 
 bool SecretVst::isValid(QString path)
 {
-    if(!singleton) singleton=new SecretVst();
+    if (!singleton) singleton=new SecretVst();
     AEffect* a=singleton->s_loadPlugin(path);
     return a;
 }
@@ -420,19 +420,19 @@ void SecretVst::s_initPlugin(AEffect *&plugin)
     // Check plugin's magic number
     // If incorrect, then the file either was not loaded properly, is not a real
     // VST plugin, or is otherwise corrupt.
-    if(plugin->magic!=kEffectMagic) {
+    if (plugin->magic!=kEffectMagic) {
         plugin=0;
         return;
     }
 
-    if(!plugin) return;
+    if (!plugin) return;
 
     // Set up plugin callback functions
     plugin->getParameter = (getParameterFuncPtr)plugin->getParameter;
     plugin->processReplacing = (processFuncPtr)plugin->processReplacing;
     plugin->setParameter = (setParameterFuncPtr)plugin->setParameter;
 
-    if(!plugin) return;
+    if (!plugin) return;
 
     plugin->dispatcher(plugin, effOpen, 0, 0, 0, 0);
     plugin->dispatcher(plugin, effSetSampleRate, 0, 0, 0, AudioSys::sampleRate());

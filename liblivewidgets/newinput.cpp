@@ -7,8 +7,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live_widgets/newinput.h"
-#include "live/audio.h"
+#include <live_widgets/newinput.h>
+#include <live/audio.h>
 #include "ui_newinput.h"
 #include <cmath>
 #include <math.h>
@@ -42,7 +42,7 @@ void NewInput::internalStockChangedEvent()
     QList<ObjectPtr> list = object::get(InputOnly|NoRefresh);
     QStringList v;
     v<<list;
-    if(all!=v)
+    if (all!=v)
     {
         all.clear();
         all+=v;
@@ -77,5 +77,5 @@ void NewInput::resizeEvent(QResizeEvent *e)
      s_ui->Bwidget->setFixedWidth(w/2.00/phi);
      s_ui->Cwidget->setFixedWidth(w/2.00/phi/phi);
 
-     if(e) QFrame::resizeEvent(e);
+     if (e) QFrame::resizeEvent(e);
 }

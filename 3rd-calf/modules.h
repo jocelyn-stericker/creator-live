@@ -326,7 +326,7 @@ public:
         uint32_t end = offset + numsamples;
         int v = mixmode ? 1 : 0;
         int orig_bufptr = bufptr;
-        for(uint32_t i = offset; i < end; i++)
+        for (uint32_t i = offset; i < end; i++)
         {
             float out_left, out_right, del_left, del_right;
             // if the buffer hasn't been cleared yet (after activation), pretend we've read zeros
@@ -368,7 +368,7 @@ public:
             bufptr = orig_bufptr;
             if (medium == 2)
             {
-                for(uint32_t i = offset; i < end; i++)
+                for (uint32_t i = offset; i < end; i++)
                 {
                     buffers[0][bufptr] = biquad_left[0].process_lp(biquad_left[1].process(buffers[0][bufptr]));
                     buffers[1][bufptr] = biquad_right[0].process_lp(biquad_right[1].process(buffers[1][bufptr]));
@@ -376,7 +376,7 @@ public:
                 }
                 biquad_left[0].sanitize();biquad_right[0].sanitize();
             } else {
-                for(uint32_t i = offset; i < end; i++)
+                for (uint32_t i = offset; i < end; i++)
                 {
                     buffers[0][bufptr] = biquad_left[1].process(buffers[0][bufptr]);
                     buffers[1][bufptr] = biquad_right[1].process(buffers[1][bufptr]);
@@ -697,7 +697,7 @@ public:
 //        printf("sr=%d cutoff=%f res=%f mode=%f\n", FilterClass::srate, *params[Metadata::par_cutoff], *params[Metadata::par_resonance], *params[Metadata::par_mode]);
         uint32_t ostate = 0;
         numsamples += offset;
-        while(offset < numsamples) {
+        while (offset < numsamples) {
             uint32_t numnow = numsamples - offset;
             // if inertia's inactive, we can calculate the whole buffer at once
             if (inertia_cutoff.active() || inertia_resonance.active() || inertia_gain.active())
@@ -843,13 +843,13 @@ public:
     }
     
     inline float output_gain(float linSlope, bool rms) {
-         if(linSlope > (rms ? adjKneeStart : linKneeStart)) {
+         if (linSlope > (rms ? adjKneeStart : linKneeStart)) {
             float slope = log(linSlope);
-            if(rms) slope *= 0.5f;
+            if (rms) slope *= 0.5f;
 
             float gain = 0.f;
             float delta = 0.f;
-            if(IS_FAKE_INFINITY(ratio)) {
+            if (IS_FAKE_INFINITY(ratio)) {
                 gain = threshold;
                 delta = 0.f;
             } else {
@@ -857,7 +857,7 @@ public:
                 delta = 1.f / ratio;
             }
             
-            if(knee > 1.f && slope < kneeStop) {
+            if (knee > 1.f && slope < kneeStop) {
                 gain = hermite_interpolation(slope, kneeStart, kneeStop, kneeStart, compressedKneeStop, 1.f, delta);
             }
             

@@ -10,8 +10,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "collectioncontext.h"
 #include "ui_collectioncontext.h"
 
-#include "live/audio.h"
-#include "live/object.h"
+#include <live/audio.h>
+#include <live/object.h>
 
 #include <QTimer>
 
@@ -50,7 +50,7 @@ void CollectionContext::stockChanged_logic()
 {
     QList< ObjectPtr > ptrs = object::get(AudioOnly | OutputOnly);
     QStringList names;
-    for(int i = 0; i < ptrs.size(); i++)
+    for (int i = 0; i < ptrs.size(); i++)
     {
         names.push_back(ptrs[i]->name());
     }

@@ -10,8 +10,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <iostream>
 #include <math.h>
 #include <cmath>
-#include "live/anabeat.h"
-#include "live/midievent.h"
+#include <live/anabeat.h>
+#include <live/midievent.h>
 
 /**
  * A denominator cannot be detected, but numerators have common
@@ -183,21 +183,21 @@ void live::AnaBeat::_updatePredictions()
              denForNum( numLCD ) << " from pulse " << (double)60/highestBC;
     return;
 
-    for(int i=0; i<_giveHintTo; i++)
+    for (int i=0; i<_giveHintTo; i++)
     {
         int cbpm=_giveHintTo[i]->bpm();
         int tries=0;
         bool ok=1;
-        while(qAbs((double)60/highestBC / oldFactor - cbpm)>40)
+        while (qAbs((double)60/highestBC / oldFactor - cbpm)>40)
         {
             oldFactor /= ((double)60/highestBC / oldFactor) < cbpm ? 0.5 : 2.0;
-            if(++tries==4)
+            if (++tries==4)
             {
                 ok=0;
                 break;
             }
         }
-        if(!ok)
+        if (!ok)
         {
             continue;
         }
@@ -221,7 +221,7 @@ bool live::AnaBeat::_sortBeats()
                 double a = _unplacedBeats.last()->startTime();
                 double b = _unplacedEvents.first()->time;
                 a+=0.0625;
-                while( a < b )
+                while ( a < b )
                 {
                     a+=0.0625;
                     //_unplacedBeats.append( new AbBeat );

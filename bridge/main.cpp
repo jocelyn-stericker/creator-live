@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    if(argc==2&&argv[1][0]=='c') {
+    if (argc==2&&argv[1][0]=='c') {
         live::audio::registerInterface(new live_private::SecretAudio);
         live_private::SecretMidi::me=new live_private::SecretMidi;
         qDebug()<<"Going to try to be client.";
@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 //        hi->connectToHost("192.168.0.14",1143);
 //        hi->waitForConnected();
 //        qDebug()<<"CONNECTED!";
-//        while(1) {
+//        while (1) {
 //            hi->waitForReadyRead();
 //            QByteArray x=hi->readAll();
 //            x.replace('\0',"_0_");

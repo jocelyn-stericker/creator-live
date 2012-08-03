@@ -7,7 +7,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live_widgets/midibindingqt.h"
+#include <live_widgets/midibindingqt.h>
 
 #include <QInputDialog>
 #include <QPushButton>
@@ -139,7 +139,7 @@ namespace MidiBindingQtSysPrivate
 
 void live_widgets::MidiBindingQtSys::addWidget(QWidget* widget)
 {
-    if(!singleton) singleton = new MidiBindingQtSys();
+    if (!singleton) singleton = new MidiBindingQtSys();
     singleton->addWidgetReal(widget);
 }
 
@@ -161,7 +161,7 @@ void live_widgets::MidiBindingQtSys::addWidgetReal(QWidget *widget)
 
 void live_widgets::MidiBindingQtSys::delWidget(QWidget* widget)
 {
-    if(!singleton) singleton = new MidiBindingQtSys();
+    if (!singleton) singleton = new MidiBindingQtSys();
     singleton->delWidgetReal(widget);
 }
 
@@ -170,7 +170,7 @@ void live_widgets::MidiBindingQtSys::delWidgetReal(QObject *object)
     QWidget* widget = qobject_cast<QWidget*>(object);
     for ( int i = 0; i < widgets.size(); i++ ) {
         if ( widgets[i] == object ) {
-            if(widget)  //else, it's already been done.
+            if (widget)  //else, it's already been done.
             {
                 //No need for:
 //                disconnect( widget, SIGNAL(customContextMenuRequested(QPoint)),this, SLOT(showContextMenu(QPoint)) );
@@ -179,9 +179,9 @@ void live_widgets::MidiBindingQtSys::delWidgetReal(QObject *object)
             i--;
         }
     }
-    for( int i = 0;i<live::MidiBinding::universe;i++)
+    for ( int i = 0;i<live::MidiBinding::universe;i++)
     {
-        if( object == live::MidiBinding::universe[i]->guiObject )
+        if ( object == live::MidiBinding::universe[i]->guiObject )
         {
             delete live::MidiBinding::universe.takeAt(i);
             i--;
@@ -204,9 +204,9 @@ void live_widgets::MidiBindingQtSys::showContextMenu( QPoint )
         currentCM = 0;
     }
 
-    for(int i=0;i<live::MidiBinding::universe;i++)
+    for (int i=0;i<live::MidiBinding::universe;i++)
     {
-        if(widget==live::MidiBinding::universe[i]->guiObject)
+        if (widget==live::MidiBinding::universe[i]->guiObject)
         {
             activeWidget = widget;
             activeWidgetType = (live::MidiBinding::GuiType) MidiBindingQtSysPrivate::getWidgetType(widget);
@@ -217,7 +217,7 @@ void live_widgets::MidiBindingQtSys::showContextMenu( QPoint )
         }
     }
 
-    switch( MidiBindingQtSysPrivate::getWidgetType( widget ) )
+    switch ( MidiBindingQtSysPrivate::getWidgetType( widget ) )
     {
     case 0: // ABSTRACT BUTTON
         {
@@ -427,9 +427,9 @@ void live_widgets::MidiBindingQtSys::bindSlider()
 void live_widgets::MidiBindingQtSys::removeBind()
 {
     Q_ASSERT(activeWidget);
-    for(int i=0;i<live::MidiBinding::universe;i++)
+    for (int i=0;i<live::MidiBinding::universe;i++)
     {
-        if(activeWidget==live::MidiBinding::universe[i]->guiObject)
+        if (activeWidget==live::MidiBinding::universe[i]->guiObject)
         {
             delete live::MidiBinding::universe.takeAt(i);
             return;
@@ -442,7 +442,7 @@ live_widgets::MidiBindingQtSys::~MidiBindingQtSys()
     singleton=0;
     delete currentCM;
 
-    while(live::MidiBinding::universe.size())
+    while (live::MidiBinding::universe.size())
     {
         delete live::MidiBinding::universe.takeFirst();
     }

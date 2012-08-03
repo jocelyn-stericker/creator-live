@@ -20,7 +20,8 @@
  */
 
 #include "fjreverbframe.h" // this will include everything else.
-#include "live/midibinding.h"
+#include <live/midibinding.h>
+
 #include <QByteArray>
 #include <QDataStream>
 
@@ -50,7 +51,7 @@ template<typename T> bool verify1(QDataStream&ret,T chk)
 {
     T b=chk;
     ret IO b;
-    if(b!=chk)
+    if (b!=chk)
     {
         qCritical()<<"Found"<<b;
         qCritical()<<"Should be"<<chk;
@@ -72,7 +73,7 @@ template<typename T> bool verify2(QDataStream&ret,T chk)
 {
     T b=chk;
     ret IO b;
-    if(b!=chk)
+    if (b!=chk)
     {
         qCritical()<<"Found"<<b;
         qCritical()<<"Should be"<<chk;
@@ -91,21 +92,21 @@ template<typename T> bool verify2(QDataStream&ret,T chk)
     xint32=var; \
     ret IO xint32; \
     var=xint32; \
-    } while(0)
+    } while (0)
 
 #define P_BOOL(var) \
     do { \
     xbool=var; \
     ret IO xbool; \
     var=xbool; \
-    } while(0)
+    } while (0)
 
 #define P_QSTRING(var) \
     do { \
     xqstring=var; \
     ret IO xqstring; \
     var=xqstring; \
-    } while(0)
+    } while (0)
 #endif
 
 using namespace live;
@@ -139,39 +140,39 @@ QByteArray FJReverbApp::save()
 
     float xf=IS_SAVE?x->getRoomSize():0;
     ret IO xf;  /*003*/
-    if(IS_LOAD) x->setRoomSize((RoomSize)xf);
+    if (IS_LOAD) x->setRoomSize((RoomSize)xf);
 
     xf=IS_SAVE?x->getDiffusion():0;
     ret IO xf;  /*004*/
-    if(IS_LOAD) x->setDiffusion(xf);
+    if (IS_LOAD) x->setDiffusion(xf);
 
     xf=IS_SAVE?x->getDecayTime():0;
     ret IO xf;  /*005*/
-    if(IS_LOAD) x->setDecayTime(xf);
+    if (IS_LOAD) x->setDecayTime(xf);
 
     xf=IS_SAVE?x->getHFDamp():0;
     ret IO xf;  /*006*/
-    if(IS_LOAD) x->setHFDamp(xf);
+    if (IS_LOAD) x->setHFDamp(xf);
 
     xf=IS_SAVE?x->getWet():0;
     ret IO xf;  /*007*/
-    if(IS_LOAD) x->setWet(xf);
+    if (IS_LOAD) x->setWet(xf);
 
     xf=IS_SAVE?x->getDry():0;
     ret IO xf;  /*008*/
-    if(IS_LOAD) x->setDry(xf);
+    if (IS_LOAD) x->setDry(xf);
 
     xf=IS_SAVE?x->getTrebleCut():0;
     ret IO xf;  /*009*/
-    if(IS_LOAD) x->setTrebleCut(xf);
+    if (IS_LOAD) x->setTrebleCut(xf);
 
     xf=IS_SAVE?x->getBassCut():0;
     ret IO xf;  /*010*/
-    if(IS_LOAD) x->setBassCut(xf);
+    if (IS_LOAD) x->setBassCut(xf);
 
     xf=IS_SAVE?x->getPredelay():0;
     ret IO xf;  /*011*/
-    if(IS_LOAD) x->setPredelay(xf);
+    if (IS_LOAD) x->setPredelay(xf);
 
     /*012*/
     (verify(ret,(QString)"END FJReverbApp"));
@@ -206,35 +207,35 @@ QByteArray FJFlangerApp::save()
 
     float xf=IS_SAVE?x->getDelay():0;
     ret IO xf;  /*003*/
-    if(IS_LOAD) x->setDelay(xf);
+    if (IS_LOAD) x->setDelay(xf);
 
     xf=IS_SAVE?x->getDepth():0;
     ret IO xf;  /*004*/
-    if(IS_LOAD) x->setDepth(xf);
+    if (IS_LOAD) x->setDepth(xf);
 
     xf=IS_SAVE?x->getRate():0;
     ret IO xf;  /*005*/
-    if(IS_LOAD) x->setRate(xf);
+    if (IS_LOAD) x->setRate(xf);
 
     xf=IS_SAVE?x->getFB():0;
     ret IO xf;  /*006*/
-    if(IS_LOAD) x->setFB(xf);
+    if (IS_LOAD) x->setFB(xf);
 
     xf=IS_SAVE?x->getStereo():0;
     ret IO xf;  /*007*/
-    if(IS_LOAD) x->setStereo(xf);
+    if (IS_LOAD) x->setStereo(xf);
 
     xf=IS_SAVE?x->getReset():0;
     ret IO xf;  /*008*/
-    if(IS_LOAD) x->setReset(xf);
+    if (IS_LOAD) x->setReset(xf);
 
     xf=IS_SAVE?x->getAmount():0;
     ret IO xf;  /*009*/
-    if(IS_LOAD) x->setAmount(xf);
+    if (IS_LOAD) x->setAmount(xf);
 
     xf=IS_SAVE?x->getDryAmount():0;
     ret IO xf;  /*010*/
-    if(IS_LOAD) x->setDryAmount(xf);
+    if (IS_LOAD) x->setDryAmount(xf);
 
     /*011*/
     (verify(ret,(QString)"END FJFlangerApp"));
@@ -270,19 +271,19 @@ QByteArray FJFilterApp::save()
 
     float xf=IS_SAVE?x->getCutoff():0;
     ret IO xf;  /*003*/
-    if(IS_LOAD) x->setCutoff(xf);
+    if (IS_LOAD) x->setCutoff(xf);
 
     xf=IS_SAVE?x->getResonance():0;
     ret IO xf;  /*004*/
-    if(IS_LOAD) x->setResonance(xf);
+    if (IS_LOAD) x->setResonance(xf);
 
     xf=IS_SAVE?x->getMode():0;
     ret IO xf;  /*005*/
-    if(IS_LOAD) x->setMode((Filter)(int)xf);
+    if (IS_LOAD) x->setMode((Filter)(int)xf);
 
     xf=IS_SAVE?x->getInertia():0;
     ret IO xf;  /*006*/
-    if(IS_LOAD) x->setIntertia(xf);
+    if (IS_LOAD) x->setIntertia(xf);
 
     /*017*/
     (verify(ret,(QString)"END FJFilterApp"));
@@ -318,31 +319,31 @@ QByteArray FJPhaserApp::save()
 
     float xf=IS_SAVE?x->getFreq():0;
     ret IO xf;  /*003*/
-    if(IS_LOAD) x->setFreq(xf);
+    if (IS_LOAD) x->setFreq(xf);
 
     xf=IS_SAVE?x->getDepth():0;
     ret IO xf;  /*004*/
-    if(IS_LOAD) x->setDepth(xf);
+    if (IS_LOAD) x->setDepth(xf);
 
     xf=IS_SAVE?x->getRate():0;
     ret IO xf;  /*005*/
-    if(IS_LOAD) x->setRate(xf);
+    if (IS_LOAD) x->setRate(xf);
 
     xf=IS_SAVE?x->getFB():0;
     ret IO xf;  /*006*/
-    if(IS_LOAD) x->setFB(xf);
+    if (IS_LOAD) x->setFB(xf);
 
     xf=IS_SAVE?x->getStages():0;
     ret IO xf;  /*007*/
-    if(IS_LOAD) x->setStages(xf);
+    if (IS_LOAD) x->setStages(xf);
 
     xf=IS_SAVE?x->getAmount():0;
     ret IO xf;  /*008*/
-    if(IS_LOAD) x->setAmount(xf);
+    if (IS_LOAD) x->setAmount(xf);
 
     xf=IS_SAVE?x->getDryAmount():0;
     ret IO xf;  /*009*/
-    if(IS_LOAD) x->setDryAmount(xf);
+    if (IS_LOAD) x->setDryAmount(xf);
 
     /*010*/
     (verify(ret,(QString)"END FJPhaserApp"));

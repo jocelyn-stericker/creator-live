@@ -7,7 +7,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live_widgets/trackhint.h"
+#include <live_widgets/trackhint.h>
 #include "ui_trackhint.h"
 
 using namespace live_widgets;

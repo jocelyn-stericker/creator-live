@@ -30,12 +30,12 @@ VstSettingsWidget::VstSettingsWidget(QWidget *parent) :
 void VstSettingsWidget::addPathAction()
 {
     QString l=QFileDialog::getExistingDirectory(this,"Add Path","Select the path you wish to load");
-    if(!l.isEmpty()) {
+    if (!l.isEmpty()) {
         QDirIterator i(l,QDirIterator::Subdirectories);
         QStringList v;
-        while(i.hasNext()) {
+        while (i.hasNext()) {
             QString x=i.next();
-            if(x.endsWith(".dll",Qt::CaseInsensitive)) v.push_back(x);
+            if (x.endsWith(".dll",Qt::CaseInsensitive)) v.push_back(x);
         }
         addSingleAction(v);
     }
@@ -43,19 +43,19 @@ void VstSettingsWidget::addPathAction()
 
 void VstSettingsWidget::addSingleAction(QStringList l)
 {
-    if(l.isEmpty()) l=QFileDialog::getOpenFileNames(this,"Add VSTs","Select the vsts you wish to load");
+    if (l.isEmpty()) l=QFileDialog::getOpenFileNames(this,"Add VSTs","Select the vsts you wish to load");
 
     // In Windows-land, we can verify thingies
 #ifdef _WIN32
-    for(int i=0;i<l.size();i++) {
-        if(!SecretVst::isValid(l[i])) {
+    for (int i=0;i<l.size();i++) {
+        if (!SecretVst::isValid(l[i])) {
             QMessageBox::warning(this,"Not a valid VST",l+" is not a valid VST. Note that only 32-bit VSTs are supported at this time.");
             l.removeAt(i--);
         }
     }
 #endif
-    for(int i=0;i<l.size();i++) {
-        if(!l[i].isEmpty()) ui->listWidget->addItem(l[i]);
+    for (int i=0;i<l.size();i++) {
+        if (!l[i].isEmpty()) ui->listWidget->addItem(l[i]);
     }
 }
 
@@ -73,7 +73,7 @@ void VstSettingsWidget::indexChangedLogic()
 void VstSettingsWidget::doneAction()
 {
     QStringList ret;
-    for(int i=0;i<ui->listWidget->count();i++) {
+    for (int i=0;i<ui->listWidget->count();i++) {
         ret.push_back(ui->listWidget->item(i)->text());
     }
     QSettings("Nettek", "VSTi plugin for Creator Live").setValue("vstis",ret);

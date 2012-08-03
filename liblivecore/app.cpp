@@ -7,8 +7,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live/app.h"
-#include "live/appinterface.h"
+#include <live/app.h>
+#include <live/appinterface.h>
 
 using namespace live;
 
@@ -17,7 +17,7 @@ app* app::s_singleton=0;
 void app::registerInterface(AppInterface* c)
 {
     s_singleton = s_singleton?s_singleton:new app;
-    if(s_singleton->s_appNames.contains(c->name()))
+    if (s_singleton->s_appNames.contains(c->name()))
     {
         return;
     }
@@ -27,7 +27,7 @@ void app::registerInterface(AppInterface* c)
 
 app::~app()
 {
-    while(s_apps.size())
+    while (s_apps.size())
     {
         delete s_apps.takeLast();
     }

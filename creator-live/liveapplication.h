@@ -11,7 +11,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define LIVEAPPLICATION_H
 
 #include <QApplication>
-#include "live/core.h"
+#include <live/core.h>
 
 class Ribbon;
 class QMainWindow;

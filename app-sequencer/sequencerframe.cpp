@@ -10,9 +10,9 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "looperframe.h"
 #include "sequencerframe.h"
 #include "ui_sequencerframe.h"
-#include "live_widgets/midibindingqt.h"
-#include "live/asyncconnect.h"
-#include "live_widgets/track.h"
+#include <live/asyncconnect.h>
+#include <live_widgets/midibindingqt.h>
+#include <live_widgets/track.h>
 
 #include <QtPlugin>
 #include <QMenu>
@@ -80,30 +80,30 @@ SequencerFrame::~SequencerFrame()
 
 void SequencerFrame::logicMute(bool x)
 {
-    if(!app.isMute()&&x) app.startMute();
-    else if(app.isMute()&&!x) app.stopMute();
+    if (!app.isMute()&&x) app.startMute();
+    else if (app.isMute()&&!x) app.stopMute();
 }
 
 void SequencerFrame::logicPlay(bool x)
 {
-    if(!app.isPlaying()&&x) app.startPlayback();
-    else if(app.isPlaying()&&!x) app.stopPlayback();
+    if (!app.isPlaying()&&x) app.startPlayback();
+    else if (app.isPlaying()&&!x) app.stopPlayback();
 }
 
 void SequencerFrame::logicRecord(bool x)
 {
-    if(!app.isRecord()&&x) app.startRecord();
-    else if(app.isRecord()&&!x) app.stopRecord();
+    if (!app.isRecord()&&x) app.startRecord();
+    else if (app.isRecord()&&!x) app.stopRecord();
 }
 
 void SequencerFrame::logicImport()
 {
     QString file=QFileDialog::getOpenFileName(this,QString("Import file"),QString(),"Audio Files (*.wav *.flac *.ogg);;MIDI Files (*.MIDI *.midi *.MID *.mid)");
-    if(QFile::exists(file)&&(file.endsWith("flac")||file.endsWith("ogg")||file.endsWith("wav")))
+    if (QFile::exists(file)&&(file.endsWith("flac")||file.endsWith("ogg")||file.endsWith("wav")))
     {
         app.s_audioTrack->importFile(file);
     }
-    else if(QFile::exists(file)&&(file.endsWith("midi")||file.endsWith("MIDI")||file.endsWith("mid")||file.endsWith("MID")))
+    else if (QFile::exists(file)&&(file.endsWith("midi")||file.endsWith("MIDI")||file.endsWith("mid")||file.endsWith("MID")))
     {
         app.s_midiTrack->importFile(file);
     }
@@ -111,11 +111,11 @@ void SequencerFrame::logicImport()
 void SequencerFrame::logicExport()
 {
     QString file=QFileDialog::getSaveFileName(this,QString("Export file"),QString(),"Audio Files (*.wav *.flac *.ogg);;MIDI Files (*.MIDI *.midi *.MID *.mid)");
-    if(file.endsWith("flac")||file.endsWith("ogg")||file.endsWith("wav"))
+    if (file.endsWith("flac")||file.endsWith("ogg")||file.endsWith("wav"))
     {
         app.s_audioTrack->exportFile(file);
     }
-    else if(file.endsWith("midi")||file.endsWith("MIDI")||file.endsWith("mid")||file.endsWith("MID"))
+    else if (file.endsWith("midi")||file.endsWith("MIDI")||file.endsWith("mid")||file.endsWith("MID"))
     {
         app.s_midiTrack->exportFile(file);
     }
@@ -123,15 +123,15 @@ void SequencerFrame::logicExport()
 
 void SequencerFrame::syncState()
 {
-    if(app.isMute())
+    if (app.isMute())
     {
         ui->mute->setChecked(1);
     }
-    if(app.isOverdub()||app.isRecord())
+    if (app.isOverdub()||app.isRecord())
     {
         ui->record->setChecked(1);
     }
-    if(app.isPlaying())
+    if (app.isPlaying())
     {
         ui->play->setChecked(1);
     }
@@ -155,7 +155,7 @@ void SequencerFrame::setMore(bool more)
 {
     int sugWidth = 300;
     Track* t = dynamic_cast<Track*>(parent());
-    if(t) {
+    if (t) {
         sugWidth = t->getMaximumWidthFor(this);
     }
     QPropertyAnimation* paMin = new QPropertyAnimation(ui->frame_2, "minimumWidth");

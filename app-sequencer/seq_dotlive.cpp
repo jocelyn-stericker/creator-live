@@ -47,7 +47,7 @@ template<typename T> bool verify1(QDataStream&ret,T chk)
 {
     T b=chk;
     ret IO b;
-    if(b!=chk)
+    if (b!=chk)
     {
         qCritical()<<"Found"<<b;
         qCritical()<<"Should be"<<chk;
@@ -69,7 +69,7 @@ template<typename T> bool verify2(QDataStream&ret,T chk)
 {
     T b=chk;
     ret IO b;
-    if(b!=chk)
+    if (b!=chk)
     {
         qCritical()<<"Found"<<b;
         qCritical()<<"Should be"<<chk;
@@ -88,21 +88,21 @@ template<typename T> bool verify2(QDataStream&ret,T chk)
     xint32=var; \
     ret IO xint32; \
     var=xint32; \
-    } while(0)
+    } while (0)
 
 #define P_BOOL(var) \
     do { \
     xbool=var; \
     ret IO xbool; \
     var=xbool; \
-    } while(0)
+    } while (0)
 
 #define P_QSTRING(var) \
     do { \
     xqstring=var; \
     ret IO xqstring; \
     var=xqstring; \
-    } while(0)
+    } while (0)
 #endif
 
 using namespace live;
@@ -142,7 +142,7 @@ QByteArray LooperApp::save()
 
     xba=IS_SAVE?x->s_midiTrack->save():QByteArray();
     ret IO xba;
-    if(IS_LOAD)
+    if (IS_LOAD)
     {
         mt = MidiTrack::load(xba);
     }
@@ -152,7 +152,7 @@ QByteArray LooperApp::save()
 
     xba=IS_SAVE?x->s_audioTrack->save():QByteArray();
     ret IO xba;
-    if(IS_LOAD)
+    if (IS_LOAD)
     {
         at = AudioTrack::load(xba);
     }
@@ -162,19 +162,19 @@ QByteArray LooperApp::save()
 
     xba=IS_SAVE?x->s_counter->save():QByteArray();
     ret IO xba;
-    if(IS_LOAD)
+    if (IS_LOAD)
     {
         mc = MidiEventCounter::load(xba);
     }
 
-    if(IS_LOAD)
+    if (IS_LOAD)
     {
         x=new LooperApp(mt,at,mc);
     }
 
     /*006/7*/
     P_INT32(x->s_id);
-    if(x->s_id>(SequencerSys::self?SequencerSys::self:new SequencerSys)->_lastId)
+    if (x->s_id>(SequencerSys::self?SequencerSys::self:new SequencerSys)->_lastId)
     {
         (SequencerSys::self?SequencerSys::self:new SequencerSys)->_lastId=x->s_id;
     }
@@ -196,7 +196,7 @@ QByteArray LooperApp::save()
 
     /*010*/
     P_INT32(x->s_id_looper);
-    if(x->s_id_looper>x->s_lastId)
+    if (x->s_id_looper>x->s_lastId)
     {
         x->s_lastId=x->s_id_looper;
     }
@@ -242,7 +242,7 @@ QByteArray SequencerApp::save()
 
     xba=IS_SAVE?x->s_midiTrack->save():QByteArray();
     ret IO xba;
-    if(IS_LOAD)
+    if (IS_LOAD)
     {
         cmidiTrack = MidiTrack::load(xba);
     }
@@ -253,7 +253,7 @@ QByteArray SequencerApp::save()
 
     xba=IS_SAVE?x->s_audioTrack->save():QByteArray();
     ret IO xba;
-    if(IS_LOAD)
+    if (IS_LOAD)
     {
         caudioTrack = AudioTrack::load(xba);
     }
@@ -264,19 +264,19 @@ QByteArray SequencerApp::save()
 
     xba=IS_SAVE?x->s_counter->save():QByteArray();
     ret IO xba;
-    if(IS_LOAD)
+    if (IS_LOAD)
     {
         cmidicounter = MidiEventCounter::load(xba);
     }
 
     //
-    if(IS_LOAD)
+    if (IS_LOAD)
     {
         x=new SequencerApp("SEQUENCER",cmidiTrack,caudioTrack,cmidicounter,0);
     }
 
     //because audio/midi tracks take time to load, we might be a bit off now...
-    if(IS_LOAD)
+    if (IS_LOAD)
     {
         x->setPos(cmidiTrack->pos());
     }
@@ -288,7 +288,7 @@ QByteArray SequencerApp::save()
 
     /*007*/
     P_INT32(x->s_id);
-    if(x->s_id>(SequencerSys::self?SequencerSys::self:new SequencerSys)->_lastId)
+    if (x->s_id>(SequencerSys::self?SequencerSys::self:new SequencerSys)->_lastId)
     {
         (SequencerSys::self?SequencerSys::self:new SequencerSys)->_lastId=x->s_id;
     }

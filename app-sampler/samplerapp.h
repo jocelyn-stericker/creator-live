@@ -7,8 +7,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live/audiotrack.h"
-#include "live/miditrack.h"
+#include <live/audiotrack.h>
+#include <live/miditrack.h>
 
 #ifndef SAMPLER_H
 #define SAMPLER_H

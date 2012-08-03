@@ -7,9 +7,9 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live_widgets/metrospinbox.h"
-#include "live/metronome.h"
-#include "live/songsystem.h"
+#include <live_widgets/metrospinbox.h>
+#include <live/metronome.h>
+#include <live/songsystem.h>
 #include <QPainter>
 #include <QPaintEvent>
 #include <QTimer>
@@ -27,7 +27,7 @@ live_widgets::MetroSpinbox::~MetroSpinbox()
 
 void live_widgets::MetroSpinbox::sync(const live::SyncData &data)
 {
-    if(data.beat!=s_lastBeat) {
+    if (data.beat!=s_lastBeat) {
 //        qDebug()<<"SYNC";
         s_lastBeat=data.beat;
         s_toggle=1;
@@ -38,12 +38,12 @@ void live_widgets::MetroSpinbox::sync(const live::SyncData &data)
 void live_widgets::MetroSpinbox::paintEvent(QPaintEvent *event)
 {
     SpinBox::paintEvent(event);
-    if(s_toggle) {
+    if (s_toggle) {
         s_toggle=0;
         QPainter p(this);
         QRect r(event->rect());
         r.setTop(5);
-//        if(s_lastBeat==1) {
+//        if (s_lastBeat==1) {
             p.fillRect(r,QColor(255,0,0,255));
 //        }
 //        else {

@@ -10,23 +10,24 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "livewindow.h"
 #include "ui_livewindow.h"
 
+#include "trackgroupaudio.h"
+#include "trackgroupmidi.h"
+#include "settingslinux.h"
+
 #include <QMenu>
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QPropertyAnimation>
 #include <QFileDialog>
 
-#include "live/app.h"
-#include "live/appinterface.h"
-#include "live/object.h"
-#include "live_widgets/vscrollcontainer.h"
-#include "live_widgets/newinput.h"
-#include "live_widgets/draglabel.h"
-#include "live_widgets/introwizard.h"
-#include "trackgroupaudio.h"
-#include "trackgroupmidi.h"
-#include "live/midibinding.h"
-#include "settingslinux.h"
+#include <live/app.h>
+#include <live/appinterface.h>
+#include <live/midibinding.h>
+#include <live/object.h>
+#include <live_widgets/vscrollcontainer.h>
+#include <live_widgets/newinput.h>
+#include <live_widgets/draglabel.h>
+#include <live_widgets/introwizard.h>
 
 using namespace live;
 using namespace live_widgets;
@@ -81,7 +82,7 @@ LiveWindow::LiveWindow(QWidget *parent) :
     connect(ui->comboBox_patch,SIGNAL(currentIndexChanged(int)),this,SLOT(setCurrentPatch(int)));
     connect(ui->toolButton_patchEdit,SIGNAL(clicked()),this,SLOT(editCurrentPatchName()));
 
-    for(int i=0;i<app::interfaces().size();i++)
+    for (int i=0;i<app::interfaces().size();i++)
     {
         DragLabel* d=new DragLabel();
         d->setPixmap(app::interfaces()[i]->icon().pixmap(85,85));
@@ -104,7 +105,7 @@ LiveWindow::LiveWindow(QWidget *parent) :
 void LiveWindow::newProject(bool ask)
 {
     hideInsert();
-    if(ask&&!askForClose("Create new Project?","Create a new project anyway?")) return;
+    if (ask&&!askForClose("Create new Project?","Create a new project anyway?")) return;
 
     s_patches.clear();
     s_curPatch=0;
@@ -114,20 +115,20 @@ void LiveWindow::newProject(bool ask)
     *song::current()->keySignature=KeySignature('C', ' ', KeySignature::Major);
 
     song::current()->metronome->setBpm(120);
-    if(song::current()->metronome->active())
+    if (song::current()->metronome->active())
     {
         song::current()->metronome->pause();
     }
     song::current()->songName="Untitled";
-    while(ui->sac_contents->count()) {
+    while (ui->sac_contents->count()) {
         delete ui->sac_contents->takeFirst();
     }
 
     connect(ui->spinBox_bpm,SIGNAL(valueChanged(int)),&song::current()->metronome->b_bpm,SLOT(set(int)));
     connect(&song::current()->metronome->b_bpm,SIGNAL(changeObserved(int,int)),this,SLOT(setBPM(int)));
 
-    if(ask) selectMode();
-    if(ask) s_fileName="";
+    if (ask) selectMode();
+    if (ask) s_fileName="";
 }
 
 VScrollContainer* LiveWindow::hathorView()
@@ -151,7 +152,7 @@ void LiveWindow::newInput()
 {
     setUpdatesEnabled(0);
     ui->header->show(); ui->header_->hide();
-    if(s_iw) {
+    if (s_iw) {
         ui->sac_contents->removeOne(s_iw);
         ui->sac_contents->updateItems();
         curPatch()->widgets.removeOne(s_iw);
@@ -170,7 +171,7 @@ void LiveWindow::reactOnCreation(live::ObjectPtr s)
 {
     curPatch()->widgets.removeOne(qobject_cast<QWidget*>(sender()));
     ui->sac_contents->removeOne(qobject_cast<QWidget*>(sender()));
-    if(s->isMidiObject())
+    if (s->isMidiObject())
     {
         TrackGroupMidi* h=new TrackGroupMidi(s, ui->sac_contents);
         curPatch()->widgets.push_back(h);
@@ -192,7 +193,7 @@ void LiveWindow::reactOnCreation(live::ObjectPtr s)
 
 void LiveWindow::hideInsert(bool animate)
 {
-    for(int i=0;i<3;i++) {
+    for (int i=0;i<3;i++) {
         QWidget* w=(i?((i==2)?ui->widget_insertTop:ui->widget_insertBottom):ui->scrollArea_2);
         if (animate) {
             QPropertyAnimation* pa1=new QPropertyAnimation(w,"maximumHeight");
@@ -203,7 +204,7 @@ void LiveWindow::hideInsert(bool animate)
             w->setMaximumHeight(0);
         }
     }
-    if(!ui->comboBox_mode->isEnabled()) {
+    if (!ui->comboBox_mode->isEnabled()) {
         ui->comboBox_mode->setEnabled(1);
         ui->comboBox_mode->setCurrentIndex(1); // live
         ui->comboBox_mode->setEnabled(0);
@@ -214,14 +215,14 @@ void LiveWindow::hideInsert(bool animate)
 
 void LiveWindow::showInsert()
 {
-    for(int i=0;i<3;i++) {
+    for (int i=0;i<3;i++) {
         QWidget* w=(i?((i==2)?ui->widget_insertTop:ui->widget_insertBottom):ui->scrollArea_2);
         QPropertyAnimation* pa1=new QPropertyAnimation(w,"maximumHeight");
         pa1->setStartValue(w->maximumHeight());
         pa1->setEndValue(i?15:85);
         pa1->start(QPropertyAnimation::DeleteWhenStopped);
     }
-    if(!ui->comboBox_mode->isEnabled()) {
+    if (!ui->comboBox_mode->isEnabled()) {
         ui->comboBox_mode->setEnabled(1);
         ui->comboBox_mode->setCurrentIndex(0); // insert
         ui->comboBox_mode->setEnabled(0);
@@ -233,7 +234,7 @@ void LiveWindow::showInsert()
 void LiveWindow::setMode(int a)
 {
     ui->comboBox_mode->setCurrentIndex(a);
-    switch(a) {
+    switch (a) {
     case 0:
         showInsert();
         break;
@@ -249,7 +250,7 @@ void LiveWindow::setMode(int a)
 void LiveWindow::setKey(int a)
 {
     ui->comboBox_key->setCurrentIndex(a);
-    switch(a) {
+    switch (a) {
     case 0:
         *song::current()->keySignature=KeySignature('F','b',KeySignature::Major);
         break;
@@ -317,7 +318,7 @@ void LiveWindow::toggleMetro(bool m)
 {
     ui->pushButton_creatorLive->setChecked(m);
 //    ui->spinBox_bpm->setEnabled(!m);
-    if(m) {
+    if (m) {
         Q_ASSERT(!song::current()->metronome->active());
         song::current()->metronome->start();
     } else {
@@ -328,7 +329,7 @@ void LiveWindow::toggleMetro(bool m)
 
 void LiveWindow::closeEvent(QCloseEvent *e)
 {
-    if(askForClose()) {
+    if (askForClose()) {
         e->accept();
     } else {
         e->ignore();
@@ -349,7 +350,7 @@ LiveWindow::~LiveWindow()
 
 void LiveWindow::setCurrentPatch(int a)
 {
-    if(a>=s_patches.size()||a<0) {
+    if (a>=s_patches.size()||a<0) {
         insertPatch();
         return;
     }
@@ -429,22 +430,22 @@ void LiveWindow::editAudioSetupDone()
 void LiveWindow::saveAct()
 {
     bool ok=1;
-    if(!s_fileName.size()) ok=0;
+    if (!s_fileName.size()) ok=0;
     QFile* file=0;
-    if(ok) {
+    if (ok) {
         file= new QFile(s_fileName);
-        if(!file->open(QFile::WriteOnly)) {
+        if (!file->open(QFile::WriteOnly)) {
             delete file;
             file=0;
             ok=0;
         }
     }
-    if(!ok) {
+    if (!ok) {
         QString f=QFileDialog::getSaveFileName(this,"Save...","","Creator Live Project Files (*.live)");
         s_fileName=f;
-        if(!f.size()) return;
+        if (!f.size()) return;
         file=new QFile(s_fileName);
-        if(!file->open(QFile::WriteOnly)) {
+        if (!file->open(QFile::WriteOnly)) {
             delete file;
             file=0;
             QMessageBox::critical(this,"Error Opening File","Could not open "+s_fileName,QMessageBox::Ok);
@@ -465,9 +466,9 @@ void LiveWindow::saveAs()
 void LiveWindow::open()
 {
     QString file=QFileDialog::getOpenFileName(this,"Open...","","Creator Live Project Files (*.live)");
-    if(!file.size()) return;
+    if (!file.size()) return;
     QFile f(file);
-    if(!f.open(QFile::ReadOnly)) {
+    if (!f.open(QFile::ReadOnly)) {
         QMessageBox::critical(this,"Error Opening File","Could not open "+file,QMessageBox::Ok);
         return;
     }
@@ -480,7 +481,7 @@ void LiveWindow::updateRecent()
     QSettings settings;
     QStringList l=settings.value("Recent",QStringList()).toStringList();
     s_recentMenu->clear();
-    for(int i=0;i<5&&i<l.size();i++) {
+    for (int i=0;i<5&&i<l.size();i++) {
         s_recentMenu->addAction(l[i],this,SLOT(loadRecent()));
     }
 }
@@ -489,7 +490,7 @@ void LiveWindow::loadRecent()
 {
     QString file=qobject_cast<QAction*>(sender())->text();
     QFile f(file);
-    if(!f.open(QFile::ReadOnly)) {
+    if (!f.open(QFile::ReadOnly)) {
         QMessageBox::critical(this,"Error Opening File","Could not open "+file,QMessageBox::Ok);
         return;
     }

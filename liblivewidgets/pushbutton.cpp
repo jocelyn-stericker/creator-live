@@ -7,9 +7,9 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live_widgets/pushbutton.h"
+#include <live_widgets/pushbutton.h>
 #include <QMouseEvent>
-#include "live/midibinding.h"
+#include <live/midibinding.h>
 #include <QPainter>
 #include <QPaintEvent>
 #include <QColor>
@@ -27,8 +27,8 @@ live_widgets::PushButton::PushButton(QString t,QWidget* parent) : QPushButton(t,
 
 void live_widgets::PushButton::mousePressEvent(QMouseEvent *e)
 {
-    if(e->button()==Qt::LeftButton) {
-        if(s_bindMode) {
+    if (e->button()==Qt::LeftButton) {
+        if (s_bindMode) {
             emit customContextMenuRequested(e->pos());
         } else {
             animateClick();
@@ -43,7 +43,7 @@ void live_widgets::PushButton::mouseReleaseEvent(QMouseEvent *)
 void live_widgets::PushButton::paintEvent(QPaintEvent *e)
 {
     QPushButton::paintEvent(e);
-    if(s_bindMode) {
+    if (s_bindMode) {
         QPainter p(this);
         p.fillRect(e->rect(),QColor(0,0,255,80));
     }

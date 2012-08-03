@@ -13,7 +13,7 @@ using namespace live;
 //using namespace live_widgets;
 
 #define SEQSYS_CLIPF_BEGIN \
-    if(ignoreLock) return; \
+    if (ignoreLock) return; \
     Object::beginAsyncAction();\
     ignoreLock=1; \
     SequencerApp*send=(qobject_cast<SequencerApp*>(sender())); \
@@ -43,18 +43,18 @@ void SequencerSys::registerSeq_real(SequencerApp* that)
 
     Q_ASSERT(!_u.contains(that));
     // states __must be__ identical
-    if(_u.size())
+    if (_u.size())
     {
-        if(_u[0]->isPlaying()&&!that->isPlaying())
+        if (_u[0]->isPlaying()&&!that->isPlaying())
         {
             that->startPlayback();
         }
-        else if(!_u[0]->isPlaying()&&that->isPlaying())
+        else if (!_u[0]->isPlaying()&&that->isPlaying())
         {
             that->stopPlayback();
         }
 
-        if(that->pos()!=_u[0]->pos())
+        if (that->pos()!=_u[0]->pos())
         {
             that->setPos(_u[0]->pos());
         }
@@ -87,9 +87,9 @@ void SequencerSys::startPlayback()
 {
     SEQSYS_CLIPF_BEGIN;
 
-    for(int i=0;i<_u.size();i++)
+    for (int i=0;i<_u.size();i++)
     {
-        if(_u[i]!=send&&_u[i]->clipped())
+        if (_u[i]!=send&&_u[i]->clipped())
         {
             _u[i]->startPlayback();
         }
@@ -102,9 +102,9 @@ void SequencerSys::stopPlayback()
 {
     SEQSYS_CLIPF_BEGIN;
 
-    for(int i=0;i<_u.size();i++)
+    for (int i=0;i<_u.size();i++)
     {
-        if(_u[i]!=send&&_u[i]->clipped())
+        if (_u[i]!=send&&_u[i]->clipped())
         {
             _u[i]->stopPlayback();
         }
@@ -117,9 +117,9 @@ void SequencerSys::setPos(int pos)
 {
     SEQSYS_CLIPF_BEGIN;
 
-    for(int i=0;i<_u.size();i++)
+    for (int i=0;i<_u.size();i++)
     {
-        if(_u[i]!=send&&_u[i]->clipped())
+        if (_u[i]!=send&&_u[i]->clipped())
         {
             _u[i]->setPos(pos);
         }

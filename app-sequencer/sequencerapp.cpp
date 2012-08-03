@@ -49,13 +49,13 @@ const bool& SequencerApp::isRecord() const
 
 const bool& SequencerApp::isOverdub() const
 {
-    /*if(!s_audioOverdubForced)*/ Q_ASSERT(s_midiTrack->isOverdub()==s_audioTrack->isOverdub());
+    /*if (!s_audioOverdubForced)*/ Q_ASSERT(s_midiTrack->isOverdub()==s_audioTrack->isOverdub());
     return s_midiTrack->isOverdub();
 }
 
 const bool& SequencerApp::isPlaying() const
 {
-    if(s_midiTrack->isPlay()!=s_audioTrack->isPlay())
+    if (s_midiTrack->isPlay()!=s_audioTrack->isPlay())
     {
         qDebug()<<"UH OH!!!";
         qDebug()<<s_midiTrack->isPlay()<<s_audioTrack->isPlay();
@@ -85,7 +85,7 @@ void SequencerApp::startRecord()
 {
     NOSYNC;
     s_midiTrack->startRecord();
-//    if(s_audioOverdubForced) s_audioTrack->startOverdub();
+//    if (s_audioOverdubForced) s_audioTrack->startOverdub();
     /*else */s_audioTrack->startRecord();
 }
 
@@ -93,7 +93,7 @@ void SequencerApp::stopRecord()
 {
     NOSYNC;
     s_midiTrack->stopRecord();
-//    if(s_audioOverdubForced) s_audioTrack->stopRecord();
+//    if (s_audioOverdubForced) s_audioTrack->stopRecord();
     /*else*/ s_audioTrack->stopRecord();
 }
 
@@ -152,11 +152,11 @@ void SequencerApp::setPos(int pos)
 void SequencerApp::setClipped(bool clipped)
 {
     NOSYNC;
-    if(clipped&&!b_clipped)
+    if (clipped&&!b_clipped)
     {
         SequencerSys::registerClippedSeq(this);
     }
-    else if(b_clipped&&!clipped)
+    else if (b_clipped&&!clipped)
     {
         SequencerSys::deregisterClippedSeq(this);
     }
@@ -166,7 +166,7 @@ void SequencerApp::setClipped(bool clipped)
 
 void SequencerApp::aIn(const float *data, int chan, ObjectChain&p)
 {
-    if(p.back()==s_audioTrack)
+    if (p.back()==s_audioTrack)
     {
         aOut(data,chan,p);
     }
@@ -186,7 +186,7 @@ void SequencerApp::setScale(int z)
 
 void SequencerApp::mIn(const Event *data, ObjectChain&p)
 {
-    if(p.back()==s_midiTrack)
+    if (p.back()==s_midiTrack)
     {
         mOut(data,p);
         return;

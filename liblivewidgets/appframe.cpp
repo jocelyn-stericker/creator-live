@@ -7,8 +7,9 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live_widgets/appframe.h"
-#include "live_widgets/toolbutton.h"
+#include <live_widgets/appframe.h>
+
+#include <live_widgets/toolbutton.h>
 #include <QLayout>
 #include <QMetaObject>
 
@@ -78,13 +79,13 @@ AppFrame::~AppFrame()
 
 void AppFrame::toggleMinimized()
 {
-    if(parentWidget()&&parentWidget()->layout())
+    if (parentWidget()&&parentWidget()->layout())
     {
         parentWidget()->layout()->setAlignment( Qt::AlignLeft );
     }
     setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Expanding);
 
-    if(s_minimized)
+    if (s_minimized)
     {
         setMinimumWidth(40);
         _tbBack->setGeometry(0,0,10,10);
@@ -119,14 +120,14 @@ void AppFrame::toggleMinimized()
 
 void AppFrame::resizeEvent(QResizeEvent *e)
 {
-    if(!s_minimized) {
+    if (!s_minimized) {
         _tbClose->setGeometry(width()-4-_tbNext->width(),2,8,8);
     }
     QMetaObject::invokeMethod(parent(),"remakeChainWidget",Qt::DirectConnection);
 
     emit sizeChanged();
 
-    if(e) QWidget::resizeEvent(e);
+    if (e) QWidget::resizeEvent(e);
 }
 
 void AppFrame::moveEvent(QMoveEvent *e)

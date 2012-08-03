@@ -9,8 +9,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include "mixerapp.h"
 
-#include "live/audio.h"
-#include "live/midievent.h"
+#include <live/audio.h>
+#include <live/midievent.h>
 
 using namespace live;
 
@@ -29,18 +29,18 @@ MixerApp::~MixerApp()
 void MixerApp::aIn(const float *data, int chan, ObjectChain &p)
 {
     bool zero=0;
-    if(!b_solo)
+    if (!b_solo)
     {
-        for(int i=0;i<_u.size();i++)
+        for (int i=0;i<_u.size();i++)
         {
-            if(_u[i]->b_solo.ref())
+            if (_u[i]->b_solo.ref())
             {
                 zero=1;
             }
         }
     }
 
-    if(b_pan.ref()==50&&b_vol.ref()==100)
+    if (b_pan.ref()==50&&b_vol.ref()==100)
     {
         p.push_back(this);
         aOut(data,chan,p);
@@ -49,16 +49,16 @@ void MixerApp::aIn(const float *data, int chan, ObjectChain &p)
     }
     const int& nframes=audio::nFrames();
     float* dx=new float[nframes];
-    for(int i=0;i<nframes;i++)
+    for (int i=0;i<nframes;i++)
     {
-        if(zero)
+        if (zero)
         {
             dx[i]=0.0f;
         }
         else
         {
             float panamount;
-            if(chan)
+            if (chan)
             {
                 panamount=100.0f-(100.0f-(float)b_pan);
             }
@@ -67,7 +67,7 @@ void MixerApp::aIn(const float *data, int chan, ObjectChain &p)
                 panamount=100.0f-(float)b_pan;
             }
             dx[i]=data[i]*((float)b_vol)/100.0f*(panamount/100.0f); //eventually consider proper pan.
-            if(dx[i]>1.0f)
+            if (dx[i]>1.0f)
             {
                 b_vol=(float)b_vol*1.0f/dx[i];
             }
@@ -83,30 +83,30 @@ void MixerApp::aIn(const float *data, int chan, ObjectChain &p)
 
 void MixerApp::mIn(const Event *data, ObjectChain &p)
 {
-    if(!b_solo)
+    if (!b_solo)
     {
-        for(int i=0;i<_u.size();i++)
+        for (int i=0;i<_u.size();i++)
         {
-            if(_u[i]->b_solo.ref())
+            if (_u[i]->b_solo.ref())
             {
                 return;
             }
         }
     }
-    else if(b_mute)
+    else if (b_mute)
     {
         return;
     }
 
     Event x=*data;
-    if(x.simpleStatus()==0x90)
+    if (x.simpleStatus()==0x90)
     {
         x.setVelocity((float)x.velocity()*(float)b_vol/100.0f);
     }
     p.push_back(this);
     mOut(&x,p);
 
-    if(b_pan!=50)
+    if (b_pan!=50)
     {
         x.setSimpleStatus(0xB0);
         x.data1=10;

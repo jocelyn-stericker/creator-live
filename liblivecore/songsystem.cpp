@@ -7,7 +7,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live/songsystem.h"
+#include <live/songsystem.h>
 
 QList<live::song*> live::song::universe;
 live::song* live::song::s_current=NULL;

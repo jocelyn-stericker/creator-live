@@ -7,12 +7,13 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "looperframe.h"
 #include "looperapp.h"
+#include "looperframe.h"
 #include "ui_sequencerframe.h"
-#include "live_widgets/midibindingqt.h"
-#include "live_widgets/toolbutton.h"
-#include "live/asyncconnect.h"
+
+#include <live/asyncconnect.h>
+#include <live_widgets/midibindingqt.h>
+#include <live_widgets/toolbutton.h>
 
 using namespace live;
 using namespace live_widgets;
@@ -131,31 +132,31 @@ LooperFrame::~LooperFrame()
 
 void LooperFrame::logicMute(bool x)
 {
-    if(!app.isMute()&&x) app.startMute();
-    else if(app.isMute()&&!x) app.stopMute();
+    if (!app.isMute()&&x) app.startMute();
+    else if (app.isMute()&&!x) app.stopMute();
 }
 
 void LooperFrame::logicSub(bool x)
 {
-    if(x)
+    if (x)
         app.b_loopMode=LooperApp::Substituting;
 }
 
 void LooperFrame::logicReplace(bool x)
 {
-    if(x)
+    if (x)
         app.b_loopMode=LooperApp::Replacing;
 }
 
 void LooperFrame::logicOverdub(bool x)
 {
-    if(x)
+    if (x)
         app.b_loopMode=LooperApp::Overdubbing;
 }
 
 void LooperFrame::logicRecord(bool x)
 {
-    if(x)
+    if (x)
     {
         app.b_loopMode=LooperApp::Recording;
     }
@@ -163,7 +164,7 @@ void LooperFrame::logicRecord(bool x)
 
 void LooperFrame::logicPlay(bool x)
 {
-    if(x)
+    if (x)
     {
         app.b_loopMode=LooperApp::Playing;
     }
@@ -171,7 +172,7 @@ void LooperFrame::logicPlay(bool x)
 
 void LooperFrame::logicOff(bool x)
 {
-    if(x)
+    if (x)
     {
         app.b_loopMode=LooperApp::Off;
     }
@@ -179,7 +180,7 @@ void LooperFrame::logicOff(bool x)
 
 void LooperFrame::syncState()
 {
-    switch(app.b_loopMode.ref())
+    switch (app.b_loopMode.ref())
     {
     case LooperApp::Off:
         loopOff->setChecked(1);

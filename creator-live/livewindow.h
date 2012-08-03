@@ -10,11 +10,11 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef LIVEWINDOW_H
 #define LIVEWINDOW_H
 
+#include <live/object.h>
+#include <live/ambition.h>
+#include <live_widgets/bindableparent.h>
+#include <live_widgets/midibindingqt.h>
 #include <QMainWindow>
-#include "live/object.h"
-#include "live/ambition.h"
-#include "live_widgets/midibindingqt.h"
-#include "live_widgets/bindableparent.h"
 
 namespace Ui {
 class LiveWindow;

@@ -7,7 +7,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live_widgets/draglabel.h"
+#include <live_widgets/draglabel.h>
 #include <QMouseEvent>
 #include <QDebug>
 #include <QTimer>
@@ -32,11 +32,11 @@ void live_widgets::DragLabel::mousePressEvent(QMouseEvent *e)
 
 void live_widgets::DragLabel::drag()
 {
-    if(s_drag) return;
+    if (s_drag) return;
     s_drag = new QDrag(this);
     QMimeData *mimeData = new QMimeData;
 
-    if(property("dragID").isNull())
+    if (property("dragID").isNull())
     {
         mimeData->setText(text());
     }
@@ -45,7 +45,7 @@ void live_widgets::DragLabel::drag()
         mimeData->setText(property("dragID").toString());
     }
 
-    if(pixmap()) {
+    if (pixmap()) {
         s_drag->setPixmap(*pixmap());
     }
 

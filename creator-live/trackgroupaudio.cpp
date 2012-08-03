@@ -8,8 +8,10 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 *******************************************************/
 
 #include "trackgroupaudio.h"
-#include "live_widgets/pushbutton.h"
+
 #include "audiooutputchooser.h"
+
+#include <live_widgets/pushbutton.h>
 
 int TrackGroup::s_lastId = -1;
 using namespace live;
@@ -30,7 +32,7 @@ TrackGroupAudio::TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent, bo
 
     s_hathorView->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
     setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
-    if(!empty)
+    if (!empty)
     {
         qDebug()<<"NOT_EMPTY";
         QList<live::ObjectPtr> list=object::get(OutputOnly|AudioOnly|NoRefresh);
@@ -65,9 +67,9 @@ void TrackGroupAudio::setLastOutput(live::ObjectPtr obj)
 {
     s_hathorView->show();
     bool ok=0;
-    for(int i=s_hathorView->count()-1;(i!=-1)&&!ok;--i) {
+    for (int i=s_hathorView->count()-1;(i!=-1)&&!ok;--i) {
         qDebug()<<s_hathorView->at(i);
-        if(dynamic_cast<Track*>(s_hathorView->at(i))) {
+        if (dynamic_cast<Track*>(s_hathorView->at(i))) {
             dynamic_cast<Track*>(s_hathorView->at(i))->setOutput(obj);
             ok=1;
         }

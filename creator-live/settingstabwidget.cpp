@@ -21,7 +21,7 @@ SettingsTabWidget::SettingsTabWidget(QWidget *parent) :
     setCurrentIndex(0);
 //    connect(ui->pushButton_2,SIGNAL(clicked()),this,SLOT(addVst()));
 //    connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(delVst()));
-//    for(int i=0;i<Vst::s_vstpaths_linux.size();i++)
+//    for (int i=0;i<Vst::s_vstpaths_linux.size();i++)
 //    {
 //        ui->listWidget->addItem(Vst::s_vstpaths_linux[i]);
 //    }
@@ -32,7 +32,7 @@ SettingsTabWidget::SettingsTabWidget(QWidget *parent) :
 SettingsTabWidget::~SettingsTabWidget()
 {
     QStringList vsts;
-//    for(int i=0;i<ui->listWidget->count();i++)
+//    for (int i=0;i<ui->listWidget->count();i++)
 //    {
 //        vsts+=ui->listWidget->item(i)->text();
 //    }
@@ -41,7 +41,7 @@ SettingsTabWidget::~SettingsTabWidget()
 //    settings.setValue("vstis",vsts);
 
     // FIXME!
-//    if(liveApp&&liveApp->ribbon())
+//    if (liveApp&&liveApp->ribbon())
 //    {
 //        liveApp->ribbon()->reactOnVstChange();
 //    }
@@ -62,9 +62,9 @@ live_widgets::OutputDragWidget* SettingsTabWidget::outWidget()
 void SettingsTabWidget::addVst()
 {
 //    QStringList x=QFileDialog::getOpenFileNames(0,"Add VSTs",QString(),"*.dll");
-//    for(int i=0;i<x.size();i++)
+//    for (int i=0;i<x.size();i++)
 //    {
-//        if(!Vst::s_vstpaths_linux.contains(x[i]))
+//        if (!Vst::s_vstpaths_linux.contains(x[i]))
 //        {
 //            Vst::s_vstpaths_linux.push_back(x[i]);
 //            ui->listWidget->addItem(x[i]);
@@ -74,14 +74,14 @@ void SettingsTabWidget::addVst()
 
 void SettingsTabWidget::delVst()
 {
-//    if(ui->listWidget->currentIndex().row()==-1)
+//    if (ui->listWidget->currentIndex().row()==-1)
 //    {
 //        return;
 //    }
 //    QString text=ui->listWidget->currentItem()->text();
-//    for(int i=0;i<Vst::s_vstpaths_linux.size();i++)
+//    for (int i=0;i<Vst::s_vstpaths_linux.size();i++)
 //    {
-//        if(Vst::s_vstpaths_linux[i]==text)
+//        if (Vst::s_vstpaths_linux[i]==text)
 //        {
 //            Vst::s_vstpaths_linux.removeAt(i--);
 //        }

@@ -7,7 +7,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live/midibinding.h"
+#include <live/midibinding.h>
 
 LIBLIVECORESHARED_EXPORT QMap<live::ObjectPtr,live::ObjectPtr*>* live::MidiBinding::customKey= new QMap<live::ObjectPtr,live::ObjectPtr*>();
 LIBLIVECORESHARED_EXPORT live::ObjectPtr live::MidiBinding::customNow;

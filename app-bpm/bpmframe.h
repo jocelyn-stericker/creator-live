@@ -11,12 +11,12 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define FILTERFRAME_H
 
 #include "bpmapp.h"
-#include "live/app.h"
-#include "live/appinterface.h"
-#include "live/variantbinding.h"
-#include "live_widgets/appframe.h"
-#include "live_widgets/rotatedlabel.h"
-#include "live_widgets/toolbutton.h"
+#include <live/app.h>
+#include <live/appinterface.h>
+#include <live/variantbinding.h>
+#include <live_widgets/appframe.h>
+#include <live_widgets/rotatedlabel.h>
+#include <live_widgets/toolbutton.h>
 
 class BPMFrame : public live_widgets::AppFrame
 {

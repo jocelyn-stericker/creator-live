@@ -7,15 +7,16 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
+#include "midisystem_p.h"
+
+#include <live/audio.h>
+#include <live/liblivecore_global.h>
+#include <live/mapping.h>
+#include <live/midi.h>
+#include <live/midievent.h>
+#include <live/object.h>
 #include <QMutex>
 #include <QTimer>
-#include "live/object.h"
-#include "live/midi.h"
-#include "midisystem_p.h"
-#include "live/audio.h"
-#include "live/midievent.h"
-#include "live/mapping.h"
-#include "live/liblivecore_global.h"
 
 using namespace live_private;
 
@@ -54,9 +55,9 @@ LIBLIVECORESHARED_EXPORT void live::Object::endAsyncAction()
 }
 
 void live::Object::aOut(const float *data, int chan, live::ObjectChain &p) {
-    for(int i=0;i<aConnections.size();i++) {
+    for (int i=0;i<aConnections.size();i++) {
         Q_ASSERT(aConnections[i]->aInverseConnections.size());
-        if(aConnections[i]->aInverseConnections.size()<=1||!aConnections[i]->s_allowMixer) aConnections[i]->aIn(data,chan,p);
+        if (aConnections[i]->aInverseConnections.size()<=1||!aConnections[i]->s_allowMixer) aConnections[i]->aIn(data,chan,p);
         else aConnections[i]->mixer_process(data,chan);
     }
 }
@@ -64,8 +65,8 @@ void live::Object::aOut(const float *data, int chan, live::ObjectChain &p) {
 LIBLIVECORESHARED_EXPORT QMap<QString, live::ObjectPtr*>* live::Object::zombies=new QMap<QString, live::ObjectPtr*>;
 
 live::Object::Object(QString cname, bool isPhysical, bool allowMixer) : s_name(cname), s_aOn(1), s_mOn(1), s_temp(1), s_allowMixer(allowMixer), aConnections(), mConnections() {
-    if(isPhysical) {
-        for(int i=0;i<zombies->values(cname).size();i++) {
+    if (isPhysical) {
+        for (int i=0;i<zombies->values(cname).size();i++) {
             zombies->values(cname)[i]->restore(this);
         }
     }
@@ -82,7 +83,7 @@ live::Object::~Object()
 {
     beginAsyncAction();
     kill();
-    for(int i=0;i<2;i++) delete[] mixer_data[i];
+    for (int i=0;i<2;i++) delete[] mixer_data[i];
 
     QTimer::singleShot(0,live::object::singleton(),SLOT(notify()));
     endAsyncAction();
@@ -92,18 +93,18 @@ void live::Object::kill()
 {
     beginAsyncAction();
     qDebug()<<"KILLING"<<s_name;
-    if(!SecretMidi::me) new SecretMidi;
+    if (!SecretMidi::me) new SecretMidi;
     SecretMidi::me->mRemoveWithheld_object_dest(this);
-    while(aConnections.size()) this->audioConnect(aConnections[0]);
-    while(mConnections.size()) this->midiConnect(mConnections[0]);
-    while(aInverseConnections.size()) aInverseConnections[0]->audioConnect(this);
-    while(mInverseConnections.size()) mInverseConnections[0]->midiConnect(this);
+    while (aConnections.size()) this->audioConnect(aConnections[0]);
+    while (mConnections.size()) this->midiConnect(mConnections[0]);
+    while (aInverseConnections.size()) aInverseConnections[0]->audioConnect(this);
+    while (mInverseConnections.size()) mInverseConnections[0]->midiConnect(this);
     Q_ASSERT(!aConnections.size());
     Q_ASSERT(!mConnections.size());
     Q_ASSERT(!aInverseConnections.size());
     Q_ASSERT(!mInverseConnections.size());
     qDebug()<<"Pointer zombified"<<s_name<<s_ptrList.size();
-    for(int i=0;i<s_ptrList.size();i++) {
+    for (int i=0;i<s_ptrList.size();i++) {
         s_ptrList[i]->obliviate();
         zombies->insertMulti(s_name,s_ptrList[i]);
     }
@@ -128,14 +129,14 @@ void live::Object::audioConnect(const live::ObjectPtr& b)
 
 void live::Object::mOut(const live::Event *data, live::ObjectChain &p)
 {
-    if(!SecretMidi::me) SecretMidi::me=new SecretMidi;
-    if(data->time.sec!=-1&&(data->time.toTime_ms()-5>live::midi::getTime_msec()))
+    if (!SecretMidi::me) SecretMidi::me=new SecretMidi;
+    if (data->time.sec!=-1&&(data->time.toTime_ms()-5>live::midi::getTime_msec()))
     {
         live::Event* x=new live::Event;
         *x=*data;
         SecretMidi::me->mWithhold(x,p,this);    //now owner.
     }
-    else for(int i=0;i<mConnections.size();i++)
+    else for (int i=0;i<mConnections.size();i++)
     {
         live::Event*x=new live::Event;
         *x=*data;
@@ -147,14 +148,14 @@ void live::Object::mOut(const live::Event *data, live::ObjectChain &p)
 
 void live::Object::mOutverse(const live::Event *data, live::ObjectChain &p)
 {
-    if(!SecretMidi::me) SecretMidi::me=new SecretMidi;
-    if(data->time.sec!=-1&&(data->time.toTime_ms()-5>live::midi::getTime_msec()))
+    if (!SecretMidi::me) SecretMidi::me=new SecretMidi;
+    if (data->time.sec!=-1&&(data->time.toTime_ms()-5>live::midi::getTime_msec()))
     {
         live::Event* x=new live::Event;
         *x=*data;
         SecretMidi::me->mWithhold(x,p,this,1);    //now owner.
     }
-    else for(int i=0;i<mConnections.size();i++)
+    else for (int i=0;i<mConnections.size();i++)
     {
         live::Event*x=new live::Event;
         *x=*data;
@@ -173,9 +174,9 @@ void live::doAudioConnect(const live::Object* al,const live::Object* bl)
     live::Object::beginAsyncAction();
 
     bool ok=1;
-    for(int i=0;i<b->aConnections.size();i++) if(b->aConnections[i].data()==a) ok=0;
+    for (int i=0;i<b->aConnections.size();i++) if (b->aConnections[i].data()==a) ok=0;
 
-    if(ok)
+    if (ok)
     {
         a->newConnection();
 
@@ -185,14 +186,14 @@ void live::doAudioConnect(const live::Object* al,const live::Object* bl)
     }
     else
     {
-        for(int i=0;i<b->aConnections.size();i++) {
-            if(b->aConnections[i].data()==a) {
+        for (int i=0;i<b->aConnections.size();i++) {
+            if (b->aConnections[i].data()==a) {
                 b->aConnections.removeAt(i);
                 break;
             }
         }
-        for(int i=0;i<a->aInverseConnections.size();i++) {
-            if(a->aInverseConnections[i].data()==b) {
+        for (int i=0;i<a->aInverseConnections.size();i++) {
+            if (a->aInverseConnections[i].data()==b) {
                 a->aInverseConnections.removeAt(i);
                 a->mixer_resetStatus();
                 break;
@@ -211,24 +212,24 @@ void live::doMidiConnect(const live::Object* al, const live::Object* bl)
     live::Object* b=const_cast<live::Object*>(bl);
 
     bool ok=1;
-    for(int i=0;i<b->mConnections.size();i++) if(b->mConnections[i].data()==a) ok=0;
+    for (int i=0;i<b->mConnections.size();i++) if (b->mConnections[i].data()==a) ok=0;
 
     live::Object::beginAsyncAction();
-    if(ok)
+    if (ok)
     {
         b->mConnections.push_back(a);
         a->mInverseConnections.push_back(b);
     }
     else
     {
-        for(int i=0;i<b->mConnections.size();i++) {
-            if(b->mConnections[i].data()==a) {
+        for (int i=0;i<b->mConnections.size();i++) {
+            if (b->mConnections[i].data()==a) {
                 b->mConnections.removeAt(i);
                 i--;
             }
         }
-        for(int i=0;i<a->mInverseConnections.size();i++) {
-            if(a->mInverseConnections[i].data()==b) {
+        for (int i=0;i<a->mInverseConnections.size();i++) {
+            if (a->mInverseConnections[i].data()==b) {
                 a->mInverseConnections.removeAt(i);
                 i--;
             }
@@ -243,9 +244,9 @@ void live::Object::mixer_resetStatus()
     live::Object::beginAsyncAction();
     mixer_nframes=live::audio::nFrames();
     mixer_at[0]=mixer_at[1]=0;
-    for(int i=0;i<2;i++) { if(mixer_data[i]) delete[] mixer_data[i]; mixer_data[i]=0; }
-    if(aInverseConnections.size()>1) {
-        for(int i=0;i<2;i++) mixer_data[i] = new float[mixer_nframes];
+    for (int i=0;i<2;i++) { if (mixer_data[i]) delete[] mixer_data[i]; mixer_data[i]=0; }
+    if (aInverseConnections.size()>1) {
+        for (int i=0;i<2;i++) mixer_data[i] = new float[mixer_nframes];
     }
     live::Object::endAsyncAction();
 }
@@ -263,7 +264,7 @@ void live::ObjectPtr::obliviate()
 bool live::ObjectPtr::restore(live::Object* a)
 {
     live::Object::beginAsyncAction();
-    if(dynamic_cast<MidiNull*>(s_obj)) delete s_obj;
+    if (dynamic_cast<MidiNull*>(s_obj)) delete s_obj;
     s_obj=a;
     a->s_ptrList.push_back(this);
     live::Object::endAsyncAction();
@@ -289,7 +290,7 @@ QList<live::ObjectPtr> live::object::get(int flags)
     live::Object::beginAsyncAction();
     me=me?me:new object;
 
-    if( (((flags&Input)||(flags&Output))&&!((flags&Input)&&(flags&Output))) && !(flags&NoRefresh) )
+    if ( (((flags&Input)||(flags&Output))&&!((flags&Input)&&(flags&Output))) && !(flags&NoRefresh) )
     {   //Grr...
         //Debug<<"REFRESH!!";
         live::audio::refresh();
@@ -297,9 +298,9 @@ QList<live::ObjectPtr> live::object::get(int flags)
     }
 
     QList<live::ObjectPtr> ret;
-    for(int i=0;i<me->s_objects.size();i++)
+    for (int i=0;i<me->s_objects.size();i++)
     {
-        if(!me->s_objects[i])
+        if (!me->s_objects[i])
         {   // cleanup
             me->s_objects.takeAt(i);
             i--;
@@ -309,12 +310,12 @@ QList<live::ObjectPtr> live::object::get(int flags)
         {
             ret<<me->s_objects[i];
         }
-        else if( (!(flags&Input)&&!(flags&Output)) ||
+        else if ( (!(flags&Input)&&!(flags&Output)) ||
                  (((flags&Input  && me->s_objects[i]->isInput()  && (!(flags&NotOutput) || !me->s_objects[i]->isOutput() )) ||
                    (flags&Output && me->s_objects[i]->isOutput() && (!(flags&NotInput)  || !me->s_objects[i]->isInput()  ))) &&
                   (!((flags&Input) && (flags&Output)) || (me->s_objects[i]->isInput()&&me->s_objects[i]->isOutput()))))
         {   // satisfies I/O requirements
-            if( (!(flags&Midi)&&!(flags&Audio)) ||
+            if ( (!(flags&Midi)&&!(flags&Audio)) ||
                     ((((flags&Audio) && me->s_objects[i]->isAudioObject() && (!(flags&NotMidi)  || !me->s_objects[i]->isMidiObject() )) ||
                       ((flags&Midi)  && me->s_objects[i]-> isMidiObject() && (!(flags&NotAudio) || !me->s_objects[i]->isAudioObject()))) &&
                      (!((flags&Audio) && (flags&Midi)) || (me->s_objects[i]->isAudioObject()&&me->s_objects[i]->isMidiObject()))))
@@ -331,7 +332,7 @@ void live::object::clear(int flags)
 {
     live::Object::beginAsyncAction();
     QList<live::ObjectPtr> toClear=get(flags);
-    while(toClear.size())
+    while (toClear.size())
     {
         me->s_objects.removeOne(toClear.takeFirst());
     }
@@ -341,9 +342,9 @@ void live::object::clear(int flags)
 void live::object::set(live::ObjectPtr o)
 {
     me=me?me:new object;
-    for(int i=0;i<me->s_objects.size();i++)
+    for (int i=0;i<me->s_objects.size();i++)
     {
-        if(me->s_objects[i]==o)
+        if (me->s_objects[i]==o)
         {
             return;
         }
@@ -354,8 +355,8 @@ void live::object::set(live::ObjectPtr o)
 live::ObjectPtr live::object::request(QString req, int flags)
 {
     QList<live::ObjectPtr> objList=get(flags);
-    for(int i=0;i<objList.size();i++) {
-        if(objList.at(i)->name()==req) {
+    for (int i=0;i<objList.size();i++) {
+        if (objList.at(i)->name()==req) {
             return objList[i];
         }
     }
@@ -365,7 +366,7 @@ live::ObjectPtr live::object::request(QString req, int flags)
     b<<objList;
     bool ok=0;
     QString v;
-    while(!ok)
+    while (!ok)
     {
         Q_ASSERT(1);
         qFatal("Unimplemented functionality");
@@ -379,8 +380,8 @@ live::ObjectPtr live::object::request(QString req, int flags)
 live::ObjectPtr live::object::fetch(QString req, int flags)
 {
     QList<live::ObjectPtr> objList=get(flags);
-    for(int i=0;i<objList.size();i++) {
-        if(objList.at(i)->name()==req) {
+    for (int i=0;i<objList.size();i++) {
+        if (objList.at(i)->name()==req) {
             return objList[i];
         }
     }
@@ -399,15 +400,15 @@ live::ObjectChain::ObjectChain()
 
 void live::ObjectPtr::detach()
 {
-    if(!valid()) return;
-    if(s_obj) {
+    if (!valid()) return;
+    if (s_obj) {
         s_obj->s_ptrList.removeOne(this);
-        if(!s_obj->s_ptrList.size()&&s_obj->isTemporary()) {
+        if (!s_obj->s_ptrList.size()&&s_obj->isTemporary()) {
             delete s_obj;
         }
     }
-    for(QMap<QString,ObjectPtr*>::iterator it=Object::zombies->begin(); it!=Object::zombies->end(); ++it) {
-        if(it.value()==this) {
+    for (QMap<QString,ObjectPtr*>::iterator it=Object::zombies->begin(); it!=Object::zombies->end(); ++it) {
+        if (it.value()==this) {
             it=Object::zombies->erase(it);
         }
     }

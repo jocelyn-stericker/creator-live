@@ -7,13 +7,13 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live/metronome.h"
+#include <live/metronome.h>
 #include <cmath>
 #include <math.h>
 
 void live::Metronome::clock()
 {
-    if(s_isActive)
+    if (s_isActive)
     {
         int time( startTime.msecsTo(QTime::currentTime()) );
         int bpm( (s_ts.denomenator==4) ? b_bpm : b_bpm*2 );
@@ -26,11 +26,11 @@ void live::Metronome::clock()
             s_barStart=time-pbeat;
         }
 
-        if(time!=s_lastTime)
+        if (time!=s_lastTime)
         {
             double pbeat=60000.0/(double)bpm;
             double curBeat=(double)(time-s_barStart)/pbeat;
-            while((int)curBeat>s_ts.numerator)  // truncate
+            while ((int)curBeat>s_ts.numerator)  // truncate
             {
                 s_barStart+=pbeat*(double)s_ts.numerator;
                 curBeat-=(double)s_ts.numerator;
@@ -38,7 +38,7 @@ void live::Metronome::clock()
 
             int ppb = ((double)ppq*fmod(curBeat,1.0));
 
-            if(s_lastPpq != ppb)
+            if (s_lastPpq != ppb)
             {
                 s_lastPpq=ppb;
 
@@ -50,7 +50,7 @@ void live::Metronome::clock()
                               ppb
                              );
 
-                for(int i=0;i<_as.size();i++) {
+                for (int i=0;i<_as.size();i++) {
                     _as[i]->sync(data);
                 }
             }

@@ -12,7 +12,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define AUDIOOUTPUTCHOOSER_H
 
 #include <QWidget>
-#include "live/object.h"
+#include <live/object.h>
 
 namespace Ui {
 class AudioOutputChooser;

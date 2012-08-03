@@ -10,8 +10,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef DJCONTEXT_H
 #define DJCONTEXT_H
 
-#include "live/object.h"
-#include "live/variantbinding.h"
+#include <live/object.h>
+#include <live/variantbinding.h>
 
 #include <QWidget>
 

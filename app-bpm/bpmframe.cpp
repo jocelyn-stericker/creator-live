@@ -38,13 +38,13 @@ BPMFrame::~BPMFrame()
 
 void BPMFrame::timerEvent(QTimerEvent *)
 {
-    if(app.getBPM()>20) ui_label->setText(" "+QString::number(app.getBPM())+" BPM");
+    if (app.getBPM()>20) ui_label->setText(" "+QString::number(app.getBPM())+" BPM");
     else ui_label->setText("Detecting pulse...");
 }
 
 void BPMFrame::resizeEvent(QResizeEvent *)
 {
-    if(width()>50)
+    if (width()>50)
     {
         setMinimumWidth(50);
         setMaximumWidth(50);

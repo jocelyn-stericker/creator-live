@@ -22,14 +22,12 @@
 #ifndef FJFILTERFRAME_H
 #define FJFILTERFRAME_H
 
-#include <QFrame>
-#include <live_widgets/appframe.h>
 #include "fjfilterapp.h"
 #include "fjphaserframe.h"
 
-#include "live/appinterface.h"
-
 #include <QFrame>
+#include <live/appinterface.h>
+#include <live_widgets/appframe.h>
 
 namespace Ui {
 class FJFilterFrame;

@@ -7,7 +7,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live_widgets/dropframe.h"
+#include <live_widgets/dropframe.h>
 
 #include <QDropEvent>
 #include <QVBoxLayout>
@@ -25,7 +25,7 @@ live_widgets::DropFrame::~DropFrame()
 
 void live_widgets::DropFrame::dragEnterEvent(QDragEnterEvent *e)
 {
-    if(e->mimeData()->hasFormat("text/plain"))
+    if (e->mimeData()->hasFormat("text/plain"))
     {
         e->acceptProposedAction();
     }
@@ -43,14 +43,14 @@ QString live_widgets::DropFrame::text()
 
 void live_widgets::DropFrame::setText(QString x)
 {
-    if(s_dl)
+    if (s_dl)
     {
         delete s_dl;
         s_dl=0;
     }
     s_dl=new QLabel;
     s_dl->setText(x);
-    if(!layout())
+    if (!layout())
     {
         setLayout(new QVBoxLayout());
     }

@@ -33,7 +33,7 @@ string encode_map(const dictionary &data)
     osctl::string_buffer sb;
     osc_stream<osctl::string_buffer> str(sb);
     str << (uint32_t)data.size();
-    for(dictionary::const_iterator i = data.begin(); i != data.end(); i++)
+    for (dictionary::const_iterator i = data.begin(); i != data.end(); i++)
     {
         str << i->first << i->second;
     }
@@ -75,7 +75,7 @@ std::string load_file(const std::string &src)
     FILE *f = fopen(src.c_str(), "rb");
     if (!f)
         throw file_exception(src);
-    while(!feof(f))
+    while (!feof(f))
     {
         char buffer[1024];
         int len = fread(buffer, 1, sizeof(buffer), f);
@@ -112,7 +112,7 @@ std::string indent(const std::string &src, const std::string &indent)
             break;
         dest += indent + src.substr(pos, epos - pos) + "\n";
         pos = epos + 1;
-    } while(pos < src.length());
+    } while (pos < src.length());
     if (pos < src.length())
         dest += indent + src.substr(pos);
     return dest;

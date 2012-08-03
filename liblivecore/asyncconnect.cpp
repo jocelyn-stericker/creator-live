@@ -6,7 +6,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
                   All rights reserved.
 
 *******************************************************/
-#include "live/asyncconnect.h"
+#include <live/asyncconnect.h>
 #include "asyncconnect_p.h"
 
 LIBLIVECORESHARED_EXPORT live_private::ASyncConnectSys* live_private::ASyncConnectSys::s_singleton=0;

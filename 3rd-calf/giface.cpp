@@ -30,7 +30,7 @@ using namespace calf_plugins;
 float parameter_properties::from_01(double value01) const
 {
     double value = dsp::clip(value01, 0., 1.);
-    switch(flags & PF_SCALEMASK)
+    switch (flags & PF_SCALEMASK)
     {
     case PF_SCALE_DEFAULT:
     case PF_SCALE_LINEAR:
@@ -60,7 +60,7 @@ float parameter_properties::from_01(double value01) const
             value = min * pow(double(max / min), value01 * step / (step - 1.0));
         break;
     }
-    switch(flags & PF_TYPEMASK)
+    switch (flags & PF_TYPEMASK)
     {
     case PF_INT:
     case PF_BOOL:
@@ -77,7 +77,7 @@ float parameter_properties::from_01(double value01) const
 
 double parameter_properties::to_01(float value) const
 {
-    switch(flags & PF_SCALEMASK)
+    switch (flags & PF_SCALEMASK)
     {
     case PF_SCALE_DEFAULT:
     case PF_SCALE_LINEAR:
@@ -147,7 +147,7 @@ std::string parameter_properties::to_string(float value) const
         sprintf(buf, "%0.1f dB", 6.0 * log(value) / log(2));
         return string(buf);
     }
-    switch(flags & PF_TYPEMASK)
+    switch (flags & PF_TYPEMASK)
     {
     case PF_STRING:
         return "N/A";
@@ -164,7 +164,7 @@ std::string parameter_properties::to_string(float value) const
     else
         sprintf(buf, "%g", value);
     
-    switch(flags & PF_UNITMASK) {
+    switch (flags & PF_UNITMASK) {
     case PF_UNIT_DB: return string(buf) + " dB";
     case PF_UNIT_HZ: return string(buf) + " Hz";
     case PF_UNIT_SEC: return string(buf) + " s";

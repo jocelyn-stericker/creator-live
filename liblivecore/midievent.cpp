@@ -1,4 +1,4 @@
-#include "live/midievent.h"
+#include <live/midievent.h>
 
 qint16 live::Event::simpleStatus() const
 {

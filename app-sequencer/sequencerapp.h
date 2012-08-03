@@ -10,8 +10,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef SEQUENCER_H
 #define SEQUENCER_H
 
-#include "live/miditrack.h"
-#include "live/audiotrack.h"
+#include <live/audiotrack.h>
+#include <live/miditrack.h>
 
 class LooperApp;
 

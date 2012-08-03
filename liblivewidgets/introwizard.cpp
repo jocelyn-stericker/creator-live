@@ -7,7 +7,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live_widgets/introwizard.h"
+#include <live_widgets/introwizard.h>
 #include "ui_introwizard.h"
 #include <cmath>
 #include <math.h>
@@ -38,5 +38,5 @@ void IntroWizard::resizeEvent(QResizeEvent *e)
     ui->Bframe->setFixedWidth(w/2.00/phi);
     ui->CFrame->setFixedWidth(w/2.00/phi/phi);
 
-    if(e) QWidget::resizeEvent(e);
+    if (e) QWidget::resizeEvent(e);
 }

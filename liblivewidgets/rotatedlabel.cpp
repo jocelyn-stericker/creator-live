@@ -7,7 +7,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live_widgets/rotatedlabel.h"
+#include <live_widgets/rotatedlabel.h>
 
 #include <QMouseEvent>
 

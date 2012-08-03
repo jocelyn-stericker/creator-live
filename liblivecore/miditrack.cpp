@@ -7,7 +7,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live/miditrack.h"
+#include <live/miditrack.h>
 
 int live::MidiTrack::lastId=-1;
 
@@ -39,8 +39,8 @@ void live::MidiTrack::startPlayback()
         }
     }
 
-    for(int i=0;i<s_cache.size();i++) {
-        if(live::midi::getTime_msec()-s_cache[i].time>120) {
+    for (int i=0;i<s_cache.size();i++) {
+        if (live::midi::getTime_msec()-s_cache[i].time>120) {
             s_cache.removeAt(i);
             --i;
         }
@@ -48,7 +48,7 @@ void live::MidiTrack::startPlayback()
 
 //    if ( (b_record||b_overdub) ) {
 //        ObjectChain p;
-//        while(s_cache.size()) {
+//        while (s_cache.size()) {
 //            s_cache.front().time=Time();
 //            mIn(&s_cache.front(),p);
 //            s_cache.pop_front();
@@ -74,10 +74,10 @@ void live::MidiTrack::stopPlayback()
     p.push_back(this);
     mOut(&can,p);
 
-    for(int i=0; i<s_data->size(); i++)
+    for (int i=0; i<s_data->size(); i++)
     {
         (*s_data)[i]->isShadow=0;
-        if((*s_data)[i]->simpleStatus()==Event::NOTE_ON||(*s_data)[i]->simpleStatus()==Event::NOTE_OFF)
+        if ((*s_data)[i]->simpleStatus()==Event::NOTE_ON||(*s_data)[i]->simpleStatus()==Event::NOTE_OFF)
         {
             // -> I don't get this assert. I'll look at it later.
 //            Q_ASSERT(!((*s_data)[i]->velocity()&&!(*s_data)[i]->buddy));  /*all objects should have buddies via panic()*/
@@ -91,28 +91,28 @@ void live::MidiTrack::stopPlayback()
 void live::MidiTrack::mIn(const Event *ev, ObjectChain&p)
 {
     NOSYNC;   // <<!!!
-    if(p.size()&&p.back()==s_ec&&s_thru)
+    if (p.size()&&p.back()==s_ec&&s_thru)
     {
 
         mOut(ev,p);
         return;
     }
 
-    if(isPlay())
+    if (isPlay())
     {
         b_curPos=live::midi::getTime_msec()-b_systemTimeStart+b_recStart;
     }
     Q_ASSERT(b_curPos>=0);
 
-    if(p.size()&&s_thru) {
+    if (p.size()&&s_thru) {
         p.push_back(this);
         mOut(ev,p);   //Mute applies to outgoing only (!!)
         p.pop_back();
     }
 
-    if((ev->simpleStatus()==0xC0)) return;
+    if ((ev->simpleStatus()==0xC0)) return;
 
-    if(ev->message==-1) return;
+    if (ev->message==-1) return;
 
     if ( (b_record||b_overdub) && b_playback && (ev->simpleStatus()==Event::NOTE_ON||ev->cc()!=-1||ev->simpleStatus()==Event::NOTE_OFF) )
     {
@@ -142,12 +142,12 @@ void live::MidiTrack::mIn(const Event *ev, ObjectChain&p)
             }
             Q_ASSERT(1);
         }
-        if((data->simpleStatus()==Event::NOTE_ON||data->simpleStatus()==Event::NOTE_OFF)&&!data->velocity())
+        if ((data->simpleStatus()==Event::NOTE_ON||data->simpleStatus()==Event::NOTE_OFF)&&!data->velocity())
         {
             bool ok=0;
-            for(int j=0;j<s_data->size();j++)   /*Where it would go*/
+            for (int j=0;j<s_data->size();j++)   /*Where it would go*/
             {
-                if((*s_data)[j]->velocity()&&(*s_data)[j]->simpleStatus()==Event::NOTE_ON&&(*s_data)[j]->note()==data->note()&&!(*s_data)[j]->buddy)
+                if ((*s_data)[j]->velocity()&&(*s_data)[j]->simpleStatus()==Event::NOTE_ON&&(*s_data)[j]->note()==data->note()&&!(*s_data)[j]->buddy)
                 {
                     ok=1;
                     (*s_data)[j]->buddy=data;
@@ -156,7 +156,7 @@ void live::MidiTrack::mIn(const Event *ev, ObjectChain&p)
                     break;
                 }
             }
-            if(ok)
+            if (ok)
             {
                 s_data->insert( i+1, data );
             }
@@ -206,7 +206,7 @@ const bool& live::MidiTrack::isMute()
 
 const int& live::MidiTrack::pos()
 {
-    if(isPlay())
+    if (isPlay())
     {
         b_curPos=live::midi::getTime_msec()-b_systemTimeStart+b_recStart;
     }
@@ -263,7 +263,7 @@ void live::MidiTrack::setPos(int pos)
 {
     NOSYNC;
     Q_ASSERT(pos>=0);
-    if(isPlay()) {
+    if (isPlay()) {
         stopPlayback();
         b_curPos=pos;
         startPlayback();
@@ -274,7 +274,7 @@ void live::MidiTrack::setPos(int pos)
 
 void live::MidiTrack::importFile(QString path)
 {
-    if(!QFile::exists(path))
+    if (!QFile::exists(path))
     {
         return;
     }
@@ -282,15 +282,15 @@ void live::MidiTrack::importFile(QString path)
     MidiFile mf;
     mf.read(path.toAscii());
     mf.absoluteTime();
-    if(!mf.getNumTracks())
+    if (!mf.getNumTracks())
     {
         return;
     }
 
-    for(int i=0;i<mf.getNumEvents(0);i++)
+    for (int i=0;i<mf.getNumEvents(0);i++)
     {
         MFEvent ev=mf.getEvent(0,i);
-        if(ev.data.getSize()!=3)
+        if (ev.data.getSize()!=3)
         {
             continue;
         }
@@ -311,7 +311,7 @@ void live::MidiTrack::exportFile(QString path)
 
     double secondsPerTick = 60.0 / (120.0f * (double) tpq);
 
-    for(int i=0;i<s_data->size();i++)
+    for (int i=0;i<s_data->size();i++)
     {
         midievent[0] = (uchar)(*s_data)[i]->message;     // store a note on command (MIDI channel 1)
         midievent[1] = (uchar)(*s_data)[i]->data1;
@@ -326,13 +326,13 @@ void live::MidiTrack::exportFile(QString path)
 void live::MidiTrack::timeEvent()
 {
     NOSYNC
-    if(isPlay()) {
+    if (isPlay()) {
 //        QTimer::singleShot(20,this,SLOT(timeEvent()));
     } else {
         return;
     }
 
-    if(isRecord()) {
+    if (isRecord()) {
         Time t=pos();
 
         int i = 0;

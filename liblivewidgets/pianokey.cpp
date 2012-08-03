@@ -7,9 +7,9 @@
                  All rights reserved.
 *****************************************************/
 
-#include "live_widgets/pianokey.h"
-#include "live/object.h"
-#include "live/midievent.h"
+#include <live_widgets/pianokey.h>
+#include <live/object.h>
+#include <live/midievent.h>
 
 #include <QGraphicsSceneMouseEvent>
 
@@ -55,7 +55,7 @@ void live_widgets::PianoKey::mousePressEvent ( QGraphicsSceneMouseEvent * event 
         if ( ( event->modifiers() == Qt::ShiftModifier ) && (s_shiftTwinID!=-1) )
         {
             int minId=s_shiftTwinID<s_id?s_shiftTwinID:s_id, maxId=s_shiftTwinID<s_id?s_id:s_shiftTwinID;
-            for(int i=minId; i<=maxId; i++)
+            for (int i=minId; i<=maxId; i++)
             {
                 s_universe[i]->enableKey(1);
             }
@@ -68,7 +68,7 @@ void live_widgets::PianoKey::mousePressEvent ( QGraphicsSceneMouseEvent * event 
         if ( ( event->modifiers() == Qt::ShiftModifier ) && s_shiftTwinID!=-1)
         {
             int minId=s_shiftTwinID<s_id?s_shiftTwinID:s_id, maxId=s_shiftTwinID<s_id?s_id:s_shiftTwinID;
-            for(int i=minId; i<=maxId; i++)
+            for (int i=minId; i<=maxId; i++)
             {
                 s_universe[i]->enableKey(0);
             }

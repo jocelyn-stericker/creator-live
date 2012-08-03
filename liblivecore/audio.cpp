@@ -7,12 +7,13 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include <QSettings>
-#include "live/audio.h"
-#include "live/audiointerface.h"
 #include "audiosystem_p.h"
-#include "live/songsystem.h"
-#include "live/keysignature.h"
+
+#include <live/audio.h>
+#include <live/audiointerface.h>
+#include <live/songsystem.h>
+#include <live/keysignature.h>
+#include <QSettings>
 
 using namespace live_private;
 
@@ -54,7 +55,7 @@ QStringList jackGetPorts( bool getReadPorts, bool getWritePorts )
 
             jack_free(readPorts);
         }
-        while( 0 );
+        while ( 0 );
     }
 
     if (getWritePorts)
@@ -74,7 +75,7 @@ QStringList jackGetPorts( bool getReadPorts, bool getWritePorts )
             }
             jack_free(writePorts);
         }
-        while( 0 );
+        while ( 0 );
     }
 
     if ( !SecretAudio::singleton )
@@ -142,7 +143,7 @@ LIBLIVECORESHARED_EXPORT int AudioIn::lastDeviceInternalID=-1;
 #ifndef __QNX__
 void AudioIn::init()
 {
-    for(int i=0; i<chans; i++)
+    for (int i=0; i<chans; i++)
     {
         QString name=this->name();
         name.replace(' ','_');
@@ -164,7 +165,7 @@ void AudioIn::init()
 #ifndef __QNX__
 void AudioOut::newConnection()
 {
-    if(!s_counter) for(int i=0; i<chans; i++)
+    if (!s_counter) for (int i=0; i<chans; i++)
     {
         s_port_[i].push_back(
             jack_port_register(
@@ -186,7 +187,7 @@ void AudioOut::newConnection()
 #ifndef __QNX__
 void AudioOut::deleteConnection()
 {
-    if(s_counter==1) for(int i=0; i<chans; i++)
+    if (s_counter==1) for (int i=0; i<chans; i++)
     {
         jack_port_unregister( getJackClient(), s_port_[i].takeLast() );
     }
@@ -200,19 +201,19 @@ void AudioOut::aIn(const float*data, int chan, live::ObjectChain&)
     Q_ASSERT(chan<chans);
 
 //    int out=-1;
-//    for(int i=0;i<s_counter;i++)
+//    for (int i=0;i<s_counter;i++)
 //    {
-//        if(!s_tracked[chan][i])
+//        if (!s_tracked[chan][i])
 //        {
 //            out=i;
 //            s_tracked[chan][i]=1;
 //            break;
 //        }
 //    }
-//    if(out==-1)
+//    if (out==-1)
 //    {
 //        out=0;
-//        for(int i=0;i<32;i++)
+//        for (int i=0;i<32;i++)
 //        {
 //            s_tracked[chan][i]=!i;
 //        }
@@ -239,11 +240,11 @@ LOSE 32
 QString exec(QString cmd)   // port to QProcess?
 {
     QStringList sl=cmd.split(' ');
-    for(int i=0;i<sl.size();i++)
+    for (int i=0;i<sl.size();i++)
     {
-        if(sl[i].startsWith("\""))
+        if (sl[i].startsWith("\""))
         {
-            while(sl[i].startsWith("\"")&&(i+1<sl.size())&&!sl[i].endsWith("\""))
+            while (sl[i].startsWith("\"")&&(i+1<sl.size())&&!sl[i].endsWith("\""))
             {
                 sl[i]+=" "+sl.takeAt(i+1);
             }
@@ -251,18 +252,18 @@ QString exec(QString cmd)   // port to QProcess?
             sl[i].chop(1);
         }
     }
-    if(!sl.size())
+    if (!sl.size())
     {
         qDebug()<<"Invalid call to exec(...)";
         return "ERROR";
     }
-    if(sl[0].startsWith("jack")) {
+    if (sl[0].startsWith("jack")) {
         sl[0]="\""+QDir::homePath().replace("/","\\")+"\\Hathor\\"+sl[0]+"\"";
     }
     QProcess* proc=new QProcess;
     proc->setWorkingDirectory(QDir::homePath().replace("/","\\")+"\\Hathor");
     proc->start(sl.takeFirst(),sl,QIODevice::ReadOnly);
-    if(!proc->waitForStarted(3000))
+    if (!proc->waitForStarted(3000))
     {
         QMessageBox::critical(0,"Can't talk to otherApp","Please ensure that Creator Live is installed correctly",QMessageBox::Close);
         return "ERROR";
@@ -270,23 +271,23 @@ QString exec(QString cmd)   // port to QProcess?
     QString result = "";
     if (!cmd.contains("-p"))
     {
-        while(!(proc->atEnd()&&(proc->state()==QProcess::NotRunning)))
+        while (!(proc->atEnd()&&(proc->state()==QProcess::NotRunning)))
         {
             bool ok=1;
-            while(proc->atEnd()) {
-                if(proc->state()==QProcess::NotRunning)
+            while (proc->atEnd()) {
+                if (proc->state()==QProcess::NotRunning)
                 {
                     ok=0;
                     break;
                 }
                 proc->waitForReadyRead(300);
             }
-            if(!ok)
+            if (!ok)
             {
                 break;
             }
             result+=proc->readLine();
-            if(result.indexOf("End of list")!=-1)
+            if (result.indexOf("End of list")!=-1)
             {
                 break;
             }
@@ -295,11 +296,11 @@ QString exec(QString cmd)   // port to QProcess?
     }
 //    if (!cmd.contains("-p"))  // hack, but works
 //    {
-//        while( !feof(pipe) )
+//        while ( !feof(pipe) )
 //        {
 //
 //    qApp->processlive::Events();
-//            if(fgets(buffer, 128, pipe) != NULL) result += buffer;
+//            if (fgets(buffer, 128, pipe) != NULL) result += buffer;
 //            if ( result.indexOf("End of list") != -1 ) break;
 //        }
 //    }
@@ -313,7 +314,7 @@ QStringList parse( QString a )
 
     QTextStream ss(&a);
     QString l;
-    while( l = ss.readLine(), l != "" )
+    while ( l = ss.readLine(), l != "" )
     {
         QStringList ll = l.split(QRegExp("\\s+"));
         if ( ll.size() > 2 && ll[0] == "Name" )
@@ -338,12 +339,12 @@ QList<int> parseAutoType( QString a )
     QTextStream ss(&a);
     QString l;
     bool good=0;
-    while( l = ss.readLine(), l != "" )
+    while ( l = ss.readLine(), l != "" )
     {
         QStringList ll = l.split(QRegExp("\\s+"));
         if ( ll.size() > 2 && ll[0] == "Name" )
         {
-            if((good=l.contains("ASIO")))
+            if ((good=l.contains("ASIO")))
             {
                 device.push_back(0);
             }
@@ -379,7 +380,7 @@ LIBLIVECORESHARED_EXPORT SecretAudio* SecretAudio::singleton = 0;
 #ifndef __QNX__
 jack_client_t* live_private::getJackClient()
 {
-    if(SecretAudio::singleton) return SecretAudio::singleton->client;
+    if (SecretAudio::singleton) return SecretAudio::singleton->client;
     else return (new SecretAudio)->client;
 }
 #endif
@@ -387,14 +388,14 @@ jack_client_t* live_private::getJackClient()
 bool SecretAudio::makeClient()
 {
 #ifndef __QNX__
-    if(client) return 1;
+    if (client) return 1;
     Q_ASSERT(qApp);
     live::Object::beginAsyncAction();
     qDebug()<<"Trying to connect to jackd... (you can start the JACK server with qjackctl, for example...)";
     QObject::connect(qApp,SIGNAL(aboutToQuit()),SecretAudioShutdownHandler::singleton,SLOT(byeBye()));
     SecretAudioShutdownHandler::singleton->byeBye();
     client = jack_client_open("Hathor", JackNullOption, 0);
-    if(!client)
+    if (!client)
     {
 #ifdef _WIN32
         QMessageBox::critical(0,"Error","Please ensure that Live is installed correctly.");
@@ -474,7 +475,7 @@ void SecretAudio::process()
         for ( int j = 0; j < i->chans; j++ )
         {
             float* buffer = new float[ nframes ]; //{
-            for(int k=0; k<nframes; k++)
+            for (int k=0; k<nframes; k++)
             {
                 buffer[k]=0.0;
             }
@@ -484,7 +485,7 @@ void SecretAudio::process()
         }
     }
 
-    if(live::song::current()&&live::song::current()->metronome) {
+    if (live::song::current()&&live::song::current()->metronome) {
 //#ifdef __linux
 //        QtConcurrent::run(SongSys::current->metronome,&Metronome::clock);
 //#else
@@ -499,51 +500,51 @@ bool SecretAudio::refresh()
 {
 #ifndef __QNX__
     live::Object::beginAsyncAction();
-    for(int i=0;i<outputMappings;i++)
+    for (int i=0;i<outputMappings;i++)
     {
         bool ok=1;
-        for(int j=0;j<outputs;j++)
+        for (int j=0;j<outputs;j++)
         {
-            if(outputs[j]->name()==outputMappingsName[i])
+            if (outputs[j]->name()==outputMappingsName[i])
             {
                 ok=0;
             }
         }
-        if(ok)
+        if (ok)
         {
             outputs.append( new AudioOut(outputMappings[i], outputMappingsName[i],1) );
         }
     }
     QStringList outputStrs = jackGetInputPorts();
-    for(int i=0;i<outputStrs;i++)
+    for (int i=0;i<outputStrs;i++)
     {
-        if(outputStrs[i].contains("Hathor",Qt::CaseInsensitive))
+        if (outputStrs[i].contains("Hathor",Qt::CaseInsensitive))
         {
             continue;
         }
         bool ok=1;
-        for(int j=0;j<outputs;j++)
+        for (int j=0;j<outputs;j++)
         {
-            if(outputs[j]->name()==outputStrs[i])
+            if (outputs[j]->name()==outputStrs[i])
             {
                 ok=0;
                 break;
             }
         }
-        if(ok)
+        if (ok)
         {
-            for(int j=0;j<outputMappings;j++)
+            for (int j=0;j<outputMappings;j++)
             {
-                if(outputMappings[j].contains(outputStrs[i]))
+                if (outputMappings[j].contains(outputStrs[i]))
                 {
                     ok=0;
                     break;
                 }
             }
         }
-        if(ok)
+        if (ok)
         {
-            if(i+1<outputStrs.size())
+            if (i+1<outputStrs.size())
             {
 //                QStringList adhocMapping;
 //                adhocMapping.push_back(outputStrs[i]);
@@ -555,53 +556,53 @@ bool SecretAudio::refresh()
         }
     }
 
-    for(int i=0;i<inputMappings;i++)
+    for (int i=0;i<inputMappings;i++)
     {
         bool ok=1;
-        for(int j=0;j<inputs;j++)
+        for (int j=0;j<inputs;j++)
         {
-            if(inputs[j]->name()==inputMappingsName[i])
+            if (inputs[j]->name()==inputMappingsName[i])
             {
                 ok=0;
             }
         }
-        if(ok)
+        if (ok)
         {
             inputs.append( new AudioIn(inputMappings[i], inputMappingsName[i],1) );
         }
     }
     QStringList inputStrs = jackGetOutputPorts();
-    for(int i=0;i<inputStrs;i++)
+    for (int i=0;i<inputStrs;i++)
     {
-        if(inputStrs[i].contains("Hathor",Qt::CaseInsensitive))
+        if (inputStrs[i].contains("Hathor",Qt::CaseInsensitive))
         {
             continue;
         }
         bool ok=1;
         QString inputStrx=inputStrs[i];
         inputStrx.replace(':',"_");
-        for(int j=0;j<inputs;j++)
+        for (int j=0;j<inputs;j++)
         {
-            if(inputs[j]->name()==inputStrx)
+            if (inputs[j]->name()==inputStrx)
             {
                 ok=0;
                 break;
             }
         }
-        if(ok)
+        if (ok)
         {
-            for(int j=0;j<inputMappings;j++)
+            for (int j=0;j<inputMappings;j++)
             {
-                if(inputMappings[j].contains(inputStrx))
+                if (inputMappings[j].contains(inputStrx))
                 {
                     ok=0;
                     break;
                 }
             }
         }
-        if(ok)
+        if (ok)
         {
-            if(i+1<inputStrs.size())
+            if (i+1<inputStrs.size())
             {
 //                QStringList adhocMapping;
 //                adhocMapping.push_back(inputStrx);
@@ -619,10 +620,10 @@ bool SecretAudio::refresh()
     //store.
     live::object::clear(live::AudioOnly|live::InputOnly|live::NoRefresh);
     live::object::clear(live::AudioOnly|live::OutputOnly|live::NoRefresh);
-    for(int i=0;i<inputs.size();i++) {
+    for (int i=0;i<inputs.size();i++) {
         live::object::set(inputs[i]);
     }
-    for(int i=0;i<outputs.size();i++) {
+    for (int i=0;i<outputs.size();i++) {
         live::object::set(outputs[i]);
     }
     live::Object::endAsyncAction();
@@ -638,7 +639,7 @@ AudioSys
 live::AudioInterface* live::audio::s_audioInterface=0;
 
 void live::audio::registerInterface(live::AudioInterface*ai) {
-    if(s_audioInterface) s_audioInterface->delClient();
+    if (s_audioInterface) s_audioInterface->delClient();
     s_audioInterface=ai;
     s_audioInterface->makeClient();
 }
@@ -647,7 +648,7 @@ QObject* live::audio::getCurrentInterface() {
     return s_audioInterface->qobject();
 }
 
-void live::audio::refresh() { if(s_audioInterface) s_audioInterface->refresh(); }
+void live::audio::refresh() { if (s_audioInterface) s_audioInterface->refresh(); }
 
 LIBLIVECORESHARED_EXPORT const int& live::audio::nFrames()
 {
@@ -687,12 +688,12 @@ bool live_private::SecretAudio::resetMappings()
     inputMappingsName.clear();
     outputMappings.clear();
     outputMappingsName.clear();
-    for(int i=0; i<inputs; i++)
+    for (int i=0; i<inputs; i++)
     {
         Q_ASSERT(inputs[i]->aConnections<1);
         delete inputs.takeAt(i);
     }
-    for(int i=0; i<outputs; i++)
+    for (int i=0; i<outputs; i++)
     {
         Q_ASSERT(outputs[i]->aConnections<1);
         delete outputs.takeAt(i);
@@ -726,12 +727,12 @@ int live_private::SecretAudio::mappingCount(bool input)
 
 //QList<Object*> AudioSys::getInputPorts()
 //{
-//    if(!SecretAudio::singleton) new SecretAudio;
+//    if (!SecretAudio::singleton) new SecretAudio;
 
 //    SecretAudio::singleton->refresh();
 
 //    QList<Object*> list_;
-//    for(int i=0; i<SecretAudio::singleton->inputs; i++)
+//    for (int i=0; i<SecretAudio::singleton->inputs; i++)
 //    {
 //        list_.push_back(SecretAudio::singleton->inputs[i]);
 //    }
@@ -750,11 +751,11 @@ QStringList live_private::SecretAudio::getInputChanStringList()
 
 //QList<Object*> AudioSys::getOutputPorts()
 //{
-//    if(!SecretAudio::singleton) new SecretAudio;
+//    if (!SecretAudio::singleton) new SecretAudio;
 
 //    SecretAudio::singleton->refresh();
 //    QList<Object*> list_;
-//    for(int i=0; i<SecretAudio::singleton->outputs; i++)
+//    for (int i=0; i<SecretAudio::singleton->outputs; i++)
 //    {
 //        list_.push_back(SecretAudio::singleton->outputs[i]);
 //    }

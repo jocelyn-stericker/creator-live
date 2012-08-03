@@ -31,11 +31,11 @@ void Vst::init()
 {
     rep = new VstR(this,this->filename);
     rep->audioFromVst->hybridConnect(rep);   //subtle
-    if(!rep->audioFromVst)
+    if (!rep->audioFromVst)
     {
         return;
     }
-    if(!rep->midiOut)
+    if (!rep->midiOut)
     {
         return;
     }
@@ -67,7 +67,7 @@ void Vst::aIn(const float *data, int chan, ObjectChain&p)
 {
     Q_ASSERT(chan<2);
     Q_ASSERT(rep->audioFromVst);
-    if(p.contains(rep->audioFromVst))
+    if (p.contains(rep->audioFromVst))
     {
         p.push_back(this);
         aOut(data,chan,p); //really should add other items back to pipeline
@@ -91,37 +91,37 @@ void Vst::mIn(const Event *data, ObjectChain&p)
 
 void VstR::addSidekicks(QStringList to, QStringList from)
 {
-    for(int i=0;(i<to.size()||i<from.size())&&i<15;i++)
+    for (int i=0;(i<to.size()||i<from.size())&&i<15;i++)
     {
         QList<ObjectPtr> ninl=object::get(AudioOnly|InputOnly);
         bool ok=0;
         ObjectPtr audioFromVst=0;
-        for(int j=0;j<ninl.size();j++)
+        for (int j=0;j<ninl.size();j++)
         {
-            if(ninl[j]->name()==from[i])
+            if (ninl[j]->name()==from[i])
             {
                 audioFromVst=ninl[j];
                 ok=1;
             }
         }
-        if(!ok)
+        if (!ok)
         {
             qCritical()<<"VstR (linux) could not find match for"<<from[i];
         }
         Q_ASSERT(ok);
         ObjectPtr audioToVst=0;
-        if(i<to.size()) {
+        if (i<to.size()) {
             ok=0;
             ninl=object::get(AudioOnly|OutputOnly);
-            for(int j=0;j<ninl.size();j++)
+            for (int j=0;j<ninl.size();j++)
             {
-                if(ninl[j]->name()==to[i])    //to[j]?
+                if (ninl[j]->name()==to[i])    //to[j]?
                 {
                     audioToVst=ninl[j];
                     ok=1;
                 }
             }
-            if(!ok)
+            if (!ok)
             {
                 audioToVst=audio::null(2);
                 qWarning()<<"VstR (linux) could not find match for"<<to[i];

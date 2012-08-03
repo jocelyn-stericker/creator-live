@@ -9,7 +9,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include "mixerframe.h"
 #include "ui_mixerframe.h"
-#include "live_widgets/midibindingqt.h"
+#include <live_widgets/midibindingqt.h>
 #include <QtPlugin>
 
 using namespace live;

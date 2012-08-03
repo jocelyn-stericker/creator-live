@@ -7,12 +7,12 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live/time.h"
+#include <live/time.h>
 
-#include "live/midi.h"
+#include <live/midi.h>
 qint32 live::Time::toTime_ms() const
 {
-    if(sec==-1||nsec==-1) {
+    if (sec==-1||nsec==-1) {
         return midi::getTime_msec();
     }
     return sec*1000+nsec/1000;

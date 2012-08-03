@@ -22,13 +22,13 @@
 #ifndef FJFLANGERFRAME_H
 #define FJFLANGERFRAME_H
 
-#include <QFrame>
-#include <live_widgets/appframe.h>
 #include "fjapp.h"
 #include "fjfilterframe.h"
 #include "fjflangerapp.h"
 
-#include "live/appinterface.h"
+#include <live/appinterface.h>
+#include <live_widgets/appframe.h>
+#include <QFrame>
 
 namespace Ui {
 class FJFlangerFrame;

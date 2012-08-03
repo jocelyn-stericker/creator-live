@@ -7,8 +7,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live_widgets/combobox.h"
-#include "live/midibinding.h"
+#include <live_widgets/combobox.h>
+#include <live/midibinding.h>
 #include <QPainter>
 #include <QMouseEvent>
 
@@ -20,8 +20,8 @@ live_widgets::ComboBox::ComboBox(QWidget *parent) :
 
 void live_widgets::ComboBox::mousePressEvent(QMouseEvent *e)
 {
-    if(e->button()==Qt::LeftButton) {
-        if(s_bindMode) {
+    if (e->button()==Qt::LeftButton) {
+        if (s_bindMode) {
             emit customContextMenuRequested(e->pos());
         } else {
             QComboBox::mousePressEvent(e);
@@ -38,7 +38,7 @@ void live_widgets::ComboBox::mouseReleaseEvent(QMouseEvent *)
 void live_widgets::ComboBox::paintEvent(QPaintEvent *e)
 {
     QComboBox::paintEvent(e);
-    if(s_bindMode) {
+    if (s_bindMode) {
         QPainter p(this);
         p.fillRect(e->rect(),QColor(0,0,255,80));
     }

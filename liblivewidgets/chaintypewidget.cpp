@@ -7,7 +7,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live_widgets/chaintypewidget.h"
+#include <live_widgets/chaintypewidget.h>
 #include <QPainter>
 
 live_widgets::ChainTypeWidget::ChainTypeWidget(QWidget* p) : QWidget(p) {}
@@ -21,19 +21,19 @@ void live_widgets::ChainTypeWidget::paintEvent(QPaintEvent *e)
     p.fillRect(e->rect(),QColor("white")); // not actually white
     p.setCompositionMode(QPainter::CompositionMode_Source);
     int prev=0;
-    for(int i=0;i<s_positions.size();i++)
+    for (int i=0;i<s_positions.size();i++)
     {
-        if(s_midi[i]&&s_audio[i])
+        if (s_midi[i]&&s_audio[i])
         {
             a=1;
             p.setBrush(QBrush("green"));
         }
-        else if(s_midi[i])
+        else if (s_midi[i])
         {
             b=1;
             p.setBrush(QBrush("blue"));
         }
-        else if(s_audio[i])
+        else if (s_audio[i])
         {
             c=1;
             p.setBrush(QBrush("yellow"));
@@ -41,7 +41,7 @@ void live_widgets::ChainTypeWidget::paintEvent(QPaintEvent *e)
         p.drawRect(prev,0,s_positions[i]-prev,height());
         prev=s_positions[i];
     }
-    if((a?1:0)+(b?1:0)+(c?1:0)<=1) {
+    if ((a?1:0)+(b?1:0)+(c?1:0)<=1) {
         setFixedHeight(0);
     } else {
         setFixedHeight(2);

@@ -7,10 +7,10 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live_widgets/toolbutton.h"
+#include <live_widgets/toolbutton.h>
 #include <QMouseEvent>
 #include <QPainter>
-#include "live/midibinding.h"
+#include <live/midibinding.h>
 
 live_widgets::ToolButton::ToolButton(QWidget *parent) :
     QToolButton(parent), s_bindMode(0)
@@ -20,8 +20,8 @@ live_widgets::ToolButton::ToolButton(QWidget *parent) :
 
 void live_widgets::ToolButton::mousePressEvent(QMouseEvent *e)
 {
-    if(e->button()==Qt::LeftButton) {
-        if(s_bindMode) {
+    if (e->button()==Qt::LeftButton) {
+        if (s_bindMode) {
             emit customContextMenuRequested(e->pos());
         } else {
             animateClick();
@@ -37,7 +37,7 @@ void live_widgets::ToolButton::mouseReleaseEvent(QMouseEvent *)
 void live_widgets::ToolButton::paintEvent(QPaintEvent *e)
 {
     QToolButton::paintEvent(e);
-    if(s_bindMode) {
+    if (s_bindMode) {
         QPainter p(this);
         p.fillRect(e->rect(),QColor(0,0,255,80));
     }

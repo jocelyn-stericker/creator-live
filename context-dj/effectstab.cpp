@@ -10,8 +10,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "effectstab.h"
 #include "ui_effectstab.h"
 
-#include "live/audio.h"
-#include "live/midi.h"
+#include <live/audio.h>
+#include <live/midi.h>
 #include "samplerdj.h"
 
 using namespace live;
@@ -22,9 +22,9 @@ EffectsTab::EffectsTab(QWidget *parent) :
     , s_samplerR(*new SamplerDJ)
     , ui(new Ui::effectstab)
 {
-    for(int i = 0; i < 8; i++)
+    for (int i = 0; i < 8; i++)
     {
-        for(int j = 0; j < 2; j++)
+        for (int j = 0; j < 2; j++)
         {
             s_times[i][j] = 0;
             s_rec[i][j] = 0;
@@ -78,11 +78,11 @@ EffectsTab::~EffectsTab()
 
 static void removeBackground(QString& style)
 {
-    if(style.contains("background-color"))
+    if (style.contains("background-color"))
     {
         int start=style.indexOf("background-color");
         int end=style.indexOf(";",start);
-        if(start!=end&&start!=-1) style.remove(start,end-start);
+        if (start!=end&&start!=-1) style.remove(start,end-start);
     }
 }
 
@@ -101,7 +101,7 @@ void EffectsTab::buttonLogic()
     bool ok=1;
     int num=name.toInt(&ok);
     Q_ASSERT(ok);
-    if(qobject_cast<QToolButton*>(sender())->isDown())
+    if (qobject_cast<QToolButton*>(sender())->isDown())
     {
         QString style=button->styleSheet();
 
@@ -112,7 +112,7 @@ void EffectsTab::buttonLogic()
         (chan ? s_samplerL : s_samplerR).hit(num-1);
         s_times[num-1][chan]=midi::getTime_msec();
     }
-    else if((chan ? s_samplerL : s_samplerR).isPlayMode()&&midi::getTime_msec()-s_times[num-1][chan]<100)
+    else if ((chan ? s_samplerL : s_samplerR).isPlayMode()&&midi::getTime_msec()-s_times[num-1][chan]<100)
     {
         // play it until completion
         // FIXME : add timer

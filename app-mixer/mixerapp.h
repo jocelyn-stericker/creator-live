@@ -10,8 +10,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef MIXERAPP_H
 #define MIXERAPP_H
 
-#include "live/object.h"
-#include "live/variantbinding.h"
+#include <live/object.h>
+#include <live/variantbinding.h>
 
 class MixerApp : public QObject, public live::Object
 {

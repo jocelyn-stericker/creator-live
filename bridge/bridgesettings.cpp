@@ -38,31 +38,31 @@ BridgeSettings::BridgeSettings(QWidget *parent) :
     ui->setupUi(this);
 
     QList<QHostAddress> ha = QNetworkInterface::allAddresses();
-    for(int i=0;i<ha.size();i++) {
-        if(ha[i].toString().startsWith("127.0")) {
+    for (int i=0;i<ha.size();i++) {
+        if (ha[i].toString().startsWith("127.0")) {
             ha.removeAt(i--);
             continue;
         }
     }
     QList<QNetworkInterface> ai = QNetworkInterface::allInterfaces();
     QStringList options;
-    for(int i=0;i<ai.size();i++) {
-        if(ai[i].flags()&QNetworkInterface::IsLoopBack) {
+    for (int i=0;i<ai.size();i++) {
+        if (ai[i].flags()&QNetworkInterface::IsLoopBack) {
             ai.removeAt(i);
             i--;
             continue;
         }
         options.push_back(ai[i].name());
     }
-    if(!ha.size()||!ai.size()) {
+    if (!ha.size()||!ai.size()) {
         QMessageBox::question(this,"Could not find the internet.","The internet seems to be missing. If you find it, start Bridge again.",QMessageBox::Ok);
         hide();
         QTimer::singleShot(0,qApp,SLOT(quit()));
         return;
-    } else if(ha.size()>1) {
+    } else if (ha.size()>1) {
         bool ok;
         QString net=QInputDialog::getItem(this,"Choose a Network","What network is your PlayBook on?",options,0,0,&ok);
-        if(!ok) {
+        if (!ok) {
             hide();
             QTimer::singleShot(0,qApp,SLOT(quit()));
             return;
@@ -70,28 +70,28 @@ BridgeSettings::BridgeSettings(QWidget *parent) :
         int idx=options.indexOf(net);
         QList<QNetworkAddressEntry> nae = ai[idx].addressEntries();
         ha.clear();
-        for(int i=0;i<nae.size();i++) ha.push_back(nae[i].ip());
-        for(int i=0;i<ha.size();i++) {
-            if(ha[i].toString().startsWith("127.0")) {
+        for (int i=0;i<nae.size();i++) ha.push_back(nae[i].ip());
+        for (int i=0;i<ha.size();i++) {
+            if (ha[i].toString().startsWith("127.0")) {
                 ha.removeAt(i--);
                 continue;
             }
         }
-        if(!ha.size()||!ai.size()) {
+        if (!ha.size()||!ai.size()) {
             QMessageBox::question(this,"Could not find the internet.","The internet seems to be missing. If you find it, start Bridge again.",QMessageBox::Ok);
             hide();
             QTimer::singleShot(0,qApp,SLOT(quit()));
             return;
         }
-        while(ha.size()>1) ha.removeLast();
+        while (ha.size()>1) ha.removeLast();
     }
 
     QString code;
 
     QStringList x = ha[0].toString().split('.');
-    for(int i=0;i<x.size();i++) {
+    for (int i=0;i<x.size();i++) {
         QString codepart=QString::number(x[i].toInt(0,10),16).toUpper();
-        while(codepart.size()<=1) codepart="0"+codepart;
+        while (codepart.size()<=1) codepart="0"+codepart;
         code+=codepart;
     }
     qDebug()<<"code:"<<code;
@@ -107,10 +107,10 @@ BridgeSettings::BridgeSettings(QWidget *parent) :
 void BridgeSettings::startTalking()
 {
     QTcpSocket* sock=dynamic_cast<QTcpServer*>(sender())->nextPendingConnection();
-    if(!s_in.size()) {
+    if (!s_in.size()) {
         s_in=live::object::get(live::MidiOnly|live::InputOnly);
-        for(int i=0;i<s_in.size();i++) {
-            if(!s_in[i]) continue;
+        for (int i=0;i<s_in.size();i++) {
+            if (!s_in[i]) continue;
             s_in[i]->midiConnect(this);
         }
     }
@@ -119,15 +119,15 @@ void BridgeSettings::startTalking()
     data+="BEGIN HELLO_WORLD\n";
     data+="BEGIN MIDI_INPUT\n";
 
-    for(int i=0;i<s_in.size();i++) {
-        if(!s_in[i]) continue;
+    for (int i=0;i<s_in.size();i++) {
+        if (!s_in[i]) continue;
         data+=s_in[i]->name()+"\n";
     }
     data+="END MIDI_INPUT\n";
-    if(!s_out.size()) s_out=live::object::get(live::MidiOnly|live::OutputOnly);
+    if (!s_out.size()) s_out=live::object::get(live::MidiOnly|live::OutputOnly);
     data+="BEGIN MIDI_OUTPUT\n";
-    for(int i=0;i<s_out.size();i++) {
-        if(!s_out[i]) continue;
+    for (int i=0;i<s_out.size();i++) {
+        if (!s_out[i]) continue;
         data+=s_out[i]->name()+"\n";
     }
     data+="END MIDI_OUTPUT\n";
@@ -150,7 +150,7 @@ void BridgeSettings::mIn(const live::Event *ev, live::ObjectChain &p)
     data+="DATA3 "+QString::number(live::midi::getTime_msec()-ev->time.toTime_ms())+"\n";
     data+="END EVENT\n";
     qDebug()<<"->"<<data;
-    for(int i=0;i<s_sockets.size();i++) {
+    for (int i=0;i<s_sockets.size();i++) {
         s_sockets[i]->write(data);
     }
 }
@@ -161,21 +161,21 @@ void BridgeSettings::listen()
 
 
     QList<QByteArray> commands = dynamic_cast<QTcpSocket*>(sender())->readAll().split('\n');
-    while(commands.size()) {
+    while (commands.size()) {
         qDebug()<<"Yo."<<commands;
-        if(!commands.size()) return;
-        if(commands.first()!="BEGIN EVENT") return;
+        if (!commands.size()) return;
+        if (commands.first()!="BEGIN EVENT") return;
         commands.pop_front();
 
-        if(!commands.size()) return;
-        if(!commands.first().startsWith("TO ")) return;
+        if (!commands.size()) return;
+        if (!commands.first().startsWith("TO ")) return;
         QString from = commands.first();
         from.remove(0,3);
         live::ObjectPtr ptr;
-        for(int i=0;i<s_out.size();i++) {
-            if(s_out[i]->name()==from) ptr=s_out[i];
+        for (int i=0;i<s_out.size();i++) {
+            if (s_out[i]->name()==from) ptr=s_out[i];
         }
-        if(!ptr) {
+        if (!ptr) {
             qDebug()<<"No such device "<<from;
             return;
         }
@@ -187,38 +187,38 @@ void BridgeSettings::listen()
         p.push_back(this);
 
         ///////////////////////////////////////////////////////////
-        if(!commands.size()) return;
-        if(!commands.first().startsWith("MSG ")) return;
+        if (!commands.size()) return;
+        if (!commands.first().startsWith("MSG ")) return;
         commands.first().remove(0,4);
         ev.message=commands.first().toInt(&ok);
-        if(!ok) return;
+        if (!ok) return;
         commands.pop_front();
 
         ///////////////////////////////////////////////////////////
-        if(!commands.size()) return;
-        if(!commands.first().startsWith("DATA1 ")) return;
+        if (!commands.size()) return;
+        if (!commands.first().startsWith("DATA1 ")) return;
         commands.first().remove(0,6);
         ev.data1=commands.first().toInt(&ok);
-        if(!ok) return;
+        if (!ok) return;
         commands.pop_front();
 
         ///////////////////////////////////////////////////////////
-        if(!commands.size()) return;
-        if(!commands.first().startsWith("DATA2 ")) return;
+        if (!commands.size()) return;
+        if (!commands.first().startsWith("DATA2 ")) return;
         commands.first().remove(0,6);
         ev.data2=commands.first().toInt(&ok);
-        if(!ok) return;
+        if (!ok) return;
         commands.pop_front();
 
         ///////////////////////////////////////////////////////////
-        if(!commands.size()) return;
-        if(!commands.first().startsWith("DATA3 ")) return;
+        if (!commands.size()) return;
+        if (!commands.first().startsWith("DATA3 ")) return;
         commands.first().remove(0,6);
         ev.time=live::Time(commands.first().toInt(&ok))+live::midi::getTime();
-        if(!ok) return;
+        if (!ok) return;
         commands.pop_front();
 
-        if(!commands.size()) return;
+        if (!commands.size()) return;
         commands.pop_front();
 
         qDebug()<<"!!"<<ev.time.toTime_ms()<<"VS"<<live::midi::getTime_msec();

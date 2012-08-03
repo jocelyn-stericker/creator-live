@@ -25,7 +25,7 @@ LiveBar::~LiveBar()
 
 void LiveBar::modeChosen(int z)
 {
-    switch(z)
+    switch (z)
     {
     case 0:
         emit noMode();

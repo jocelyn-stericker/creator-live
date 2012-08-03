@@ -16,7 +16,7 @@ sampler_dotlive.cpp
 
 #include "samplerapp.h"
 #include "samplerframe.h"
-#include "live/midibinding.h"
+#include <live/midibinding.h>
 #include <QByteArray>
 #include <QDataStream>
 
@@ -46,7 +46,7 @@ template<typename T> bool verify1(QDataStream&ret,T chk)
 {
     T b=chk;
     ret IO b;
-    if(b!=chk)
+    if (b!=chk)
     {
         qCritical()<<"Found"<<b;
         qCritical()<<"Should be"<<chk;
@@ -68,7 +68,7 @@ template<typename T> bool verify2(QDataStream&ret,T chk)
 {
     T b=chk;
     ret IO b;
-    if(b!=chk)
+    if (b!=chk)
     {
         qCritical()<<"Found"<<b;
         qCritical()<<"Should be"<<chk;
@@ -87,21 +87,21 @@ template<typename T> bool verify2(QDataStream&ret,T chk)
     xint32=var; \
     ret IO xint32; \
     var=xint32; \
-    } while(0)
+    } while (0)
 
 #define P_BOOL(var) \
     do { \
     xbool=var; \
     ret IO xbool; \
     var=xbool; \
-    } while(0)
+    } while (0)
 
 #define P_QSTRING(var) \
     do { \
     xqstring=var; \
     ret IO xqstring; \
     var=xqstring; \
-    } while(0)
+    } while (0)
 #endif
 
 using namespace live;
@@ -134,25 +134,25 @@ QByteArray SamplerApp::save()
     SamplerApp*x=IS_SAVE?_THIS:0;
     MidiTrack* midiTracks[16];      /*003*/
     AudioTrack* audioTracks[16];    /*004*/
-    for(int i=0;i<16;i++)
+    for (int i=0;i<16;i++)
     {
-        if(IS_SAVE)
+        if (IS_SAVE)
         {
             xba=x->s_midiTracks[i]->save();
         }
         ret IO xba;
-        if(IS_LOAD)
+        if (IS_LOAD)
         {
             midiTracks[i]=MidiTrack::load(xba);
         }
 
 
-        if(IS_SAVE)
+        if (IS_SAVE)
         {
             xba=x->s_audioTracks[i]->save();
         }
         ret IO xba;
-        if(IS_LOAD)
+        if (IS_LOAD)
         {
             audioTracks[i]=AudioTrack::load(xba);
         }
@@ -160,7 +160,7 @@ QByteArray SamplerApp::save()
 
     qint32 id=IS_SAVE?x->s_id:-1;
     ret IO id;  /*005*/
-    if(IS_LOAD)
+    if (IS_LOAD)
     {
         x=new SamplerApp(midiTracks,audioTracks,0);
         x->s_id=id;
@@ -169,35 +169,35 @@ QByteArray SamplerApp::save()
 
     bool record=IS_SAVE?x->s_record:0;
     ret IO record;  /*006*/
-    if(record&&IS_LOAD)
+    if (record&&IS_LOAD)
     {
         x->setRecordMode();
     }
 
     bool multi=IS_SAVE?x->s_multi:0;
     ret IO multi;   /*007*/
-    if(!multi&&IS_LOAD)
+    if (!multi&&IS_LOAD)
     {
         x->unsetMultiMode();
     }
 
     qint32 count=IS_SAVE?x->s_customBindings.size():0;
     ret IO count;   /*008*/
-    for(int i=0;i<count;i++)
+    for (int i=0;i<count;i++)
     {
         QString inname=IS_SAVE?x->s_customBindings.keys()[i]->name():0;
         ret IO inname;
         ObjectPtr loadptr(0);
         int lcount=200;
         ret IO lcount;
-        if(IS_LOAD)
+        if (IS_LOAD)
         {
             x->s_customBindings.insert(loadptr=object::request(inname,MidiOnly|InputOnly),new int[lcount]);
         }
-        for(int j=0;j<lcount;j++)
+        for (int j=0;j<lcount;j++)
         {
             ret IO x->s_customBindings.values()[i][j];
-            if(x->s_customBindings.values()[i][j]!=-1&&IS_LOAD)
+            if (x->s_customBindings.values()[i][j]!=-1&&IS_LOAD)
             {
                 MidiBinding::customKey->value(loadptr)[j]=x;
             }

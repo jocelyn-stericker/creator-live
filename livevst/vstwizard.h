@@ -4,7 +4,7 @@
 #include "hackwidget.h"
 #include <QWizard>
 #include <QWizardPage>
-#include "live/object.h"
+#include <live/object.h>
 
 namespace Ui {
 class VstWizard;

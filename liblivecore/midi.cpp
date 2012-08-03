@@ -11,12 +11,12 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "midiqnx.cpp"
 #else
 
-#include "live/midi.h"
+#include <live/midi.h>
 #include "midisystem_p.h"
-#include "live/midifilter.h"
-#include "live/midibinding.h"
-#include "live/audio.h"
-#include "live/midievent.h"
+#include <live/midifilter.h>
+#include <live/midibinding.h>
+#include <live/audio.h>
+#include <live/midievent.h>
 #include <QtConcurrentRun>
 
 using namespace live_private;
@@ -107,16 +107,16 @@ void SecretMidi::refresh()
     {
         Pm_Close(pmouts.takeFirst());
     }
-    for(int i=0; i<outputs.size(); i++)
+    for (int i=0; i<outputs.size(); i++)
     {
         outputs[i]->device=-2;
         outputs[i]->valid=0;
     }
-    while(pmins.size())
+    while (pmins.size())
     {
         Pm_Close(pmins.takeFirst());
     }
-    for(int i=0; i<inputs.size(); i++)
+    for (int i=0; i<inputs.size(); i++)
     {
         inputs[i]->valid=0;
     }
@@ -130,7 +130,7 @@ void SecretMidi::refresh()
         const PmDeviceInfo* info = Pm_GetDeviceInfo(i);
         bool ok=1;
 
-        if(ok)
+        if (ok)
         {
             if (info-> input)
             {
@@ -147,16 +147,16 @@ void SecretMidi::refresh()
                 );
 
                 int validate =-2;
-                for(int i1=0; i1<inputs.size(); i1++)
+                for (int i1=0; i1<inputs.size(); i1++)
                 {
-                    if(inputs[i1]->name()==info->name&&!inputs[i1]->valid)
+                    if (inputs[i1]->name()==info->name&&!inputs[i1]->valid)
                     {
                         inputs[i1]->valid=1;
                         validate=i1;
                         break;
                     }
                 }
-                if(validate==-2)
+                if (validate==-2)
                 {
                     inputs.push_back( new MidiIn(info->name,++lastI) );
                 }
@@ -183,15 +183,15 @@ void SecretMidi::refresh()
 
                 int validate=-2;
                 QString uniqueNameAppend;
-                for(int i1=0; i1<outputs.size(); i1++)
+                for (int i1=0; i1<outputs.size(); i1++)
                 {
-                    if(outputs[i1]->name()==info->name+uniqueNameAppend&&!outputs[i1]->valid)
+                    if (outputs[i1]->name()==info->name+uniqueNameAppend&&!outputs[i1]->valid)
                     {
                         outputs[i1]->valid=1;
                         validate=i1;
                         break;
-                    } else if(outputs[i1]->name()==info->name+uniqueNameAppend&&outputs[i1]->valid) {
-                        if(uniqueNameAppend.isEmpty())
+                    } else if (outputs[i1]->name()==info->name+uniqueNameAppend&&outputs[i1]->valid) {
+                        if (uniqueNameAppend.isEmpty())
                         {
                             uniqueNameAppend="(2)";
                         }
@@ -204,7 +204,7 @@ void SecretMidi::refresh()
                         }
                     }
                 }
-                if(validate==-2)
+                if (validate==-2)
                 {
                     outputs.push_back( new MidiOut(info->name+uniqueNameAppend, pmouts.size()-1 ) );
                 }
@@ -221,10 +221,10 @@ void SecretMidi::refresh()
     live::object::clear(live::MidiOnly|live::InputOnly|live::NoRefresh);
     live::object::clear(live::MidiOnly|live::OutputOnly|live::NoRefresh);
     qDebug()<<inputs<<outputs<<"Hai.";
-    for(int i=0;i<inputs.size();i++) {
+    for (int i=0;i<inputs.size();i++) {
         live::object::set(inputs[i]);
     }
-    for(int i=0;i<outputs.size();i++) {
+    for (int i=0;i<outputs.size();i++) {
         live::object::set(outputs[i]);
     }
 
@@ -239,7 +239,7 @@ void SecretMidi::run()      // [MIDI THREAD]
         live::Object::beginProc();
         NOSYNC;
 
-        for( int i = 0; i < pmins.size(); i++ )
+        for ( int i = 0; i < pmins.size(); i++ )
         {
             while ( pmins[i] && Pm_Poll( pmins[i] ) )
             {
@@ -255,19 +255,19 @@ void SecretMidi::run()      // [MIDI THREAD]
 
                 //make less inefficient
                 int inverse=-1;
-                for(int j=0; j<inputs.size(); j++)
+                for (int j=0; j<inputs.size(); j++)
                 {
-                    if(inputs[j]->deviceId==i&&inputs[j]->valid)
+                    if (inputs[j]->deviceId==i&&inputs[j]->valid)
                     {
                         inverse=j;
                         break;
                     }
                 }
 
-                if(inverse!=-1)
+                if (inverse!=-1)
                 {
                     Q_ASSERT(live::MidiBinding::customKey->value(inputs[inverse],0));
-                    if((live::MidiBinding::customKey->value(inputs[inverse],0)&&live::MidiBinding::customKey->value(inputs[inverse])[e->note()].valid())||live::MidiBinding::customNow.valid())
+                    if ((live::MidiBinding::customKey->value(inputs[inverse],0)&&live::MidiBinding::customKey->value(inputs[inverse])[e->note()].valid())||live::MidiBinding::customNow.valid())
                     {
                         live::ObjectChain p;
                         p.push_back(inputs[inverse]);
@@ -292,8 +292,8 @@ void SecretMidi::run()      // [MIDI THREAD]
         }
 
 
-        for(int i=0;i<withheld_ev.size();i++) {
-            if(withheld_ev[i]->time.toTime_ms()-TIME_PROC(TIME_INFO)<5)
+        for (int i=0;i<withheld_ev.size();i++) {
+            if (withheld_ev[i]->time.toTime_ms()-TIME_PROC(TIME_INFO)<5)
             {
                 ///////////////////////////
                 live::Object::endProc(); ////////
@@ -301,7 +301,7 @@ void SecretMidi::run()      // [MIDI THREAD]
                 ///////////////////////////
 
                 live::ObjectChain p=withheld_p.takeAt(i);
-                if(!withheld_reverse.takeAt(i)) {
+                if (!withheld_reverse.takeAt(i)) {
                     withheld_obj.takeAt(i)->mOut(withheld_ev.at(i),p);
                 } else {
                     withheld_obj.takeAt(i)->mOutverse(withheld_ev.at(i),p);
@@ -327,7 +327,7 @@ void SecretMidi::queue(const live::Event* ev, int device, live::ObjectChain from
     PmEvent* pmev = new PmEvent;
     pmev->message = Pm_Message(ev->message,ev->data1,ev->data2);
 
-    if(ev->time.sec==-1)
+    if (ev->time.sec==-1)
     {
         Q_ASSERT(ev->time.nsec==-1);
         pmev->timestamp=0;
@@ -365,14 +365,14 @@ void SecretMidi::queue(const live::Event* ev, int device, live::ObjectChain from
 void SecretMidi::cancel(live::ObjectPtr from)
 {
     NOSYNC;
-    for(int i=0; i<fromqueue.size(); i++)
+    for (int i=0; i<fromqueue.size(); i++)
     {
-        if(!pmqueue[i]->timestamp) continue;
+        if (!pmqueue[i]->timestamp) continue;
         bool ok=0;
-        for(int j=0;j<fromqueue[i].size();j++) {
-            if(fromqueue[i][j].data()==from.data()) {ok=1;break;}
+        for (int j=0;j<fromqueue[i].size();j++) {
+            if (fromqueue[i][j].data()==from.data()) {ok=1;break;}
         }
-        if(ok)
+        if (ok)
         {
             pmqueue.removeAt(i);
             idqueue.removeAt(i);
@@ -381,13 +381,13 @@ void SecretMidi::cancel(live::ObjectPtr from)
         }
     }
 
-    for(int i=0; i<withheld_ev.size(); i++)
+    for (int i=0; i<withheld_ev.size(); i++)
     {
         bool ok=0;
-        for(int j=0;j<withheld_p[i].size();j++) {
-            if(withheld_p[i][j].data()==from.data()) {ok=1;break;}
+        for (int j=0;j<withheld_p[i].size();j++) {
+            if (withheld_p[i][j].data()==from.data()) {ok=1;break;}
         }
-        if(ok)
+        if (ok)
         {
             withheld_ev.removeAt(i);
             withheld_p.removeAt(i);
@@ -411,9 +411,9 @@ void SecretMidi::mWithhold(live::Event* x,live::ObjectChain p,live::ObjectPtr ob
 void SecretMidi::mRemoveWithheld(live::ObjectPtr obj)
 {
     NOSYNC;
-    for(int i=0;i<withheld_ev.size();i++)
+    for (int i=0;i<withheld_ev.size();i++)
     {
-        if(withheld_obj[i]==obj)
+        if (withheld_obj[i]==obj)
         {
             delete withheld_ev.takeAt(i);
             withheld_p.removeAt(i);
@@ -427,9 +427,9 @@ void SecretMidi::mRemoveWithheld(live::ObjectPtr obj)
 void SecretMidi::mRemoveWithheld_object_dest(live::Object* obj)
 {
     NOSYNC;
-    for(int i=0;i<withheld_ev.size();i++)
+    for (int i=0;i<withheld_ev.size();i++)
     {
-        if(withheld_obj[i].data()==obj)
+        if (withheld_obj[i].data()==obj)
         {
             delete withheld_ev.takeAt(i);
             withheld_p.removeAt(i);
@@ -454,7 +454,7 @@ MidiIn::MidiIn(QString ccname,int devId) :
     setTemporary(0);
 
     live::ObjectPtr*x=new live::ObjectPtr[200];
-    for(int i=0;i<200;i++) {
+    for (int i=0;i<200;i++) {
         x[i]=0;
     }
     live::MidiBinding::customKey->insert(this,x);
@@ -478,12 +478,12 @@ void MidiOut::mIn(const live::Event *ev, live::ObjectChain&p)
     qDebug()<<"OUT _ IN"<<ev->message<<" "<<ev->data1<<" "<<ev->data2;
     setTemporary(0);
 
-    if(!ev) return;
-    if(ev->flareId!=-1)
+    if (!ev) return;
+    if (ev->flareId!=-1)
     {
-        if(ev->flareId==0)
+        if (ev->flareId==0)
         {
-            if(p.size()) SecretMidi::me->cancel(p.first());
+            if (p.size()) SecretMidi::me->cancel(p.first());
         }
     }
     else
@@ -504,13 +504,13 @@ void MidiOut::mIn(const live::Event *ev, live::ObjectChain&p)
 
 void live::midi::refresh()
 {
-    if(!SecretMidi::me) new SecretMidi;
+    if (!SecretMidi::me) new SecretMidi;
     SecretMidi::me->refresh();
 }
 
 live::ObjectPtr live::midi::getNull()
 {
-    if(!SecretMidi::me) new SecretMidi;
+    if (!SecretMidi::me) new SecretMidi;
 
     return new MidiNull;
 }

@@ -59,7 +59,7 @@ void FJFilterFrame::onResonance(int f) { // 0.707...32, 0.707, 1000
 }
 
 void FJFilterFrame::onMode(int f) { // Filter
-    if(f != -1) {
+    if (f != -1) {
         ui->comboBox_mode1->setCurrentIndex(f/3);
         ui->comboBox_mode2->setCurrentIndex(f%3);
     }

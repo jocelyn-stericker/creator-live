@@ -10,7 +10,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef PITCH_H
 #define PITCH_H
 
-#include "live/object.h"
+#include <live/object.h>
 
 class PitchAppAudioR;
 

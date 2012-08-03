@@ -7,8 +7,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live/instrumentinterface.h"
-#include "live/instrument.h"
+#include <live/instrument.h>
+#include <live/instrumentinterface.h>
 
 using namespace live;
 
@@ -17,7 +17,7 @@ instrument* instrument::s_singleton=0;
 void instrument::registerInterface(InstrumentInterface* c)
 {
     s_singleton = s_singleton?s_singleton:new instrument;
-    if(s_singleton->s_instrumentNames.contains(c->name()))
+    if (s_singleton->s_instrumentNames.contains(c->name()))
     {
         return;
     }
@@ -27,7 +27,7 @@ void instrument::registerInterface(InstrumentInterface* c)
 
 instrument::~instrument()
 {
-    while(s_instruments.size())
+    while (s_instruments.size())
     {
         delete s_instruments.takeLast();
     }

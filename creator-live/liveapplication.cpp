@@ -10,8 +10,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "liveapplication.h"
 #include "livewindow.h"
 #include "settingslinux.h"
-#include "live/core.h"
-#include "live/appinterface.h"
+#include <live/core.h>
+#include <live/appinterface.h>
 #include <QFontDatabase>
 #include <QSettings>
 #include <QMessageBox>
@@ -45,7 +45,7 @@ LiveApplication::LiveApplication(int& argc,char** argv) :
     setWindowIcon(QPixmap(":/icons/creatorLive.jpeg"));
 
     QSettings init;
-    if(!init.value("Initialized",0).toBool()) {
+    if (!init.value("Initialized",0).toBool()) {
         (new LiveAudioSettingsWidget)->exec();
     }
     init.setValue("Initialized",1);
@@ -53,7 +53,7 @@ LiveApplication::LiveApplication(int& argc,char** argv) :
 #ifndef __QNX__
     // By default, the PlayBook is already setup and good to go, so whatever.
 
-    while(!LiveAudioSettingsWidget::apply())
+    while (!LiveAudioSettingsWidget::apply())
     {
         QMessageBox::warning(0,"Settings","Settings are not valid. Opening settings editor.");
         (new LiveAudioSettingsWidget)->exec();
@@ -69,13 +69,13 @@ LiveApplication::LiveApplication(int& argc,char** argv) :
     qDebug()<<pluginsDir;
     foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
         qDebug()<<qPrintable(qApp->applicationDirPath()+"/../plugins/"+fileName);
-        if(!fileName.endsWith(".so")&&!fileName.endsWith(".dll",Qt::CaseInsensitive)) continue;
+        if (!fileName.endsWith(".so")&&!fileName.endsWith(".dll",Qt::CaseInsensitive)) continue;
         QPluginLoader loader(qApp->applicationDirPath()+"/../plugins/"+fileName);
         QObject *plugin = loader.instance();
-        if(plugin) {
+        if (plugin) {
             std::cerr<<"Trying to load plugin...\n";
             AppInterface* appi=qobject_cast<AppInterface*>(plugin);
-            if(appi) do app::registerInterface(appi); while((appi=appi->next()));
+            if (appi) do app::registerInterface(appi); while ((appi=appi->next()));
         } else qDebug()<<"Couldn't load plugin:"<<qPrintable(loader.errorString());
     }
 
@@ -84,13 +84,13 @@ LiveApplication::LiveApplication(int& argc,char** argv) :
     QDir pluginsDir("/apps/ca.nettek.creatorlive.testDev_creatorlivef32c5f97/native/plugins/");
     foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
         qDebug()<<qPrintable(qApp->applicationDirPath()+"/plugins/"+fileName);
-        if(!fileName.endsWith(".so")&&!fileName.endsWith(".dll",Qt::CaseInsensitive)) continue;
+        if (!fileName.endsWith(".so")&&!fileName.endsWith(".dll",Qt::CaseInsensitive)) continue;
         QPluginLoader loader("/apps/ca.nettek.creatorlive.testDev_creatorlivef32c5f97/native/plugins/"+fileName);
         QObject *plugin = loader.instance();
-        if(plugin) {
+        if (plugin) {
             std::cerr<<"Something good happened";
             AppInterface* appi=qobject_cast<AppInterface*>(plugin);
-            if(appi) do app::registerInterface(appi); while((appi=appi->next()));
+            if (appi) do app::registerInterface(appi); while ((appi=appi->next()));
         } else qDebug()<<qPrintable(loader.errorString())<<"!!";
     }
 #endif

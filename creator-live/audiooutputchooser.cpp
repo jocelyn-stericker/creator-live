@@ -9,9 +9,9 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include "audiooutputchooser.h"
 #include "ui_audiooutputchooser.h"
-#include "live_widgets/midibindingqt.h"
-#include "live/object.h"
-#include "live/audio.h"
+#include <live_widgets/midibindingqt.h>
+#include <live/object.h>
+#include <live/audio.h>
 #include <cmath>
 #include <math.h>
 
@@ -51,7 +51,7 @@ void AudioOutputChooser::resizeEvent(QResizeEvent *e)
      s_ui->Bwidget->setFixedWidth(w/2.00/phi);
      s_ui->Cwidget->setFixedWidth(w/2.00/phi/phi);
 
-     if(e) QWidget::resizeEvent(e);
+     if (e) QWidget::resizeEvent(e);
 }
 
 void AudioOutputChooser::go()
@@ -76,7 +76,7 @@ void AudioOutputChooser::internalStockChangedEvent()
     QList<ObjectPtr> list = object::get(OutputOnly|AudioOnly|NoRefresh);
     QStringList v;
     v<<list;
-    if(all!=v)
+    if (all!=v)
     {
         all.clear();
         all+=v;

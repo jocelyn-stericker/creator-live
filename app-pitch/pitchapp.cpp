@@ -8,8 +8,8 @@ Pitch.cpp                                  rev. 110720
 *****************************************************/
 
 #include "pitchapp_p.h"
-#include "live/midievent.h"
-#include "live/audio.h"
+#include <live/midievent.h>
+#include <live/audio.h>
 
 using namespace live;
 
@@ -52,7 +52,7 @@ void PitchApp::setShift(const int &s)
 
 void PitchApp::aIn(const float *data, int chan, ObjectChain&p)
 {
-    if(p.back()==s_audioR)
+    if (p.back()==s_audioR)
     {
         aOut(data,chan,p);
     }
@@ -86,7 +86,7 @@ void PitchApp::mIn(const Event *data, ObjectChain&p)
 PitchAppAudioR::PitchAppAudioR() : Object("Soundtouch PitchApp implementation", 0, 0), s_soundTouch(new soundtouch::SoundTouch),
     s_latency(0), s_inCache(new float[audio::nFrames()*2]), s_outCache(new float[audio::nFrames()*2])
 {
-    for(int i=0;i<audio::nFrames()*2;i++) {
+    for (int i=0;i<audio::nFrames()*2;i++) {
         s_inCache[i]=0.0f;
     }
     s_soundTouch->setSampleRate(audio::sampleRate());
@@ -122,7 +122,7 @@ void PitchAppAudioR::aIn(const float *data, int chan, ObjectChain&p)
         return;
     }
 
-    if(s_shiftPitchAction!=999)
+    if (s_shiftPitchAction!=999)
     {
         int x=s_shiftPitchAction.fetchAndStoreOrdered(999);
         s_soundTouch->setPitchSemiTones(x);
@@ -131,23 +131,23 @@ void PitchAppAudioR::aIn(const float *data, int chan, ObjectChain&p)
     float*proc=new float[audio::nFrames()];
     memcpy(proc,data,sizeof(float)*audio::nFrames());
 
-    for(int i=0;i<audio::nFrames();i++)
+    for (int i=0;i<audio::nFrames();i++)
     {
         s_inCache[2*i+chan]=data[i];
     }
 
-    if(chan)
+    if (chan)
     {
         s_soundTouch->putSamples(s_inCache,audio::nFrames());
-        if((int)s_soundTouch->numSamples()>=audio::nFrames()
+        if ((int)s_soundTouch->numSamples()>=audio::nFrames()
                 ) {
             s_soundTouch->receiveSamples(s_outCache,audio::nFrames());
-            for(int i=0;i<audio::nFrames();i++)
+            for (int i=0;i<audio::nFrames();i++)
             {
                 proc[i]=s_outCache[2*i+1];
             }
         } else {
-            for(int i=0;i<audio::nFrames();i++)
+            for (int i=0;i<audio::nFrames();i++)
             {
                 proc[i]=0.0;
             }
@@ -155,7 +155,7 @@ void PitchAppAudioR::aIn(const float *data, int chan, ObjectChain&p)
     }
     else
     {
-        for(int i=0;i<audio::nFrames();i++)
+        for (int i=0;i<audio::nFrames();i++)
         {
             proc[i]=s_outCache[2*i];
         }

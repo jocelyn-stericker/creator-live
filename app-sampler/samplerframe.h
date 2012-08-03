@@ -9,10 +9,11 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef SAMPLERFRAME_H
 #define SAMPLERFRAME_H
 
-#include "live_widgets/appframe.h"
-#include "live/app.h"
-#include "live/appinterface.h"
 #include "samplerapp.h"
+
+#include <live/app.h>
+#include <live/appinterface.h>
+#include <live_widgets/appframe.h>
 #include <QMenu>
 
 namespace Ui {

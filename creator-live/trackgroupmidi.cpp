@@ -8,8 +8,9 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 *******************************************************/
 
 #include "trackgroupmidi.h"
-#include "live_widgets/pianokey.h"
-#include "live_widgets/pushbutton.h"
+
+#include <live_widgets/pianokey.h>
+#include <live_widgets/pushbutton.h>
 #include <QGraphicsView>
 #include <QButtonGroup>
 
@@ -36,7 +37,7 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
 
     QButtonGroup* bg=new QButtonGroup;
     ui_mainLayout->addLayout(ui_topLayout);
-    for(int i=0;i<5;i++)
+    for (int i=0;i<5;i++)
     {
         ui_colourSelect[i]=new ToolButton(this);
         ui_colourSelect[i]->setObjectName("colourSelect"+QString::number(i));
@@ -54,7 +55,7 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
         bg->addButton(ui_colourSelect[i]);
     }
 
-    for(int i=0;i<5;i++)
+    for (int i=0;i<5;i++)
     {
         ui_modeSelect[i]=new ToolButton(this);
         ui_modeSelect[i]->setObjectName("modeSelect"+QString::number(i));
@@ -73,7 +74,7 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
     ui_topLayout->addSpacerItem(new QSpacerItem(0,0,QSizePolicy::Fixed,QSizePolicy::Expanding));
 
     s_hathorView->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-    if(!empty)
+    if (!empty)
     {
         QList<ObjectPtr> list=object::get(OutputOnly|MidiOnly);
         s_hathorView->push_back(new Track(c_input,list.first()));
@@ -107,7 +108,7 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
 
     MidiBindingQtSys::addWidget(this);
 
-    for(int i=0;i<5;i++) {
+    for (int i=0;i<5;i++) {
         s_midiFilters[i]=new MidiFilter;
     }
     song::current()->midiMaps.insert(c_input,s_midiFilters[0]);
@@ -115,7 +116,7 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
     ui_instLabel->setObjectName("ui_instLabel");
     ui_instView->setObjectName("ui_instView");
     ui_instScene->setObjectName("ui_instScene");
-    for(int i=0;i<5;i++)
+    for (int i=0;i<5;i++)
     {
         ui_colourSelect[i]->setObjectName("ui_colourSelect"+QString::number(i));
     }
@@ -184,7 +185,7 @@ inline int whiteKeys(const int&a,const int&b)
 void TrackGroupMidi::reactToPianoKeyUpdate()
 {
     PianoKey* x = qobject_cast<PianoKey*>(sender());
-    if(!x)
+    if (!x)
     {
         qCritical()<<"Expected sender() type PianoKey*!!!";
         return;
@@ -192,9 +193,9 @@ void TrackGroupMidi::reactToPianoKeyUpdate()
 
     int xid = x->id();
     xid%=12;
-    if(!x->isEnabled())
+    if (!x->isEnabled())
     {
-        if(s_selectedFilter>=0)
+        if (s_selectedFilter>=0)
         {
             x->enableKey(1);
             return;
@@ -207,7 +208,7 @@ void TrackGroupMidi::reactToPianoKeyUpdate()
     }
     else
     {
-        if(s_selectedFilter<0)
+        if (s_selectedFilter<0)
         {
             x->enableKey(0);
             return;
@@ -307,7 +308,7 @@ void TrackGroupMidi::drawKeyboard()
 void TrackGroupMidi::changeActiveFilter(bool really)
 {
     qDebug()<<"CHANGE_ACTIVE_FILTER"<<really;
-    if(!really)
+    if (!really)
     {
         return;
     }
@@ -318,7 +319,7 @@ void TrackGroupMidi::changeActiveFilter(bool really)
 
 void TrackGroupMidi::changeActiveMode(bool really)
 {
-    if(!really)
+    if (!really)
     {
         return;
     }

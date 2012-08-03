@@ -13,15 +13,15 @@ SamplerFrame.cpp                           rev. 110731
 
 #include <QtPlugin>
 
-#include "live/midibinding.h"
-#include "live/midi.h"
+#include <live/midibinding.h>
+#include <live/midi.h>
 
 using namespace live;
 
 SamplerFrame::SamplerFrame(SamplerApp* app, AbstractTrack *parent) :
     AppFrame(parent), s_app(*app), currentCM(0), s_activeButton(-1), ui(new Ui::Sampler)
 {
-    for(int i=0;i<16;i++)
+    for (int i=0;i<16;i++)
     {
         s_times[i]=0;
     }
@@ -85,11 +85,11 @@ SamplerFrame::SamplerFrame(SamplerApp* app, AbstractTrack *parent) :
 
 static void removeBackground(QString& style)
 {
-    if(style.contains("background-color"))
+    if (style.contains("background-color"))
     {
         int start=style.indexOf("background-color");
         int end=style.indexOf(";",start);
-        if(start!=end&&start!=-1) style.remove(start,end-start);
+        if (start!=end&&start!=-1) style.remove(start,end-start);
     }
 }
 
@@ -104,7 +104,7 @@ void SamplerFrame::buttonLogic()
     bool ok=1;
     int num=name.toInt(&ok);
     Q_ASSERT(ok);
-    if(qobject_cast<QToolButton*>(sender())->isDown())
+    if (qobject_cast<QToolButton*>(sender())->isDown())
     {
         QString style=button->styleSheet();
 
@@ -115,7 +115,7 @@ void SamplerFrame::buttonLogic()
         s_app.hit(num-1);
         s_times[num-1]=midi::getTime_msec();
     }
-    else if(s_app.isPlayMode()&&midi::getTime_msec()-s_times[num-1]<100)
+    else if (s_app.isPlayMode()&&midi::getTime_msec()-s_times[num-1]<100)
     {
         // play it until completion
         // FIXME : add timer
@@ -146,7 +146,7 @@ void SamplerFrame::contextLogic(QPoint)
     bool ok=1;
     int num=name.toInt(&ok)-1;
     Q_ASSERT(ok);
-    if(!ok)
+    if (!ok)
     {
         return;
     }
@@ -157,11 +157,11 @@ void SamplerFrame::contextLogic(QPoint)
 
     ok=0;
     s_activeButton=num;
-    for(int h=0;h<s_app.s_customBindings.keys();h++)
+    for (int h=0;h<s_app.s_customBindings.keys();h++)
     {
-        for(int i=0;i<200;i++)
+        for (int i=0;i<200;i++)
         {
-            if(s_app.s_customBindings.value(s_app.s_customBindings.keys()[h])[i]==num)
+            if (s_app.s_customBindings.value(s_app.s_customBindings.keys()[h])[i]==num)
             {
                 currentCM->addAction("Remove binding",this,SLOT(bindingLogic()));
                 ok=1;
@@ -169,7 +169,7 @@ void SamplerFrame::contextLogic(QPoint)
             }
         }
     }
-    if(!ok)
+    if (!ok)
     {
         currentCM->addAction("Bind next MIDI button to hold",this,SLOT(bindingLogic()));
     }
@@ -183,11 +183,11 @@ void SamplerFrame::importLogic()
     Q_ASSERT(s_activeButton!=-1&&s_activeButton<16&&s_activeButton>=0);
 
     QString file=QFileDialog::getOpenFileName(this,QString("Import file"),QString(),"Audio Files (*.wav *.flac *.ogg);;MIDI Files (*.MIDI *.midi *.MID *.mid)");
-    if(QFile::exists(file)&&(file.endsWith("flac",Qt::CaseInsensitive)||file.endsWith("ogg",Qt::CaseInsensitive)||file.endsWith("wav",Qt::CaseInsensitive)))
+    if (QFile::exists(file)&&(file.endsWith("flac",Qt::CaseInsensitive)||file.endsWith("ogg",Qt::CaseInsensitive)||file.endsWith("wav",Qt::CaseInsensitive)))
     {
         s_app.s_audioTracks[s_activeButton]->importFile(file);
     }
-    else if(QFile::exists(file)&&(file.endsWith("midi")||file.endsWith("MIDI")||file.endsWith("mid")||file.endsWith("MID")))
+    else if (QFile::exists(file)&&(file.endsWith("midi")||file.endsWith("MIDI")||file.endsWith("mid")||file.endsWith("MID")))
     {
         s_app.s_midiTracks[s_activeButton]->importFile(file);
     }
@@ -198,11 +198,11 @@ void SamplerFrame::exportLogic()
     Q_ASSERT(s_activeButton!=-1&&s_activeButton<16&&s_activeButton>=0);
 
     QString file=QFileDialog::getSaveFileName(this,QString("Export file"),QString(),"Audio Files (*.wav *.flac *.ogg);;MIDI Files (*.MIDI *.midi *.MID *.mid)");
-    if(file.endsWith("flac",Qt::CaseInsensitive)||file.endsWith("ogg",Qt::CaseInsensitive)||file.endsWith("wav",Qt::CaseInsensitive))
+    if (file.endsWith("flac",Qt::CaseInsensitive)||file.endsWith("ogg",Qt::CaseInsensitive)||file.endsWith("wav",Qt::CaseInsensitive))
     {
         s_app.s_audioTracks[s_activeButton]->exportFile(file);
     }
-    else if(file.endsWith("midi")||file.endsWith("MIDI")||file.endsWith("mid")||file.endsWith("MID"))
+    else if (file.endsWith("midi")||file.endsWith("MIDI")||file.endsWith("mid")||file.endsWith("MID"))
     {
         s_app.s_midiTracks[s_activeButton]->exportFile(file);
     }
@@ -213,22 +213,22 @@ void SamplerFrame::bindingLogic()
     Q_ASSERT(s_activeButton!=-1&&s_activeButton<16&&s_activeButton>=0);
 
     int oid=-1,ohd=-1;
-    for(int h=0;h<s_app.s_customBindings.keys();h++)
+    for (int h=0;h<s_app.s_customBindings.keys();h++)
     {
-        for(int i=0;i<200;i++)
+        for (int i=0;i<200;i++)
         {
-            if(s_app.s_customBindings.value(s_app.s_customBindings.keys()[h])[i]==s_activeButton)
+            if (s_app.s_customBindings.value(s_app.s_customBindings.keys()[h])[i]==s_activeButton)
             {
                 oid=i;
                 ohd=h;
                 break;
             }
         }
-        if(oid!=-1) {
+        if (oid!=-1) {
             break;
         }
     }
-    if(oid==-1) //new binding
+    if (oid==-1) //new binding
     {
         s_app.setBindingMode(s_activeButton);
     }

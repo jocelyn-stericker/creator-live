@@ -504,20 +504,20 @@ uint32_t compressor_audio_module::process(uint32_t offset, uint32_t numsamples, 
 {
     bool bypass = *params[param_bypass] > 0.5f;
     
-    if(bypass) {
+    if (bypass) {
         int count = numsamples * sizeof(float);
         memcpy(outs[0], ins[0], count);
         memcpy(outs[1], ins[1], count);
 
-        if(params[param_compression] != NULL) {
+        if (params[param_compression] != NULL) {
             *params[param_compression] = 1.f;
         }
 
-        if(params[param_clip] != NULL) {
+        if (params[param_clip] != NULL) {
             *params[param_clip] = 0.f;
         }
 
-        if(params[param_peak] != NULL) {
+        if (params[param_peak] != NULL) {
             *params[param_peak] = 0.f;
         }
   
@@ -554,23 +554,23 @@ uint32_t compressor_audio_module::process(uint32_t offset, uint32_t numsamples, 
     
     clip -= std::min(clip, numsamples);
 
-    while(offset < numsamples) {
+    while (offset < numsamples) {
         float left = ins[0][offset];
         float right = ins[1][offset];
         
-        if(aweighting) {
+        if (aweighting) {
             left = awL.process(left);
             right = awR.process(right);
         }
         
         float absample = average ? (fabs(left) + fabs(right)) * 0.5f : std::max(fabs(left), fabs(right));
-        if(rms) absample *= absample;
+        if (rms) absample *= absample;
         
         linSlope += (absample - linSlope) * (absample > linSlope ? attack_coeff : release_coeff);
         
         float gain = 1.f;
 
-        if(linSlope > 0.f) {
+        if (linSlope > 0.f) {
             gain = output_gain(linSlope, rms);
         }
 
@@ -587,24 +587,24 @@ uint32_t compressor_audio_module::process(uint32_t offset, uint32_t numsamples, 
         
         float maxLR = std::max(fabs(outL), fabs(outR));
         
-        if(maxLR > 1.f) clip = srate >> 3; /* blink clip LED for 125 ms */
+        if (maxLR > 1.f) clip = srate >> 3; /* blink clip LED for 125 ms */
         
-        if(maxLR > peak) {
+        if (maxLR > peak) {
             peak = maxLR;
         }
     }
     
     detected = rms ? sqrt(linSlope) : linSlope;
     
-    if(params[param_compression] != NULL) {
+    if (params[param_compression] != NULL) {
         *params[param_compression] = compression;
     }
 
-    if(params[param_clip] != NULL) {
+    if (params[param_clip] != NULL) {
         *params[param_clip] = clip;
     }
 
-    if(params[param_peak] != NULL) {
+    if (params[param_peak] != NULL) {
         *params[param_peak] = peak;
     }
 

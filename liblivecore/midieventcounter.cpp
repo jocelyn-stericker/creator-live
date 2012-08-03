@@ -7,26 +7,26 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live/midieventcounter.h"
+#include <live/midieventcounter.h>
 
 using namespace live;
 
 MidiEventCounter::MidiEventCounter() : Object("Midi Event Counter",false,false), shift(0),remit(1)
 {
     setTemporary(0);
-    for(int i=0;i<200;i++)
+    for (int i=0;i<200;i++)
         on[i]=0;
 }
 
 void MidiEventCounter::mIn(const Event *data, ObjectChain&)
 {
-    if(data->simpleStatus()==Event::NOTE_ON&&data->velocity())
+    if (data->simpleStatus()==Event::NOTE_ON&&data->velocity())
     {
         on[data->note()]=data->velocity();
     }
     else if (data->simpleStatus()==Event::NOTE_OFF||(data->simpleStatus()==Event::NOTE_ON&&!data->velocity()))
     {
-        if(!on[data->note()]&&on[data->note()-shift])
+        if (!on[data->note()]&&on[data->note()-shift])
         {
             on[data->note()-shift]=0;
             Event td=*data;
@@ -50,9 +50,9 @@ void MidiEventCounter::panic()
 {
     ObjectChain p;
     p.push_back(this);
-    for(qint16 i=0;i<127;i++)
+    for (qint16 i=0;i<127;i++)
     {
-        if(!on[i]) continue;
+        if (!on[i]) continue;
         Event* evoff=new Event(0x90,i,0);
 //            evoff->time=MidiSys::getTime();
         mOut(evoff,p);

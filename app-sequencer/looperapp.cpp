@@ -38,26 +38,26 @@ int LooperApp::pos() const
 void LooperApp::modeChanged(int now)
 {
     NOSYNC;
-    switch(now)
+    switch (now)
     {
     case Off:
-        if(isPlaying())
+        if (isPlaying())
             stopPlayback();
 
         break;
     case Playing:
-        if(isPlaying())
+        if (isPlaying())
             stopPlayback();
 
         setPos(0);
 
-        if(isRecord())
+        if (isRecord())
             stopRecord();
 
-        if(isOverdub())
+        if (isOverdub())
             stopOverdub();
 
-        if(!isPlaying())
+        if (!isPlaying())
             startPlayback();
 
         break;
@@ -66,39 +66,39 @@ void LooperApp::modeChanged(int now)
     case Replacing:
 //        s_audioTrack->clearData();
 //        s_midiTrack->clearData();
-        if(now==Replacing) {
+        if (now==Replacing) {
             b_loopMode=Overdubbing;
             return;
         }
 
-        if(now==Recording)
+        if (now==Recording)
         {
-            if(isPlaying())
+            if (isPlaying())
                 stopPlayback();
 
             setPos(0);
         }
     record:
-        if(isOverdub())
+        if (isOverdub())
             stopOverdub();
 
-        if(!isRecord())
+        if (!isRecord())
             startRecord();
 
-        if(!isPlaying())
+        if (!isPlaying())
             startPlayback();
 
         break;
     case Multiplying:
         Q_ASSERT(0);    //don't feel like it right now.
     case Overdubbing:
-        if(isRecord())
+        if (isRecord())
             stopRecord();
 
-        if(!isOverdub())
+        if (!isOverdub())
             startOverdub();
 
-        if(!isPlaying())
+        if (!isPlaying())
             startPlayback();
 
         break;
@@ -111,12 +111,12 @@ void LooperApp::modeChanged(int now)
 void LooperApp::looperLogic()
 {
     NOSYNC;
-    if(isPlaying())
+    if (isPlaying())
     {
         int curpos=pos();
-        if(curpos>b_loopLength)
+        if (curpos>b_loopLength)
         {
-            switch(b_loopMode.ref())
+            switch (b_loopMode.ref())
             {
             case Off:
                 Q_ASSERT(0);
@@ -143,7 +143,7 @@ void LooperApp::looperLogic()
 void LooperApp::aIn(const float *data, int chan, ObjectChain&p)
 {
     looperLogic();
-    if(p.back()==s_audioTrack)
+    if (p.back()==s_audioTrack)
     {
         SequencerApp::aIn(data,chan,p);
     }
@@ -157,7 +157,7 @@ void LooperApp::aIn(const float *data, int chan, ObjectChain&p)
 
 void LooperApp::mIn(const Event *data, ObjectChain&p)
 {
-    if(p.back()==s_midiTrack)
+    if (p.back()==s_midiTrack)
     {
         SequencerApp::mIn(data,p);
         return;

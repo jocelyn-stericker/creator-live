@@ -7,9 +7,9 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live_widgets/iodragwidget.h"
-#include "live_widgets/toolbutton.h"
-#include "live_widgets/dropframe.h"
+#include <live_widgets/iodragwidget.h>
+#include <live_widgets/toolbutton.h>
+#include <live_widgets/dropframe.h>
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QLineEdit>
@@ -20,7 +20,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 void live_widgets::SpawnFrame::dragEnterEvent(QDragEnterEvent *e)
 {
-    if(e->mimeData()->hasFormat("text/plain"))
+    if (e->mimeData()->hasFormat("text/plain"))
     {
         e->acceptProposedAction();
     }
@@ -41,7 +41,7 @@ live_widgets::InputDragWidget::InputDragWidget(QWidget *parent) :
     QSettings settings;
     QList<QVariant> inMap=settings.value("audio_inputMappings").toList();
     bool ok=0;
-    for(int i=0; i<inMap; i++)
+    for (int i=0; i<inMap; i++)
     {
         Q_ASSERT(inMap[i].toStringList().size());
         ok=1;
@@ -49,7 +49,7 @@ live_widgets::InputDragWidget::InputDragWidget(QWidget *parent) :
                   (inMap[i].toStringList().size()<2)?"":(inMap[i].toStringList()[1]),
                   settings.value("audio_inputMappingNames").toStringList()[i]);
     }
-    if(!ok)
+    if (!ok)
     {
         newGroup("","","");
     }
@@ -94,7 +94,7 @@ void live_widgets::InputDragWidget::newGroup(QString x,QString y,QString z)
 
 void live_widgets::InputDragWidget::destroyRow()
 {
-    for(int i=0;i<sender()->parent()->children().size();i++) {
+    for (int i=0;i<sender()->parent()->children().size();i++) {
         groupNames.removeAll(qobject_cast<QLineEdit*>(sender()->parent()->children()[i]));
         dropFrameAs.removeAll(qobject_cast<DropFrame*>(sender()->parent()->children()[i]));
         dropFrameBs.removeAll(qobject_cast<DropFrame*>(sender()->parent()->children()[i]));
@@ -121,7 +121,7 @@ live_widgets::OutputDragWidget::OutputDragWidget(QWidget *parent) :
     QList<QVariant> outMap=settings.value("audio_outputMappings").toList();
 
     bool ok=0;
-    for(int i=0; i<outMap; i++)
+    for (int i=0; i<outMap; i++)
     {
         Q_ASSERT(outMap[i].toStringList().size());
         ok=1;
@@ -129,7 +129,7 @@ live_widgets::OutputDragWidget::OutputDragWidget(QWidget *parent) :
                   (outMap[i].toStringList().size()<2)?"":(outMap[i].toStringList()[1]),
                   settings.value("audio_outputMappingNames").toStringList()[i]);
     }
-    if(!ok)
+    if (!ok)
     {
         newGroup("","","");
     }
@@ -188,7 +188,7 @@ void live_widgets::OutputDragWidget::refresh()
 
 void live_widgets::OutputDragWidget::destroyRow()
 {
-    for(int i=0;i<sender()->parent()->children().size();i++) {
+    for (int i=0;i<sender()->parent()->children().size();i++) {
         groupNames.removeAll(qobject_cast<QLineEdit*>(sender()->parent()->children()[i]));
         dropFrameAs.removeAll(qobject_cast<DropFrame*>(sender()->parent()->children()[i]));
         dropFrameBs.removeAll(qobject_cast<DropFrame*>(sender()->parent()->children()[i]));
