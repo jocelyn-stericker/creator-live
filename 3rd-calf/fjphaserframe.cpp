@@ -24,7 +24,7 @@
 
 using namespace live_widgets;
 
-FJPhaserFrame::FJPhaserFrame(FJPhaserApp* app, QWidget *parent)
+FJPhaserFrame::FJPhaserFrame(FJPhaserApp* app, AbstractTrack *parent)
     : AppFrame(parent)
     , s_app(*app)
     , ui(new Ui::FJPhaserFrame)

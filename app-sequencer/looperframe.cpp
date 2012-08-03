@@ -17,7 +17,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 using namespace live;
 using namespace live_widgets;
 
-LooperFrame::LooperFrame(LooperApp*backend,QWidget *parent) :
+LooperFrame::LooperFrame(LooperApp*backend,AbstractTrack *parent) :
     AppFrame(parent),
     app(*backend),
     graph(*(new SequencerGraph(this,backend))),

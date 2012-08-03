@@ -24,7 +24,7 @@
 
 using namespace live_widgets;
 
-FJFlangerFrame::FJFlangerFrame(FJFlangerApp *backend, QWidget *parent)
+FJFlangerFrame::FJFlangerFrame(FJFlangerApp *backend, AbstractTrack *parent)
     : AppFrame(parent)
     , s_app(*backend)
     , ui(new Ui::FJFlangerFrame)

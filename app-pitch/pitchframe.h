@@ -24,7 +24,7 @@ class PitchFrame : public live_widgets::AppFrame
     live_widgets::SpinBox ui_spinBox;
     QVBoxLayout ui_vbox;
 public:
-    explicit PitchFrame(PitchApp* backend, QWidget *parent = 0);
+    explicit PitchFrame(PitchApp* backend, AbstractTrack *parent = 0);
 
     bool expanding() const { return false; }
 

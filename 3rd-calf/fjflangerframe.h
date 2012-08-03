@@ -40,7 +40,7 @@ class FJFlangerFrame : public live_widgets::AppFrame
     FJFlangerApp& s_app;
 
 public:
-    explicit FJFlangerFrame(FJFlangerApp* backend, QWidget *parent = 0);
+    explicit FJFlangerFrame(FJFlangerApp* backend, AbstractTrack *parent = 0);
     ~FJFlangerFrame();
 
     bool expanding() const { return false; }

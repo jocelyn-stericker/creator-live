@@ -15,7 +15,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 using namespace live;
 using namespace live_widgets;
 
-MixerFrame::MixerFrame(MixerApp *backend, QWidget *parent) :
+MixerFrame::MixerFrame(MixerApp *backend, AbstractTrack *parent) :
     AppFrame(parent),
     app(*backend),
     ui(new Ui::MixerFrame)

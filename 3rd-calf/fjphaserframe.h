@@ -38,7 +38,7 @@ class FJPhaserFrame : public live_widgets::AppFrame
     FJPhaserApp& s_app;
 
 public:
-    explicit FJPhaserFrame(FJPhaserApp *app, QWidget *parent = 0);
+    explicit FJPhaserFrame(FJPhaserApp *app, AbstractTrack *parent = 0);
     ~FJPhaserFrame();
 
     bool expanding() const { return false; }

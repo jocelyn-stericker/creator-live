@@ -31,7 +31,7 @@ public:
     SequencerGraph& graph;
 
 public:
-    explicit SequencerFrame(SequencerApp*backend,QWidget *parent = 0);
+    explicit SequencerFrame(SequencerApp*backend, AbstractTrack *parent = 0);
     ~SequencerFrame();
 
     QMenu* action_menu;

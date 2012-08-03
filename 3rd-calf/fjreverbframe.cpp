@@ -27,7 +27,7 @@
 
 using namespace live_widgets;
 
-FJReverbFrame::FJReverbFrame(FJReverbApp *backend, QWidget *parent)
+FJReverbFrame::FJReverbFrame(FJReverbApp *backend, AbstractTrack *parent)
     : AppFrame(parent)
     , s_app(*backend)
     , ui(new Ui::FJReverbFrame)
@@ -117,7 +117,7 @@ void FJReverbFrame::onWetDryBalance(int f)
 
 void FJReverbFrame::setMore(bool more)
 {
-    QPropertyAnimation* paFixed = new QPropertyAnimation(this, "fixedWidth");
+    QPropertyAnimation* paFixed = new QPropertyAnimation(this, "desiredWidth");
     paFixed->setStartValue(width());
     if (more) {
         paFixed->setEndValue(330);

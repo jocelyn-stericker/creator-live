@@ -13,7 +13,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 using namespace live_widgets;
 
-BPMFrame::BPMFrame(BPMApp*backend,QWidget *parent) :
+BPMFrame::BPMFrame(BPMApp*backend,AbstractTrack *parent) :
     AppFrame(parent), app(*backend), ui_label(new RotatedLabel(this)),  ui_tb(new ToolButton(this))
 {
     setLayout(new QVBoxLayout);

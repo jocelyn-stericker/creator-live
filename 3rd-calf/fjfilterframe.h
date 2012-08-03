@@ -41,7 +41,7 @@ class FJFilterFrame : public live_widgets::AppFrame
 
     FJFilterApp& s_app;
 public:
-    explicit FJFilterFrame(FJFilterApp* s_backend, QWidget *parent = 0);
+    explicit FJFilterFrame(FJFilterApp* s_backend, AbstractTrack *parent = 0);
     ~FJFilterFrame();
 
     bool expanding() const { return false; }

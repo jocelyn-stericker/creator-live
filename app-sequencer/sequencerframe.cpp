@@ -23,7 +23,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 using namespace live;
 using namespace live_widgets;
 
-SequencerFrame::SequencerFrame(SequencerApp* backend,QWidget *parent) :
+SequencerFrame::SequencerFrame(SequencerApp* backend,AbstractTrack *parent) :
     AppFrame(parent),
     app(*backend),
     graph(*(new SequencerGraph(this,&app))),
@@ -160,26 +160,21 @@ void SequencerFrame::setMore(bool more)
     }
     QPropertyAnimation* paMin = new QPropertyAnimation(ui->frame_2, "minimumWidth");
     QPropertyAnimation* paMax = new QPropertyAnimation(ui->frame_2, "maximumWidth");
-
-    QPropertyAnimation* paMinThis = new QPropertyAnimation(this, "minimumWidth");
-    QPropertyAnimation* paMaxThis = new QPropertyAnimation(this, "maximumWidth");
+    QPropertyAnimation* paMinThis = new QPropertyAnimation(this, "desiredWidth");
 
     paMin->setStartValue(ui->frame_2->width());
     paMax->setStartValue(ui->frame_2->width());
     paMinThis->setStartValue(width());;
-    paMaxThis->setStartValue(width());
     if (more) {
         paMin->setEndValue(sugWidth - 53);
         paMax->setEndValue(sugWidth - 53);
 
         paMinThis->setEndValue(sugWidth);
-        paMaxThis->setEndValue(sugWidth);
         removeRounding();
     } else {
         paMin->setEndValue(0);
         paMax->setEndValue(0);
         paMinThis->setEndValue(53);
-        paMaxThis->setEndValue(53);
 
         connect(paMinThis, SIGNAL(finished()), this, SLOT(addRounding()));
     }
@@ -189,17 +184,13 @@ void SequencerFrame::setMore(bool more)
     paMin->setDuration(500);
     paMax->setDuration(500);
     paMinThis->setDuration(500);
-    paMaxThis->setDuration(500);
 
     paMin->setEasingCurve(QEasingCurve::InQuad);
     paMax->setEasingCurve(QEasingCurve::InQuad);
     paMin->start(QAbstractAnimation::DeleteWhenStopped);
     paMax->start(QAbstractAnimation::DeleteWhenStopped);
     paMinThis->setEasingCurve(QEasingCurve::InQuad);
-    paMaxThis->setEasingCurve(QEasingCurve::InQuad);
     paMinThis->start(QAbstractAnimation::DeleteWhenStopped);
-    paMaxThis->start(QAbstractAnimation::DeleteWhenStopped);
-
 }
 
 void SequencerFrame::addRounding()

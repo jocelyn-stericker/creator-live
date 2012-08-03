@@ -39,7 +39,7 @@ class FJReverbFrame : public live_widgets::AppFrame
     FJReverbApp& s_app;
     
 public:
-    explicit FJReverbFrame(FJReverbApp* backend, QWidget *parent = 0);
+    explicit FJReverbFrame(FJReverbApp* backend, AbstractTrack *parent = 0);
     ~FJReverbFrame();
 
     bool expanding() const { return false; }

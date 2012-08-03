@@ -27,7 +27,7 @@ class SamplerFrame : public live_widgets::AppFrame
     QMenu* currentCM;
     int s_activeButton;
 public:
-    explicit SamplerFrame(SamplerApp* backend, QWidget *parent = 0);
+    explicit SamplerFrame(SamplerApp* backend, AbstractTrack *parent = 0);
     ~SamplerFrame();
 
     bool expanding() const { return false; }

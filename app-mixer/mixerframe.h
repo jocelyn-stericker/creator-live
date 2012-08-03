@@ -25,7 +25,7 @@ class MixerFrame : public live_widgets::AppFrame
     Q_OBJECT
     MixerApp& app;
 public:
-    explicit MixerFrame(MixerApp*backend,QWidget *parent = 0);
+    explicit MixerFrame(MixerApp*backend, AbstractTrack *parent = 0);
     ~MixerFrame();
 
     bool expanding() const { return false; }

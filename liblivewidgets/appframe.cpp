@@ -12,10 +12,13 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QLayout>
 #include <QMetaObject>
 
-live_widgets::AppFrame::AppFrame(QWidget *parent) :
-    QFrame(parent),
-    BindableParent(this),
-    s_minimized(0)
+using namespace live_widgets;
+
+AppFrame::AppFrame(AbstractTrack *parent)
+    : QFrame(parent)
+    , BindableParent(this)
+    , s_minimized(0)
+    , s_desiredWidth(200)
 {
     setFrameStyle(QFrame::NoFrame);
     setFrameShadow(QFrame::Plain);
@@ -68,12 +71,12 @@ live_widgets::AppFrame::AppFrame(QWidget *parent) :
     setMinimumWidth(40);
 }
 
-live_widgets::AppFrame::~AppFrame()
+AppFrame::~AppFrame()
 {
     //parentsystem
 }
 
-void live_widgets::AppFrame::toggleMinimized()
+void AppFrame::toggleMinimized()
 {
     if(parentWidget()&&parentWidget()->layout())
     {
@@ -114,7 +117,7 @@ void live_widgets::AppFrame::toggleMinimized()
     }
 }
 
-void live_widgets::AppFrame::resizeEvent(QResizeEvent *e)
+void AppFrame::resizeEvent(QResizeEvent *e)
 {
     if(!s_minimized) {
         _tbClose->setGeometry(width()-4-_tbNext->width(),2,8,8);
@@ -126,8 +129,14 @@ void live_widgets::AppFrame::resizeEvent(QResizeEvent *e)
     if(e) QWidget::resizeEvent(e);
 }
 
-void live_widgets::AppFrame::moveEvent(QMoveEvent *e)
+void AppFrame::moveEvent(QMoveEvent *e)
 {
     QMetaObject::invokeMethod(parent(),"remakeChainWidget",Qt::DirectConnection);
     QWidget::moveEvent(e);
+}
+
+void AppFrame::setDesiredWidth(int w)
+{
+    s_desiredWidth = w;
+    emit desiredWidthChanged(w);
 }

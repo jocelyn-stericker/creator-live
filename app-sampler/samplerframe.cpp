@@ -18,7 +18,7 @@ SamplerFrame.cpp                           rev. 110731
 
 using namespace live;
 
-SamplerFrame::SamplerFrame(SamplerApp* app, QWidget *parent) :
+SamplerFrame::SamplerFrame(SamplerApp* app, AbstractTrack *parent) :
     AppFrame(parent), s_app(*app), currentCM(0), s_activeButton(-1), ui(new Ui::Sampler)
 {
     for(int i=0;i<16;i++)

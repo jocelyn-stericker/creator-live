@@ -10,7 +10,7 @@
 #include "pitchframe.h"
 #include <QtPlugin>
 
-PitchFrame::PitchFrame(PitchApp* backend, QWidget *parent) :
+PitchFrame::PitchFrame(PitchApp* backend, AbstractTrack *parent) :
     AppFrame(parent), app(backend)
 {
     setLayout(&ui_vbox);

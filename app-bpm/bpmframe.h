@@ -27,7 +27,7 @@ public:
     live_widgets::ToolButton* ui_tb;
 
 public:
-    explicit BPMFrame(BPMApp* backend,QWidget *parent = 0);
+    explicit BPMFrame(BPMApp* backend,AbstractTrack *parent = 0);
     ~BPMFrame();
 
     bool expanding() const { return false; }

@@ -13,9 +13,15 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include <QCoreApplication>
 
-int Track::s_lastId=-1;
 using namespace live;
 using namespace live_widgets;
+
+int Track::s_lastId=-1;
+
+AbstractTrack::AbstractTrack(QWidget* parent)
+    : QWidget(parent)
+{
+}
 
 Track::Track(live::ObjectPtr cinput, live::ObjectPtr coutput)
     : BindableParent(this)
@@ -151,7 +157,7 @@ void Track::makeUiPipeline(bool smart)
         int stateX = 0;
         for (int i = 0; i < s_appUi_.count(); ++i)
         {
-            s_appUi_[i]->setGeometry(stateX, 0, s_appUi_[i]->width(), height());
+            s_appUi_[i]->setGeometry(stateX, 0, s_appUi_[i]->getDesiredWidth(), height());
             stateX += s_appUi_[i]->width();
         }
         return;
@@ -185,8 +191,8 @@ void Track::makeUiPipeline(bool smart)
     int state_x = 0;
     for (int i = 0; i < s_appUi_.count(); ++i)
     {
-        QWidget* ui = s_appUi_[i];
-        ui->setFixedWidth(sizes[i]);
+        AppFrame* ui = s_appUi_[i];
+        ui->setDesiredWidth(sizes[i]);
         ui->setFixedHeight(height());
         ui->setGeometry(state_x, 0, sizes[i], height());
         state_x += sizes[i];
@@ -330,7 +336,7 @@ void Track::addApp(int i,AppFrame* appUi,live::ObjectPtr app)
     {
         s_ambition.insert(i,app);
     }
-    connect(appUi, SIGNAL(sizeChanged()), this, SLOT(updateGeometriesIfNeeded()));
+    connect(appUi, SIGNAL(desiredWidthChanged(int)), this, SLOT(updateGeometriesIfNeeded()));
 
     connect(appUi->_tbBack,SIGNAL(clicked()),this,SLOT(logic_appBack()));
     connect(appUi->_tbClose,SIGNAL(clicked()),this,SLOT(logic_appDel()));

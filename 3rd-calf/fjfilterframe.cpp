@@ -24,7 +24,7 @@
 
 using namespace live_widgets;
 
-FJFilterFrame::FJFilterFrame(FJFilterApp *s_backend, QWidget *parent)
+FJFilterFrame::FJFilterFrame(FJFilterApp *s_backend, AbstractTrack *parent)
     : AppFrame(parent)
     , s_app(*s_backend)
     , ui(new Ui::FJFilterFrame)

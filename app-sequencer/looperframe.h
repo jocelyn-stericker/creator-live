@@ -28,7 +28,7 @@ public:
     SequencerGraph& graph;
 
 public:
-    explicit LooperFrame(LooperApp* backend, QWidget *parent = 0);
+    explicit LooperFrame(LooperApp* backend, AbstractTrack *parent = 0);
     ~LooperFrame();
 
     bool expanding() const { return false; }
