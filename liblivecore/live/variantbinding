@@ -29,6 +29,8 @@ public slots:
     virtual void set(const QVariant&) = 0;
     virtual void set(const int&) = 0;
     virtual void set(const bool&) = 0;
+    virtual void setTrue() = 0;
+    virtual void setFalse() = 0;
     virtual void set_(void*) = 0;
 signals:
     void changeObserved();
@@ -133,6 +135,16 @@ public:
         Q_ASSERT(0);
         s_t = *reinterpret_cast<U*>(x);
         emit changeObserved();
+    }
+
+    void setTrue()
+    {
+        set(true);
+    }
+
+    void setFalse()
+    {
+        set(false);
     }
 
 private: //EVIL, EVIL COPY CONSURUCUORS!!! grr...

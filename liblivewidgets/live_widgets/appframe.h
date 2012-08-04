@@ -34,8 +34,8 @@ public:
     explicit AppFrame(AbstractTrack* parent = 0);
     ~AppFrame();
 
-    void resizeEvent(QResizeEvent*);
-    void moveEvent(QMoveEvent *);
+    virtual void resizeEvent(QResizeEvent*);
+    virtual void moveEvent(QMoveEvent *);
 
     virtual bool expanding() const = 0;
 
@@ -43,7 +43,7 @@ public:
 
 signals:
     void sizeChanged();
-    void desiredWidthChanged(int);
+    void desiredWidthChanged();
 
 public slots:
     virtual void toggleMinimized();

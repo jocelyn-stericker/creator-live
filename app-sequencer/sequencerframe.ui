@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>462</width>
-    <height>350</height>
+    <height>365</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -35,20 +35,20 @@
       <widget class="live_widgets::PushButton" name="menu">
        <property name="minimumSize">
         <size>
-         <width>53</width>
+         <width>51</width>
          <height>40</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>53</width>
+         <width>51</width>
          <height>40</height>
         </size>
        </property>
        <property name="styleSheet">
         <string notr="true">border-bottom-left-radius: 0px;
 border-bottom-right-radius: 0px;
-border-top-right-radius:0px; /*debug*/</string>
+border-top-right-radius: 0px; /*DO NOT MODIFY THIS LINE*/</string>
        </property>
        <property name="text">
         <string>Track 1</string>
@@ -59,13 +59,13 @@ border-top-right-radius:0px; /*debug*/</string>
       <widget class="live_widgets::ToolButton" name="play">
        <property name="minimumSize">
         <size>
-         <width>53</width>
+         <width>51</width>
          <height>60</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>53</width>
+         <width>51</width>
          <height>90</height>
         </size>
        </property>
@@ -106,13 +106,13 @@ border-bottom-right-radius: 0px;</string>
        </property>
        <property name="minimumSize">
         <size>
-         <width>53</width>
+         <width>51</width>
          <height>60</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>53</width>
+         <width>51</width>
          <height>90</height>
         </size>
        </property>
@@ -147,13 +147,13 @@ border-bottom-right-radius: 0px;</string>
       <widget class="live_widgets::ToolButton" name="mute">
        <property name="minimumSize">
         <size>
-         <width>53</width>
+         <width>51</width>
          <height>60</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>53</width>
+         <width>51</width>
          <height>90</height>
         </size>
        </property>
@@ -188,13 +188,13 @@ border-bottom-right-radius: 0px;</string>
       <widget class="live_widgets::ToolButton" name="record">
        <property name="minimumSize">
         <size>
-         <width>53</width>
+         <width>51</width>
          <height>60</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>53</width>
+         <width>51</width>
          <height>90</height>
         </size>
        </property>
@@ -235,20 +235,20 @@ border-bottom-right-radius: 0px;</string>
       <widget class="QToolButton" name="toolButton_more">
        <property name="minimumSize">
         <size>
-         <width>53</width>
+         <width>51</width>
          <height>53</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>53</width>
+         <width>51</width>
          <height>53</height>
         </size>
        </property>
        <property name="styleSheet">
         <string notr="true">border-top-left-radius: 0px;
 border-top-right-radius: 0px;
-border-bottom-right-radius: 0px;</string>
+border-bottom-right-radius: 0px; /* DO NOT MODIFY THIS LINE! */</string>
        </property>
        <property name="text">
         <string>. . .</string>
@@ -448,7 +448,6 @@ border-bottom-right-radius: 4px;</string>
        </widget>
       </item>
      </layout>
-     <zorder>leftButton</zorder>
      <zorder></zorder>
      <zorder>horizontalFrame</zorder>
     </widget>

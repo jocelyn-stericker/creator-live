@@ -60,6 +60,8 @@ FJReverbFrame::FJReverbFrame(FJReverbApp *backend, AbstractTrack *parent)
     connect(ui->verticalSlider_roomSize,SIGNAL(valueChanged(int)),this,SLOT(onRoomSize(int)));
 
     connect(ui->toolButton_more, SIGNAL(toggled(bool)), this, SLOT(setMore(bool)));
+
+    setDesiredWidth(330);
 }
 
 FJReverbFrame::~FJReverbFrame()

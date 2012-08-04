@@ -143,14 +143,6 @@ void Track::clearUiPipeline() {
 }
 
 void Track::makeUiPipeline(bool smart) {
-    if (!smart) {
-        int stateX = 0;
-        for (int i = 0; i < s_appUi_.count(); ++i) {
-            s_appUi_[i]->setGeometry(stateX, 0, s_appUi_[i]->getDesiredWidth(), height());
-            stateX += s_appUi_[i]->width();
-        }
-        return;
-    }
     // not marked async, so be careful.
     s_busy = 1;
     int remCount = s_appUi_.count();
@@ -162,7 +154,7 @@ void Track::makeUiPipeline(bool smart) {
     for (int i = 0; i < s_appUi_.count(); ++i) {
         AppFrame* ui = s_appUi_[i];
         if (!ui->expanding()) {
-            sizes[i] = ui->maximumWidth();
+            sizes[i] = ui->getDesiredWidth();
             sum += sizes[i];
             --remCount;
         }
@@ -178,8 +170,8 @@ void Track::makeUiPipeline(bool smart) {
     int state_x = 0;
     for (int i = 0; i < s_appUi_.count(); ++i) {
         AppFrame* ui = s_appUi_[i];
-        ui->setDesiredWidth(sizes[i]);
         ui->setFixedHeight(height());
+        ui->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         ui->setGeometry(state_x, 0, sizes[i], height());
         state_x += sizes[i];
     }
@@ -292,7 +284,7 @@ void Track::addApp(int i,AppFrame* appUi,live::ObjectPtr app) {
     if(app.valid()) {
         s_ambition.insert(i,app);
     }
-    connect(appUi, SIGNAL(desiredWidthChanged(int)), this, SLOT(updateGeometriesIfNeeded()));
+    connect(appUi, SIGNAL(desiredWidthChanged()), this, SLOT(updateGeometriesIfNeeded()));
 
     connect(appUi->_tbBack,SIGNAL(clicked()),this,SLOT(logic_appBack()));
     connect(appUi->_tbClose,SIGNAL(clicked()),this,SLOT(logic_appDel()));

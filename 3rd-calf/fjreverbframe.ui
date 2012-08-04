@@ -10,12 +10,6 @@
     <height>350</height>
    </rect>
   </property>
-  <property name="minimumSize">
-   <size>
-    <width>330</width>
-    <height>0</height>
-   </size>
-  </property>
   <property name="maximumSize">
    <size>
     <width>330</width>
@@ -493,7 +487,7 @@ background: qlineargradient(x1: 1, y1: 1, x2: 0, y2: 0.2,
     <rect>
      <x>2</x>
      <y>10</y>
-     <width>53</width>
+     <width>52</width>
      <height>40</height>
     </rect>
    </property>
@@ -532,12 +526,6 @@ border-top-right-radius: 0px; /* DO NOT MODIFY THIS LINE */</string>
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
-   </property>
-   <property name="minimumSize">
-    <size>
-     <width>274</width>
-     <height>0</height>
-    </size>
    </property>
    <property name="maximumSize">
     <size>
@@ -915,7 +903,7 @@ border-bottom-right-radius: 4px;</string>
     <rect>
      <x>2</x>
      <y>295</y>
-     <width>53</width>
+     <width>52</width>
      <height>53</height>
     </rect>
    </property>

@@ -23,11 +23,12 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 using namespace live;
 using namespace live_widgets;
 
-SequencerFrame::SequencerFrame(SequencerApp* backend,AbstractTrack *parent) :
-    AppFrame(parent),
-    app(*backend),
-    graph(*(new SequencerGraph(this,&app))),
-    ui(new Ui::SequencerFrame)
+SequencerFrame::SequencerFrame(SequencerApp* backend,AbstractTrack *parent)
+  : AppFrame(parent)
+  , app(*backend)
+  , graph(*(new SequencerGraph(this,&app)))
+  , b_growing(true)
+  , ui(new Ui::SequencerFrame)
 {
     ui->setupUi(this);
 
@@ -69,6 +70,8 @@ SequencerFrame::SequencerFrame(SequencerApp* backend,AbstractTrack *parent) :
     ui->rightButton->hide();
     ui->horizontalFrame->hide();
 
+    connect(&b_growing, SIGNAL(changeObserved()), this, SIGNAL(desiredWidthChanged()));
+
     connect(ui->toolButton_more, SIGNAL(toggled(bool)), this, SLOT(setMore(bool)));
 }
 
@@ -76,6 +79,12 @@ SequencerFrame::~SequencerFrame()
 {
     delete ui;
     app.deleteLater();
+}
+
+void SequencerFrame::resizeEvent(QResizeEvent* e)
+{
+    ui->frame_2->setFixedWidth(width() - 53);
+    AppFrame::resizeEvent(e);
 }
 
 void SequencerFrame::logicMute(bool x)
@@ -179,7 +188,7 @@ void SequencerFrame::setMore(bool more)
         connect(paMinThis, SIGNAL(finished()), this, SLOT(addRounding()));
     }
 
-    QTimer::singleShot(600, t, SLOT(updateGeometriesOrDie()));
+    b_growing = false;
 
     paMin->setDuration(500);
     paMax->setDuration(500);
@@ -191,6 +200,8 @@ void SequencerFrame::setMore(bool more)
     paMax->start(QAbstractAnimation::DeleteWhenStopped);
     paMinThis->setEasingCurve(QEasingCurve::InQuad);
     paMinThis->start(QAbstractAnimation::DeleteWhenStopped);
+
+    connect(paMinThis, SIGNAL(finished()), &b_growing, SLOT(setTrue()));
 }
 
 void SequencerFrame::addRounding()

@@ -39,7 +39,11 @@ public:
     QAction* action_export;
     QAction* action_newToolchain;
 
-    bool expanding() const { return width() > 60; }
+    live::Bound<bool> b_growing;
+
+    bool expanding() const { return b_growing ? (width() > 60) : false; }
+
+    virtual void resizeEvent(QResizeEvent *);
 
 public slots:
     void logicMute(bool x);

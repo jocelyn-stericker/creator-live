@@ -129,5 +129,5 @@ void AppFrame::moveEvent(QMoveEvent *e) {
 
 void AppFrame::setDesiredWidth(int w) {
     s_desiredWidth = w;
-    emit desiredWidthChanged(w);
+    emit desiredWidthChanged();
 }
