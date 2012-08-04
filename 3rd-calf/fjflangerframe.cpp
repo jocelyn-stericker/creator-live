@@ -92,5 +92,5 @@ void FJFlangerFrame::onReset() { // bool
 
 void FJFlangerFrame::onWetDryBalance(int z) { // 0...100,
     ui->verticalSlider_amount->setValue(z);
-    s_app.setWetDryBalance(z);
+    s_app.setWetDryBalance(100 - z);
 }
