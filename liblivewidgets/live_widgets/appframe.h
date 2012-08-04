@@ -12,6 +12,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include <QToolBox>
 #include <QFrame>
+#include <live/variantbinding>
 #include "live_widgets/bindableparent.h"
 #include "live_widgets/toolbutton.h"
 #include "live_widgets/track.h"
@@ -40,6 +41,7 @@ public:
     virtual bool expanding() const = 0;
 
     int getDesiredWidth() const { return s_desiredWidth; }
+    live::Bound<bool> b_resizing;
 
 signals:
     void sizeChanged();

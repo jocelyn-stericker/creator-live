@@ -102,7 +102,7 @@ inline int xoctave(int mPitch)
 
 void SequencerGraph::updateAudioData( int t1, int t2 )
 {
-    if (!isVisible()||parentWidget()->width()<30) return;
+    if (!updatesEnabled()||!isVisible()||parentWidget()->width()<30) return;
 
     updateMidiData();
 
@@ -251,7 +251,7 @@ void SequencerGraph::updateAudioData( int t1, int t2 )
 
 void SequencerGraph::updateMidiData(float t1, float t2)
 {
-    if (!isVisible()||parentWidget()->width()<30) return;
+    if (!updatesEnabled()||!isVisible()||parentWidget()->width()<30) return;
 
     if (midiOriginal) return;
     NOSYNC;

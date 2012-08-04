@@ -71,6 +71,7 @@ SequencerFrame::SequencerFrame(SequencerApp* backend,AbstractTrack *parent)
     ui->horizontalFrame->hide();
 
     connect(&b_growing, SIGNAL(changeObserved()), this, SIGNAL(desiredWidthChanged()));
+    connect(&b_resizing, SIGNAL(changeObserved(bool,bool)), &graph, SLOT(setUpdatesDisabled(bool)));
 
     connect(ui->toolButton_more, SIGNAL(toggled(bool)), this, SLOT(setMore(bool)));
 }

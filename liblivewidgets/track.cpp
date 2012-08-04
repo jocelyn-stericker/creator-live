@@ -142,7 +142,7 @@ void Track::clearUiPipeline() {
     ui_chainWidget->reset();
 }
 
-void Track::makeUiPipeline(bool smart) {
+void Track::makeUiPipeline() {
     // not marked async, so be careful.
     s_busy = 1;
     int remCount = s_appUi_.count();
@@ -420,13 +420,19 @@ void Track::logic_appNext() {
 void Track::updateGeometriesIfNeeded() {
     if (s_busy)
         return;
+    for (int i = 0; i < s_appUi_.size(); ++i) {
+        s_appUi_[i]->b_resizing = true;
+    }
     clearUiPipeline();
-    makeUiPipeline(false);
+    makeUiPipeline();
 }
 
 void Track::updateGeometriesOrDie() {
     clearUiPipeline();
     makeUiPipeline();
+    for (int i = 0; i < s_appUi_.size(); ++i) {
+        s_appUi_[i]->b_resizing = false;
+    }
 }
 
 int Track::getMaximumWidthFor(QWidget* w) {

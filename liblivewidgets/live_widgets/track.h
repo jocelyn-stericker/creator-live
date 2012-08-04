@@ -74,7 +74,7 @@ public slots:
 
 private:
     void clearUiPipeline();
-    void makeUiPipeline(bool smart = true);
+    void makeUiPipeline();
 protected:
     void dragEnterEvent(QDragEnterEvent *e);
     void dropEvent(QDropEvent *e);

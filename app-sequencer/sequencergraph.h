@@ -40,6 +40,8 @@ public slots:
     void setShowBindingsChanged(bool ean);
     void updatePos(quint64);
     void setScale(int);
+
+    void setUpdatesDisabled(bool b) { QWidget::setUpdatesEnabled(!b); if(!b) updateAudioData(); }
 private:
     float selection;
     int s_initial;

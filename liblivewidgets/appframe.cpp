@@ -16,10 +16,11 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 using namespace live_widgets;
 
 AppFrame::AppFrame(AbstractTrack *parent)
-    : QFrame(parent)
-    , BindableParent(this)
-    , s_minimized(0)
-    , s_desiredWidth(200) {
+  : QFrame(parent)
+  , BindableParent(this)
+  , s_minimized(0)
+  , s_desiredWidth(200)
+  , b_resizing(false) {
     setFrameStyle(QFrame::NoFrame);
     setFrameShadow(QFrame::Plain);
     setLineWidth(0);
