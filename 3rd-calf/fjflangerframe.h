@@ -56,6 +56,11 @@ public slots:
 
     void onWetDryBalance(int);
 
+    void setMore(bool);
+
+    void addRounding();
+    void removeRounding();
+
 private:
     Ui::FJFlangerFrame *ui;
 };

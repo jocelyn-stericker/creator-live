@@ -556,6 +556,16 @@ border-bottom-right-radius: 4px;</string>
     <property name="verticalSpacing">
      <number>4</number>
     </property>
+    <item row="8" column="3">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Timbre</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="3" rowspan="8">
      <layout class="QVBoxLayout" name="verticalLayout">
       <property name="spacing">
@@ -883,16 +893,6 @@ border-bottom-right-radius: 4px;</string>
       </property>
       <property name="orientation">
        <enum>Qt::Vertical</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="8" column="3">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>Timbre</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
       </property>
      </widget>
     </item>

@@ -52,6 +52,13 @@ void PitchApp::setShift(const int &s)
 
 void PitchApp::aIn(const float *data, int chan, ObjectChain*p)
 {
+    // if shift is 0, it's best to avoid running it through SoundTouch,
+    // because that represents a degradation of sound quality.
+    if (!s_stShift)
+    {
+        aOut(data, chan, p);
+        return;
+    }
     if (p->back()==s_audioR)
     {
         aOut(data,chan,p);
@@ -95,8 +102,9 @@ PitchAppAudioR::PitchAppAudioR() : Object("Soundtouch PitchApp implementation", 
     s_soundTouch->setPitchSemiTones(0);
     s_soundTouch->setRateChange(0);
 
-    s_soundTouch->setSetting(SETTING_USE_QUICKSEEK,1);
-    s_soundTouch->setSetting(SETTING_USE_AA_FILTER,0);
+    s_soundTouch->setSetting(SETTING_USE_QUICKSEEK, true);
+    s_soundTouch->setSetting(SETTING_USE_AA_FILTER, false);
+    s_soundTouch->setSetting(SETTING_SEQUENCE_MS, 10);
     s_shiftPitchAction=999;
 }
 PitchAppAudioR::~PitchAppAudioR()

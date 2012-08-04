@@ -49,6 +49,9 @@ public slots:
     void onResonance(int);
     void onMode(int=-1);
     void onIntertia(int);
+    void setMore(bool more);
+    void addRounding();
+    void removeRounding();
 private:
     Ui::FJFilterFrame *ui;
 };

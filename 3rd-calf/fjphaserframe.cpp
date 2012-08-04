@@ -21,6 +21,8 @@
 
 #include "fjphaserframe.h"
 #include "ui_fjphaserframe.h"
+#include <QPropertyAnimation>
+#include <QTimer>
 
 using namespace live_widgets;
 
@@ -37,6 +39,8 @@ FJPhaserFrame::FJPhaserFrame(FJPhaserApp* app, AbstractTrack *parent)
     onFB(s_app.getFB());
     onStages(s_app.getStages());
 
+    setDesiredWidth(359);
+
     if (s_app.getAmount() + s_app.getDryAmount() < 0.1f)
     {
         onWetDryBalance(s_app.getAmount() * 50.0f / 6.0f + 50.0f);
@@ -45,6 +49,8 @@ FJPhaserFrame::FJPhaserFrame(FJPhaserApp* app, AbstractTrack *parent)
     {
         onWetDryBalance(50.0f);
     }
+
+    connect(ui->toolButton_more, SIGNAL(toggled(bool)), this, SLOT(setMore(bool)));
 }
 
 FJPhaserFrame::~FJPhaserFrame()
@@ -92,4 +98,46 @@ void FJPhaserFrame::onWetDryBalance(int z)
 {
     s_app.setWetDryBalance(z);
     ui->verticalSlider_amount->setValue(z);
+}
+
+void FJPhaserFrame::setMore(bool more)
+{
+    QPropertyAnimation* paFixed = new QPropertyAnimation(this, "desiredWidth");
+    paFixed->setStartValue(width());
+    if (more) {
+        paFixed->setEndValue(359);
+        removeRounding();
+    } else {
+        paFixed->setEndValue(56);
+        connect(paFixed, SIGNAL(finished()), this, SLOT(addRounding()));
+    }
+    paFixed->setDuration(500);
+    paFixed->setEasingCurve(QEasingCurve::InQuad);
+    paFixed->start(QAbstractAnimation::DeleteWhenStopped);
+
+    QTimer::singleShot(600, parent(), SLOT(updateGeometriesOrDie()));
+}
+
+void FJPhaserFrame::addRounding()
+{
+    ui->frame->hide();
+    QString style = ui->pushButton_menu->styleSheet();
+    style.replace("border-top-right-radius: 0px;", "border-top-right-radius: 4px;");
+    ui->pushButton_menu->setStyleSheet(style);
+
+    style = ui->toolButton_more->styleSheet();
+    style.replace("border-bottom-right-radius: 0px;", "border-bottom-right-radius: 4px;");
+    ui->toolButton_more->setStyleSheet(style);
+}
+
+void FJPhaserFrame::removeRounding()
+{
+    ui->frame->show();
+    QString style = ui->pushButton_menu->styleSheet();
+    style.replace("border-top-right-radius: 4px;", "border-top-right-radius: 0px;");
+    ui->pushButton_menu->setStyleSheet(style);
+
+    style = ui->toolButton_more->styleSheet();
+    style.replace("border-bottom-right-radius: 4px;", "border-bottom-right-radius: 0px;");
+    ui->toolButton_more->setStyleSheet(style);
 }

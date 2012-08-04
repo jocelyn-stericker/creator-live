@@ -51,6 +51,9 @@ public slots:
     void onStages(int);
     void onReset();
     void onWetDryBalance(int);
+    void setMore(bool more);
+    void addRounding();
+    void removeRounding();
     
 private:
     Ui::FJPhaserFrame *ui;

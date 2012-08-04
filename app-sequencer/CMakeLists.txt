@@ -35,6 +35,7 @@ list (APPEND app-sequencer_h_qobject
 
 list (APPEND app-sequencer_ui
     sequencerframe.ui
+    looperframe.ui
 )
 
 list (APPEND app-sequencer_qrc

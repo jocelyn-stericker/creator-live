@@ -29,6 +29,8 @@ namespace live {
 class Ambition;
 }
 
+using live::Ambition;
+
 class LiveWindow : public QWidget, public live_widgets::BindableParent
 {
     Q_OBJECT
@@ -92,8 +94,8 @@ public slots:
     void updateRecent();
     void loadRecent();
 
-    void onAmbitionCreated(live::Ambition*);
-    void onAmbitionDestroyed(live::Ambition*);
+    void onAmbitionCreated(Ambition*);
+    void onAmbitionDestroyed(Ambition*);
 
 private:
     void closeEvent(QCloseEvent *);

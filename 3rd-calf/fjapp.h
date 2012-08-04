@@ -51,16 +51,21 @@ public:
         : live::Object(name, 0, 0)
         , r_nFrames(live::audio::nFrames())
     {
-        for (int i = 0; i < 2; i++) {
-            Module::outs[i] = s_out[i] = new float[r_nFrames];
-        }
-        for (int i = 0; i < param_count; i++) {
+        for (int i = 0; i < param_count; ++i)
             Module::params[i] = &s_param[i];
-        }
+
         clear_preset(); // giface.cpp
         Module::post_instantiate();
 
         init_module();
+
+        for (int i = 0; i < 2; ++i)
+            Module::outs[i] = s_out[i] = new float[r_nFrames];
+    }
+
+    ~FJApp() {
+        for (int i = 0; i < 2; ++i)
+            delete[] s_out[i];
     }
 
     virtual void init_module() {
@@ -111,9 +116,11 @@ public:
             }
         }
 
+        Module::params_reset();
+
         p->push_back(this);
         for (int i = 0; i < 2; ++i) {
-            aOut(s_out[i], i, p);
+            aOut(Module::outs[i], i, p);
         }
         p->pop_back();
     }
@@ -124,8 +131,6 @@ public:
         return s_param[param_no];
     }
     virtual void set_param_value(int param_no, float value) {
-        qDebug() << "Derp di derp on "<<param_no<<":"<<value;
-
         s_param[param_no] = value;
         s_changed = 1;
     }

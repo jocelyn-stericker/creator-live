@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SequencerFrame</class>
- <widget class="QFrame" name="SequencerFrame">
+ <class>LooperFrame</class>
+ <widget class="QFrame" name="LooperFrame">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>462</width>
+    <width>384</width>
     <height>365</height>
    </rect>
-  </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Frame</string>
@@ -398,6 +392,12 @@ border: 1px solid #aaa;
 border-radius: 4px;
 }</string>
   </property>
+  <property name="frameShape">
+   <enum>QFrame::NoFrame</enum>
+  </property>
+  <property name="frameShadow">
+   <enum>QFrame::Plain</enum>
+  </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <property name="margin">
     <number>0</number>
@@ -405,248 +405,7 @@ border-radius: 4px;
    <property name="spacing">
     <number>0</number>
    </property>
-   <item row="0" column="0" rowspan="2">
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="live_widgets::PushButton" name="menu">
-       <property name="minimumSize">
-        <size>
-         <width>51</width>
-         <height>40</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>51</width>
-         <height>40</height>
-        </size>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border-bottom-left-radius: 0px;
-border-bottom-right-radius: 0px;
-border-top-right-radius: 0px; /*DO NOT MODIFY THIS LINE*/</string>
-       </property>
-       <property name="text">
-        <string>Track 1</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="live_widgets::ToolButton" name="play">
-       <property name="minimumSize">
-        <size>
-         <width>51</width>
-         <height>60</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>51</width>
-         <height>90</height>
-        </size>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border-top-left-radius: 0px;
-border-bottom-left-radius: 0px;
-border-top-right-radius: 0px;
-border-bottom-right-radius: 0px;</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="../creator-live/Icons/Icons.qrc">
-         <normaloff>:/icons/play.png</normaloff>:/icons/play.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>35</width>
-         <height>35</height>
-        </size>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="live_widgets::ToolButton" name="clip">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>51</width>
-         <height>60</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>51</width>
-         <height>90</height>
-        </size>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border-top-left-radius: 0px;
-border-bottom-left-radius: 0px;
-border-top-right-radius: 0px;
-border-bottom-right-radius: 0px;</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="../creator-live/Icons/Icons.qrc">
-         <normaloff>:/icons/clip.png</normaloff>:/icons/clip.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>35</width>
-         <height>35</height>
-        </size>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="live_widgets::ToolButton" name="mute">
-       <property name="minimumSize">
-        <size>
-         <width>51</width>
-         <height>60</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>51</width>
-         <height>90</height>
-        </size>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border-top-left-radius: 0px;
-border-bottom-left-radius: 0px;
-border-top-right-radius: 0px;
-border-bottom-right-radius: 0px;</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="../creator-live/Icons/Icons.qrc">
-         <normaloff>:/icons/mute.png</normaloff>:/icons/mute.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>35</width>
-         <height>35</height>
-        </size>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="live_widgets::ToolButton" name="record">
-       <property name="minimumSize">
-        <size>
-         <width>51</width>
-         <height>60</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>51</width>
-         <height>90</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <family>handelgotdlig</family>
-         <weight>25</weight>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border-top-left-radius: 0px;
-border-bottom-left-radius: 0px;
-border-top-right-radius: 0px;
-border-bottom-right-radius: 0px;</string>
-       </property>
-       <property name="text">
-        <string>R</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../creator-live/Icons/Icons.qrc">
-         <normaloff>:/icons/record.png</normaloff>:/icons/record.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>35</width>
-         <height>35</height>
-        </size>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="toolButton_more">
-       <property name="minimumSize">
-        <size>
-         <width>51</width>
-         <height>53</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>51</width>
-         <height>53</height>
-        </size>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border-top-left-radius: 0px;
-border-top-right-radius: 0px;
-border-bottom-right-radius: 0px; /* DO NOT MODIFY THIS LINE! */</string>
-       </property>
-       <property name="text">
-        <string>. . .</string>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>35</width>
-         <height>35</height>
-        </size>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="0" column="1" rowspan="2">
+   <item row="0" column="1">
     <widget class="QFrame" name="frame_2">
      <property name="minimumSize">
       <size>
@@ -671,7 +430,7 @@ border-bottom-right-radius: 4px;</string>
       <property name="margin">
        <number>0</number>
       </property>
-      <item row="1" column="0">
+      <item row="0" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <property name="spacing">
          <number>0</number>
@@ -679,22 +438,6 @@ border-bottom-right-radius: 4px;</string>
         <property name="topMargin">
          <number>0</number>
         </property>
-        <item>
-         <widget class="live_widgets::PushButton" name="leftButton">
-          <property name="maximumSize">
-           <size>
-            <width>25</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>&lt;</string>
-          </property>
-          <property name="flat">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
         <item>
          <widget class="QFrame" name="frame">
           <property name="sizePolicy">
@@ -720,113 +463,326 @@ border-bottom-right-radius: 4px;</string>
           </layout>
          </widget>
         </item>
-        <item>
-         <widget class="live_widgets::PushButton" name="rightButton">
-          <property name="maximumSize">
-           <size>
-            <width>25</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>&gt;</string>
-          </property>
-          <property name="flat">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
        </layout>
-      </item>
-      <item row="0" column="0">
-       <widget class="QFrame" name="horizontalFrame">
-        <property name="frameShape">
-         <enum>QFrame::NoFrame</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Plain</enum>
-        </property>
-        <property name="lineWidth">
-         <number>0</number>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <property name="margin">
-          <number>0</number>
-         </property>
-         <item>
-          <spacer name="horizontalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>10</width>
-             <height>0</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>O</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSlider" name="horizontalSlider_scale">
-           <property name="minimum">
-            <number>2646</number>
-           </property>
-           <property name="maximum">
-            <number>26460000</number>
-           </property>
-           <property name="singleStep">
-            <number>26460</number>
-           </property>
-           <property name="pageStep">
-            <number>265600</number>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="invertedAppearance">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>I</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
       </item>
      </layout>
      <zorder></zorder>
-     <zorder>horizontalFrame</zorder>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QWidget" name="widget" native="true">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="margin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="live_widgets::PushButton" name="menu">
+        <property name="minimumSize">
+         <size>
+          <width>51</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>51</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-bottom-left-radius: 0px;
+border-bottom-right-radius: 0px;
+border-top-right-radius: 0px; /*DO NOT MODIFY THIS LINE*/
+color: white;</string>
+        </property>
+        <property name="text">
+         <string>Looper</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="live_widgets::ToolButton" name="loopOff">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>51</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>51</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-top-left-radius: 0px;
+border-bottom-left-radius: 0px;
+border-top-right-radius: 0px;
+border-bottom-right-radius: 0px;</string>
+        </property>
+        <property name="text">
+         <string>off</string>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>35</width>
+          <height>35</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="live_widgets::ToolButton" name="loopPlay">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>51</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>51</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-top-left-radius: 0px;
+border-bottom-left-radius: 0px;
+border-top-right-radius: 0px;
+border-bottom-right-radius: 0px;</string>
+        </property>
+        <property name="text">
+         <string>play</string>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>35</width>
+          <height>35</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="live_widgets::ToolButton" name="loopRecord">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>51</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>51</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-top-left-radius: 0px;
+border-bottom-left-radius: 0px;
+border-top-right-radius: 0px;
+border-bottom-right-radius: 0px;</string>
+        </property>
+        <property name="text">
+         <string>rec</string>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>35</width>
+          <height>35</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="live_widgets::ToolButton" name="loopOverdub">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>51</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>51</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-top-left-radius: 0px;
+border-bottom-left-radius: 0px;
+border-top-right-radius: 0px;
+border-bottom-right-radius: 0px;</string>
+        </property>
+        <property name="text">
+         <string>overdub</string>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>35</width>
+          <height>35</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="live_widgets::ToolButton" name="loopReplace">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>51</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>51</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-top-left-radius: 0px;
+border-bottom-left-radius: 0px;
+border-top-right-radius: 0px;
+border-bottom-right-radius: 0px;</string>
+        </property>
+        <property name="text">
+         <string>replace</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="live_widgets::ToolButton" name="loopSub">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>51</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>51</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-top-left-radius: 0px;
+border-bottom-left-radius: 0px;
+border-top-right-radius: 0px;
+border-bottom-right-radius: 0px;</string>
+        </property>
+        <property name="text">
+         <string>sub</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="toolButton_more">
+        <property name="minimumSize">
+         <size>
+          <width>51</width>
+          <height>53</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>51</width>
+          <height>53</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-top-left-radius: 0px;
+border-top-right-radius: 0px;
+border-bottom-right-radius: 0px; /* DO NOT MODIFY THIS LINE! */</string>
+        </property>
+        <property name="text">
+         <string>. . .</string>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>35</width>
+          <height>35</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
@@ -843,8 +799,6 @@ border-bottom-right-radius: 4px;</string>
    <header>live_widgets/toolbutton.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../creator-live/Icons/Icons.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

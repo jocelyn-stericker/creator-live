@@ -447,7 +447,7 @@ int Track::getMaximumWidthFor(QWidget* w) {
             continue;
 
         if (!ui->expanding())
-            sum += ui->maximumWidth();
+            sum += ui->getDesiredWidth();
         else
             ++otherCount;
         ui->show();

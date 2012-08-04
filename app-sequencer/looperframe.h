@@ -18,7 +18,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 namespace Ui
 {
-class SequencerFrame;
+class LooperFrame;
 }
 
 class LooperFrame : public live_widgets::AppFrame
@@ -32,7 +32,9 @@ public:
     explicit LooperFrame(LooperApp* backend, AbstractTrack *parent = 0);
     ~LooperFrame();
 
-    bool expanding() const { return false; }
+    live::Bound<bool> b_growing;
+
+    bool expanding() const { return b_growing ? (width() > 60) : false; }
 
 public slots:
     void logicMute(bool x);
@@ -44,9 +46,13 @@ public slots:
     void logicOff(bool x);
     void syncState();
 
+    void setMore(bool);
+
+    void addRounding();
+    void removeRounding();
+
 private:
-    Ui::SequencerFrame *ui;
-    live_widgets::ToolButton*loopSub,*loopReplace,*loopOverdub,*loopRecord,*loopPlay,*loopOff;
+    Ui::LooperFrame *ui;
 };
 
 class LooperCreator : public QObject, public live::AppInterface

@@ -17,12 +17,14 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live_widgets/appframe.h>
 #include <live_widgets/spinbox.h>
 
+namespace Ui {
+    class PitchFrame;
+}
+
 class PitchFrame : public live_widgets::AppFrame
 {
     Q_OBJECT
     PitchApp* app;
-    live_widgets::SpinBox ui_spinBox;
-    QVBoxLayout ui_vbox;
 public:
     explicit PitchFrame(PitchApp* backend, AbstractTrack *parent = 0);
 
@@ -32,6 +34,12 @@ signals:
 
 public slots:
     void syncState();
+    void setMore(bool more);
+    void addRounding();
+    void removeRounding();
+
+private:
+    Ui::PitchFrame* ui;
 };
 
 class PitchCreator : public QObject, public live::AppInterface

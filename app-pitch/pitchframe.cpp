@@ -8,28 +8,76 @@
 *****************************************************/
 
 #include "pitchframe.h"
-#include <QtPlugin>
+#include "ui_pitchframe.h"
 
-PitchFrame::PitchFrame(PitchApp* backend, AbstractTrack *parent) :
-    AppFrame(parent), app(backend)
+#include <QtPlugin>
+#include <QPropertyAnimation>
+#include <QTimer>
+
+PitchFrame::PitchFrame(PitchApp* backend, AbstractTrack *parent)
+  : AppFrame(parent), app(backend)
+  , ui(new Ui::PitchFrame)
 {
-    setLayout(&ui_vbox);
-    setSizePolicy(QSizePolicy::Maximum,QSizePolicy::MinimumExpanding);
-    ui_spinBox.setMaximumWidth(40);
-    ui_spinBox.setMinimum(-80);
-    ui_spinBox.setMaximum(80);
-    setMaximumWidth(100);
-    ui_spinBox.setObjectName("ui_spinBox");
-    connect(&ui_spinBox,SIGNAL(valueChanged(int)),backend,SLOT(setShift(int)));
-    ui_vbox.addWidget(&ui_spinBox);
+    ui->setupUi(this);
+
+    connect(ui->verticalSlider_shift, SIGNAL(valueChanged(int)), app, SLOT(setShift(int)));
+    connect(ui->toolButton_more, SIGNAL(toggled(bool)), this, SLOT(setMore(bool)));
+    connect(ui->toolButton_aa, SIGNAL(toggled(bool)), ui->verticalSlider_aa, SLOT(setEnabled(bool)));
+
     syncState();
+
+    setDesiredWidth(307);
 
     setObjectName("PitchFrame_"+QString::number(app->s_id));
 }
 
 void PitchFrame::syncState()
 {
-    ui_spinBox.setValue(app->shiftAmount());
+    ui->verticalSlider_shift->setValue(app->shiftAmount());
 }
+
+
+void PitchFrame::setMore(bool more)
+{
+    QPropertyAnimation* paFixed = new QPropertyAnimation(this, "desiredWidth");
+    paFixed->setStartValue(width());
+    if (more) {
+        paFixed->setEndValue(307);
+        removeRounding();
+    } else {
+        paFixed->setEndValue(56);
+        connect(paFixed, SIGNAL(finished()), this, SLOT(addRounding()));
+    }
+    paFixed->setDuration(500);
+    paFixed->setEasingCurve(QEasingCurve::InQuad);
+    paFixed->start(QAbstractAnimation::DeleteWhenStopped);
+
+    QTimer::singleShot(600, parent(), SLOT(updateGeometriesOrDie()));
+}
+
+void PitchFrame::addRounding()
+{
+    ui->frame->hide();
+    QString style = ui->pushButton_menu->styleSheet();
+    style.replace("border-top-right-radius: 0px;", "border-top-right-radius: 4px;");
+    ui->pushButton_menu->setStyleSheet(style);
+
+    style = ui->toolButton_more->styleSheet();
+    style.replace("border-bottom-right-radius: 0px;", "border-bottom-right-radius: 4px;");
+    ui->toolButton_more->setStyleSheet(style);
+}
+
+void PitchFrame::removeRounding()
+{
+    ui->frame->show();
+    QString style = ui->pushButton_menu->styleSheet();
+    style.replace("border-top-right-radius: 4px;", "border-top-right-radius: 0px;");
+    ui->pushButton_menu->setStyleSheet(style);
+
+    style = ui->toolButton_more->styleSheet();
+    style.replace("border-bottom-right-radius: 4px;", "border-bottom-right-radius: 0px;");
+    ui->toolButton_more->setStyleSheet(style);
+}
+
 
 Q_EXPORT_PLUGIN2(live::AppInterface, PitchCreator)

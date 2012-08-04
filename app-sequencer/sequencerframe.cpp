@@ -203,6 +203,8 @@ void SequencerFrame::setMore(bool more)
     paMinThis->start(QAbstractAnimation::DeleteWhenStopped);
 
     connect(paMinThis, SIGNAL(finished()), &b_growing, SLOT(setTrue()));
+
+    QTimer::singleShot(600, parent(), SLOT(updateGeometriesOrDie()));
 }
 
 void SequencerFrame::addRounding()

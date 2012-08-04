@@ -27,7 +27,7 @@ list (APPEND app-pitch_qobject
 )
 
 list (APPEND app-pitch_ui
-#    pitchframe.ui
+    pitchframe.ui
 )
 
 list (APPEND app-pitch_qrc

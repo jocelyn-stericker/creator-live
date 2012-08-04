@@ -22,6 +22,9 @@
 #include "fjflangerframe.h"
 #include "ui_fjflangerframe.h"
 
+#include <QPropertyAnimation>
+#include <QTimer>
+
 using namespace live_widgets;
 
 FJFlangerFrame::FJFlangerFrame(FJFlangerApp *backend, AbstractTrack *parent)
@@ -46,6 +49,8 @@ FJFlangerFrame::FJFlangerFrame(FJFlangerApp *backend, AbstractTrack *parent)
         onWetDryBalance(50.0f);
     }
 
+    setDesiredWidth(255);
+
     connect(ui->dial_depth,SIGNAL(valueChanged(int)),this,SLOT(onDepth(int)));
     connect(ui->dial_fb,SIGNAL(valueChanged(int)),this,SLOT(onFB(int)));
     connect(ui->dial_minDelay,SIGNAL(valueChanged(int)),this,SLOT(onDelay(int)));
@@ -53,6 +58,8 @@ FJFlangerFrame::FJFlangerFrame(FJFlangerApp *backend, AbstractTrack *parent)
     connect(ui->dial_rate,SIGNAL(valueChanged(int)),this,SLOT(onRate(int)));
     connect(ui->verticalSlider_amount,SIGNAL(valueChanged(int)),this,SLOT(onWetDryBalance(int)));
     connect(ui->pushButton_reset,SIGNAL(pressed()),this,SLOT(onReset()));
+
+    connect(ui->toolButton_more, SIGNAL(toggled(bool)), this, SLOT(setMore(bool)));
 }
 
 FJFlangerFrame::~FJFlangerFrame()
@@ -94,3 +101,46 @@ void FJFlangerFrame::onWetDryBalance(int z) { // 0...100,
     ui->verticalSlider_amount->setValue(z);
     s_app.setWetDryBalance(100 - z);
 }
+
+void FJFlangerFrame::setMore(bool more)
+{
+    QPropertyAnimation* paFixed = new QPropertyAnimation(this, "desiredWidth");
+    paFixed->setStartValue(width());
+    if (more) {
+        paFixed->setEndValue(255);
+        removeRounding();
+    } else {
+        paFixed->setEndValue(56);
+        connect(paFixed, SIGNAL(finished()), this, SLOT(addRounding()));
+    }
+    paFixed->setDuration(500);
+    paFixed->setEasingCurve(QEasingCurve::InQuad);
+    paFixed->start(QAbstractAnimation::DeleteWhenStopped);
+
+    QTimer::singleShot(600, parent(), SLOT(updateGeometriesOrDie()));
+}
+
+void FJFlangerFrame::addRounding()
+{
+    ui->frame->hide();
+    QString style = ui->pushButton_menu->styleSheet();
+    style.replace("border-top-right-radius: 0px;", "border-top-right-radius: 4px;");
+    ui->pushButton_menu->setStyleSheet(style);
+
+    style = ui->toolButton_more->styleSheet();
+    style.replace("border-bottom-right-radius: 0px;", "border-bottom-right-radius: 4px;");
+    ui->toolButton_more->setStyleSheet(style);
+}
+
+void FJFlangerFrame::removeRounding()
+{
+    ui->frame->show();
+    QString style = ui->pushButton_menu->styleSheet();
+    style.replace("border-top-right-radius: 4px;", "border-top-right-radius: 0px;");
+    ui->pushButton_menu->setStyleSheet(style);
+
+    style = ui->toolButton_more->styleSheet();
+    style.replace("border-bottom-right-radius: 4px;", "border-bottom-right-radius: 0px;");
+    ui->toolButton_more->setStyleSheet(style);
+}
+
