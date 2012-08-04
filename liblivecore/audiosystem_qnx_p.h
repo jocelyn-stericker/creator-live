@@ -11,9 +11,9 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QMutex>
 #include <QThread>
 #include <QWaitCondition>
-#include "live/object.h"
-#include "live/audio.h"
-#include "live/audiointerface.h"
+#include "live/object"
+#include "live/audio"
+#include "live/audiointerface"
 
 #ifdef __QNX__
 
@@ -47,7 +47,7 @@ public:
     void run(); // <== this function is all you care about.
 
     bool mOn() const{ return 0; } bool aOn() const { return 1; }
-    virtual void aIn (const float*,int, live::ObjectChain&) {}
+    virtual void aIn (const float*,int, live::ObjectChain*) {}
 };
 
 class LIBLIVECORESHARED_EXPORT AudioOut : public QThread, public live::Object
@@ -74,7 +74,7 @@ public:
     AudioOut(SecretAudio* cmaster) : live::Object("Speaker or Headphones",true,true), chans(2), mSampleBfr2(new qint16[3072/sizeof(qint16)]), lock(new QMutex), dataRead(new QWaitCondition), master(cmaster) { setTemporary(0); }
 
     void run(); // <== this function processes data
-    virtual void aIn(const float*data,int chan, live::ObjectChain&p); // <== that it got here.
+    virtual void aIn(const float*data,int chan, live::ObjectChain*p); // <== that it got here.
 };
 
 class LIBLIVECORESHARED_EXPORT AudioNull : public live::Object
@@ -87,11 +87,11 @@ public:
 
     AudioNull(int cchans) : live::Object("Null Audio Device",false,false), chans(cchans) {}
 
-    virtual void aIn(const float*data,int chan, live::ObjectChain&p)
+    virtual void aIn(const float*data,int chan, live::ObjectChain*p)
     {
-        p.push_back(this);
+        p->push_back(this);
         aOut(data,chan,p);
-        p.pop_back();
+        p->pop_back();
     }
 };
 
@@ -120,11 +120,11 @@ public:
 
     ~SecretAudio()
     {
-        while(inputs.size())
+        while (inputs.size())
         {
             delete inputs.takeFirst();
         }
-        while(outputs.size())
+        while (outputs.size())
         {
             delete outputs.takeFirst();
         }
@@ -140,7 +140,7 @@ public:
 
     static int xrunCallback( void * )
     {
-        qDebug()<<"XRUN!!!";
+        qDebug() << "XRUN!!!";
         return 0;
     }
 

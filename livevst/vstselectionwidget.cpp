@@ -43,18 +43,18 @@ VstSelectionWidget::VstSelectionWidget(live::ObjectPtr out, live::ObjectPtr loop
         if (!v) continue;
         for (int j=0;j<v->rep->s_sidekicks.size();j++) {
             if (s_out==v->rep->s_sidekicks[j]) {
-                qDebug()<<"Found (I)";
+                qDebug() << "Found (I)";
                 for (int k=0;k<ui->listWidget_vstis->count();k++) {
                     if (ui->listWidget_vstis->item(k)->text()==Vst::s_map.keys()[i]) {
-                        qDebug()<<"Found (II)";
+                        qDebug() << "Found (II)";
                         ui->listWidget_vstis->setCurrentRow(k);
                     }
                 }
                 vstChangedLogic();
                 for (int k=0;k<ui->comboBox_instance->count();k++) {
-                    qDebug()<<"COMPARE"<<ui->comboBox_instance->itemText(k)<<Vst::s_map.values()[i].first;
+                    qDebug() << "COMPARE"<<ui->comboBox_instance->itemText(k)<<Vst::s_map.values()[i].first;
                     if (ui->comboBox_instance->itemText(k)==Vst::s_map.values()[i].first) {
-                        qDebug()<<"Found (III)";
+                        qDebug() << "Found (III)";
                         ui->comboBox_instance->setCurrentIndex(k);
                     }
                 }
@@ -144,7 +144,7 @@ void VstSelectionWidget::instanceChangedLogic(int z)
             }
         }
         if (!a) {
-            qDebug()<<"NO SUCH VST";
+            qDebug() << "NO SUCH VST";
             return;
         }
 
@@ -182,12 +182,12 @@ void VstSelectionWidget::chanChangedLogic(int z)
         }
     }
     if (!a) {
-        qDebug()<<"NO SUCH VST";
+        qDebug() << "NO SUCH VST";
         return;
     }
 
     if (a->rep->s_sidekicks.size()<z) {
-        qDebug()<<"Not enough channels";
+        qDebug() << "Not enough channels";
         return;
     }
     if (s_out!=a->rep->s_sidekicks[z]) emit instrumentUpdated(s_out=a->rep->s_sidekicks[z],s_loopback);
@@ -201,7 +201,7 @@ void VstSelectionWidget::clickedLogic()
             return;
         } else {
             if (!ui->listWidget_vstis->currentItem()) {
-                qDebug()<<"!NO SELECTION!!!";
+                qDebug() << "!NO SELECTION!!!";
                 return;
             }
             new Vst(ui->listWidget_vstis->currentItem()->text(),str);
@@ -215,7 +215,7 @@ void VstSelectionWidget::clickedLogic()
                 }
             }
             if (!ok) {
-                qDebug()<<"Something went wrong in clickedLogic()";
+                qDebug() << "Something went wrong in clickedLogic()";
             }
             Q_ASSERT(ok);
         }
@@ -232,7 +232,7 @@ void VstSelectionWidget::clickedLogic()
             }
         }
         if (!a) {
-            qDebug()<<"NO SUCH VST";
+            qDebug() << "NO SUCH VST";
             return;
         }
 

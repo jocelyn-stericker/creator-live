@@ -11,9 +11,9 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define VST_RH
 
 #include "vst.h"
-#include "live/object.h"
-#include "live/audio.h"
-#include "live/audiointerface.h"
+#include "live/object"
+#include "live/audio"
+#include "live/audiointerface"
 #include <unistd.h>
 #include <QWidget>
 #include <QTimer>
@@ -55,10 +55,10 @@ public:
         qDebug()<<_vst;
         _magic->start("/usr/local/bin/vsthost",QStringList(_vst));
         connect(_magic,SIGNAL(finished(int)),this,SLOT(killParent()));
-        qDebug()<<"STARTING...";
+        qDebug() << "STARTING...";
         if(_magic->state()==QProcess::NotRunning)
         {
-            qDebug()<<"Forking vsthost did not work!";
+            qDebug() << "Forking vsthost did not work!";
         }
         int count=0;
         QStringList lastAudioIn;
@@ -107,7 +107,7 @@ public:
                     midiOut=xMidi[0];
 
                     if(xAudioIn.size()%2==1) {
-                        qDebug()<<"New inputs not modulo 2";
+                        qDebug() << "New inputs not modulo 2";
                         _ok=0;
                         return;
                     }
@@ -117,7 +117,7 @@ public:
                     {
                         QStringList dual;
                         dual<<xAudioIn[i]<<xAudioIn[i+1];
-                        qDebug()<<"VVVVV"<<dual;
+                        qDebug() << "VVVVV"<<dual;
                         live::audio::addMapping(dual,1,"In from VST Audio ("+QString::number(_id)+","+QString::number(i/2)+")");
                         sidekicks_from.push_back("In from VST Audio ("+QString::number(_id)+","+QString::number(i/2)+")");
                     }
@@ -135,7 +135,7 @@ public:
                     if(!ok)
                     {
                         _ok=0;
-                        qDebug()<<"VstLinux_p: Failed err 1.";
+                        qDebug() << "VstLinux_p: Failed err 1.";
                         return;
                     }
 
@@ -146,7 +146,7 @@ public:
                         ok=1;
                         QStringList dual;
                         dual<<xAudioOut[i]<<xAudioOut[i+1];
-                        qDebug()<<"Out to VST Audio ("+QString::number(_id)+","+QString::number(i/2)+")"<<dual;
+                        qDebug() << "Out to VST Audio ("+QString::number(_id)+","+QString::number(i/2)+")"<<dual;
                         live::audio::addMapping(dual,0,"Out to VST Audio ("+QString::number(_id)+","+QString::number(i/2)+")");
                         sidekicks_to.push_back("Out to VST Audio ("+QString::number(_id)+","+QString::number(i/2)+")");
                     }
@@ -160,7 +160,7 @@ public:
                         int l=0;
                         for(int i=0;i<noutl.size();i++)
                         {
-                            qDebug()<<xAudioOut.size()<<"#"<<noutl[i]->name()<<("Out to VST Audio ("+QString::number(_id)+","+QString::number(l)+")");
+                            qDebug()<<xAudioOut.size() << "#"<<noutl[i]->name()<<("Out to VST Audio ("+QString::number(_id)+","+QString::number(l)+")");
                             if(noutl[i]->name()==("Out to VST Audio ("+QString::number(_id)+","+QString::number(l)+")"))
                             {
                                 ++l;
@@ -173,7 +173,7 @@ public:
                         if(!ok)
                         {
                             _ok=0;
-                            qDebug()<<"VstLinux_p: Failed err 2.";
+                            qDebug() << "VstLinux_p: Failed err 2.";
                             return;
                         }
                     }
@@ -194,26 +194,26 @@ public:
             l.exec();
             live::Object::beginAsyncAction();
 
-        } while(++count<80);
+        } while (++count<80);
     }
     ~VstR()
     {
         live::Object::beginAsyncAction();
         kill();
-//        while(s_sidekicks.size()) delete s_sidekicks.takeFirst().data();
+//        while (s_sidekicks.size()) delete s_sidekicks.takeFirst().data();
         _magic->kill();
         live::Object::endAsyncAction();
     }
 
     void addSidekicks(QStringList to, QStringList from);
 
-    void aIn(const float *data, int chan, live::ObjectChain&p)
+    void aIn(const float *data, int chan, live::ObjectChain*p)
     {
-        if(p.contains(audioFromVst))
+        if(p->contains(audioFromVst))
         {
-            p.push_back(this);
+            p->push_back(this);
             aOut(data,chan,p);
-            p.pop_back();
+            p->pop_back();
         }
         else
         {

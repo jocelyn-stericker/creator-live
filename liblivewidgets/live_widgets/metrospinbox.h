@@ -11,13 +11,12 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define LIVEMETROSPINBOX_H
 
 #include "live_widgets/spinbox.h"
-#include "live/metronome.h"
+#include "live/metronome"
 #include "liblivewidgets_global.h"
 
 namespace live_widgets {
 
-class LIBLIVEWIDGETSSHARED_EXPORT MetroSpinbox : public SpinBox
-{
+class LIBLIVEWIDGETSSHARED_EXPORT MetroSpinbox : public SpinBox {
     Q_OBJECT
     int s_toggle;
     int s_lastBeat;

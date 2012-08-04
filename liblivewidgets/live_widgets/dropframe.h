@@ -18,8 +18,7 @@ class QLabel;
 
 namespace live_widgets {
 
-class LIBLIVEWIDGETSSHARED_EXPORT DropFrame : public QFrame
-{
+class LIBLIVEWIDGETSSHARED_EXPORT DropFrame : public QFrame {
     Q_OBJECT
     QLabel* s_dl;
     void dragEnterEvent(QDragEnterEvent *);

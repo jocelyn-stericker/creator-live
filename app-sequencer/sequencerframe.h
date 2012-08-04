@@ -11,7 +11,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define SEQUENCERFRAME_H
 
 #include "sequencergraph.h"
-#include <live/appinterface.h>
+#include <live/appinterface>
 #include <live_widgets/appframe.h>
 
 #include <QFileDialog>

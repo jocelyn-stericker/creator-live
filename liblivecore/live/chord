@@ -10,8 +10,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef CHORD_H
 #define CHORD_H
 
-#include "live/keysignature.h"
-#include "live/pitch.h"
+#include "live/keysignature"
+#include "live/pitch"
 #include <QList>
 
 namespace live {

@@ -10,7 +10,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef MIDISYSTEM_P_H
 #define MIDISYSTEM_P_H
 
-#include "live/object.h"
+#include "live/object"
 #ifndef __QNX__
 #include <portmidi.h>
 #include <porttime.h>
@@ -29,11 +29,11 @@ public:
     int deviceId;
     live::ObjectPtr s_null;
     MidiIn(QString ccname,int devId);
-    virtual void mIn(const live::Event *ev, live::ObjectChain&p)
+    virtual void mIn(const live::Event *ev, live::ObjectChain*p)
     {
-        p.push_back(this);
+        p->push_back(this);
         mOut(ev,p);
-        p.pop_back();
+        p->pop_back();
     }
 };
 
@@ -47,7 +47,7 @@ public:
 
 public:
     MidiOut(QString ccname,int cdevice) : live::Object(ccname,true,true), valid(1), device(cdevice) { setTemporary(0); }
-    virtual void mIn(const live::Event *data, live::ObjectChain&p);   //Midi.cpp
+    virtual void mIn(const live::Event *data, live::ObjectChain*p);   //Midi.cpp
 };
 
 class LIBLIVECORESHARED_EXPORT MidiNull : public live::Object
@@ -56,7 +56,7 @@ public:
     LIVE_MIDI
     LIVE_INPUT
     MidiNull();
-    virtual void mIn(const live::Event *, live::ObjectChain&);
+    virtual void mIn(const live::Event *, live::ObjectChain*);
 };
 
 #ifndef __QNX__

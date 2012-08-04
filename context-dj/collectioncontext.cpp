@@ -10,8 +10,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "collectioncontext.h"
 #include "ui_collectioncontext.h"
 
-#include <live/audio.h>
-#include <live/object.h>
+#include <live/audio>
+#include <live/object>
 
 #include <QTimer>
 
@@ -36,13 +36,13 @@ CollectionContext::~CollectionContext()
 
 void CollectionContext::connect_changeEvents()
 {
-    connect(ui->comboBox_audio, SIGNAL(currentIndexChanged(QString)), s_parent, SLOT(audioChanged_logic(QString)));
+    connect(ui->comboBox_audio, SIGNAL(currentIndexChanged(QString)), s_parent, SLOT(audioanged_logic(QString)));
     connect(ui->comboBox_monitor, SIGNAL(currentIndexChanged(QString)), s_parent, SLOT(monitorChanged_logic(QString)));
 }
 
 void CollectionContext::disconnect_changeEvents()
 {
-    disconnect(ui->comboBox_audio, SIGNAL(currentIndexChanged(QString)), s_parent, SLOT(audioChanged_logic(QString)));
+    disconnect(ui->comboBox_audio, SIGNAL(currentIndexChanged(QString)), s_parent, SLOT(audioanged_logic(QString)));
     disconnect(ui->comboBox_monitor, SIGNAL(currentIndexChanged(QString)), s_parent, SLOT(monitorChanged_logic(QString)));
 }
 
@@ -66,7 +66,7 @@ void CollectionContext::stockChanged_logic()
     {
         if (names.indexOf(i ? sa : sm) == -1)
         {
-            if (!i) s_parent->audioChanged_logic(ui->comboBox_audio->currentText());
+            if (!i) s_parent->audioanged_logic(ui->comboBox_audio->currentText());
             else s_parent->monitorChanged_logic(ui->comboBox_monitor->currentText());
         }
         else

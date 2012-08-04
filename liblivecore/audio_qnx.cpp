@@ -7,9 +7,9 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live/audio.h"
+#include "live/audio"
 #include "audiosystem_qnx_p.h"
-#include "live/songsystem.h"
+#include "live/songsystem"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -42,8 +42,7 @@ static inline void lesi2f_array (short *src, const int& count, float *dest) {
     }
 }
 
-static inline void fi2les_array_i (const float *src, short *dest, const int& count)
-{
+static inline void fi2les_array_i (const float *src, short *dest, const int& count) {
     float normfact=1.0 * 0x7FFF;
     unsigned char* ucptr = ((unsigned char*) dest) + 2 * count ;
 
@@ -66,8 +65,7 @@ static inline void fi2les_array_i (const float *src, short *dest, const int& cou
  * @param count the count of items in the FULL INTERLEAVED array (i.e., 2*length of src)
  * @param chan 0 for left, 1 for right.
  */
-static inline void fi2les_array_half (const float *src, short *dest, const int& count, int chan)
-{
+static inline void fi2les_array_half (const float *src, short *dest, const int& count, int chan) {
     unsigned char* ucptr;
     int value;
     float normfact=1.0 * 0x7FFF;
@@ -84,8 +82,7 @@ static inline void fi2les_array_half (const float *src, short *dest, const int& 
     }
 }
 
-void AudioOut::run()
-{
+void AudioOut::run() {
     setPriority(QThread::TimeCriticalPriority);
 
     int     card = -1;
@@ -114,8 +111,7 @@ void AudioOut::run()
 
     memset (&pi, 0, sizeof (pi));
     pi.channel = SND_PCM_CHANNEL_PLAYBACK;
-    if ((rtn = snd_pcm_channel_info (pcm_handle, &pi)) < 0)
-    {
+    if ((rtn = snd_pcm_channel_info (pcm_handle, &pi)) < 0) {
         fprintf (stderr, "snd_pcm_channel_info failed: %s\n", snd_strerror (rtn));
         return;
     }
@@ -150,8 +146,7 @@ void AudioOut::run()
     pp.format.format=SND_PCM_SFMT_S16_LE;
 
     strcpy (pp.sw_mixer_subchn_name, "Creator Live Speakers");
-    if ((rtn = snd_pcm_channel_params (pcm_handle, &pp)) < 0)
-    {
+    if ((rtn = snd_pcm_channel_params (pcm_handle, &pp)) < 0) {
         fprintf (stderr, "snd_pcm_channel_params failed: %s\n", snd_strerror (rtn));
         return;
     }
@@ -163,8 +158,7 @@ void AudioOut::run()
     memset (&group, 0, sizeof (group));
     setup.channel = SND_PCM_CHANNEL_PLAYBACK;
     setup.mixer_gid = &group.gid;
-    if ((rtn = snd_pcm_channel_setup (pcm_handle, &setup)) < 0)
-    {
+    if ((rtn = snd_pcm_channel_setup (pcm_handle, &setup)) < 0) {
         fprintf (stderr, "snd_pcm_channel_setup failed: %s\n", snd_strerror (rtn));
         return;
     }
@@ -176,14 +170,12 @@ void AudioOut::run()
     printf ("Voices %d \n", setup.format.voices);
     bsize = setup.buf.block.frag_size;
 
-    if (group.gid.name[0] == 0)
-    {
+    if (group.gid.name[0] == 0) {
         printf ("Mixer Pcm Group [%s] Not Set \n", group.gid.name);
         exit (-1);
     }
     printf ("Mixer Pcm Group [%s]\n", group.gid.name);
-    if ((rtn = snd_mixer_open (&mixer_handle, card, setup.mixer_device)) < 0)
-    {
+    if ((rtn = snd_mixer_open (&mixer_handle, card, setup.mixer_device)) < 0) {
         fprintf (stderr, "snd_mixer_open failed: %s\n", snd_strerror (rtn));
         return;
     }
@@ -203,8 +195,7 @@ void AudioOut::run()
         mSampleBfr2[i]=0;
     }
 
-    while (1)
-    {
+    while (1) {
         if (tcgetpgrp (0) == getpid ()) FD_SET (STDIN_FILENO, &rfds);
 
         //         PLAYBACK
@@ -214,29 +205,24 @@ void AudioOut::run()
             return;
         }
 
-        if (FD_ISSET (snd_pcm_file_descriptor (pcm_handle, SND_PCM_CHANNEL_PLAYBACK), &wfds))
-        {
+        if (FD_ISSET (snd_pcm_file_descriptor (pcm_handle, SND_PCM_CHANNEL_PLAYBACK), &wfds)) {
             int     written = 0;
 
             written = snd_pcm_write (pcm_handle, mSampleBfr2, bsize);
-            if (written < bsize)
-            {
+            if (written < bsize) {
                 std::cerr<<"No good! (A+)\n";
                 snd_pcm_channel_status_t status;
                 memset (&status, 0, sizeof (status));
                 status.channel = SND_PCM_CHANNEL_PLAYBACK;
 
-                if (snd_pcm_channel_status (pcm_handle, &status) < 0)
-                {
+                if (snd_pcm_channel_status (pcm_handle, &status) < 0) {
                     printf ("overrun: capture channel status error (play)\n");
                     exit (1);
                 }
 
                 if (status.status == SND_PCM_STATUS_READY ||
-                        status.status == SND_PCM_STATUS_OVERRUN)
-                {
-                    if (snd_pcm_channel_prepare (pcm_handle, SND_PCM_CHANNEL_PLAYBACK) < 0)
-                    {
+                        status.status == SND_PCM_STATUS_OVERRUN) {
+                    if (snd_pcm_channel_prepare (pcm_handle, SND_PCM_CHANNEL_PLAYBACK) < 0) {
                         printf ("overrun: capture channel prepare error (play)\n");
                         exit (1);
                     }
@@ -253,7 +239,7 @@ void AudioOut::run()
                             snd_pcm_file_descriptor (pcm_handle, SND_PCM_CHANNEL_PLAYBACK));
             }
             //            lock->unlock();
-            //            qDebug()<<"WAKEONE";
+            //            qDebug() << "WAKEONE";
             //            printf ("bytes written = %d \n", written);
         }
 
@@ -271,8 +257,7 @@ void AudioOut::run()
     rtn = snd_pcm_close (pcm_handle);
 }
 
-void AudioIn::run()
-{
+void AudioIn::run() {
     setPriority(QThread::TimeCriticalPriority);
 
     int     cardR = -1;
@@ -302,8 +287,7 @@ void AudioIn::run()
 
     memset (&piR, 0, sizeof (piR));
     piR.channel = SND_PCM_CHANNEL_CAPTURE;
-    if ((rtn = snd_pcm_channel_info (pcm_handleR, &piR)) < 0)
-    {
+    if ((rtn = snd_pcm_channel_info (pcm_handleR, &piR)) < 0) {
         fprintf (stderr, "snd_pcm_channel_info failed: %s\n", snd_strerror (rtn));
         return;
     }
@@ -325,8 +309,7 @@ void AudioIn::run()
     ppR.format.format=SND_PCM_SFMT_S16_LE;
 
     strcpy (ppR.sw_mixer_subchn_name, "Creator Live Mic");
-    if ((rtn = snd_pcm_channel_params (pcm_handleR, &ppR)) < 0)
-    {
+    if ((rtn = snd_pcm_channel_params (pcm_handleR, &ppR)) < 0) {
         fprintf (stderr, "snd_pcm_channel_params failed: %s\n", snd_strerror (rtn));
         return;
     }
@@ -338,8 +321,7 @@ void AudioIn::run()
     memset (&groupR, 0, sizeof (groupR));
     setupR.channel = SND_PCM_CHANNEL_CAPTURE;
     setupR.mixer_gid = &groupR.gid;
-    if ((rtn = snd_pcm_channel_setup (pcm_handleR, &setupR)) < 0)
-    {
+    if ((rtn = snd_pcm_channel_setup (pcm_handleR, &setupR)) < 0) {
         fprintf (stderr, "snd_pcm_channel_setup failed: %s\n", snd_strerror (rtn));
         return;
     }
@@ -363,8 +345,7 @@ void AudioIn::run()
 
     float* bfrX2 = new float[3072/sizeof(qint16)];
 
-    while (1)
-    {
+    while (1) {
         //         CAPTURE
 
         if (select (rtnB + 1, &setR, NULL, NULL, NULL) == -1) {
@@ -373,28 +354,23 @@ void AudioIn::run()
             return;
         }
 
-        if (FD_ISSET (snd_pcm_file_descriptor (pcm_handleR, SND_PCM_CHANNEL_CAPTURE), &setR))
-        {
+        if (FD_ISSET (snd_pcm_file_descriptor (pcm_handleR, SND_PCM_CHANNEL_CAPTURE), &setR)) {
             int     read = 0;
             int amnt=bsize;
             read = snd_pcm_read (pcm_handleR, mSampleBfr+asyncCount/sizeof(qint16), amnt);
 
-            if (read < amnt)
-            {   // FIXME:: add snd_pcm_read!! We can actually be off by half a qint16 as it stands!
+            if (read < amnt) {   // FIXME:: add snd_pcm_read!! We can actually be off by half a qint16 as it stands!
                 std::cerr<<"No good! (B)\n";
                 snd_pcm_channel_status_t status;
                 memset (&status, 0, sizeof (status));
                 status.channel = SND_PCM_CHANNEL_CAPTURE;
-                if (snd_pcm_channel_status (pcm_handleR, &status) < 0)
-                {
+                if (snd_pcm_channel_status (pcm_handleR, &status) < 0) {
                     std::cerr<<"CCSE\n";
                     exit (1);
                 }
 
-                if (status.status == SND_PCM_STATUS_READY || status.status == SND_PCM_STATUS_OVERRUN)
-                {
-                    if (snd_pcm_channel_prepare (pcm_handleR, SND_PCM_CHANNEL_CAPTURE) < 0)
-                    {
+                if (status.status == SND_PCM_STATUS_READY || status.status == SND_PCM_STATUS_OVERRUN) {
+                    if (snd_pcm_channel_prepare (pcm_handleR, SND_PCM_CHANNEL_CAPTURE) < 0) {
                         std::cerr<<"CCPE\n";
                         exit (1);
                     }
@@ -408,13 +384,13 @@ void AudioIn::run()
                 master->lock->lock();
 
                 live::ObjectChain p;
-                p.push_back(this);
+                p->push_back(this);
                 master->dataRead->wait(master->lock);  // wait until bfrX2 is recorded.
                 live::Object::beginProc();
                 aOut(bfrX2, 0, p);
                 aOut(bfrX2 + 3072/sizeof(qint16)/2, 1, p);
                 live::Object::endProc();
-                p.pop_back();
+                p->pop_back();
 
                 master->lock->unlock();
                 asyncCount-=3072;
@@ -424,8 +400,7 @@ void AudioIn::run()
     }
 }
 
-void AudioOut::aIn(const float *data, int chan, live::ObjectChain &)
-{
+void AudioOut::aIn(const float *data, int chan, live::ObjectChain* ) {
     fi2les_array_half(data,mSampleBfr2,3072/sizeof(qint16),chan);
 }
 
@@ -442,9 +417,8 @@ LIBLIVECORESHARED_EXPORT SecretAudio* SecretAudio::singleton = 0;
 
 bool SecretAudio::makeClient() { return 1; } // depr.
 
-SecretAudio::SecretAudio() : inputs(), outputs()
-{
-    qDebug()<<"NEWSECRETAUDIO...";
+SecretAudio::SecretAudio() : inputs(), outputs() {
+    qDebug() << "NEWSECRETAUDIO...";
     connect(qApp,SIGNAL(destroyed()),this,SLOT(delClient()));
     singleton=this;
     outputs.push_back(new AudioOut(this));
@@ -456,25 +430,20 @@ SecretAudio::SecretAudio() : inputs(), outputs()
     nframes = 3072/2/sizeof(qint16);    // mort de rire.
 }
 
-bool SecretAudio::delClient()
-{
-    qDebug()<<"Unregistering client. Or not. No need.";
+bool SecretAudio::delClient() {
+    qDebug() << "Unregistering client. Or not. No need.";
     return 1;
 }
 
-void SecretAudio::process()
-{
+void SecretAudio::process() {
     live::Object::beginProc();
 
     float* buffer = 0;
-    foreach( AudioNull* i, nulls )
-    {
+    foreach( AudioNull* i, nulls ) {
         if(!buffer) buffer = new float[ nframes ];
 
-        for ( int j = 0; j < i->chans; j++ )
-        {
-            for(int k=0; k<nframes; k++)
-            {
+        for ( int j = 0; j < i->chans; j++ ) {
+            for(int k=0; k<nframes; k++) {
                 buffer[k]=0.0;
             }
             live::ObjectChain p;
@@ -490,8 +459,7 @@ void SecretAudio::process()
     live::Object::endProc();
 }
 
-bool SecretAudio::refresh()
-{
+bool SecretAudio::refresh() {
     return 1;
 }
 /*/////////////////////////////////////////////////////////////////////////////////////
@@ -514,88 +482,71 @@ QObject* live::audio::getCurrentInterface() {
 
 void live::audio::refresh() { s_audioInterface->refresh(); }
 
-LIBLIVECORESHARED_EXPORT const int& live::audio::nFrames()
-{
+LIBLIVECORESHARED_EXPORT const int& live::audio::nFrames() {
     return s_audioInterface->nFrames();
 }
 
-LIBLIVECORESHARED_EXPORT qint32 live::audio::sampleRate()
-{
+LIBLIVECORESHARED_EXPORT qint32 live::audio::sampleRate() {
     return s_audioInterface->sampleRate();
 }
 
-qint32 live_private::SecretAudio::sampleRate()
-{
+qint32 live_private::SecretAudio::sampleRate() {
     return nframes;
 }
 
-LIBLIVECORESHARED_EXPORT void live::audio::resetMappings()
-{
+LIBLIVECORESHARED_EXPORT void live::audio::resetMappings() {
     s_audioInterface->resetMappings();
 }
 
-void live_private::SecretAudio::jack_disconnect(QString readPort,QString writePort)
-{
+void live_private::SecretAudio::jack_disconnect(QString readPort,QString writePort) {
     Q_ASSERT(0);
 }
 
-bool live_private::SecretAudio::resetMappings()
-{
+bool live_private::SecretAudio::resetMappings() {
 }
 
-LIBLIVECORESHARED_EXPORT void live::audio::addMapping(QStringList mapping, bool input,QString name)
-{
+LIBLIVECORESHARED_EXPORT void live::audio::addMapping(QStringList mapping, bool input,QString name) {
     s_audioInterface->addMapping(mapping,input,name);
 }
 
-bool live_private::SecretAudio::addMapping(QStringList, bool, QString)
-{
+bool live_private::SecretAudio::addMapping(QStringList, bool, QString) {
     Q_ASSERT(0);
 }
 
-LIBLIVECORESHARED_EXPORT int live::audio::mappingCount(bool)
-{
+LIBLIVECORESHARED_EXPORT int live::audio::mappingCount(bool) {
     Q_ASSERT(0);
 }
 
-int live_private::SecretAudio::mappingCount(bool)
-{
+int live_private::SecretAudio::mappingCount(bool) {
     Q_ASSERT(0);
 }
 
-LIBLIVECORESHARED_EXPORT QStringList live::audio::getInputChanStringList()
-{
+LIBLIVECORESHARED_EXPORT QStringList live::audio::getInputChanStringList() {
     return s_audioInterface->getInputChanStringList();
 }
 
-QStringList live_private::SecretAudio::getInputChanStringList()
-{
+QStringList live_private::SecretAudio::getInputChanStringList() {
     return jackGetOutputPorts();
 }
 
-LIBLIVECORESHARED_EXPORT QStringList live::audio::getOutputChanStringList()
-{
+LIBLIVECORESHARED_EXPORT QStringList live::audio::getOutputChanStringList() {
     return s_audioInterface->getOutputChanStringList();
 }
 
-QStringList live_private::SecretAudio::getOutputChanStringList()
-{
+QStringList live_private::SecretAudio::getOutputChanStringList() {
     return jackGetInputPorts();
 }
 
-LIBLIVECORESHARED_EXPORT live::ObjectPtr live::audio::null(int chan)
-{
+LIBLIVECORESHARED_EXPORT live::ObjectPtr live::audio::null(int chan) {
     return s_audioInterface->getNull(chan);
 }
 
-live::ObjectPtr live_private::SecretAudio::getNull(int chans)
-{
+live::ObjectPtr live_private::SecretAudio::getNull(int chans) {
     nulls.push_back( new AudioNull(chans) );
     return nulls.back();
 }
 
-LIBLIVECORESHARED_EXPORT void live::audio::stop()
-{
+LIBLIVECORESHARED_EXPORT void live::audio::stop() {
     delete s_audioInterface;
     s_audioInterface=0;
 }
@@ -608,8 +559,7 @@ Shutdown
 
 LIBLIVECORESHARED_EXPORT SecretAudioShutdownHandler* SecretAudioShutdownHandler::singleton = new SecretAudioShutdownHandler ;
 
-void SecretAudioShutdownHandler::byeBye()
-{
+void SecretAudioShutdownHandler::byeBye() {
     //uncomment this line:
     //exec( "start /MIN taskkill /F /IM jackd.exe" );
     //exec( "start /MIN taskkill /F /IM sooperlooper.exe" );

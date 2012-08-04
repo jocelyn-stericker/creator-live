@@ -20,10 +20,10 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QPropertyAnimation>
 #include <QFileDialog>
 
-#include <live/app.h>
-#include <live/appinterface.h>
-#include <live/midibinding.h>
-#include <live/object.h>
+#include <live/app>
+#include <live/appinterface>
+#include <live/midibinding>
+#include <live/object>
 #include <live_widgets/vscrollcontainer.h>
 #include <live_widgets/newinput.h>
 #include <live_widgets/draglabel.h>
@@ -96,8 +96,8 @@ LiveWindow::LiveWindow(QWidget *parent) :
         dynamic_cast<QBoxLayout*>(ui->sac_insert->layout())->insertWidget(1,d);
     }
 
-    connect(ambition::self(), SIGNAL(created(live::Ambition*)), this, SLOT(onAmbitionCreated(live::Ambition*)));
-    connect(ambition::self(), SIGNAL(destoryed(live::Ambition*)), this, SLOT(onAmbitionDestroyed(live::Ambition*)));
+    connect(ambition::self(), SIGNAL(created(Ambition*)), this, SLOT(onAmbitionCreated(Ambition*)));
+    connect(ambition::self(), SIGNAL(destoryed(Ambition*)), this, SLOT(onAmbitionDestroyed(Ambition*)));
 
     MidiBindingQtSys::addWidget(this);
 }

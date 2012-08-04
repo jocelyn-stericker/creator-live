@@ -10,8 +10,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef SEQUENCER_H
 #define SEQUENCER_H
 
-#include <live/audiotrack.h>
-#include <live/miditrack.h>
+#include <live/audiotrack>
+#include <live/miditrack>
 
 class LooperApp;
 
@@ -62,7 +62,7 @@ public slots:
     virtual void startMute();
     virtual void stopMute();
     void setPos(int pos);
-    virtual void aIn(const float *data, int chan, live::ObjectChain&p);
+    virtual void aIn(const float *data, int chan, live::ObjectChain*p);
     void setClipped(bool clipped=1);
     inline void setFree()
     {
@@ -70,7 +70,7 @@ public slots:
     }
 
     void setScale(int);
-    virtual void mIn(const live::Event *data, live::ObjectChain&p);
+    virtual void mIn(const live::Event *data, live::ObjectChain*p);
 signals:
     void posSet(quint64 pos);
     void playbackStarted();

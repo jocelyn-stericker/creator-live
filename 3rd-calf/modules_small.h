@@ -88,7 +88,7 @@ public:
     }
     /// Called on instantiation with the list of LV2 features called
     virtual void use_features(const LV2_Feature *const *features) {
-        while(*features)
+        while (*features)
         {
             use_feature((*features)->URI, (*features)->data);
             features++;

@@ -138,7 +138,7 @@ public:
             return 0;
         uint32_t op = offset;
         uint32_t op_end = offset + nsamples;
-        while(op < op_end) {
+        while (op < op_end) {
             if (output_pos == 0) {
                 if (running || queue_note_on != -1)
                     calculate_step();

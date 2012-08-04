@@ -8,18 +8,16 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 *******************************************************/
 
 #include <live_widgets/combobox.h>
-#include <live/midibinding.h>
+#include <live/midibinding>
 #include <QPainter>
 #include <QMouseEvent>
 
 live_widgets::ComboBox::ComboBox(QWidget *parent) :
-    QComboBox(parent), s_bindMode(0)
-{
+    QComboBox(parent), s_bindMode(0) {
     connect(live::bindings::me(),SIGNAL(showBindingsChanged(bool)),this,SLOT(setShowBindingsChanged(bool)));
 }
 
-void live_widgets::ComboBox::mousePressEvent(QMouseEvent *e)
-{
+void live_widgets::ComboBox::mousePressEvent(QMouseEvent *e) {
     if (e->button()==Qt::LeftButton) {
         if (s_bindMode) {
             emit customContextMenuRequested(e->pos());
@@ -31,12 +29,10 @@ void live_widgets::ComboBox::mousePressEvent(QMouseEvent *e)
     }
 }
 
-void live_widgets::ComboBox::mouseReleaseEvent(QMouseEvent *)
-{
+void live_widgets::ComboBox::mouseReleaseEvent(QMouseEvent *) {
 }
 
-void live_widgets::ComboBox::paintEvent(QPaintEvent *e)
-{
+void live_widgets::ComboBox::paintEvent(QPaintEvent *e) {
     QComboBox::paintEvent(e);
     if (s_bindMode) {
         QPainter p(this);
@@ -44,8 +40,7 @@ void live_widgets::ComboBox::paintEvent(QPaintEvent *e)
     }
 }
 
-void live_widgets::ComboBox::setShowBindingsChanged(bool ean)
-{
+void live_widgets::ComboBox::setShowBindingsChanged(bool ean) {
     s_bindMode=ean;
     update();
 }

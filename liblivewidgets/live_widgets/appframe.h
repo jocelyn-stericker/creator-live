@@ -22,8 +22,7 @@ class Track;
 
 namespace live_widgets {
 
-class LIBLIVEWIDGETSSHARED_EXPORT AppFrame : public QFrame, public BindableParent
-{
+class LIBLIVEWIDGETSSHARED_EXPORT AppFrame : public QFrame, public BindableParent {
     Q_OBJECT
     Q_PROPERTY(int desiredWidth READ getDesiredWidth WRITE setDesiredWidth)
     ToolButton* _tbBack,* _tbClose,* _tbNext,* _tbMini;

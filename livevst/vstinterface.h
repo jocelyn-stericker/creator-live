@@ -10,7 +10,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef VSTINTERFACE_H
 #define VSTINTERFACE_H
 
-#include <live/instrumentinterface.h>
+#include <live/instrumentinterface>
 #include "vstwizard.h"
 #include "vstsettingswidget.h"
 #include <QObject>

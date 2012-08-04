@@ -18,8 +18,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 namespace live_widgets {
 
-class LIBLIVEWIDGETSSHARED_EXPORT SpawnFrame : public QFrame
-{
+class LIBLIVEWIDGETSSHARED_EXPORT SpawnFrame : public QFrame {
     Q_OBJECT
 public:
     SpawnFrame(QWidget*p) : QFrame(p) { setAcceptDrops(1); }
@@ -39,8 +38,7 @@ namespace live_widgets {
 
 class DropFrame;
 
-class LIBLIVEWIDGETSSHARED_EXPORT InputDragWidget : public QFrame
-{
+class LIBLIVEWIDGETSSHARED_EXPORT InputDragWidget : public QFrame {
     Q_OBJECT
     int s_count;
     Ui::InputDragWidget* s_ui;
@@ -58,8 +56,7 @@ signals:
     void modified();
 };
 
-class LIBLIVEWIDGETSSHARED_EXPORT OutputDragWidget : public QFrame
-{
+class LIBLIVEWIDGETSSHARED_EXPORT OutputDragWidget : public QFrame {
     Q_OBJECT
     int s_count;
     Ui::InputDragWidget* s_ui;

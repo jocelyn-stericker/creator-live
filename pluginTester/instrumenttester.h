@@ -11,7 +11,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define INSTRUMENTTESTER_H
 
 #include <QWidget>
-#include "live/instrumentinterface.h"
+#include "live/instrumentinterface"
 
 namespace Ui {
 class InstrumentTester;

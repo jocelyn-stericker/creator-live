@@ -18,9 +18,9 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QDebug>
 #include <QTimer>
 
-#include <live/object.h>
-#include <live/midievent.h>
-#include <live/midi.h>
+#include <live/object>
+#include <live/midievent>
+#include <live/midi>
 #include "live/../audiosystem_p.h"
 #include "live/../midisystem_p.h"
 
@@ -94,7 +94,7 @@ BridgeSettings::BridgeSettings(QWidget *parent) :
         while (codepart.size()<=1) codepart="0"+codepart;
         code+=codepart;
     }
-    qDebug()<<"code:"<<code;
+    qDebug() << "code:"<<code;
     QString labelText=ui->label_4->text();
     labelText.replace("RRDDZZ",code);
     ui->label_4->setText(labelText);
@@ -139,17 +139,17 @@ void BridgeSettings::startTalking()
     connect(sock,SIGNAL(readyRead()),this,SLOT(listen()));
 }
 
-void BridgeSettings::mIn(const live::Event *ev, live::ObjectChain &p)
+void BridgeSettings::mIn(const live::Event *ev, live::ObjectChain* p)
 {
     QByteArray data;
     data+="BEGIN EVENT\n";
-    data+="FROM "+p[0]->name()+"\n";
+    data+="FROM "+p->first()->name()+"\n";
     data+="MSG "+QString::number(ev->message)+"\n";
     data+="DATA1 "+QString::number(ev->data1)+"\n";
     data+="DATA2 "+QString::number(ev->data2)+"\n";
     data+="DATA3 "+QString::number(live::midi::getTime_msec()-ev->time.toTime_ms())+"\n";
     data+="END EVENT\n";
-    qDebug()<<"->"<<data;
+    qDebug() << "->"<<data;
     for (int i=0;i<s_sockets.size();i++) {
         s_sockets[i]->write(data);
     }
@@ -162,7 +162,7 @@ void BridgeSettings::listen()
 
     QList<QByteArray> commands = dynamic_cast<QTcpSocket*>(sender())->readAll().split('\n');
     while (commands.size()) {
-        qDebug()<<"Yo."<<commands;
+        qDebug() << "Yo."<<commands;
         if (!commands.size()) return;
         if (commands.first()!="BEGIN EVENT") return;
         commands.pop_front();
@@ -176,7 +176,7 @@ void BridgeSettings::listen()
             if (s_out[i]->name()==from) ptr=s_out[i];
         }
         if (!ptr) {
-            qDebug()<<"No such device "<<from;
+            qDebug() << "No such device "<<from;
             return;
         }
         commands.pop_front();
@@ -221,17 +221,17 @@ void BridgeSettings::listen()
         if (!commands.size()) return;
         commands.pop_front();
 
-        qDebug()<<"!!"<<ev.time.toTime_ms()<<"VS"<<live::midi::getTime_msec();
+        qDebug() << "!!"<<ev.time.toTime_ms() << "VS"<<live::midi::getTime_msec();
 
         ///////////////////////////////////////////////////////////
         live::Event* ev2=new live::Event(ev.message,ev.data1,ev.data2);
         ev2->time=ev.time;
 //        ev2->time.sec=ev2->time.nsec=-1;
-        ptr->mIn(ev2,p);
-        qDebug()<<ptr->name()<<"...";
+        ptr->mIn(ev2, &p);
+        qDebug()<<ptr->name() << "...";
         live_private::SecretMidi::me->mWithhold(ev2,p,ptr); //now owns ev2
         p.pop_back();
-        qDebug()<<"SENT!";
+        qDebug() << "SENT!";
     }
 }
 

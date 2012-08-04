@@ -8,7 +8,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 *******************************************************/
 
 #include <live_widgets/newinput.h>
-#include <live/audio.h>
+#include <live/audio>
 #include "ui_newinput.h"
 #include <cmath>
 #include <math.h>
@@ -16,8 +16,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 using namespace live_widgets;
 using namespace live;
 
-NewInput::NewInput(QWidget*parent) : QFrame(parent), s_ui(new Ui_Frame)
-{
+NewInput::NewInput(QWidget*parent) : QFrame(parent), s_ui(new Ui_Frame) {
     s_ui->setupUi(this);
 
     connect(s_ui->input_combo,SIGNAL(clicked(QModelIndex)),s_ui->input_combo,SLOT(setCurrentIndex(QModelIndex)));
@@ -37,13 +36,11 @@ NewInput::NewInput(QWidget*parent) : QFrame(parent), s_ui(new Ui_Frame)
     rowChangedEvent();
 }
 
-void NewInput::internalStockChangedEvent()
-{
+void NewInput::internalStockChangedEvent() {
     QList<ObjectPtr> list = object::get(InputOnly|NoRefresh);
     QStringList v;
     v<<list;
-    if (all!=v)
-    {
+    if (all!=v) {
         all.clear();
         all+=v;
         s_ui->input_combo->clear();
@@ -52,14 +49,12 @@ void NewInput::internalStockChangedEvent()
     s_ui->input_combo->setFixedHeight(v.size()*38+(v.size()-1)*8);
 }
 
-void NewInput::go()
-{
+void NewInput::go() {
     emit created(object::get(InputOnly|NoRefresh)[s_ui->input_combo->currentRow()]);
     deleteLater();
 }
 
-void NewInput::refresh()
-{
+void NewInput::refresh() {
     midi::refresh();
     audio::refresh();
     internalStockChangedEvent();
@@ -69,8 +64,7 @@ void NewInput::rowChangedEvent() {
     s_ui->pushButton_create->setEnabled(s_ui->input_combo->currentRow()!=-1);
 }
 
-void NewInput::resizeEvent(QResizeEvent *e)
-{
+void NewInput::resizeEvent(QResizeEvent *e) {
      int w=width()-s_ui->line_4->width();
      s_ui->Awidget->setFixedWidth(w/2);
      float phi=(1+sqrt(5.0))/2.0;

@@ -57,7 +57,7 @@ void InstrumentTester::setupAction(bool a)
 
 void InstrumentTester::changeInst(ObjectPtr inst, ObjectPtr loop)
 {
-    qDebug()<<"CHANGE_INST";
+    qDebug() << "CHANGE_INST";
     if(s_in.valid()&&s_instObj.valid()) s_in->midiConnect(s_instObj);
     if(s_instObj.valid()&&s_out.valid()) s_instObj->hybridConnect(s_out);
     s_instObj=inst;

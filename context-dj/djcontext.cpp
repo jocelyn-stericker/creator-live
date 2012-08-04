@@ -96,7 +96,7 @@ void DJContext::showCollection()
     ui->label_snarky->hide();
 }
 
-void DJContext::audioChanged_logic(QString s)
+void DJContext::audioanged_logic(QString s)
 {
     s_out = object::fetch(s, AudioOnly | OutputOnly);
 }

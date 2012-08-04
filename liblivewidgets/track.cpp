@@ -8,7 +8,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 *******************************************************/
 
 #include "live_widgets/track.h"
-#include "live/app.h"
+#include "live/app"
 #include "live_widgets/trackhint.h"
 
 #include <QCoreApplication>
@@ -19,8 +19,7 @@ using namespace live_widgets;
 int Track::s_lastId=-1;
 
 AbstractTrack::AbstractTrack(QWidget* parent)
-    : QWidget(parent)
-{
+    : QWidget(parent) {
 }
 
 Track::Track(live::ObjectPtr cinput, live::ObjectPtr coutput)
@@ -31,8 +30,7 @@ Track::Track(live::ObjectPtr cinput, live::ObjectPtr coutput)
     , s_id(++s_lastId)
     , s_busy(0)
     , ui_outputName(new RotatedLabel(this))
-    , ui_chainWidget(new ChainTypeWidget(this))
-{
+    , ui_chainWidget(new ChainTypeWidget(this)) {
     Object::beginAsyncAction();
     /*MAKE CHANGES IN BELOW CONSTRUCTOR TOO!!!!*/
     ui_chainWidget->setGeometry(0,0,width(),3);
@@ -71,8 +69,7 @@ Track::Track(Ambition* bp) :
     s_id(-1),
 
     ui_outputName(new RotatedLabel(this)),
-    ui_chainWidget(new ChainTypeWidget(this))
-{
+    ui_chainWidget(new ChainTypeWidget(this)) {
     Object::beginAsyncAction();
     /*MAKE CHANGES IN BELOW CONSTRUCTOR TOO!!!!*/
     ui_chainWidget->setGeometry(0,0,width(),3);
@@ -106,13 +103,11 @@ Track::Track(Ambition* bp) :
     Object::endAsyncAction();
 }
 
-Track::~Track()
-{
+Track::~Track() {
     Object::beginAsyncAction();
-    qDebug()<<"DESTROY TRACK";
+    qDebug() << "DESTROY TRACK";
     delete ui_outputName;
-    foreach(QWidget* a,s_appUi_)
-    {
+    foreach(QWidget* a,s_appUi_) {
         delete a;
     }
 
@@ -120,8 +115,7 @@ Track::~Track()
     Object::endAsyncAction();
 }
 
-void Track::resizeEvent(QResizeEvent *e)
-{
+void Track::resizeEvent(QResizeEvent *e) {
     if (s_th)
         s_th->setGeometry(0, 0, width(), height());
     clearUiPipeline();
@@ -132,31 +126,26 @@ void Track::resizeEvent(QResizeEvent *e)
         QWidget::resizeEvent(e);
 }
 
-void Track::remakeChainWidget()
-{
+void Track::remakeChainWidget() {
     Object::beginAsyncAction();
     ui_chainWidget->reset();
     int i=0;
-    foreach(QWidget* ui,s_appUi_)
-    {
+    foreach(QWidget* ui,s_appUi_) {
         ui_chainWidget->setBack(ui->x()+ui->width(),s_ambition.at(i)->processingMidi(),s_ambition.at(i)->processingAudio());
         i++;
     }
     Object::endAsyncAction();
 }
 
-void Track::clearUiPipeline()
-{
+void Track::clearUiPipeline() {
     // not marked async, so be careful.
     ui_chainWidget->reset();
 }
 
-void Track::makeUiPipeline(bool smart)
-{
+void Track::makeUiPipeline(bool smart) {
     if (!smart) {
         int stateX = 0;
-        for (int i = 0; i < s_appUi_.count(); ++i)
-        {
+        for (int i = 0; i < s_appUi_.count(); ++i) {
             s_appUi_[i]->setGeometry(stateX, 0, s_appUi_[i]->getDesiredWidth(), height());
             stateX += s_appUi_[i]->width();
         }
@@ -166,13 +155,11 @@ void Track::makeUiPipeline(bool smart)
     s_busy = 1;
     int remCount = s_appUi_.count();
     int sizes[s_appUi_.count()];
-    for (int i = 0; i < s_appUi_.count(); ++i)
-    {
+    for (int i = 0; i < s_appUi_.count(); ++i) {
         sizes[i] = -1;
     }
     int sum = 0;
-    for (int i = 0; i < s_appUi_.count(); ++i)
-    {
+    for (int i = 0; i < s_appUi_.count(); ++i) {
         AppFrame* ui = s_appUi_[i];
         if (!ui->expanding()) {
             sizes[i] = ui->maximumWidth();
@@ -189,8 +176,7 @@ void Track::makeUiPipeline(bool smart)
         }
     }
     int state_x = 0;
-    for (int i = 0; i < s_appUi_.count(); ++i)
-    {
+    for (int i = 0; i < s_appUi_.count(); ++i) {
         AppFrame* ui = s_appUi_[i];
         ui->setDesiredWidth(sizes[i]);
         ui->setFixedHeight(height());
@@ -204,111 +190,85 @@ void Track::makeUiPipeline(bool smart)
     s_busy = 0;
 }
 
-void Track::dragEnterEvent(QDragEnterEvent *e)
-{
+void Track::dragEnterEvent(QDragEnterEvent *e) {
     Object::beginAsyncAction();
-    if(e->mimeData()->hasFormat("text/plain")&&app::appNames().contains(e->mimeData()->text()))
-    {
-        if(e->mimeData()->text()!="FILTER"||s_ambition.inputIsMidiObject())
-        {
+    if(e->mimeData()->hasFormat("text/plain")&&app::appNames().contains(e->mimeData()->text())) {
+        if(e->mimeData()->text()!="FILTER"||s_ambition.inputIsMidiObject()) {
             e->acceptProposedAction();
         }
     }
-    if(e->mimeData()->hasFormat("application/x-qt-windows-mime;value=\"FileName\""))
-    {
+    if(e->mimeData()->hasFormat("application/x-qt-windows-mime;value=\"FileName\"")) {
         e->acceptProposedAction();
     }
     Object::endAsyncAction();
 }
 
-void Track::dropEvent(QDropEvent *e)
-{
+void Track::dropEvent(QDropEvent *e) {
     Object::beginAsyncAction();
-    if(e->mimeData()->hasFormat("application/x-qt-windows-mime;value=\"FileName\""))
-    {
+    if(e->mimeData()->hasFormat("application/x-qt-windows-mime;value=\"FileName\"")) {
         live::ObjectPtr backend = app::newBackend("SEQUENCER");
         AppFrame* frontend = qobject_cast<AppFrame*>(app::newFrontend("SEQUENCER",backend));
         int x=e->pos().x();
         int pos=0;
-        if(s_appUi_.size())
-        {
+        if(s_appUi_.size()) {
             int lastHalfX=s_appUi_[0]->geometry().x()+0.5*s_appUi_[0]->geometry().width();
-            for(int i=1;i<s_ambition.chainSize();i++)
-            {
+            for(int i=1;i<s_ambition.chainSize();i++) {
                 int nextHalfX=s_appUi_[i]->geometry().x()+0.5*s_appUi_[i]->geometry().width();
-                if(lastHalfX<=x&&x<=nextHalfX)
-                {
+                if(lastHalfX<=x&&x<=nextHalfX) {
                     pos=i;
                     break;
                 }
                 lastHalfX=nextHalfX;
-                if(x>=lastHalfX)
-                {
+                if(x>=lastHalfX) {
                     pos=i+1;
                 }
             }
-            if(s_appUi_.size()==1&&x>=lastHalfX)
-            {
+            if(s_appUi_.size()==1&&x>=lastHalfX) {
                 pos=s_appUi_.size();
             }
         }
         addApp(pos,frontend,backend);
 
         QString file=e->mimeData()->data("application/x-qt-windows-mime;value=\"FileName\"");
-        if(QFile::exists(file)&&(file.endsWith("flac",Qt::CaseInsensitive)||file.endsWith("ogg",Qt::CaseInsensitive)||file.endsWith("wav",Qt::CaseInsensitive)))
-        {
+        if(QFile::exists(file)&&(file.endsWith("flac",Qt::CaseInsensitive)||file.endsWith("ogg",Qt::CaseInsensitive)||file.endsWith("wav",Qt::CaseInsensitive))) {
             QMessageBox::warning(0,"Error","This functionality has not yet been reimplemented.","Complain to Josh!");
 //            dynamic_cast<SequencerApp*>(backend.data())->s_audioTrack->importFile(file);
-        }
-        else if(QFile::exists(file)&&(file.endsWith("midi")||file.endsWith("MIDI")||file.endsWith("mid")||file.endsWith("MID")))
-        {
+        } else if(QFile::exists(file)&&(file.endsWith("midi")||file.endsWith("MIDI")||file.endsWith("mid")||file.endsWith("MID"))) {
             QMessageBox::warning(0,"Error","This functionality has not yet been reimplemented.","Complain to Josh!");
 //            dynamic_cast<SequencerApp*>(backend.data())->s_midiTrack->importFile(file);
-        }
-        else
-        {
+        } else {
             QMessageBox::critical(this,"Not supported","flac,ogg,wav,midi,MIDI,mid,and MID files are the only types of files currently supported.");
         }
-    }
-    else if(app::appNames().contains(e->mimeData()->text()))
-    {
+    } else if(app::appNames().contains(e->mimeData()->text())) {
         live::ObjectPtr backend = app::newBackend(e->mimeData()->text());
         AppFrame* frontend = qobject_cast<AppFrame*>(app::newFrontend(e->mimeData()->text(),backend));
         int x=e->pos().x();
         int pos=0;
-        if(s_appUi_.size())
-        {
+        if(s_appUi_.size()) {
             int lastHalfX=s_appUi_[0]->geometry().x()+0.5*s_appUi_[0]->geometry().width();
-            for(int i=1;i<s_ambition.chainSize();i++)
-            {
+            for(int i=1;i<s_ambition.chainSize();i++) {
                 int nextHalfX=s_appUi_[i]->geometry().x()+0.5*s_appUi_[i]->geometry().width();
-                if(lastHalfX<=x&&x<=nextHalfX)
-                {
+                if(lastHalfX<=x&&x<=nextHalfX) {
                     pos=i;
                     break;
                 }
                 lastHalfX=nextHalfX;
-                if(x>=lastHalfX)
-                {
+                if(x>=lastHalfX) {
                     pos=i+1;
                 }
             }
-            if(s_appUi_.size()==1&&x>=lastHalfX)
-            {
+            if(s_appUi_.size()==1&&x>=lastHalfX) {
                 pos=s_appUi_.size();
             }
         }
         addApp(pos,frontend,backend);
-    }
-    else
-    {
-        qDebug()<<"Rejected "<<e->mimeData()->text()<<"(it is not a valid app name!!!)";
+    } else {
+        qDebug() << "Rejected "<<e->mimeData()->text() << "(it is not a valid app name!!!)";
     }
     Object::endAsyncAction();
 }
 
-void Track::setOutput(live::ObjectPtr output,live::ObjectPtr loopback)
-{
+void Track::setOutput(live::ObjectPtr output,live::ObjectPtr loopback) {
     Object::beginAsyncAction();
     s_ambition.setOutput(output);
     s_ambition.setLoopbackOut(loopback);
@@ -317,23 +277,19 @@ void Track::setOutput(live::ObjectPtr output,live::ObjectPtr loopback)
     emit outputSelected();
 }
 
-void Track::setInput(live::ObjectPtr input)
-{
+void Track::setInput(live::ObjectPtr input) {
     Object::beginAsyncAction();
     s_ambition.setInput(input);
     Object::endAsyncAction();
 }
 
-void Track::addApp(int i,AppFrame* appUi,live::ObjectPtr app)
-{
+void Track::addApp(int i,AppFrame* appUi,live::ObjectPtr app) {
     Object::beginAsyncAction();
-    if(s_th)
-    {
+    if(s_th) {
         s_th->deleteLater();
         s_th=0;
     }
-    if(app.valid())
-    {
+    if(app.valid()) {
         s_ambition.insert(i,app);
     }
     connect(appUi, SIGNAL(desiredWidthChanged(int)), this, SLOT(updateGeometriesIfNeeded()));
@@ -350,8 +306,7 @@ void Track::addApp(int i,AppFrame* appUi,live::ObjectPtr app)
     Object::endAsyncAction();
 }
 
-void Track::delApp(int i)
-{
+void Track::delApp(int i) {
     Object::beginAsyncAction();
     //ONLY CALLED FROM logic_delApp. Do not actually delete app.
 
@@ -364,70 +319,52 @@ void Track::delApp(int i)
     Object::endAsyncAction();
 }
 
-void Track::outputSelection()
-{
-    if(s_ambition.inputIsAudioObject())
-    {
+void Track::outputSelection() {
+    if(s_ambition.inputIsAudioObject()) {
         QStringList a;
         a<<object::get(AudioOnly|OutputOnly);
         bool ok;
         QString ix=QInputDialog::getItem(this,"Select an output","Output:",a,a.indexOf(s_ambition.b_output.ref()),0,&ok);
         int i=a.indexOf(ix);
-        if(ok)
-        {
+        if(ok) {
             QList<live::ObjectPtr> x=object::get(AudioOnly|OutputOnly);
-            if(i!=-1&&i<x.size()&&x[i]->name()==ix)
-            {
+            if(i!=-1&&i<x.size()&&x[i]->name()==ix) {
                 setOutput(x[i]);
-            }
-            else
-            {
+            } else {
                 QMessageBox::warning(this,"Oops.","Something went wrong in trying to set the output. Sorry about that. Maybe try again?");
             }
         }
-    }
-    else if(s_ambition.inputIsMidiObject())
-    {
+    } else if(s_ambition.inputIsMidiObject()) {
         QStringList a;
         a<<object::get(MidiOnly|OutputOnly|Instrument);
         QStringList out=a;
         bool ok;
         QString ix=QInputDialog::getItem(this,"Select an output","Output:",out,out.indexOf(s_ambition.b_output),0,&ok);
         int i=out.indexOf(ix);
-        if(ok)
-        {
+        if(ok) {
             live::ObjectPtr out=object::get(MidiOnly|OutputOnly|Instrument|NoRefresh)[i];
-            if(out->isAudioObject()&&out->isMidiObject())
-            {
+            if(out->isAudioObject()&&out->isMidiObject()) {
                 //Now for output
                 QStringList a;
                 a<<object::get(AudioOnly|OutputOnly);
                 bool ok;
                 QString ix=QInputDialog::getItem(this,"Select an output","This device supports audio out. Select one:",a,a.indexOf(s_ambition.b_output),0,&ok);
                 int i=a.indexOf(ix);
-                if(ok)
-                {
+                if(ok) {
                     if(i!=-1&&i<object::get(AudioOnly|OutputOnly|NoRefresh).size()&&
-                            object::get(AudioOnly|OutputOnly|NoRefresh)[i]->name()==ix)
-                    {
+                            object::get(AudioOnly|OutputOnly|NoRefresh)[i]->name()==ix) {
                         Object::beginAsyncAction();
                         setOutput(out,object::get(AudioOnly|OutputOnly|NoRefresh)[i]);
                         Object::endAsyncAction();
-                    }
-                    else
-                    {
+                    } else {
                         QMessageBox::warning(this,"Oops.","Something went wrong in trying to set the output. Sorry about that. Maybe try again?");
                     }
                 }
-            }
-            else if(out->name()==a[i])
-            {
+            } else if(out->name()==a[i]) {
                 Object::beginAsyncAction();
                 setOutput(out);
                 Object::endAsyncAction();
-            }
-            else
-            {
+            } else {
                 QMessageBox::warning(this,"Oops.","Something went wrong in trying to set the output. Sorry about that. Maybe try again?");
             }
         }
@@ -436,21 +373,15 @@ void Track::outputSelection()
     makeUiPipeline();
 }
 
-void Track::logic_appBack()
-{
+void Track::logic_appBack() {
     Object::beginAsyncAction();
     AppFrame*x=qobject_cast<AppFrame*>(sender()->parent());
     Q_ASSERT(x);
-    for(int i=0;i<s_appUi_.size();i++)
-    {
-        if(x==s_appUi_[i])
-        {
-            if(!i)
-            {
+    for(int i=0;i<s_appUi_.size();i++) {
+        if(x==s_appUi_[i]) {
+            if(!i) {
                 return;
-            }
-            else
-            {
+            } else {
                 live::ObjectPtr oa=s_ambition.at(i);
                 AppFrame* of=s_appUi_[i];
                 delApp(i);
@@ -461,15 +392,12 @@ void Track::logic_appBack()
     Object::endAsyncAction();
 }
 
-void Track::logic_appDel()
-{
+void Track::logic_appDel() {
     Object::beginAsyncAction();
     AppFrame*x=qobject_cast<AppFrame*>(sender()->parent());
     Q_ASSERT(x);
-    for(int i=0;i<s_appUi_.size();i++)
-    {
-        if(x==s_appUi_[i])
-        {
+    for(int i=0;i<s_appUi_.size();i++) {
+        if(x==s_appUi_[i]) {
             AppFrame* of=s_appUi_[i];
             delApp(i);
             of->deleteLater();
@@ -478,21 +406,15 @@ void Track::logic_appDel()
     Object::endAsyncAction();
 }
 
-void Track::logic_appNext()
-{
+void Track::logic_appNext() {
     Object::beginAsyncAction();
     AppFrame*x=qobject_cast<AppFrame*>(sender()->parent());
     Q_ASSERT(x);
-    for(int i=0;i<s_appUi_.size();i++)
-    {
-        if(x==s_appUi_[i])
-        {
-            if(i+1==s_appUi_.size())
-            {
+    for(int i=0;i<s_appUi_.size();i++) {
+        if(x==s_appUi_[i]) {
+            if(i+1==s_appUi_.size()) {
                 return;
-            }
-            else
-            {
+            } else {
                 live::ObjectPtr oa=s_ambition.at(i);
                 AppFrame* of=s_appUi_[i];
                 delApp(i);
@@ -503,28 +425,24 @@ void Track::logic_appNext()
     Object::endAsyncAction();
 }
 
-void Track::updateGeometriesIfNeeded()
-{
+void Track::updateGeometriesIfNeeded() {
     if (s_busy)
         return;
     clearUiPipeline();
     makeUiPipeline(false);
 }
 
-void Track::updateGeometriesOrDie()
-{
+void Track::updateGeometriesOrDie() {
     clearUiPipeline();
     makeUiPipeline();
 }
 
-int Track::getMaximumWidthFor(QWidget* w)
-{
+int Track::getMaximumWidthFor(QWidget* w) {
     Object::beginAsyncAction();
 
     int sum = 0;
     int otherCount = 0;
-    for (int i = 0; i < s_appUi_.count(); ++i)
-    {
+    for (int i = 0; i < s_appUi_.count(); ++i) {
         AppFrame* ui = s_appUi_[i];
 
         if (ui == w)

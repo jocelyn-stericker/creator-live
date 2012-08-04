@@ -11,8 +11,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define AUDIOTRACK_H
 
 #include <QtConcurrentRun>
-#include "live/object.h"
-#include "live/audiosecond.h"
+#include "live/object"
+#include "live/audiosecond"
 #include <QMutex>
 
 #ifndef __QNX__
@@ -88,7 +88,7 @@ public slots:
     void startMute();
     void stopMute();
     void setPos(long pos);
-    void aIn(const float *in, int chan, ObjectChain&p);
+    void aIn(const float *in, int chan, ObjectChain*p);
     void aThru(float*proc,int chan);
     void clearData();
     void clearData(const float& a,const float& b);

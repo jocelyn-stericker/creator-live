@@ -8,35 +8,31 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 *******************************************************/
 
 #include <live_widgets/metrospinbox.h>
-#include <live/metronome.h>
-#include <live/songsystem.h>
+#include <live/metronome>
+#include <live/songsystem>
 #include <QPainter>
 #include <QPaintEvent>
 #include <QTimer>
 
 live_widgets::MetroSpinbox::MetroSpinbox(QWidget *parent) :
-    live_widgets::SpinBox(parent), s_toggle(0)
-{
+    live_widgets::SpinBox(parent), s_toggle(0) {
     live::song::current()->metronome->registerSync(this);
 }
 
-live_widgets::MetroSpinbox::~MetroSpinbox()
-{
+live_widgets::MetroSpinbox::~MetroSpinbox() {
     live::song::current()->metronome->unregisterSync(this);
 }
 
-void live_widgets::MetroSpinbox::sync(const live::SyncData &data)
-{
+void live_widgets::MetroSpinbox::sync(const live::SyncData &data) {
     if (data.beat!=s_lastBeat) {
-//        qDebug()<<"SYNC";
+//        qDebug() << "SYNC";
         s_lastBeat=data.beat;
         s_toggle=1;
         update();
     }
 }
 
-void live_widgets::MetroSpinbox::paintEvent(QPaintEvent *event)
-{
+void live_widgets::MetroSpinbox::paintEvent(QPaintEvent *event) {
     SpinBox::paintEvent(event);
     if (s_toggle) {
         s_toggle=0;

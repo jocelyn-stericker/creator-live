@@ -23,9 +23,9 @@
 #include "3rd-calf/modules.h"
 #include "3rd-calf/utils.h"
 
-#include <live/audio.h>
-#include <live/midi.h>
-#include <live/midievent.h>
+#include <live/audio>
+#include <live/midi>
+#include <live/midievent>
 
 #ifndef FJAPP_H
 #define FJAPP_H
@@ -69,7 +69,7 @@ public:
         Module::params_changed();   // remove
     }
 
-    void mIn(const live::Event *data, live::ObjectChain &p) {
+    void mIn(const live::Event *data, live::ObjectChain* p) {
         switch (data->simpleStatus())
         {
         case live::Event::NOTE_OFF:
@@ -86,14 +86,14 @@ public:
             break;
         }
 
-        p.push_back(this);
+        p->push_back(this);
         mOut(data,p);
-        p.pop_back();
+        p->pop_back();
     }
 
     virtual calf_plugins::parameter_properties* get_param_props(int param_no) { return Module::param_props + param_no; }
 
-    void aIn(const float *data, int chan, live::ObjectChain &p)
+    void aIn(const float *data, int chan, live::ObjectChain* p)
     {
         Module::ins[chan] = const_cast<float*>(data); // FIXME: Module::ins should be const.
         if (!chan) return;
@@ -111,11 +111,11 @@ public:
             }
         }
 
-        p.push_back(this);
+        p->push_back(this);
         for (int i = 0; i < 2; ++i) {
             aOut(s_out[i], i, p);
         }
-        p.pop_back();
+        p->pop_back();
     }
 
     virtual float *get_params() { return s_param; }

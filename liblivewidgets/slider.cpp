@@ -9,18 +9,16 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include <live_widgets/slider.h>
 
-#include <live/midibinding.h>
+#include <live/midibinding>
 #include <QPainter>
 #include <QMouseEvent>
 
 live_widgets::Slider::Slider(QWidget *parent) :
-    QSlider(parent), s_bindMode(0)
-{
+    QSlider(parent), s_bindMode(0) {
     connect(live::bindings::me(),SIGNAL(showBindingsChanged(bool)),this,SLOT(setShowBindingsChanged(bool)));
 }
 
-void live_widgets::Slider::mousePressEvent(QMouseEvent *e)
-{
+void live_widgets::Slider::mousePressEvent(QMouseEvent *e) {
     if (e->button()==Qt::LeftButton) {
         if (s_bindMode) {
             emit customContextMenuRequested(e->pos());
@@ -32,12 +30,10 @@ void live_widgets::Slider::mousePressEvent(QMouseEvent *e)
     }
 }
 
-void live_widgets::Slider::mouseReleaseEvent(QMouseEvent *)
-{
+void live_widgets::Slider::mouseReleaseEvent(QMouseEvent *) {
 }
 
-void live_widgets::Slider::paintEvent(QPaintEvent *e)
-{
+void live_widgets::Slider::paintEvent(QPaintEvent *e) {
     QSlider::paintEvent(e);
     if (s_bindMode) {
         QPainter p(this);
@@ -45,8 +41,7 @@ void live_widgets::Slider::paintEvent(QPaintEvent *e)
     }
 }
 
-void live_widgets::Slider::setShowBindingsChanged(bool ean)
-{
+void live_widgets::Slider::setShowBindingsChanged(bool ean) {
     for (int i=0;i<children().size();i++) {
         if (dynamic_cast<QWidget*>(children()[i])) dynamic_cast<QWidget*>(children()[i])->setEnabled(!ean);
     }

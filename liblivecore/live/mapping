@@ -7,7 +7,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live/object.h"
+#include "live/object"
 
 #ifndef MAPPING_H
 #define MAPPING_H
@@ -26,10 +26,10 @@ public:
      */
     Mapping(QString cname,ObjectPtr other);
 
-    void aIn (const float*data,int chan,ObjectChain&p);
+    void aIn (const float*data,int chan,ObjectChain*p);
     virtual bool isAudioObject();
 
-    virtual void mIn(const Event*data,ObjectChain&p);
+    virtual void mIn(const Event*data,ObjectChain*p);
     virtual bool isMidiObject();
 
     virtual bool isInput();

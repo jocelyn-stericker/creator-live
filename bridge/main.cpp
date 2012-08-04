@@ -24,14 +24,14 @@ int main(int argc, char *argv[])
     if (argc==2&&argv[1][0]=='c') {
         live::audio::registerInterface(new live_private::SecretAudio);
         live_private::SecretMidi::me=new live_private::SecretMidi;
-        qDebug()<<"Going to try to be client.";
+        qDebug() << "Going to try to be client.";
 
         // FIXME:: should be null.
 
 //        QTcpSocket* hi = new QTcpSocket();
 //        hi->connectToHost("192.168.0.14",1143);
 //        hi->waitForConnected();
-//        qDebug()<<"CONNECTED!";
+//        qDebug() << "CONNECTED!";
 //        while (1) {
 //            hi->waitForReadyRead();
 //            QByteArray x=hi->readAll();

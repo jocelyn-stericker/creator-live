@@ -25,7 +25,7 @@
 #include <QFrame>
 
 #include "fjphaserapp.h"
-#include <live/appinterface.h>
+#include <live/appinterface>
 #include <live_widgets/appframe.h>
 
 namespace Ui {

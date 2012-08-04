@@ -14,12 +14,10 @@ using namespace live_widgets;
 
 TrackHint::TrackHint(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::TrackHint)
-{
+    ui(new Ui::TrackHint) {
     ui->setupUi(this);
 }
 
-TrackHint::~TrackHint()
-{
+TrackHint::~TrackHint() {
     delete ui;
 }

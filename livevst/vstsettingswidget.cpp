@@ -77,7 +77,7 @@ void VstSettingsWidget::doneAction()
         ret.push_back(ui->listWidget->item(i)->text());
     }
     QSettings("Nettek", "VSTi plugin for Creator Live").setValue("vstis",ret);
-    qDebug()<<"!!"<<ret;
+    qDebug() << "!!"<<ret;
     emit done(ret);
     deleteLater();
 }

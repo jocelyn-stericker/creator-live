@@ -10,8 +10,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef DJCONTEXT_H
 #define DJCONTEXT_H
 
-#include <live/object.h>
-#include <live/variantbinding.h>
+#include <live/object>
+#include <live/variantbinding>
 
 #include <QWidget>
 
@@ -49,7 +49,7 @@ public slots:
     void showTrack();
     void showCollection();
 
-    void audioChanged_logic(QString);
+    void audioanged_logic(QString);
     void monitorChanged_logic(QString);
 
 private:

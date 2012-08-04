@@ -229,7 +229,7 @@ struct lv2_wrapper
         // XXXKF some people use fractional sample rates; we respect them ;-)
         mod->srate_to_set = (uint32_t)sample_rate;
         mod->set_srate = true;
-        while(*features)
+        while (*features)
         {
             if (!strcmp((*features)->URI, LV2_URI_MAP_URI))
             {
@@ -267,7 +267,7 @@ struct lv2_wrapper
 
     static inline void process_slice(Module *mod, uint32_t offset, uint32_t end)
     {
-        while(offset < end)
+        while (offset < end)
         {
             uint32_t newend = std::min(offset + MAX_SAMPLE_RUN, end);
             uint32_t out_mask = mod->process(offset, newend - offset, -1, -1);

@@ -11,7 +11,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define APPTESTER_H
 
 #include <QWidget>
-#include "live/appinterface.h"
+#include "live/appinterface"
 #include "live_widgets/appframe.h"
 
 namespace Ui {

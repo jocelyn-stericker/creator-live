@@ -11,7 +11,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define TRACK_H
 
 #include "live_widgets/appframe.h"
-#include "live/ambition.h"
+#include "live/ambition"
 
 #include "live_widgets/rotatedlabel.h"
 #include <QPushButton>
@@ -27,8 +27,7 @@ class TrackHint;
 class AppFrame;
 }
 
-class AbstractTrack : public QWidget
-{
+class AbstractTrack : public QWidget {
     Q_OBJECT
 protected:
     AbstractTrack(QWidget* parent = 0);
@@ -48,8 +47,7 @@ public slots:
     virtual void updateGeometriesOrDie() = 0;
 };
 
-class Track : public AbstractTrack, public live_widgets::BindableParent
-{
+class Track : public AbstractTrack, public live_widgets::BindableParent {
     Q_OBJECT
 public:
     live_widgets::TrackHint* s_th;

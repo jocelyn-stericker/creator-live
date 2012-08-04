@@ -10,7 +10,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef AUDIOSYS_H
 #define AUDIOSYS_H
 
-#include "live/object.h"
+#include "live/object"
 
 namespace live {
 

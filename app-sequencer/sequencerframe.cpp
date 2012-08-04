@@ -10,7 +10,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "looperframe.h"
 #include "sequencerframe.h"
 #include "ui_sequencerframe.h"
-#include <live/asyncconnect.h>
+#include <live/asyncconnect>
 #include <live_widgets/midibindingqt.h>
 #include <live_widgets/track.h>
 

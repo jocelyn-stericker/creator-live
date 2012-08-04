@@ -12,13 +12,11 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QMouseEvent>
 
 live_widgets::RotatedLabel::RotatedLabel( QWidget *parent ) :
-    QLabel(parent)
-{
+    QLabel(parent) {
 
 }
 
-void live_widgets::RotatedLabel::paintEvent( QPaintEvent * )
-{
+void live_widgets::RotatedLabel::paintEvent( QPaintEvent * ) {
     QPainter painter( this );
     painter.save();
     painter.rotate( 90 );
@@ -31,10 +29,8 @@ void live_widgets::RotatedLabel::paintEvent( QPaintEvent * )
     painter.restore();
 }
 
-void live_widgets::RotatedLabel::mousePressEvent(QMouseEvent *ev)
-{
-    if (ev->button()==Qt::LeftButton)
-    {
+void live_widgets::RotatedLabel::mousePressEvent(QMouseEvent *ev) {
+    if (ev->button()==Qt::LeftButton) {
         emit clicked();
     }
 }

@@ -9,7 +9,7 @@
 #include "settingslinux.h"
 #include "ui_settingslinux.h"
 
-#include <live/audio.h>
+#include <live/audio>
 #include <live_widgets/dropframe.h>
 #include <live_widgets/iodragwidget.h>
 #include <QLineEdit>

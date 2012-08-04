@@ -10,8 +10,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "effectstab.h"
 #include "ui_effectstab.h"
 
-#include <live/audio.h>
-#include <live/midi.h>
+#include <live/audio>
+#include <live/midi>
 #include "samplerdj.h"
 
 using namespace live;

@@ -10,16 +10,14 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live_widgets/toolbutton.h>
 #include <QMouseEvent>
 #include <QPainter>
-#include <live/midibinding.h>
+#include <live/midibinding>
 
 live_widgets::ToolButton::ToolButton(QWidget *parent) :
-    QToolButton(parent), s_bindMode(0)
-{
+    QToolButton(parent), s_bindMode(0) {
     connect(live::bindings::me(),SIGNAL(showBindingsChanged(bool)),this,SLOT(setShowBindingsChanged(bool)));
 }
 
-void live_widgets::ToolButton::mousePressEvent(QMouseEvent *e)
-{
+void live_widgets::ToolButton::mousePressEvent(QMouseEvent *e) {
     if (e->button()==Qt::LeftButton) {
         if (s_bindMode) {
             emit customContextMenuRequested(e->pos());
@@ -29,13 +27,11 @@ void live_widgets::ToolButton::mousePressEvent(QMouseEvent *e)
     }
 }
 
-void live_widgets::ToolButton::mouseReleaseEvent(QMouseEvent *)
-{
+void live_widgets::ToolButton::mouseReleaseEvent(QMouseEvent *) {
 
 }
 
-void live_widgets::ToolButton::paintEvent(QPaintEvent *e)
-{
+void live_widgets::ToolButton::paintEvent(QPaintEvent *e) {
     QToolButton::paintEvent(e);
     if (s_bindMode) {
         QPainter p(this);
@@ -43,8 +39,7 @@ void live_widgets::ToolButton::paintEvent(QPaintEvent *e)
     }
 }
 
-void live_widgets::ToolButton::setShowBindingsChanged(bool ean)
-{
+void live_widgets::ToolButton::setShowBindingsChanged(bool ean) {
     s_bindMode=ean;
     update();
 }

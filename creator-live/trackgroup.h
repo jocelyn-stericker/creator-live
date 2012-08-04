@@ -46,7 +46,7 @@ public slots:
 
     void onFirstOutputSelected()
     {
-        qDebug()<<"OS!";
+        qDebug() << "OS!";
         disconnect(sender(),SIGNAL(outputSelected()),this,SLOT(onFirstOutputSelected()));
     }
 };

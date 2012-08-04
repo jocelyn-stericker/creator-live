@@ -15,8 +15,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 namespace live_widgets {
 
-class LIBLIVEWIDGETSSHARED_EXPORT PushButton : public QPushButton
-{
+class LIBLIVEWIDGETSSHARED_EXPORT PushButton : public QPushButton {
     Q_OBJECT
     bool s_bindMode;
 public:

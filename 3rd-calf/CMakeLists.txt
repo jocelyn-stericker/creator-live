@@ -39,7 +39,7 @@ list (APPEND app-calf_cpp
 list (APPEND app-calf_h
     audio_fx.h  
     delay.h        
-    fjapp.h   
+    fjapp.h 
     inertia.h   
     loudness.h  
     modules_dev.h  

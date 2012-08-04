@@ -20,8 +20,7 @@ class Ui_Frame;
 
 namespace live_widgets {
 
-class LIBLIVEWIDGETSSHARED_EXPORT NewInput : public QFrame
-{
+class LIBLIVEWIDGETSSHARED_EXPORT NewInput : public QFrame {
     Q_OBJECT
 private:
     Ui_Frame* s_ui;

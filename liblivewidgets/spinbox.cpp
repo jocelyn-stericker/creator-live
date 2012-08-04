@@ -9,19 +9,17 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include <live_widgets/spinbox.h>
 
-#include <live/midibinding.h>
+#include <live/midibinding>
 #include <QPainter>
 #include <QMouseEvent>
 
 live_widgets::SpinBox::SpinBox(QWidget *parent) :
-    QSpinBox(parent), s_bindMode(0)
-{
+    QSpinBox(parent), s_bindMode(0) {
     connect(live::bindings::me(),SIGNAL(showBindingsChanged(bool)),this,SLOT(setShowBindingsChanged(bool)));
 }
 
 
-void live_widgets::SpinBox::mousePressEvent(QMouseEvent *e)
-{
+void live_widgets::SpinBox::mousePressEvent(QMouseEvent *e) {
     if (e->button()==Qt::LeftButton) {
         if (s_bindMode) {
             emit customContextMenuRequested(e->pos());
@@ -33,12 +31,10 @@ void live_widgets::SpinBox::mousePressEvent(QMouseEvent *e)
     }
 }
 
-void live_widgets::SpinBox::mouseReleaseEvent(QMouseEvent *)
-{
+void live_widgets::SpinBox::mouseReleaseEvent(QMouseEvent *) {
 }
 
-void live_widgets::SpinBox::paintEvent(QPaintEvent *e)
-{
+void live_widgets::SpinBox::paintEvent(QPaintEvent *e) {
     QSpinBox::paintEvent(e);
     if (s_bindMode) {
         QPainter p(this);
@@ -46,8 +42,7 @@ void live_widgets::SpinBox::paintEvent(QPaintEvent *e)
     }
 }
 
-void live_widgets::SpinBox::setShowBindingsChanged(bool ean)
-{
+void live_widgets::SpinBox::setShowBindingsChanged(bool ean) {
     for (int i=0;i<children().size();i++) {
         if (dynamic_cast<QWidget*>(children()[i])) dynamic_cast<QWidget*>(children()[i])->setEnabled(!ean);
     }

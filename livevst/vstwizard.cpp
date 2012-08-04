@@ -76,9 +76,9 @@ void VstWizard::vstChanged(int z) {
         for (int j=0;j<v->rep->s_sidekicks.size();j++) {
             if (s_out==v->rep->s_sidekicks[j]) {
                 for (int k=0;k<ui->listWidget_inst->count();k++) {
-                    qDebug()<<"COMPARE"<<ui->listWidget_inst->item(k)->text()<<Vst::s_map.values()[i].first;
+                    qDebug() << "COMPARE"<<ui->listWidget_inst->item(k)->text()<<Vst::s_map.values()[i].first;
                     if (ui->listWidget_inst->item(k)->text()==Vst::s_map.values()[i].first) {
-                        qDebug()<<"Found (III)";
+                        qDebug() << "Found (III)";
                         ui->listWidget_inst->setCurrentRow(k);
                     }
                 }
@@ -137,7 +137,7 @@ void VstWizard::pageChangeEvent(int page) {
             if (!s_vst) {
                 QMessageBox::critical(this,"Missing VST","Creator Live seems to have lost an instance of a vst... Maybe try creating a new instance?");
                 ok=0;
-                qDebug()<<"NO SUCH VST";
+                qDebug() << "NO SUCH VST";
             }
         }
 
@@ -155,9 +155,9 @@ void VstWizard::pageChangeEvent(int page) {
             }
             char c='A';
             ui->listWidget_chan->clear();
-            qDebug()<<"ADD0";
+            qDebug() << "ADD0";
             for (int i=0;i<x->rep->s_sidekicks.size();i++) {
-                qDebug()<<"ADD1";
+                qDebug() << "ADD1";
                 ui->listWidget_chan->addItem("Channel "+QString(c));
                 ++c;
             }
@@ -216,7 +216,7 @@ VstWizard::~VstWizard()
 
 void VstWizard::stockChangedEvent()
 {
-    qDebug()<<"RESCAN"<<s_out.valid()<<dynamic_cast<live_private::MidiNull*>(s_out.data());
+    qDebug() << "RESCAN"<<s_out.valid()<<dynamic_cast<live_private::MidiNull*>(s_out.data());
     bool ok=(currentId()==2)?!ui->listWidget_inst->currentRow():(currentId()<2);  //before selecting inst
     ui->listWidget_vsti->clear();
     ui->listWidget_vsti->addItems(Vst::getVstPaths());

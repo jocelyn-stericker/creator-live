@@ -159,7 +159,7 @@ public:
     virtual void render_to(float (*buf)[2], int nsamples)
     {
         int p = 0;
-        while(p < nsamples)
+        while (p < nsamples)
         {
             if (read_ptr == BlockSize) 
             {

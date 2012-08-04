@@ -10,9 +10,9 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef METRONOME_H
 #define METRONOME_H
 
-#include "live/object.h"
-#include "live/timesignature.h"
-#include "live/variantbinding.h"
+#include "live/object"
+#include "live/timesignature"
+#include "live/variantbinding"
 #include <QTime>
 
 namespace live {
@@ -72,7 +72,7 @@ public:
 
     ~Metronome()
     {
-        qDebug()<<"DELMETR";
+        qDebug() << "DELMETR";
     }
 
     const TimeSignature& ts()

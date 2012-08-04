@@ -11,9 +11,9 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define AUDIOSYSTEM_P_H
 
 #include <QCoreApplication>
-#include "live/object.h"
-#include "live/audio.h"
-#include "live/audiointerface.h"
+#include "live/object"
+#include "live/audio"
+#include "live/audiointerface"
 
 #ifndef __QNX__
 
@@ -49,7 +49,7 @@ public:
             {
                 if(a.indexOf('\"')!=-1)
                 {
-                    qDebug()<<"Hathor does not support audio clients with quotes.";
+                    qDebug() << "Hathor does not support audio clients with quotes.";
                     Q_ASSERT(a.indexOf('\"')==-1);
                 }
                 Q_ASSERT(a.indexOf('_')!=-1);
@@ -71,7 +71,7 @@ public:
                 float* _buffer=(float*)jack_port_get_buffer(s_port_[i],live::audio::nFrames());
                 live::ObjectChain p;
                 p.push_back(this);
-                aOut(_buffer, i, p);
+                aOut(_buffer, i, &p);
                 p.pop_back();
             }
         }
@@ -79,7 +79,7 @@ public:
 
     virtual void suspend() { s_suspend=1; }
     virtual void resume() { s_suspend=0; }
-    virtual void aIn (const float*,int, live::ObjectChain&) {}
+    virtual void aIn (const float*,int, live::ObjectChain*) {}
 };
 
 // ONLY CALL AUDIO FUNCTIONS FROM THE AUDIO THREAD!
@@ -113,7 +113,7 @@ public:
         }
     }
 
-    virtual void aIn(const float*data,int chan, live::ObjectChain&p); //Audio.cpp
+    virtual void aIn(const float*data,int chan, live::ObjectChain*p); //Audio.cpp
 
     void newConnection();
     void deleteConnection();
@@ -131,11 +131,11 @@ public:
         live::Object("Null Audio Device",false,false),
         chans(cchans) {}
 
-    virtual void aIn(const float*data,int chan, live::ObjectChain&p)
+    virtual void aIn(const float*data,int chan, live::ObjectChain*p)
     {
-        p.push_back(this);
+        p->push_back(this);
         aOut(data,chan,p);
-        p.pop_back();
+        p->pop_back();
     }
 };
 
@@ -164,11 +164,11 @@ public:
 
     ~SecretAudio()
     {
-        while(inputs.size())
+        while (inputs.size())
         {
             delete inputs.takeFirst();
         }
-        while(outputs.size())
+        while (outputs.size())
         {
             delete outputs.takeFirst();
         }
@@ -184,7 +184,7 @@ public:
 
     static int xrunCallback( void * )
     {
-        qDebug()<<"XRUN!!!";
+        qDebug() << "XRUN!!!";
         return 0;
     }
 

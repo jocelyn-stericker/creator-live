@@ -10,8 +10,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "liveapplication.h"
 #include "livewindow.h"
 #include "settingslinux.h"
-#include <live/core.h>
-#include <live/appinterface.h>
+#include <live/core>
+#include <live/appinterface>
 #include <QFontDatabase>
 #include <QSettings>
 #include <QMessageBox>
@@ -76,7 +76,7 @@ LiveApplication::LiveApplication(int& argc,char** argv) :
             std::cerr<<"Trying to load plugin...\n";
             AppInterface* appi=qobject_cast<AppInterface*>(plugin);
             if (appi) do app::registerInterface(appi); while ((appi=appi->next()));
-        } else qDebug()<<"Couldn't load plugin:"<<qPrintable(loader.errorString());
+        } else qDebug() << "Couldn't load plugin:"<<qPrintable(loader.errorString());
     }
 
 #else
@@ -95,7 +95,7 @@ LiveApplication::LiveApplication(int& argc,char** argv) :
     }
 #endif
 
-    //    qDebug()<<Store::get(Store::MidiOnly|Store::InputOnly).size()<<"#@";
+    //    qDebug()<<Store::get(Store::MidiOnly|Store::InputOnly).size() << "#@";
     //    Soundfont* sf=new Soundfont("/home/joshua/Dropbox/Etc/Steinway Grand Piano.sf2");
     //    Store::request("Portable Grand MIDI 1")->hybridConnect(sf);
     //    sf->audioConnect(Store::get(Store::AudioOnly|Store::OutputOnly)[0]);

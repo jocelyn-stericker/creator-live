@@ -10,7 +10,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef MIDIBINDINGQT_H
 #define MIDIBINDINGQT_H
 
-#include "live/midibinding.h"
+#include "live/midibinding"
 #include <QComboBox>
 #include <QAbstractButton>
 #include <QLineEdit>
@@ -23,8 +23,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 namespace live_widgets {
 
-class LIBLIVEWIDGETSSHARED_EXPORT MidiBindingQt : public live::MidiBinding
-{
+class LIBLIVEWIDGETSSHARED_EXPORT MidiBindingQt : public live::MidiBinding {
     Q_OBJECT
 protected:
     bool s_quantized;
@@ -36,53 +35,39 @@ public:
     friend class BindableParent;
 
     MidiBindingQt(QObject* cGuiObject,GuiType cparentType,BindingType ctype,bool quantized,QString cdata="",int ckey=-1,live::ObjectPtr parent=0, bool controller=0) :
-        MidiBinding(cGuiObject,cparentType,ctype,cdata,ckey,parent,controller), s_quantized(quantized)
-    {
+        MidiBinding(cGuiObject,cparentType,ctype,cdata,ckey,parent,controller), s_quantized(quantized) {
         QObject* qtGuiObject=static_cast<QObject*>(cGuiObject);
         connect(qtGuiObject,SIGNAL(destroyed()),this,SLOT(deleteLater()));
     }
 
 protected:
-    virtual void doAction(int ccval=-1)
-    {
+    virtual void doAction(int ccval=-1) {
         QComboBox *cb = NULL;
         QAbstractSlider *s = NULL;
         switch( type ) {
         case BindingNull:
             break;
         case BindingClick:
-            if ( parentType == GuiAbstractButton )
-            {
-                if(s_quantized)
-                {
+            if ( parentType == GuiAbstractButton ) {
+                if(s_quantized) {
                     new live::QuantizedAction(static_cast<QAbstractButton*>(guiObject),SLOT(click()),2);  //quantize to half the beat
-                }
-                else
-                {
+                } else {
                     ( static_cast<QAbstractButton *>(guiObject) )->click();
                 }
             }
-            if ( parentType == GuiAction )
-            {
-                if(s_quantized)
-                {
+            if ( parentType == GuiAction ) {
+                if(s_quantized) {
                     new live::QuantizedAction( static_cast<QAction *>(guiObject),SLOT(trigger()),2);  //quantize to half the beat
-                }
-                else
-                {
+                } else {
                     ( static_cast<QAction *>(guiObject) )->trigger();
                 }
             }
             break;
         case BindingToggle:
-            if ( parentType == GuiAbstractButton )
-            {
-                if(s_quantized)
-                {
+            if ( parentType == GuiAbstractButton ) {
+                if(s_quantized) {
                     new live::QuantizedAction(static_cast<QAbstractButton *>(guiObject),SLOT(click()),2);
-                }
-                else
-                {
+                } else {
                     ( static_cast<QAbstractButton *>(guiObject) )->click();
                 }
             }
@@ -91,16 +76,11 @@ protected:
             if ( parentType != GuiComboBox ) break;
             cb = static_cast<QComboBox *>(guiObject);
 
-            for ( int i = 0; i < cb->count(); i++ )
-            {
-                if ( cb->itemText(i) == data )
-                {
-                    if(s_quantized)
-                    {
+            for ( int i = 0; i < cb->count(); i++ ) {
+                if ( cb->itemText(i) == data ) {
+                    if(s_quantized) {
                         new live::QuantizedAction(cb,SLOT(setCurrentIndex(int)),2,i);
-                    }
-                    else
-                    {
+                    } else {
                         cb->setCurrentIndex(i);
                     }
                 }
@@ -108,82 +88,54 @@ protected:
 
             break;
         case BindingSetText:
-            if ( parentType == GuiComboBox )
-            {
+            if ( parentType == GuiComboBox ) {
                 cb = static_cast<QComboBox *>(guiObject);
-                if ( cb->lineEdit() )
-                {
-                    if(s_quantized)
-                    {
+                if ( cb->lineEdit() ) {
+                    if(s_quantized) {
                         new live::QuantizedAction(cb->lineEdit(),SLOT(setText(QString)),2,data);
-                    }
-                    else
-                    {
+                    } else {
                         cb->lineEdit()->setText( data );
                     }
                 }
                 break;
-            }
-            else if ( parentType == 3 )
-            {
+            } else if ( parentType == 3 ) {
                 s = static_cast<QAbstractSlider *>(guiObject);
-                if(s_quantized)
-                {
+                if(s_quantized) {
                     new live::QuantizedAction(s,SLOT(setValue(int)),2,data.toInt());
-                }
-                else
-                {
+                } else {
                     s->setValue( data.toInt() );
                 }
             }
         case BindingStepUp:
-            if ( parentType == 2 )
-            {
-                if(s_quantized)
-                {
+            if ( parentType == 2 ) {
+                if(s_quantized) {
                     new live::QuantizedAction(static_cast<QAbstractSpinBox*>(guiObject),SLOT(stepUp()),2);
-                }
-                else
-                {
+                } else {
                     ( static_cast<QAbstractSpinBox *>(guiObject) )->stepUp();
                 }
-            }
-            else if ( parentType == 3 )
-            {
-                if(s_quantized)
-                {
+            } else if ( parentType == 3 ) {
+                if(s_quantized) {
                     QAbstractSlider*as=static_cast<QAbstractSlider*>(guiObject);
                     new live::QuantizedAction(as,SLOT(setValue(int)),
                                         as->value()+as->singleStep());    //best we can get easily
-                }
-                else
-                {
+                } else {
                     ( static_cast<QAbstractSlider *>(guiObject) )->triggerAction( QAbstractSlider:: SliderSingleStepAdd );
                 }
             }
             break;
         case BindingStepDown:
-            if ( parentType == 2 )
-            {
-                if(s_quantized)
-                {
+            if ( parentType == 2 ) {
+                if(s_quantized) {
                     new live::QuantizedAction(static_cast<QAbstractSpinBox*>(guiObject),SLOT(stepDown()),2);
-                }
-                else
-                {
+                } else {
                     ( static_cast<QAbstractSpinBox *>(guiObject) )->stepDown();
                 }
-            }
-            else if ( parentType == 3 )
-            {
-                if(s_quantized)
-                {
+            } else if ( parentType == 3 ) {
+                if(s_quantized) {
                     QAbstractSlider*as=static_cast<QAbstractSlider*>(guiObject);
                     new live::QuantizedAction(as,SLOT(setValue(int)),
                                         as->value()-as->singleStep());    //best we can get easily
-                }
-                else
-                {
+                } else {
                     ( static_cast<QAbstractSlider *>(guiObject) )->triggerAction( QAbstractSlider:: SliderSingleStepSub );
                 }
             }
@@ -202,18 +154,14 @@ protected:
 //        }
         case BindingSeqSetPos:
             qFatal("BindingSeqSetPos Depricated");
-        case BindingSlider:
-        {
-            if(parentType==GuiAbstractSpinBox)
-            {
+        case BindingSlider: {
+            if(parentType==GuiAbstractSpinBox) {
                 //GRR!!! THIS IS REALLY REALLY UNSAFE!!!!!!!!
                 QSpinBox*sb=static_cast<QSpinBox*>(guiObject);
                 if(sb) {
                     sb->setValue((float)ccval/127.0*(float)(sb->maximum()-sb->minimum())+sb->minimum());
                 }
-            }
-            else if (parentType==GuiAbstractSlider)
-            {
+            } else if (parentType==GuiAbstractSlider) {
                 QAbstractSlider* as=static_cast<QAbstractSlider*>(guiObject);
                 as->setValue((float)ccval/127.0*(float)(as->maximum()-as->minimum())+as->minimum());
             }
@@ -237,8 +185,7 @@ private:
 public:
     MidiBindingQtSys() :
         csMutex(QMutex::Recursive),
-        currentCM(0)
-    {
+        currentCM(0) {
     }
 
     ~MidiBindingQtSys();

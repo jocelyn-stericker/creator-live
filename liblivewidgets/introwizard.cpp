@@ -17,21 +17,18 @@ using namespace live_widgets;
 
 IntroWizard::IntroWizard(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::IntroWizard)
-{
+    ui(new Ui::IntroWizard) {
     ui->setupUi(this);
     connect(ui->commandLinkButton_live,SIGNAL(clicked()),this,SIGNAL(standardRequested()));
     connect(ui->pushButton_quit,SIGNAL(clicked()),this,SIGNAL(quitRequested()));
     resizeEvent(0);
 }
 
-IntroWizard::~IntroWizard()
-{
+IntroWizard::~IntroWizard() {
     delete ui;
 }
 
-void IntroWizard::resizeEvent(QResizeEvent *e)
-{
+void IntroWizard::resizeEvent(QResizeEvent *e) {
     int w=width()-ui->line_3->width();
     ui->Alabel_create->setFixedWidth(w/2);
     float phi=(1+sqrt(5.0))/2.0;

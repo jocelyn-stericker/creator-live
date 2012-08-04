@@ -10,8 +10,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef AMBITION_H
 #define AMBITION_H
 
-#include "live/object.h"
-#include "live/variantbinding.h"
+#include "live/object"
+#include "live/variantbinding"
 #include <iostream>
 
 namespace live {
@@ -27,7 +27,7 @@ public:
     } t;
     Connection(live::ObjectPtr a,live::ObjectPtr b,const Connection::Type&t)
     {
-        qDebug()<<"[CONNECT]"<<a->name()<<"->"<<b->name()<<"| type:"<<(int)t;
+        qDebug() << "[CONNECT]"<<a->name() << "->"<<b->name() << "| type:"<<(int)t;
         this->a=a;
         this->b=b;
         this->t=t;
@@ -36,7 +36,7 @@ public:
 
     ~Connection()
     {
-        qDebug()<<"[DISCONNECT]"<<a->name()<<"->"<<b->name()<<"| type:"<<(int)t;
+        qDebug() << "[DISCONNECT]"<<a->name() << "->"<<b->name() << "| type:"<<(int)t;
         connect();
     }
 private:
@@ -141,7 +141,7 @@ public:
             }
 
             if(ok) {
-                qDebug()<<"Hybrid.";
+                qDebug() << "Hybrid.";
                 stage=0;
                 live::ObjectPtr prev=s_input;
                 for(int i=0;i<s_chain.size();i++) {
@@ -200,7 +200,7 @@ public:
 
         if(s_input.valid()&&s_output.valid()&&s_input->isMidiObject()&&s_output->isMidiObject())
         {
-            qDebug()<<"Midi.";
+            qDebug() << "Midi.";
             bool ok=1;
             for(int i=0;i<s_chain.size();i++) if(!s_chain[i]->isMidiObject()) ok=0;
             if(ok) {
@@ -222,7 +222,7 @@ public:
 
         if(s_input.valid()&&s_output.valid()&&(s_input->isAudioObject()||(s_loopbackOut.valid()&&s_loopbackOut->isAudioObject()))&&s_output->isAudioObject())
         {
-            qDebug()<<"Audio.";
+            qDebug() << "Audio.";
             bool ok=1;
             for(int i=0;i<s_chain.size();i++) if(!s_chain[i]->isAudioObject()) ok=0;
             if(ok) {
@@ -247,7 +247,7 @@ public:
         }
         else
         {
-            qCritical()<<"No solution to audio train...";
+            qCritical() << "No solution to audio train...";
             return 0;
         }
         return 1;
@@ -255,7 +255,7 @@ public:
 
     void unset()
     {
-        while(s_connections.size())
+        while (s_connections.size())
         {
             delete s_connections.takeFirst();
         }

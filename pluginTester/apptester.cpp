@@ -16,7 +16,7 @@ using namespace live_widgets;
 AppTester::AppTester(live::AppInterface *a, QWidget *parent) :
     QWidget(parent),
     s_app(a->newBackend()),
-    s_frame(dynamic_cast<AppFrame*>(a->newFrontend(s_app))),
+    s_frame(qobject_cast<AppFrame*>(a->newFrontend(s_app))),
     ui(new Ui::AppTester)
 {
     ui->setupUi(this);

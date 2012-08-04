@@ -15,8 +15,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 namespace live_widgets {
 
-class LIBLIVEWIDGETSSHARED_EXPORT ToolButton : public QToolButton
-{
+class LIBLIVEWIDGETSSHARED_EXPORT ToolButton : public QToolButton {
     Q_OBJECT
     bool s_bindMode;
 public:

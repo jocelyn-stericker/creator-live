@@ -12,7 +12,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include <QObject>
 #include <QMetaMethod>
-#include "live/object.h"
+#include "live/object"
 
 namespace live_private {
 
@@ -77,7 +77,7 @@ public:
 
             live::Object::beginAsyncAction();
             bool ok=1;
-            qDebug()<<"SLOT:"<<s_dSlot;
+            qDebug() << "SLOT:"<<s_dSlot;
             if(list.size()==4||!ok) {
                 ok=QMetaObject::invokeMethod(s_dest,s_dSlot.toAscii(),Qt::DirectConnection,QGenericArgument(list[0].typeName(),a[1]),QGenericArgument(list[1].typeName(),a[2]),QGenericArgument(list[2].typeName(),a[3]),QGenericArgument(list[3].typeName(),a[4]));
             }

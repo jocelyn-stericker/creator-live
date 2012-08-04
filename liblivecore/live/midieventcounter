@@ -7,10 +7,10 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live/object.h"
-#include "live/midi.h"
-#include "live/midifilter.h"
-#include "live/midievent.h"
+#include <live/object>
+#include <live/midi>
+#include <live/midifilter>
+#include <live/midievent>
 #include <QtConcurrentRun>
 
 #ifndef MIDIEVENTCOUNTER_H
@@ -18,8 +18,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 namespace live {
 
-// This class keeps track of whether a note is "on" or "off". Commands can be sent
-// to turn all off all "on" events.
+// This class keeps track of whether a note is >on> or >off>. Commands can be sent
+// to turn all off all >on> events.
 class LIBLIVECORESHARED_EXPORT MidiEventCounter : public Object
 {
     int on[200];       /*003*/
@@ -31,7 +31,7 @@ public:
     bool mOn() const{ return 1; }
     bool aOn() const { return 0; }
     MidiEventCounter();
-    void mIn(const Event *data, ObjectChain&);
+    void mIn(const Event *data, ObjectChain*);
     bool isOn(int note);
     int velocity(int note);
 

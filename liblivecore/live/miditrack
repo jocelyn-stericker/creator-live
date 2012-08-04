@@ -10,11 +10,11 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef MIDITRACK_H
 #define MIDITRACK_H
 
-#include "live/object.h"
+#include "live/object"
 #include <QMutex>
 #include <QFile>
 #include "live/extern/midifile/MidiFile.h"
-#include "live/midieventcounter.h"
+#include "live/midieventcounter"
 
 namespace live {
 
@@ -79,7 +79,7 @@ private:
         QList<Event*>* s_e;
         EventListDeleter(QList<Event*>* e) : s_e(e) {}
         void run() {
-            while(s_e->size()) {
+            while (s_e->size()) {
                 delete s_e->takeFirst();
             }
             delete s_e;
@@ -99,7 +99,7 @@ public slots:
     void setPos(int pos);
     void importFile(QString path);
     void exportFile(QString path);
-    void mIn(const Event *data, ObjectChain&p);
+    void mIn(const Event *data, ObjectChain*p);
     void timeEvent();
     virtual void clearData() {
         NOSYNC;

@@ -355,7 +355,7 @@ operator >>(osc_stream<Buffer, TypeBuffer> &s, std::string &str)
     char five[5];
     five[4] = '\0';
     str.resize(0);
-    while(1)
+    while (1)
     {
         s.read(five, 4);
         if (five[0] == '\0')

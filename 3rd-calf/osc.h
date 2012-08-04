@@ -183,10 +183,10 @@ struct waveform_family: public std::map<uint32_t, float *>
         for (unsigned int i = 0; i < cutoff; i++)
             vmax = std::max(vmax, abs(bl.spectrum[i]));
         float vthres = vmax / 1024.0;  // -60dB
-        while(cutoff > (SIZE / limit)) {
+        while (cutoff > (SIZE / limit)) {
             if (!foldover)
             {
-                while(cutoff > 1 && abs(bl.spectrum[cutoff - 1]) < vthres)
+                while (cutoff > 1 && abs(bl.spectrum[cutoff - 1]) < vthres)
                     cutoff--;
             }
             float *wf = new float[SIZE+1];

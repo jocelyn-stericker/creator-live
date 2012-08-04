@@ -19,8 +19,7 @@ namespace Ui {
 
 namespace live_widgets {
 
-class LIBLIVEWIDGETSSHARED_EXPORT TrackHint : public QWidget
-{
+class LIBLIVEWIDGETSSHARED_EXPORT TrackHint : public QWidget {
     Q_OBJECT
 
 public:
@@ -28,7 +27,7 @@ public:
     ~TrackHint();
 
 private:
-    Ui::TrackHint *ui;
+    Ui::TrackHint* ui;
 };
 
 }

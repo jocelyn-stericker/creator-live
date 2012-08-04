@@ -1,9 +1,9 @@
 #ifndef MIDIBRIDGE_H
 #define MIDIBRIDGE_H
 
-#include <live/object.h>
-#include <live/midi.h>
-#include <live/midievent.h>
+#include <live/object>
+#include <live/midi>
+#include <live/midievent>
 #include <QTcpSocket>
 
 namespace live_private {
@@ -20,20 +20,20 @@ public slots:
     void readData(QByteArray data) {
         bool ok=0;
 
-        qDebug()<<"Trying to read data...";
+        qDebug() << "Trying to read data...";
         QList<QByteArray> commands = data.split('\n');
         if (!commands.size()) return;
         if (commands.first()!="BEGIN EVENT") return;
         commands.pop_front();
 
-        qDebug()<<"Event OK";
+        qDebug() << "Event OK";
 
         if (!commands.size()) return;
-        qDebug()<<commands.first()<<"VS"<<"FROM "+s_name;
+        qDebug()<<commands.first() << "VS"<<"FROM "+s_name;
         if (commands.first()!="FROM "+s_name) return;
         commands.pop_front();
 
-        qDebug()<<"From OK";
+        qDebug() << "From OK";
 
         live::Event ev;
         live::ObjectChain p;
@@ -47,7 +47,7 @@ public slots:
         if (!ok) return;
         commands.pop_front();
 
-        qDebug()<<"C1 OK"<<ev.message;
+        qDebug() << "C1 OK"<<ev.message;
 
         ///////////////////////////////////////////////////////////
         if (!commands.size()) return;
@@ -70,16 +70,16 @@ public slots:
         if (!commands.first().startsWith("DATA3 ")) return;
         commands.first().remove(0,6);
         ev.time=live::Time(commands.first().toInt(&ok))+live::midi::getTime();
-        qDebug()<<"TIME:"<<ev.time.toTime_ms()<<live::midi::getTime_msec();
+        qDebug() << "TIME:"<<ev.time.toTime_ms()<<live::midi::getTime_msec();
         if (!ok) return;
         commands.pop_front();
 
         ///////////////////////////////////////////////////////////
-        qDebug()<<"Succesfully read data...";
+        qDebug() << "Succesfully read data...";
         live::Event* ev2=new live::Event(ev.message,ev.data1,ev.data2);
         ev2->time=ev.time;
         ev2->time.sec=ev2->time.nsec=-1;
-        mOut(ev2,p);
+        mOut(ev2,&p);
     }
 };
 
@@ -91,21 +91,21 @@ class BridgeMidiOut : public live::Object {
 public:
     BridgeMidiOut(QTcpSocket* sock, QString name) : live::Object(name,1,0), s_sock(sock), s_name(name) {
     }
-    void mIn(const live::Event *ev, live::ObjectChain &)
+    void mIn(const live::Event *ev, live::ObjectChain* )
     {
         QByteArray data;
-        qDebug()<<"Hey, I'm"<<s_name;
+        qDebug() << "Hey, I'm"<<s_name;
         data+="BEGIN EVENT\n";
         data+="TO "+s_name+"\n";
         data+="MSG "+QString::number(ev->message)+"\n";
         data+="DATA1 "+QString::number(ev->data1)+"\n";
         data+="DATA2 "+QString::number(ev->data2)+"\n";
-        qDebug()<<"###"<<live::midi::getTime_msec()<<"VS"<<ev->time.toTime_ms();
+        qDebug() << "###"<<live::midi::getTime_msec() << "VS"<<ev->time.toTime_ms();
         data+="DATA3 "+QString::number(live::midi::getTime_msec()-ev->time.toTime_ms())+"\n";
         data+="END EVENT\n";
-        qDebug()<<"I'm sending "<<data;
+        qDebug() << "I'm sending "<<data;
         s_sock->write(data);
-        qDebug()<<"Written!"<<live::midi::getTime_msec()-ev->time.toTime_ms();
+        qDebug() << "Written!"<<live::midi::getTime_msec()-ev->time.toTime_ms();
     }
 };
 
@@ -119,7 +119,7 @@ public:
 public slots:
     void tryIp(QString code) {
         if (code.size()!=8) {
-            qDebug()<<"Invalid IP code...";
+            qDebug() << "Invalid IP code...";
         }
         if (s_sock) {
             while (s_ins.size()) { delete s_ins.back(); s_ins.pop_front(); }
@@ -137,7 +137,7 @@ public slots:
         } while (code.size());
         QString ip=parts.join(".");
         s_sock = new QTcpSocket();
-        qDebug()<<"Trying ipX "<<ip;
+        qDebug() << "Trying ipX "<<ip;
         s_sock->connectToHost(ip,1143);
         connect(s_sock,SIGNAL(readyRead()),this,SLOT(pair()));
     }
@@ -147,7 +147,7 @@ public slots:
         disconnect(s_sock,SIGNAL(readyRead()),this,SLOT(pair()));
         QList<QByteArray> data=s_sock->readAll().split('\n');
 
-        qDebug()<<"Pairing...";
+        qDebug() << "Pairing...";
 
         if (!data.size()) return;
         if (data[0] != "VERSION 1000") return;
@@ -159,7 +159,7 @@ public slots:
         if (data[0] != "BEGIN MIDI_INPUT") return;
         data.pop_front();
 
-        qDebug()<<"Agreed on basics.";
+        qDebug() << "Agreed on basics.";
 
         if (!data.size()) return;
         while (data[0]!="END MIDI_INPUT") {
@@ -194,7 +194,7 @@ public slots:
             for (int j=0;j<s_outs.size();j++)
             {
                 if (i!=1||j!=1) continue;
-                qDebug()<<"Connect"<<s_ins[i]->name()<<"to"<<s_outs[j]->name();
+                qDebug() << "Connect"<<s_ins[i]->name() << "to"<<s_outs[j]->name();
                 s_ins[i]->midiConnect(s_outs[j]);
             }
         }

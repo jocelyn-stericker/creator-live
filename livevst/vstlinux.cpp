@@ -60,33 +60,33 @@ Vst::~Vst()
 {
     rep->setParent(0);
     rep->deleteLater();
-    qDebug()<<"Delete VST";
+    qDebug() << "Delete VST";
 }
 
-void Vst::aIn(const float *data, int chan, ObjectChain&p)
+void Vst::aIn(const float *data, int chan, ObjectChain*p)
 {
     Q_ASSERT(chan<2);
     Q_ASSERT(rep->audioFromVst);
-    if (p.contains(rep->audioFromVst))
+    if (p->contains(rep->audioFromVst))
     {
-        p.push_back(this);
+        p->push_back(this);
         aOut(data,chan,p); //really should add other items back to pipeline
-        p.pop_back();
+        p->pop_back();
     }
     else if (rep->audioToVst.valid())
     {
-        p.push_back(this);
+        p->push_back(this);
         rep->audioToVst->aIn(data,chan,p);
-        p.pop_back();
+        p->pop_back();
     }
 }
 
-void Vst::mIn(const Event *data, ObjectChain&p)
+void Vst::mIn(const Event *data, ObjectChain*p)
 {
     Q_ASSERT(rep->midiOut);
-    p.push_back(this);
+    p->push_back(this);
     rep->midiOut->mIn(data,p);
-    p.pop_back();
+    p->pop_back();
 }
 
 void VstR::addSidekicks(QStringList to, QStringList from)
@@ -106,7 +106,7 @@ void VstR::addSidekicks(QStringList to, QStringList from)
         }
         if (!ok)
         {
-            qCritical()<<"VstR (linux) could not find match for"<<from[i];
+            qCritical() << "VstR (linux) could not find match for"<<from[i];
         }
         Q_ASSERT(ok);
         ObjectPtr audioToVst=0;
@@ -124,7 +124,7 @@ void VstR::addSidekicks(QStringList to, QStringList from)
             if (!ok)
             {
                 audioToVst=audio::null(2);
-                qWarning()<<"VstR (linux) could not find match for"<<to[i];
+                qWarning() << "VstR (linux) could not find match for"<<to[i];
             }
 //            Q_ASSERT(ok);
         }

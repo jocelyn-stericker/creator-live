@@ -23,8 +23,7 @@ namespace live_widgets {
  * Since the name refers to QObject's "objectName()" and
  * thus BindableParent must _ALSO_ be a QObject.
  */
-class LIBLIVEWIDGETSSHARED_EXPORT BindableParent
-{
+class LIBLIVEWIDGETSSHARED_EXPORT BindableParent {
     QObject* qo_this;
     static QList<BindableParent*> _u;
     static QList<QObject*> _u_qo;

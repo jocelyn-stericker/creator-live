@@ -16,10 +16,10 @@ list (APPEND livemidi_cpp
     midiwizard.cpp
 )
 
-list (APPEND livemidi_h
+list (APPEND livemidi
 )
 
-list (APPEND livemidi_h_qobject
+list (APPEND livemidi_qobject
     midiplugin.h 
     midiwizard.h
 )
@@ -47,7 +47,7 @@ include_directories (${cmake_binary_dir}
     ../liblivewidgets/
 )
 
-qt4_wrap_cpp (livemidi_moc ${livemidi_h_qobject})
+qt4_wrap_cpp (livemidi_moc ${livemidi_qobject})
 qt4_wrap_ui (livemidi_moc ${livemidi_ui}) 
 
 add_library (livemidi SHARED

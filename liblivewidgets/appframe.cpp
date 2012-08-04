@@ -19,8 +19,7 @@ AppFrame::AppFrame(AbstractTrack *parent)
     : QFrame(parent)
     , BindableParent(this)
     , s_minimized(0)
-    , s_desiredWidth(200)
-{
+    , s_desiredWidth(200) {
     setFrameStyle(QFrame::NoFrame);
     setFrameShadow(QFrame::Plain);
     setLineWidth(0);
@@ -72,21 +71,17 @@ AppFrame::AppFrame(AbstractTrack *parent)
     setMinimumWidth(40);
 }
 
-AppFrame::~AppFrame()
-{
+AppFrame::~AppFrame() {
     //parentsystem
 }
 
-void AppFrame::toggleMinimized()
-{
-    if (parentWidget()&&parentWidget()->layout())
-    {
+void AppFrame::toggleMinimized() {
+    if (parentWidget()&&parentWidget()->layout()) {
         parentWidget()->layout()->setAlignment( Qt::AlignLeft );
     }
     setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Expanding);
 
-    if (s_minimized)
-    {
+    if (s_minimized) {
         setMinimumWidth(40);
         _tbBack->setGeometry(0,0,10,10);
         _tbClose->setGeometry(10,0,10,10);
@@ -100,9 +95,7 @@ void AppFrame::toggleMinimized()
         _tbNext->show();
         s_minimized=0;
         resizeEvent(0);
-    }
-    else
-    {
+    } else {
         _tbMini->setGeometry(0,0,10,10);
 //        _tbBack->setGeometry(0,10,10,10);
 //        _tbClose->setGeometry(0,20,10,10);
@@ -118,8 +111,7 @@ void AppFrame::toggleMinimized()
     }
 }
 
-void AppFrame::resizeEvent(QResizeEvent *e)
-{
+void AppFrame::resizeEvent(QResizeEvent *e) {
     if (!s_minimized) {
         _tbClose->setGeometry(width()-4-_tbNext->width(),2,8,8);
     }
@@ -130,14 +122,12 @@ void AppFrame::resizeEvent(QResizeEvent *e)
     if (e) QWidget::resizeEvent(e);
 }
 
-void AppFrame::moveEvent(QMoveEvent *e)
-{
+void AppFrame::moveEvent(QMoveEvent *e) {
     QMetaObject::invokeMethod(parent(),"remakeChainWidget",Qt::DirectConnection);
     QWidget::moveEvent(e);
 }
 
-void AppFrame::setDesiredWidth(int w)
-{
+void AppFrame::setDesiredWidth(int w) {
     s_desiredWidth = w;
     emit desiredWidthChanged(w);
 }

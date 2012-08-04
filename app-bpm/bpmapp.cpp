@@ -8,9 +8,9 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 *******************************************************/
 
 #include "bpmapp.h"
-#include <live/audio.h>
-#include <live/object.h>
-#include <live/songsystem.h>
+#include <live/audio>
+#include <live/object>
+#include <live/songsystem>
 
 #include <math.h>
 #include <QTimer>
@@ -120,7 +120,7 @@ float BPMApp::getBPM()
     return qRound(ret);
 }
 
-void BPMApp::aIn(const float *data, int chan, ObjectChain&p)
+void BPMApp::aIn(const float *data, int chan, ObjectChain*p)
 {
     const int& nframes=audio::nFrames();
     if (s_lastBPM>20.0f) {
@@ -128,7 +128,7 @@ void BPMApp::aIn(const float *data, int chan, ObjectChain&p)
         int boxLength=1.0f/s_lastBPM*60.f*(float)audio::sampleRate()/boxes;
 
         if (s_histoBoxes!=boxes) {
-            qDebug()<<"== RESET =="<<"(est:)"<<boxes;
+            qDebug() << "== RESET =="<<"(est:)"<<boxes;
             s_histoBoxes=boxes;
             delete[] s_histogram;
             s_histogram = new float[s_histoBoxes];
@@ -159,7 +159,7 @@ void BPMApp::aIn(const float *data, int chan, ObjectChain&p)
                 }
                 if (s_maxI==s_histoBox_i&&(s_maxI!=s_maxI_prev)) {
                     s_maxI_prev=s_maxI;
-                    qDebug()<<"PULSE"<<s_histoBox_i;
+                    qDebug() << "PULSE"<<s_histoBox_i;
                     song::current()->metronome->pulse();
                 }
                 s_histoBox_j=0;
@@ -198,15 +198,15 @@ void BPMApp::aIn(const float *data, int chan, ObjectChain&p)
 
     }
 
-    p.push_back(this);
+    p->push_back(this);
     aOut(data,chan,p);
-    p.pop_back();
+    p->pop_back();
 }
 
-void BPMApp::mIn(const Event *data, ObjectChain&p)
+void BPMApp::mIn(const Event *data, ObjectChain*p)
 {
-    p.push_back(this);
+    p->push_back(this);
     _bpmMidi->mIn(data,p);
     mOut(data,p);         //not implemented.
-    p.pop_back();
+    p->pop_back();
 }

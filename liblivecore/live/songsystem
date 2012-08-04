@@ -10,10 +10,10 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef SONGSYS_H
 #define SONGSYS_H
 
-#include "live/object.h"
-#include "live/metronome.h"
-#include "live/keysignature.h"
-#include "live/midifilter.h"
+#include "live/object"
+#include "live/metronome"
+#include "live/keysignature"
+#include "live/midifilter"
 
 namespace live {
 

@@ -383,7 +383,7 @@ public:
     }
     void do_tasks() {
         std::multimap<unsigned int, task *>::iterator i = timeline.begin();
-        while(i != timeline.end() && i->first == time) {
+        while (i != timeline.end() && i->first == time) {
             i->second->execute(this);
             i->second->dispose();
             timeline.erase(i);

@@ -11,7 +11,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define DRAGLISTFRAME_H
 
 #include "live_widgets/draglabel.h"
-#include "live/audio.h"
+#include "live/audio"
 #include <QGridLayout>
 #include <QFrame>
 
@@ -19,22 +19,19 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 namespace live_widgets {
 
-class LIBLIVEWIDGETSSHARED_EXPORT DragListFrame : public QFrame
-{
+class LIBLIVEWIDGETSSHARED_EXPORT DragListFrame : public QFrame {
     QList<DragLabel*> s_list;
     QGridLayout* s_layout;
 public:
     DragListFrame(QStringList,QWidget*);
 };
 
-class InputDragListFrame : public DragListFrame
-{
+class InputDragListFrame : public DragListFrame {
 public:
     InputDragListFrame(QWidget*p=0) : DragListFrame(live::audio::getInputChanStringList(),p) {}
 };
 
-class OutputDragListFrame : public DragListFrame
-{
+class OutputDragListFrame : public DragListFrame {
 public:
     OutputDragListFrame(QWidget*p=0) : DragListFrame(live::audio::getOutputChanStringList(),p) {}
 };

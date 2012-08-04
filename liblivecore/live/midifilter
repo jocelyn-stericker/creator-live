@@ -10,8 +10,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef MIDIFILTER_H
 #define MIDIFILTER_H
 
-#include "live/variantbinding.h"
-#include "liblivecore_global.h"
+#include "live/variantbinding"
+#include "liblivecore_global"
 
 namespace live {
 

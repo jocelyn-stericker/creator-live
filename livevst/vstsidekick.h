@@ -7,14 +7,14 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live/object.h"
-#include "live/midievent.h"
+#include <live/object>
+#include <live/midievent>
 #include "vst.h"
 #ifdef __linux
 #include "vstlinux_p.h"
 #endif
 #ifdef _WIN32
-#include "live/audio.h"
+#include <live/audio>
 #include "vst_p.h"
 #endif
 
@@ -25,8 +25,8 @@ class VstSidekick : public live::Object
 {
     friend class VstR;
     live::ObjectPtr me;
-    int midiChan;
-    int audioChanOffset;
+    int midian;
+    int audioanOffset;
     live::ObjectPtr  audioToVst;
     live::ObjectPtr  audioFromVst;
     live::ObjectChain lastP;
@@ -35,8 +35,8 @@ class VstSidekick : public live::Object
 public:
     LIVE_HYBRID
     LIVE_EFFECT
-    VstSidekick(VstR*rep,int cchan,live::ObjectPtr to,live::ObjectPtr from,int caudioChanOffset=0) : live::Object(rep->me.s_name+"_"+QString::number(rep->me.vstId) +" Chan "+QString::number(cchan),false,false),
-        me(rep),midiChan(cchan),audioChanOffset(caudioChanOffset),audioToVst(to),audioFromVst(from)
+    VstSidekick(VstR*rep,int cchan,live::ObjectPtr to,live::ObjectPtr from,int caudioanOffset=0) : live::Object(rep->me.s_name+"_"+QString::number(rep->me.vstId) +" Chan "+QString::number(cchan),false,false),
+        me(rep),midian(cchan),audioanOffset(caudioanOffset),audioToVst(to),audioFromVst(from)
     {
         // FIXME: needs mixer ability
         setTemporary(0);
@@ -59,35 +59,35 @@ public:
         live::object::singleton()->notify();
     }
 
-    void aIn(const float *data, int chan, live::ObjectChain &p)
+    void aIn(const float *data, int chan, live::ObjectChain* p)
     {
-        if(p.back()==audioFromVst)
+        if(p->back()==audioFromVst)
         {
-            if(chan==audioChanOffset||chan==audioChanOffset+1)
+            if(chan==audioanOffset||chan==audioanOffset+1)
             {
-                aOut(data,chan%2,(audioToVst.valid()&&lastP.size())?lastP:p);
+                aOut(data,chan%2,(audioToVst.valid()&&lastP.size())?&lastP:p);
             }
             return;
         }
-        p.push_back(this);
-        lastP=p;
+        p->push_back(this);
+        lastP=*p;
         if(audioToVst.valid())
         {
-            audioToVst->aIn(data,chan+audioChanOffset,p);
+            audioToVst->aIn(data,chan+audioanOffset,p);
         }
         else
         {
-            aOut(data,chan+audioChanOffset,lastP);
+            aOut(data,chan+audioanOffset, &lastP);
         }
-        p.pop_back();
+        p->pop_back();
     }
-    void mIn(const live::Event *data, live::ObjectChain &p)
+    void mIn(const live::Event *data, live::ObjectChain* p)
     {
         live::Event b=*data;
-        b.setChan(midiChan);
-        p.push_back(this);
+        b.setChan(midian);
+        p->push_back(this);
         if(live::cast<VstR*>(me)) live::cast<VstR*>(me)->me.mIn(&b,p);
-        p.pop_back();
+        p->pop_back();
     }
 };
 

@@ -10,8 +10,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef EVENT_H
 #define EVENT_H
 
-#include "live/object.h"
-#include "live/time.h"
+#include "live/object"
+#include "live/time"
 
 namespace live {
 

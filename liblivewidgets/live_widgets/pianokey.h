@@ -12,7 +12,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include <QtGlobal>
 #include <QGraphicsRectItem>
-#include "live/object.h"
+#include "live/object"
 #include "liblivewidgets_global.h"
 
 class LiveInputMIDI;
@@ -20,8 +20,7 @@ class LiveOutputMIDI;
 
 namespace live_widgets {
 
-class LIBLIVEWIDGETSSHARED_EXPORT PianoKey : public QObject, public live::Object, public QGraphicsRectItem
-{
+class LIBLIVEWIDGETSSHARED_EXPORT PianoKey : public QObject, public live::Object, public QGraphicsRectItem {
     Q_OBJECT
 private:
     static int s_shiftTwinID;
@@ -40,22 +39,18 @@ public:
     void mousePressEvent( QGraphicsSceneMouseEvent* event );
     void mouseReleaseEvent( QGraphicsSceneMouseEvent* event );
     void setID( int id );
-    void setVirtual( bool isVirtual )
-    {
+    void setVirtual( bool isVirtual ) {
         s_virtual = isVirtual;
     }
-    void mIn(const live::Event *data, live::ObjectChain&p);
+    void mIn(const live::Event *data, live::ObjectChain*p);
 
-    int id() const
-    {
+    int id() const {
         return s_id;
     }
-    int isEnabled() const
-    {
+    int isEnabled() const {
         return s_enabled;
     }
-    bool isVirtual() const
-    {
+    bool isVirtual() const {
         return s_virtual;
     }
 

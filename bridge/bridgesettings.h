@@ -12,8 +12,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include <QWidget>
 
-#include <live/object.h>
-#include <live/midi.h>
+#include <live/object>
+#include <live/midi>
 #include "live/../audiosystem_p.h"
 
 namespace Ui {
@@ -35,7 +35,7 @@ public:
     explicit BridgeSettings(QWidget *parent = 0);
     ~BridgeSettings();
 
-    void mIn(const live::Event *data, live::ObjectChain &p);
+    void mIn(const live::Event *data, live::ObjectChain* p);
     
 public slots:
     void startTalking();

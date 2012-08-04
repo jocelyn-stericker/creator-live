@@ -10,7 +10,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef SETTINGSLINUX_H
 #define SETTINGSLINUX_H
 
-#include <live/object.h>
+#include <live/object>
 #include <QDialog>
 #include <QHideEvent>
 

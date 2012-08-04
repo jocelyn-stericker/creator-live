@@ -2,11 +2,11 @@
 #define MIDIBINDING_H
 
 #include <QObject>
-#include "live/object.h"
-#include "live/midievent.h"
-#include "live/midi.h"
-#include "live/metronome.h"
-#include "live/songsystem.h"
+#include <live/object>
+#include <live/midievent>
+#include <live/midi>
+#include <live/metronome>
+#include <live/songsystem>
 
 namespace live {
 
@@ -155,7 +155,7 @@ protected:
     virtual void doAction(int vel=0) = 0;
 
 public slots:
-    void mIn(const Event *data, ObjectChain&p)
+    void mIn(const Event *data, ObjectChain*p)
     {
         if(midi::getTime_msec()-lastEventTime<100)
         {
@@ -164,7 +164,7 @@ public slots:
         if ( pending ) {
             if((data->simpleStatus()==Event::NOTE_ON&&data->velocity())||data->simpleStatus()==0xB0)
             {
-                obj=p.first();
+                obj=p->first();
                 key=data->note();
                 pending=0;
                 lastEventTime=midi::getTime_msec();
@@ -172,7 +172,7 @@ public slots:
             }
 
         }
-        else if( data->note()==key&&(controller==(data->simpleStatus()==0xB0)||(data->simpleStatus()==Event::NOTE_ON&&data->velocity())) && p.first()==obj.data() )
+        else if( data->note()==key&&(controller==(data->simpleStatus()==0xB0)||(data->simpleStatus()==Event::NOTE_ON&&data->velocity())) && p->first()==obj.data() )
         {
             if(controller&&type!=BindingSlider&&(data->velocity()!=127))
             {
@@ -199,26 +199,26 @@ public:
 
     }
 public slots:
-    void aIn(const float *data, int chan, ObjectChain&p)
+    void aIn(const float *data, int chan, ObjectChain*p)
     {
         if(allowAudio)
         {
-            p.push_back(this);
+            p->push_back(this);
             aOut(data,chan,p);
-            p.pop_back();
+            p->pop_back();
         }
     }
-    void mIn(const Event *data, ObjectChain&p)
+    void mIn(const Event *data, ObjectChain*p)
     {
         if(data->simpleStatus()==Event::NOTE_ON||data->simpleStatus()==Event::NOTE_OFF)
         {
-            if(!live::MidiBinding::customKey->value(p.first(),0)||live::MidiBinding::customKey->value(p.first(),0)[data->note()].valid())
+            if(!live::MidiBinding::customKey->value(p->first(),0)||live::MidiBinding::customKey->value(p->first(),0)[data->note()].valid())
             {
                 return;
             }
             for(int i=0;i<live::MidiBinding::universe;i++)
             {
-                if(!live::MidiBinding::universe[i]->controller&&live::MidiBinding::universe[i]->key==data->note()&&live::MidiBinding::universe[i]->obj==p.first())
+                if(!live::MidiBinding::universe[i]->controller&&live::MidiBinding::universe[i]->key==data->note()&&live::MidiBinding::universe[i]->obj==p->first())
                 {
                     return;
                 }
@@ -226,21 +226,21 @@ public slots:
         }
         if(data->simpleStatus()==0xB0)
         {
-            if(!live::MidiBinding::customKey->value(p.first(),0)||live::MidiBinding::customKey->value(p.first(),0)[data->note()].valid())
+            if(!live::MidiBinding::customKey->value(p->first(),0)||live::MidiBinding::customKey->value(p->first(),0)[data->note()].valid())
             {
                 return;
             }
             for(int i=0;i<live::MidiBinding::universe;i++)
             {
-                if(live::MidiBinding::universe[i]->controller&&live::MidiBinding::universe[i]->key==data->note()&&live::MidiBinding::universe[i]->obj==p.first())
+                if(live::MidiBinding::universe[i]->controller&&live::MidiBinding::universe[i]->key==data->note()&&live::MidiBinding::universe[i]->obj==p->first())
                 {
                     return;
                 }
             }
         }
-        p.push_back(this);
+        p->push_back(this);
         mOut(data,p);
-        p.pop_back();
+        p->pop_back();
     }
 };
 

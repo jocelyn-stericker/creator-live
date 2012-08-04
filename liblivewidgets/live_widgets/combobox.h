@@ -15,8 +15,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 namespace live_widgets {
 
-class LIBLIVEWIDGETSSHARED_EXPORT ComboBox : public QComboBox
-{
+class LIBLIVEWIDGETSSHARED_EXPORT ComboBox : public QComboBox {
     Q_OBJECT
     bool s_bindMode;
 public:

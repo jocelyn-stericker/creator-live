@@ -847,7 +847,7 @@ void MidiFile::deltaTime(void) {
    int i, j;
    int temp;
    int length = getNumTracks();
-   int *timedata = new int[length];
+   int* timedata = new int[length];
    for (i=0; i<length; i++) {
       timedata[i] = 0;
       if (events[i]->getSize() > 0) {

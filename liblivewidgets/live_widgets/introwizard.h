@@ -20,8 +20,7 @@ class IntroWizard;
 
 namespace live_widgets {
 
-class LIBLIVEWIDGETSSHARED_EXPORT IntroWizard : public QWidget
-{
+class LIBLIVEWIDGETSSHARED_EXPORT IntroWizard : public QWidget {
     Q_OBJECT
     
 public:

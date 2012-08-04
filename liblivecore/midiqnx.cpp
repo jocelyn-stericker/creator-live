@@ -7,14 +7,14 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live/midi.h"
+#include "live/midi"
 #include "midisystem_p.h"
-#include "live/midifilter.h"
-#include "live/midibinding.h"
-#include "live/audio.h"
-#include "live/midievent.h"
+#include "live/midifilter"
+#include "live/midibinding"
+#include "live/audio"
+#include "live/midievent"
 #include <QtConcurrentRun>
-#include <time.h>
+#include <time>
 
 using namespace live_private;
 
@@ -30,26 +30,21 @@ SecretMidi
 
 SecretMidi* SecretMidi::me=0;
 
-void SecretMidi::init()
-{
+void SecretMidi::init() {
     this->start();
 }
 
-void SecretMidi::refresh()
-{
+void SecretMidi::refresh() {
 }
 
-void SecretMidi::run()      // [MIDI THREAD]
-{
-    forever
-    {
+void SecretMidi::run() { // [MIDI THREAD]
+    forever {
         msleep(12);
         live::Object::beginProc();
         NOSYNC;
 
         for(int i=0;i<withheld_ev.size();i++) {
-            if(withheld_ev[i]->time.toTime_ms()-live::midi::getTime_msec()<5)
-            {
+            if(withheld_ev[i]->time.toTime_ms()-live::midi::getTime_msec()<5) {
                 ///////////////////////////
                 live::Object::endProc(); ////////
                 lock.unlock(); ////////////
@@ -76,36 +71,30 @@ void SecretMidi::run()      // [MIDI THREAD]
     }
 }
 
-void SecretMidi::queue(const live::Event* ev, int device, live::ObjectChain from)   // NOT MIDI THREAD
-{
+void SecretMidi::queue(const live::Event* ev, int device, live::ObjectChain from) { // NOT MIDI THREAD
 
 }
 
-void SecretMidi::cancel(live::ObjectPtr from)
-{
+void SecretMidi::cancel(live::ObjectPtr from) {
     NOSYNC;
-    for(int i=0; i<fromqueue.size(); i++)
-    {
+    for(int i=0; i<fromqueue.size(); i++) {
         bool ok=0;
         for(int j=0;j<fromqueue[i].size();j++) {
             if(fromqueue[i][j].data()==from.data()) {ok=1;break;}
         }
-        if(ok)
-        {
+        if(ok) {
             idqueue.removeAt(i);
             fromqueue.removeAt(i);
             i--;
         }
     }
 
-    for(int i=0; i<withheld_ev.size(); i++)
-    {
+    for(int i=0; i<withheld_ev.size(); i++) {
         bool ok=0;
         for(int j=0;j<withheld_p[i].size();j++) {
             if(withheld_p[i][j].data()==from.data()) {ok=1;break;}
         }
-        if(ok)
-        {
+        if(ok) {
             withheld_ev.removeAt(i);
             withheld_p.removeAt(i);
             withheld_obj.removeAt(i);
@@ -115,8 +104,7 @@ void SecretMidi::cancel(live::ObjectPtr from)
     }
 }
 
-void SecretMidi::mWithhold(live::Event* x,live::ObjectChain p,live::ObjectPtr obj, bool reverse)
-{
+void SecretMidi::mWithhold(live::Event* x,live::ObjectChain p,live::ObjectPtr obj, bool reverse) {
     NOSYNC;
     x->buddy=0;
     withheld_ev.push_back(x);
@@ -125,13 +113,10 @@ void SecretMidi::mWithhold(live::Event* x,live::ObjectChain p,live::ObjectPtr ob
     withheld_reverse.push_back(reverse);
 }
 
-void SecretMidi::mRemoveWithheld(live::ObjectPtr obj)
-{
+void SecretMidi::mRemoveWithheld(live::ObjectPtr obj) {
     NOSYNC;
-    for(int i=0;i<withheld_ev.size();i++)
-    {
-        if(withheld_obj[i]==obj)
-        {
+    for(int i=0;i<withheld_ev.size();i++) {
+        if(withheld_obj[i]==obj) {
             delete withheld_ev.takeAt(i);
             withheld_p.removeAt(i);
             withheld_obj.removeAt(i);
@@ -141,13 +126,10 @@ void SecretMidi::mRemoveWithheld(live::ObjectPtr obj)
     }
 }
 
-void SecretMidi::mRemoveWithheld_object_dest(live::Object* obj)
-{
+void SecretMidi::mRemoveWithheld_object_dest(live::Object* obj) {
     NOSYNC;
-    for(int i=0;i<withheld_ev.size();i++)
-    {
-        if(withheld_obj[i].data()==obj)
-        {
+    for(int i=0;i<withheld_ev.size();i++) {
+        if(withheld_obj[i].data()==obj) {
             delete withheld_ev.takeAt(i);
             withheld_p.removeAt(i);
             withheld_obj.removeAt(i);
@@ -166,8 +148,7 @@ Physical Ports
 MidiIn::MidiIn(QString ccname,int devId) :
     live::Object(ccname,true,false),
     valid(1),
-    deviceId(devId)
-{
+    deviceId(devId) {
     setTemporary(0);
 
     live::ObjectPtr*x=new live::ObjectPtr[200];
@@ -181,55 +162,44 @@ MidiIn::MidiIn(QString ccname,int devId) :
 }
 
 MidiNull::MidiNull() :
-    live::Object("Null Midi Device",false,false)
-{
+    live::Object("Null Midi Device",false,false) {
 
 }
 
-void MidiNull::mIn(const live::Event *, live::ObjectChain&)
-{
+void MidiNull::mIn(const live::Event *, live::ObjectChain*) {
 }
 
-void MidiOut::mIn(const live::Event *ev, live::ObjectChain&p)
-{
+void MidiOut::mIn(const live::Event *ev, live::ObjectChain*p) {
     setTemporary(0);
 
     if(!ev) return;
-    if(ev->flareId!=-1)
-    {
-        if(ev->flareId==0)
-        {
-            if(p.size()) SecretMidi::me->cancel(p.first());
+    if(ev->flareId!=-1) {
+        if(ev->flareId==0) {
+            if(p->size()) SecretMidi::me->cancel(p->first());
         }
-    }
-    else
-    {
+    } else {
         SecretMidi::me->queue(ev,device,p);
     }
 }
 
-void live::midi::refresh()
-{
+void live::midi::refresh() {
     if(!SecretMidi::me) new SecretMidi;
     SecretMidi::me->refresh();
 }
 
-live::ObjectPtr live::midi::getNull()
-{
+live::ObjectPtr live::midi::getNull() {
     if(!SecretMidi::me) new SecretMidi;
 
     return new MidiNull;
 }
 
-int live::midi::getTime_msec()
-{
+int live::midi::getTime_msec() {
     timespec ts;
     clock_gettime(CLOCK_REALTIME,&ts);
     return (ts.tv_sec-1341653917)*1000+ts.tv_nsec/1000000;    // <- look at all those zeros we don't care about :)
 }
 
-live::Time live::midi::getTime()
-{
+live::Time live::midi::getTime() {
     return live::Time(getTime_msec());
 }
 

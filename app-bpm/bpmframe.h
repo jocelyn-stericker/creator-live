@@ -11,9 +11,9 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define FILTERFRAME_H
 
 #include "bpmapp.h"
-#include <live/app.h>
-#include <live/appinterface.h>
-#include <live/variantbinding.h>
+#include <live/app>
+#include <live/appinterface>
+#include <live/variantbinding>
 #include <live_widgets/appframe.h>
 #include <live_widgets/rotatedlabel.h>
 #include <live_widgets/toolbutton.h>

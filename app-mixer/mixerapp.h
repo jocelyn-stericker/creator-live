@@ -10,8 +10,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef MIXERAPP_H
 #define MIXERAPP_H
 
-#include <live/object.h>
-#include <live/variantbinding.h>
+#include <live/object>
+#include <live/variantbinding>
 
 class MixerApp : public QObject, public live::Object
 {
@@ -27,8 +27,8 @@ public:
     RELOADABLE(MixerApp)
     MixerApp();
     ~MixerApp();
-    void aIn(const float *data, int chan, live::ObjectChain &p);
-    void mIn(const live::Event *data, live::ObjectChain &p);
+    void aIn(const float *data, int chan, live::ObjectChain* p);
+    void mIn(const live::Event *data, live::ObjectChain* p);
 };
 
 #endif // MIXERAPP_H

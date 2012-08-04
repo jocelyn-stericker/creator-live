@@ -10,7 +10,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef PITCH_H
 #define PITCH_H
 
-#include <live/object.h>
+#include <live/object>
 
 class PitchAppAudioR;
 
@@ -37,8 +37,8 @@ public slots:
     void shiftUp();
     void shiftDown();
     void setShift(const int& s);
-    void aIn(const float *data, int chan, live::ObjectChain&p);
-    void mIn(const live::Event *data, live::ObjectChain&p);
+    void aIn(const float *data, int chan, live::ObjectChain*p);
+    void mIn(const live::Event *data, live::ObjectChain*p);
 };
 
 #endif // PITCH_H

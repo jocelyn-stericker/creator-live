@@ -7,6 +7,6 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include <live/timesignature.h>
+#include <live/timesignature>
 
 live::TimeSignature::TimeSignature(int cnum,int cden) : numerator(cnum), denomenator(cden) { }

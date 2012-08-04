@@ -176,7 +176,7 @@ void SequencerGraph::updateAudioData( int t1, int t2 )
                 painter.fillRect( (j-s_initial)*wscale, 1000*hscale,
                                   1, maxx*1000*hscale,(qMax(qAbs(minx),maxx)>=1.0?red:white) );
             }
-            qDebug()<<"PROC:"<<c;
+            qDebug() << "PROC:"<<c;
             painter.end();
             update();
         }
@@ -224,7 +224,7 @@ void SequencerGraph::updateAudioData( int t1, int t2 )
                 painter.fillRect( (j-s_initial)*wscale, 1000*hscale,
                                   1, maxx*1000*hscale,(qMax(qAbs(minx),maxx)>=1.0?red:white) );
             }
-//            qDebug()<<"PROC2"<<c;
+//            qDebug() << "PROC2"<<c;
             painter.end();
             update(QRect((lastA-s_initial)*wscale,0,lastB*wscale,2000*hscale));
             lastA=t1;
@@ -308,7 +308,7 @@ void SequencerGraph::updateMidiData(float t1, float t2)
                                 30 );
             }
         }
-//        qDebug()<<"I"<<cache.size();
+//        qDebug() << "I"<<cache.size();
         for ( int i = 0; i < cache.size(); i++ )
         {
             const float left=qMin((double)s_scale+s_initial,(double)app->pos()/1000.0*(float)sampleRate);
@@ -631,7 +631,7 @@ void SequencerGraph::keyPressEvent(QKeyEvent *ev)
 
         int a = qMin(selection,(float)app->pos());
         int b = qMax(selection,(float)app->pos());
-        qDebug()<<"$"<<selection<<app->pos();
+        qDebug() << "$"<<selection<<app->pos();
 
         midiTrack->remove(a,b);
 

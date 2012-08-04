@@ -10,10 +10,10 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QApplication>
 #include "apptester.h"
 #include "instrumenttester.h"
-#include "live/appinterface.h"
-#include "live/core.h"
-#include "live/instrumentinterface.h"
-#include "live/instrument.h"
+#include "live/appinterface"
+#include "live/core"
+#include "live/instrumentinterface"
+#include "live/instrument"
 #include "live/../audiosystem_p.h"
 #include <QSettings>
 #include <QFontDatabase>
@@ -81,10 +81,10 @@ int main(int argc, char *argv[])
         if(plugin) {
             AppInterface* appi=qobject_cast<AppInterface*>(plugin);
             InstrumentInterface* insti=qobject_cast<InstrumentInterface*>(plugin);
-            if(appi) do app::registerInterface(appi); while((appi=appi->next()));
-            if(insti) do instrument::registerInterface(insti); while((insti=insti->next()));
+            if(appi) do app::registerInterface(appi); while ((appi=appi->next()));
+            if(insti) do instrument::registerInterface(insti); while ((insti=insti->next()));
 
-        } else qDebug()<<"ERROR:"<<qPrintable(loader.errorString());
+        } else qDebug() << "ERROR:"<<qPrintable(loader.errorString());
     }
 
     QStringList list;

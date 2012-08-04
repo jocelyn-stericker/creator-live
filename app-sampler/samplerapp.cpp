@@ -8,7 +8,7 @@ Sampler.cpp                                rev. 110731
 *****************************************************/
 
 #include "samplerapp.h"
-#include <live/midibinding.h>
+#include <live/midibinding>
 
 using namespace live;
 
@@ -194,7 +194,7 @@ void SamplerApp::setBindingMode(int b)
     }
 }
 
-void SamplerApp::aIn(const float *in, int chan, ObjectChain&p)
+void SamplerApp::aIn(const float *in, int chan, ObjectChain*p)
 {
     int nframes=audio::nFrames();
 
@@ -210,9 +210,9 @@ void SamplerApp::aIn(const float *in, int chan, ObjectChain&p)
     {
         for (int i=0;i<16;i++)
         {
-            p.push_back(this);
+            p->push_back(this);
             s_audioTracks[i]->aIn(in,chan,p);
-            p.pop_back();
+            p->pop_back();
         }
     }
     else
@@ -223,33 +223,33 @@ void SamplerApp::aIn(const float *in, int chan, ObjectChain&p)
         }
     }
 
-    p.push_back(this);
+    p->push_back(this);
     aOut(proc?proc:in,chan,p);
-    p.pop_back();
+    p->pop_back();
     delete[]proc;
 }
 
-void SamplerApp::mIn(const Event *data, ObjectChain&p)
+void SamplerApp::mIn(const Event *data, ObjectChain*p)
 {
     NOSYNC;
-//    if (!MidiBindingQt::customKey->value(p.first(),0))
+//    if (!MidiBindingQt::customKey->value(p->first(),0))
 //    {
-//        p.push_back(this);
+//        p->push_back(this);
 //        mOut(data,p);
-//        p.pop_back();
+//        p->pop_back();
 //        return;
 //    }
-    if (!s_customBindings.value(p.first()))
+    if (!s_customBindings.value(p->first()))
     {
-        s_customBindings.insert(p.first(),new int[200]);    //mem
+        s_customBindings.insert(p->first(),new int[200]);    //mem
         for (int i=0;i<200;i++)
         {
-            s_customBindings.value(p.first())[i]=-1;
+            s_customBindings.value(p->first())[i]=-1;
         }
     }
     for (int i=0;i<16;i++)
     {
-        if (p.size()&&p.back()==s_midiTracks[i])
+        if (p->size()&&p->back()==s_midiTracks[i])
         {
             mOut(data,p);
             return;
@@ -258,29 +258,29 @@ void SamplerApp::mIn(const Event *data, ObjectChain&p)
 
     if ((s_bindingMode!=-1)&&data->simpleStatus()==Event::NOTE_ON&&data->velocity())
     {
-        Q_ASSERT(!MidiBinding::customKey->value(p.first())[data->note()]);
-        s_customBindings.value(p.first())[data->note()]=s_bindingMode;
-        MidiBinding::customKey->value(p.first())[data->note()]=this;
+        Q_ASSERT(!MidiBinding::customKey->value(p->first())[data->note()]);
+        s_customBindings.value(p->first())[data->note()]=s_bindingMode;
+        MidiBinding::customKey->value(p->first())[data->note()]=this;
         s_bindingMode=-1;
     }
-    else if (data->simpleStatus()==Event::NOTE_ON&&data->velocity()&&(s_customBindings.value(p.first())[data->note()]!=-1))
+    else if (data->simpleStatus()==Event::NOTE_ON&&data->velocity()&&(s_customBindings.value(p->first())[data->note()]!=-1))
     {
-        hit(s_customBindings.value(p.first())[data->note()]);
+        hit(s_customBindings.value(p->first())[data->note()]);
     }
     else if ((data->simpleStatus()==Event::NOTE_OFF||data->simpleStatus()==Event::NOTE_ON)&&!data->velocity()&&
-              s_customBindings.value(p.first())[data->note()]!=-1)
+              s_customBindings.value(p->first())[data->note()]!=-1)
     {
-        release(s_customBindings.value(p.first())[data->note()]);
+        release(s_customBindings.value(p->first())[data->note()]);
     }
     else
     {
-        p.push_back(this);
+        p->push_back(this);
         for (int i=0;i<16;i++)
         {
             s_midiTracks[i]->mIn(data,p);
         }
         mOut(data,p);
-        p.pop_back();
+        p->pop_back();
     }
 }
 

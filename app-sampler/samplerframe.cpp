@@ -13,8 +13,8 @@ SamplerFrame.cpp                           rev. 110731
 
 #include <QtPlugin>
 
-#include <live/midibinding.h>
-#include <live/midi.h>
+#include <live/midibinding>
+#include <live/midi>
 
 using namespace live;
 

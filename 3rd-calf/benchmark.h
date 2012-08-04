@@ -21,8 +21,8 @@
 #ifndef __CALF_BENCHMARK_H
 #define __CALF_BENCHMAR_H
 
-#include <time.h>
-#include <sys/time.h>
+#include <time>
+#include <sys/time>
 #include <sys/resource.h>
 #include "primitives.h"
 #include <algorithm>
@@ -37,7 +37,7 @@ namespace dsp {
 class median_stat
 {
 public:
-    double *data;
+    double* data;
     unsigned int pos, count;
     bool sorted;
     

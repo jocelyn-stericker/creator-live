@@ -15,8 +15,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 namespace live_widgets {
 
-class LIBLIVEWIDGETSSHARED_EXPORT Slider : public QSlider
-{
+class LIBLIVEWIDGETSSHARED_EXPORT Slider : public QSlider {
     Q_OBJECT
     bool s_bindMode;
 public:

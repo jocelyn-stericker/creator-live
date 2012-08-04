@@ -7,5 +7,5 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include <live/appinterface.h>
+#include <live/appinterface>
 

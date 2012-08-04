@@ -18,7 +18,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QMutexLocker>
 #include <algorithm>
 
-#include "liblivecore_global.h"
+#include "liblivecore_global"
 
 class LiveWindow;
 
@@ -80,18 +80,18 @@ public:
     // Audio data is sent first in chan 0 (left) then in chan 1 (right) as an array of AudioSys::nFrames() floats.
 
     /** Reimplement this function to handle audio data. If you call aIn from outside both an aIn or an mIn, use beginProc() and endProc().*/
-    virtual void aIn (const float*data,int chan,ObjectChain&p) { p.push_back(this); aOut(data,chan,p); p.pop_back(); }
+    virtual void aIn (const float*data,int chan,ObjectChain*p) { p->push_back(this); aOut(data,chan,p); p->pop_back(); }
     /** In aIn(...) call aOut(...) when processing is finished. This must be called EXACTLY ONCE (i.e., it must be called, and not more than once) from every aIn function. */
-    void aOut(const float*data,int chan,ObjectChain&p);
+    void aOut(const float*data,int chan,ObjectChain*p);
     /** Use the LIVE_HYBRID, LIVE_MIDI and LIVE_AUDIO macros. */
     virtual bool isAudioObject()=0;
 
 
     /** Reimplement this function to handle midi data. If you call mIn from outside both an aIn or an mIn, use {begin|end}Proc().*/
-    virtual void mIn(const Event*data,ObjectChain&p) { p.push_back(this); mOut(data,p); p.pop_back(); }
+    virtual void mIn(const Event*data,ObjectChain*p) { p->push_back(this); mOut(data,p); p->pop_back(); }
     /** In mIn(...) call mOut(...) when processing is finished. This may be called as many times (including 0) inside an mIn.
      * If you send an event which is sent early it will be withheld until it is time for it to be sent on. */
-    void mOut(const Event *data, ObjectChain &p);
+    void mOut(const Event *data, ObjectChain* p);
     /** For effects, reimplement this function to undo what would have been done in mIn. For example, if mIn would raise data by a semitone, mInverse would lower it by a semitone.
      *  Then, output your result with 'mOutverse(data, p)'
      *
@@ -102,9 +102,9 @@ public:
      *
      *  Ambition-like classes should reimplement this function with 'mOut(data,p);'
      */
-    virtual void mInverse(const Event*data,ObjectChain&p) { Q_ASSERT(p.size()); p.pop_back(); mOutverse(data,p); p.push_back(this); }
+    virtual void mInverse(const Event*data,ObjectChain*p) { Q_ASSERT(p->size()); p->pop_back(); mOutverse(data,p); p->push_back(this); }
     /** See the note on mInverse. */
-    void mOutverse(const Event* data,ObjectChain &p);
+    void mOutverse(const Event* data,ObjectChain* p);
     /** Use the LIVE_HYBRID, LIVE_MIDI and LIVE_AUDIO macros. */
     virtual bool isMidiObject()=0;
 
@@ -130,7 +130,7 @@ public:
     static void endAsyncAction();
 
 
-    virtual QByteArray save() { qCritical()<<"Hybrid::save() called on "<<s_name; qCritical("Hybrid::save() called on a non-savable type!!"); return QByteArray(); }
+    virtual QByteArray save() { qCritical() << "Hybrid::save() called on "<<s_name; qCritical("Hybrid::save() called on a non-savable type!!"); return QByteArray(); }
     friend class SecretMidi;
 
     virtual void newConnection() {}
@@ -195,7 +195,7 @@ protected:
             mixer_data[chan][i]+=data[i];
         if(++mixer_at[chan]==aInverseConnections.size()) {
             ObjectChain p;
-            aIn(mixer_data[chan],chan,p);
+            aIn(mixer_data[chan],chan, &p);
             mixer_clear();
             mixer_at[chan]=0;
         }

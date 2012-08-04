@@ -13,45 +13,36 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QVBoxLayout>
 #include <QLabel>
 
-live_widgets::DropFrame::DropFrame(QWidget*p) : QFrame(p), s_dl(0)
-{
+live_widgets::DropFrame::DropFrame(QWidget*p) : QFrame(p), s_dl(0) {
     setAcceptDrops(1);
 }
 
-live_widgets::DropFrame::~DropFrame()
-{
+live_widgets::DropFrame::~DropFrame() {
     delete s_dl;
 }
 
-void live_widgets::DropFrame::dragEnterEvent(QDragEnterEvent *e)
-{
-    if (e->mimeData()->hasFormat("text/plain"))
-    {
+void live_widgets::DropFrame::dragEnterEvent(QDragEnterEvent *e) {
+    if (e->mimeData()->hasFormat("text/plain")) {
         e->acceptProposedAction();
     }
 }
 
-void live_widgets::DropFrame::dropEvent(QDropEvent *e)
-{
+void live_widgets::DropFrame::dropEvent(QDropEvent *e) {
     setText(e->mimeData()->text());
 }
 
-QString live_widgets::DropFrame::text()
-{
+QString live_widgets::DropFrame::text() {
     return(s_dl?s_dl->text():"");
 }
 
-void live_widgets::DropFrame::setText(QString x)
-{
-    if (s_dl)
-    {
+void live_widgets::DropFrame::setText(QString x) {
+    if (s_dl) {
         delete s_dl;
         s_dl=0;
     }
     s_dl=new QLabel;
     s_dl->setText(x);
-    if (!layout())
-    {
+    if (!layout()) {
         setLayout(new QVBoxLayout());
     }
     layout()->setMargin(0);

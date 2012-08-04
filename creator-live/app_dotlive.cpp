@@ -19,7 +19,7 @@ app_dotlive.cpp
 #include <live_widgets/vscrollcontainer.h>
 #include "trackgroupaudio.h"
 #include "trackgroupmidi.h"
-#include <live/core.h>
+#include <live/core>
 #include <live_widgets/appframe.h>
 #include <QMessageBox>
 
@@ -51,8 +51,8 @@ template<typename T> bool verify1(QDataStream&ret,T chk)
     ret IO b;
     if (b!=chk)
     {
-        qCritical()<<"Found"<<b;
-        qCritical()<<"Should be"<<chk;
+        qCritical() << "Found"<<b;
+        qCritical() << "Should be"<<chk;
         Q_ASSERT(0);
     }
     return b==chk;
@@ -73,8 +73,8 @@ template<typename T> bool verify2(QDataStream&ret,T chk)
     ret IO b;
     if (b!=chk)
     {
-        qCritical()<<"Found"<<b;
-        qCritical()<<"Should be"<<chk;
+        qCritical() << "Found"<<b;
+        qCritical() << "Should be"<<chk;
         Q_ASSERT(0);
     }
     return b==chk;

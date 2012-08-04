@@ -11,8 +11,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include "samplerapp.h"
 
-#include <live/app.h>
-#include <live/appinterface.h>
+#include <live/app>
+#include <live/appinterface>
 #include <live_widgets/appframe.h>
 #include <QMenu>
 

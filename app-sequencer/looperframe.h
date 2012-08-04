@@ -13,7 +13,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "looperapp.h"
 #include "sequencergraph.h"
 
-#include <live/appinterface.h>
+#include <live/appinterface>
 #include <live_widgets/appframe.h>
 
 namespace Ui

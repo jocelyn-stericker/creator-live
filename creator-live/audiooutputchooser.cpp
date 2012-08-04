@@ -10,8 +10,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "audiooutputchooser.h"
 #include "ui_audiooutputchooser.h"
 #include <live_widgets/midibindingqt.h>
-#include <live/object.h>
-#include <live/audio.h>
+#include <live/object>
+#include <live/audio>
 #include <cmath>
 #include <math.h>
 

@@ -198,7 +198,7 @@ void Vst::hide()
     rep->vstEditor->hide();
 }
 
-void Vst::aIn(const float* x, int chan, ObjectChain&s)
+void Vst::aIn(const float* x, int chan, ObjectChain*s)
 {
     QMutexLocker lock(&csMutex);
     Q_UNUSED(lock);
@@ -231,11 +231,11 @@ void Vst::PROC_VST()
     }
 }
 
-void Vst::mIn(const Event *data, ObjectChain&p)
+void Vst::mIn(const Event *data, ObjectChain*p)
 {
-    p.push_back(this);
+    p->push_back(this);
     mOut(data,p);
-    p.pop_back();
+    p->pop_back();
 
     if (data->simpleStatus()==-1) return;
     QMutexLocker lock(&csMutex);
@@ -244,7 +244,7 @@ void Vst::mIn(const Event *data, ObjectChain&p)
     Event* ev=new Event;
     *ev=*data;
     rep->midiQueue.push_back(ev);
-    rep->sourceQueue.push_back(p.back());   //check this
+    rep->sourceQueue.push_back(p->back());   //check this
 
 
     //a.events = b;

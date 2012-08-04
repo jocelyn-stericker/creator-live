@@ -19,15 +19,14 @@ class QDrag;
 
 namespace live_widgets {
 
-class LIBLIVEWIDGETSSHARED_EXPORT DragLabel : public QLabel
-{
+class LIBLIVEWIDGETSSHARED_EXPORT DragLabel : public QLabel {
     Q_OBJECT
     QDrag* s_drag;
 public:
     explicit DragLabel(QWidget *parent = 0);
     void mousePressEvent(QMouseEvent *e);
     ~DragLabel() {
-        qDebug()<<"LABEL IS BEING DESTROYED!";
+        qDebug() << "LABEL IS BEING DESTROYED!";
     }
 
 signals:

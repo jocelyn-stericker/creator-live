@@ -35,7 +35,7 @@ SequencerApp::SequencerApp(QString name,MidiTrack*cmidiTrack,AudioTrack*caudioTr
 
 SequencerApp::~SequencerApp()
 {
-    qDebug()<<"!!DEL";
+    qDebug() << "!!DEL";
     delete s_midiTrack;
     delete s_audioTrack;
     delete s_counter;
@@ -57,7 +57,7 @@ const bool& SequencerApp::isPlaying() const
 {
     if (s_midiTrack->isPlay()!=s_audioTrack->isPlay())
     {
-        qDebug()<<"UH OH!!!";
+        qDebug() << "UH OH!!!";
         qDebug()<<s_midiTrack->isPlay()<<s_audioTrack->isPlay();
     }
     Q_ASSERT(s_midiTrack->isPlay()==s_audioTrack->isPlay());
@@ -164,17 +164,14 @@ void SequencerApp::setClipped(bool clipped)
 }
 
 
-void SequencerApp::aIn(const float *data, int chan, ObjectChain&p)
+void SequencerApp::aIn(const float *data, int chan, ObjectChain*p)
 {
-    if (p.back()==s_audioTrack)
-    {
+    if (p->back()==s_audioTrack) {  // FIXME: eliminate ObjectChain
         aOut(data,chan,p);
-    }
-    else
-    {
-        p.push_back(this);
+    } else {
+        p->push_back(this);
         s_audioTrack->aIn(data,chan,p);
-        p.pop_back();
+        p->pop_back();
     }
 }
 
@@ -184,17 +181,17 @@ void SequencerApp::setScale(int z)
     emit scaleChanged(z);
 }
 
-void SequencerApp::mIn(const Event *data, ObjectChain&p)
+void SequencerApp::mIn(const Event *data, ObjectChain*p)
 {
-    if (p.back()==s_midiTrack)
+    if (p->back()==s_midiTrack)
     {
         mOut(data,p);
         return;
     }
-    p.push_back(this);
+    p->push_back(this);
     s_counter->mIn(data,p);
     s_midiTrack->mIn(data,p);
-    p.pop_back();
+    p->pop_back();
 }
 
 SequencerSys* SequencerSys::self=0;

@@ -10,7 +10,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef AUDIOINTERFACE_H
 #define AUDIOINTERFACE_H
 
-#include "live/object.h"
+#include "live/object"
 
 namespace live {
 
@@ -20,11 +20,11 @@ public:
     virtual ~AudioInterface()
     {
 //      Make sure you clean up. For example:
-//        while(inputs.size())
+//        while (inputs.size())
 //        {
 //            delete inputs.takeFirst();
 //        }
-//        while(outputs.size())
+//        while (outputs.size())
 //        {
 //            delete outputs.takeFirst();
 //        }

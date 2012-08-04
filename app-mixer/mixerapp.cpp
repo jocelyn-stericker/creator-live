@@ -9,8 +9,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include "mixerapp.h"
 
-#include <live/audio.h>
-#include <live/midievent.h>
+#include <live/audio>
+#include <live/midievent>
 
 using namespace live;
 
@@ -26,7 +26,7 @@ MixerApp::~MixerApp()
     _u.removeOne(this);
 }
 
-void MixerApp::aIn(const float *data, int chan, ObjectChain &p)
+void MixerApp::aIn(const float *data, int chan, ObjectChain* p)
 {
     bool zero=0;
     if (!b_solo)
@@ -42,9 +42,9 @@ void MixerApp::aIn(const float *data, int chan, ObjectChain &p)
 
     if (b_pan.ref()==50&&b_vol.ref()==100)
     {
-        p.push_back(this);
+        p->push_back(this);
         aOut(data,chan,p);
-        p.pop_back();
+        p->pop_back();
         return;
     }
     const int& nframes=audio::nFrames();
@@ -74,14 +74,14 @@ void MixerApp::aIn(const float *data, int chan, ObjectChain &p)
         }
     }
 
-    p.push_back(this);
+    p->push_back(this);
     aOut(dx,chan,p);
-    p.pop_back();
+    p->pop_back();
 
     delete[]dx;
 }
 
-void MixerApp::mIn(const Event *data, ObjectChain &p)
+void MixerApp::mIn(const Event *data, ObjectChain* p)
 {
     if (!b_solo)
     {
@@ -103,7 +103,7 @@ void MixerApp::mIn(const Event *data, ObjectChain &p)
     {
         x.setVelocity((float)x.velocity()*(float)b_vol/100.0f);
     }
-    p.push_back(this);
+    p->push_back(this);
     mOut(&x,p);
 
     if (b_pan!=50)
@@ -113,5 +113,5 @@ void MixerApp::mIn(const Event *data, ObjectChain &p)
         x.data2=(float)b_pan/100.0f*127.0f;
         mOut(&x,p);
     }
-    p.pop_back();
+    p->pop_back();
 }

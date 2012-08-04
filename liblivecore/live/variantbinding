@@ -13,7 +13,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QVariant>
 #include <QDebug>
 
-#include "liblivecore_global.h"
+#include "liblivecore_global"
 
 namespace live {
 

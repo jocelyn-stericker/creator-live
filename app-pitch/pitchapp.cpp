@@ -8,8 +8,8 @@ Pitch.cpp                                  rev. 110720
 *****************************************************/
 
 #include "pitchapp_p.h"
-#include <live/midievent.h>
-#include <live/audio.h>
+#include <live/midievent>
+#include <live/audio>
 
 using namespace live;
 
@@ -50,26 +50,26 @@ void PitchApp::setShift(const int &s)
     s_audioR->setPitchShift(s);
 }
 
-void PitchApp::aIn(const float *data, int chan, ObjectChain&p)
+void PitchApp::aIn(const float *data, int chan, ObjectChain*p)
 {
-    if (p.back()==s_audioR)
+    if (p->back()==s_audioR)
     {
         aOut(data,chan,p);
     }
     else
     {
-        p.push_back(this);
+        p->push_back(this);
         s_audioR->aIn(data,chan,p);
-        p.pop_back();
+        p->pop_back();
     }
 }
 
-void PitchApp::mIn(const Event *data, ObjectChain&p)
+void PitchApp::mIn(const Event *data, ObjectChain*p)
 {
     if (!s_mOn) {
-        p.push_back(this);
+        p->push_back(this);
         mOut(data,p);
-        p.pop_back();
+        p->pop_back();
         return;
     }
 
@@ -77,9 +77,9 @@ void PitchApp::mIn(const Event *data, ObjectChain&p)
 
     *nd = *data;
     nd->setNote((qint16)((data->simpleStatus()==Event::NOTE_ON)||(data->simpleStatus()==Event::NOTE_OFF)?data->note()+s_stShift:data->note()));
-    p.push_back(this);
+    p->push_back(this);
     mOut(nd,p);   // DIRECT CONNECTION!?
-    p.pop_back();
+    p->pop_back();
     delete nd;
 }
 
@@ -111,14 +111,14 @@ float PitchAppAudioR::latency_msec()
     return (float)s_latency/((float)audio::sampleRate())*1000.0f;
 }
 
-void PitchAppAudioR::aIn(const float *data, int chan, ObjectChain&p)
+void PitchAppAudioR::aIn(const float *data, int chan, ObjectChain*p)
 {
     Q_ASSERT(chan<2);
 
     if (!s_aOn) {
-        p.push_back(this);
+        p->push_back(this);
         aOut(data,chan,p);
-        p.pop_back();
+        p->pop_back();
         return;
     }
 
@@ -160,9 +160,9 @@ void PitchAppAudioR::aIn(const float *data, int chan, ObjectChain&p)
             proc[i]=s_outCache[2*i];
         }
     }
-    p.push_back(this);
+    p->push_back(this);
     aOut(proc,chan,p);
-    p.pop_back();
+    p->pop_back();
     delete[]proc;
 }
 void PitchAppAudioR::setPitchShift(int x) {

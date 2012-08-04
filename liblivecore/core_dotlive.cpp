@@ -14,28 +14,28 @@ core_dotlive.cpp
  properties are written here. You can thank my OCD...
 *****************************************************/
 
-#include <live/app.h>
-#include <live/anabeat.h>
-#include <live/ambition.h>
-#include <live/asyncconnect.h>
-#include <live/audio.h>
-#include <live/audiotrack.h>
-#include <live/chord.h>
-#include <live/keysignature.h>
-#include <live/object.h>
-#include <live/time.h>
-#include <live/mapping.h>
-#include <live/metronome.h>
-#include <live/midibinding.h>
-#include <live/midievent.h>
-#include <live/midifilter.h>
-#include <live/midi.h>
-#include <live/miditrack.h>
-#include <live/pitch.h>
-#include <live/songsystem.h>
-#include <live/timesignature.h>
-#include <live/variantbinding.h>
-#include <live/appinterface.h>
+#include <live/app>
+#include <live/anabeat>
+#include <live/ambition>
+#include <live/asyncconnect>
+#include <live/audio>
+#include <live/audiotrack>
+#include <live/chord>
+#include <live/keysignature>
+#include <live/object>
+#include <live/time>
+#include <live/mapping>
+#include <live/metronome>
+#include <live/midibinding>
+#include <live/midievent>
+#include <live/midifilter>
+#include <live/midi>
+#include <live/miditrack>
+#include <live/pitch>
+#include <live/songsystem>
+#include <live/timesignature>
+#include <live/variantbinding>
+#include <live/appinterface>
 
 #ifndef CORE_DOTLIVE_CPP
 #define CORE_DOTLIVE_CPP

@@ -17,8 +17,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 namespace live_widgets {
 
-class LIBLIVEWIDGETSSHARED_EXPORT RotatedLabel : public QLabel
-{
+class LIBLIVEWIDGETSSHARED_EXPORT RotatedLabel : public QLabel {
     Q_OBJECT
 public:
     explicit RotatedLabel( QWidget *parent = 0 );

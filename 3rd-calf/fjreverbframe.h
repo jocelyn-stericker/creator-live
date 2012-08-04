@@ -25,7 +25,7 @@
 #include <QWidget>
 
 #include <live_widgets/appframe.h>
-#include <live/appinterface.h>
+#include <live/appinterface>
 #include "fjreverbapp.h"
 #include "fjflangerframe.h"
 

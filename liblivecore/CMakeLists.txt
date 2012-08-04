@@ -44,40 +44,40 @@ list (APPEND liblivecore_cpp
     ambition.cpp
 )
 
-list (APPEND liblivecore_h
-    live/audio.h 
-    live/liblivecore_global.h 
-    live/songsystem.h 
-    live/timesignature.h 
-    live/mapping.h 
-    live/keysignature.h 
-    live/midifilter.h 
-    live/pitch.h 
-    live/midievent.h 
-    live/asyncconnect.h 
-    live/chord.h 
-    live/time.h 
-    live/core.h 
-    live/audiosecond.h 
-    live/audiointerface.h 
-    live/appinterface.h 
-    live/instrumentinterface.h 
-    live/midi.h 
-    live/app.h 
-    live/instrument.h 
-    live/midieventcounter.h 
+list (APPEND liblivecore
+    live/audio 
+    live/liblivecore_global 
+    live/songsystem 
+    live/timesignature 
+    live/mapping 
+    live/keysignature 
+    live/midifilter 
+    live/pitch 
+    live/midievent 
+    live/asyncconnect 
+    live/chord 
+    live/time 
+    live/core 
+    live/audiosecond 
+    live/audiointerface 
+    live/appinterface 
+    live/instrumentinterface 
+    live/midi 
+    live/app 
+    live/instrument 
+    live/midieventcounter 
 )
 
-list (APPEND liblivecore_h_qobject
-    live/anabeat.h 
-    live/ambition.h
-    live/metronome.h 
-    live/variantbinding.h 
-    live/midibinding.h 
+list (APPEND liblivecore_qobject
+    live/anabeat 
+    live/ambition
+    live/metronome 
+    live/variantbinding 
+    live/midibinding 
     asyncconnect_p.h 
-    live/object.h 
-    live/audiotrack.h 
-    live/miditrack.h 
+    live/object 
+    live/audiotrack 
+    live/miditrack 
     midibridge.h
 )
 
@@ -88,17 +88,17 @@ if (QNX)
         audio_qnx.cpp
         midiqnx.cpp 
     )
-    list (APPEND liblivecore_h
+    list (APPEND liblivecore
         audiosystem_qnx_p.h 
     )
-    list (APPEND liblivecore_h_qobject
+    list (APPEND liblivecore_qobject
     )
 else (QNX)
     list (APPEND liblivecore_cpp
         audio.cpp
         midi.cpp 
     )
-    list (APPEND liblivecore_h_qobject
+    list (APPEND liblivecore_qobject
         audiosystem_p.h 
         midisystem_p.h 
     )
@@ -112,7 +112,7 @@ find_package (Qt4 REQUIRED)
 set (QT_USE_QTNETWORK TRUE)
 include (${QT_USE_FILE})
 
-qt4_wrap_cpp (liblivecore_moc ${liblivecore_h_qobject})
+qt4_wrap_cpp (liblivecore_moc ${liblivecore_qobject})
 include_directories (${cmake_binary_dir}
     .
 )

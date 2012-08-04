@@ -10,7 +10,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef VST_H
 #define VST_H
 
-#include "live/object.h"
+#include "live/object"
 #include <QMutex>
 #include <QDir>
 
@@ -67,8 +67,8 @@ public:
     void show();
     void hide();
 
-    void aIn(const float *data, int chan, live::ObjectChain&p);
-    void mIn(const live::Event *data, live::ObjectChain&p);
+    void aIn(const float *data, int chan, live::ObjectChain*p);
+    void mIn(const live::Event *data, live::ObjectChain*p);
 
 #ifdef _WIN32
     float** channelData;

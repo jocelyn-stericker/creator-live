@@ -10,9 +10,9 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef BPMDETECT_H
 #define BPMDETECT_H
 
-#include <live/object.h>
-#include <live/variantbinding.h>
-#include <live/anabeat.h>
+#include <live/object>
+#include <live/variantbinding>
+#include <live/anabeat>
 #include <soundtouch/BPMDetect.h>
 #include <QList>
 
@@ -51,8 +51,8 @@ public slots:
 public:
     float getBPM();
 
-    virtual void aIn(const float *data, int chan, live::ObjectChain&p);
-    virtual void mIn(const live::Event *data, live::ObjectChain&p);
+    virtual void aIn(const float *data, int chan, live::ObjectChain*p);
+    virtual void mIn(const live::Event *data, live::ObjectChain*p);
 
 public:
     QByteArray save();

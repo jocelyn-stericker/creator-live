@@ -11,6 +11,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define LIBLIVECORE_GLOBAL_H
 
 #include <QtCore/qglobal.h>
+#include <QDebug>
 
 #if defined(LIBLIVECORE_LIBRARY)
 #  define LIBLIVECORESHARED_EXPORT Q_DECL_EXPORT

@@ -212,8 +212,8 @@ struct ladspa_wrapper
         int i;
         for (i = 0; i < ins + outs; i++)
         {
-            LADSPA_PortRangeHint &prh = ((LADSPA_PortRangeHint *)descriptor.PortRangeHints)[i];
-            ((int *)descriptor.PortDescriptors)[i] = i < ins ? LADSPA_PORT_INPUT | LADSPA_PORT_AUDIO
+            LADSPA_PortRangeHint &prh = ((LADSPA_PortRangeHint* )descriptor.PortRangeHints)[i];
+            ((int* )descriptor.PortDescriptors)[i] = i < ins ? LADSPA_PORT_INPUT | LADSPA_PORT_AUDIO
                                                   : i < ins + outs ? LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO
                                                                    : LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL;
             prh.HintDescriptor = 0;
@@ -221,9 +221,9 @@ struct ladspa_wrapper
         }
         for (; i < ins + outs + params; i++)
         {
-            LADSPA_PortRangeHint &prh = ((LADSPA_PortRangeHint *)descriptor.PortRangeHints)[i];
+            LADSPA_PortRangeHint &prh = ((LADSPA_PortRangeHint* )descriptor.PortRangeHints)[i];
             parameter_properties &pp = Module::param_props[i - ins - outs];
-            ((int *)descriptor.PortDescriptors)[i] = 
+            ((int* )descriptor.PortDescriptors)[i] = 
                 LADSPA_PORT_CONTROL | (pp.flags & PF_PROP_OUTPUT ? LADSPA_PORT_OUTPUT : LADSPA_PORT_INPUT);
             prh.HintDescriptor = LADSPA_HINT_BOUNDED_ABOVE | LADSPA_HINT_BOUNDED_BELOW;
             ((const char **)descriptor.PortNames)[i] = pp.name;
@@ -425,7 +425,7 @@ struct ladspa_wrapper
     /// utility function: call process, and if it returned zeros in output masks, zero out the relevant output port buffers
     static inline void process_slice(Module *mod, uint32_t offset, uint32_t end)
     {
-        while(offset < end)
+        while (offset < end)
         {
             uint32_t newend = std::min(offset + MAX_SAMPLE_RUN, end);
             uint32_t out_mask = mod->process(offset, newend - offset, -1, -1);

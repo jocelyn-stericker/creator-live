@@ -34,7 +34,7 @@ TrackGroupAudio::TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent, bo
     setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
     if (!empty)
     {
-        qDebug()<<"NOT_EMPTY";
+        qDebug() << "NOT_EMPTY";
         QList<live::ObjectPtr> list=object::get(OutputOnly|AudioOnly|NoRefresh);
         s_hathorView->push_back(new Track(c_input,list.front()));
     }

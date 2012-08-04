@@ -7,8 +7,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include <live/audiotrack.h>
-#include <live/miditrack.h>
+#include <live/audiotrack>
+#include <live/miditrack>
 
 #ifndef SAMPLER_H
 #define SAMPLER_H
@@ -55,8 +55,8 @@ public slots:
 
     void setBindingMode(int);
 
-    virtual void aIn(const float *data, int chan, live::ObjectChain&p);
-    virtual void mIn(const live::Event *data, live::ObjectChain&p);
+    virtual void aIn(const float *data, int chan, live::ObjectChain*p);
+    virtual void mIn(const live::Event *data, live::ObjectChain*p);
 
 signals:
     void recordModeSet(bool);

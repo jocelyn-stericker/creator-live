@@ -187,7 +187,7 @@ void TrackGroupMidi::reactToPianoKeyUpdate()
     PianoKey* x = qobject_cast<PianoKey*>(sender());
     if (!x)
     {
-        qCritical()<<"Expected sender() type PianoKey*!!!";
+        qCritical() << "Expected sender() type PianoKey*!!!";
         return;
     }
 
@@ -307,7 +307,7 @@ void TrackGroupMidi::drawKeyboard()
 
 void TrackGroupMidi::changeActiveFilter(bool really)
 {
-    qDebug()<<"CHANGE_ACTIVE_FILTER"<<really;
+    qDebug() << "CHANGE_ACTIVE_FILTER"<<really;
     if (!really)
     {
         return;

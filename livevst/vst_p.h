@@ -13,8 +13,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifdef _WIN32
 
 #include "vst.h"
-#include "live/object.h"
-#include "live/midievent.h"
+#include "live/object"
+#include "live/midievent"
 #include "vstsidekick.h"
 #include <QWidget>
 #include <QTimer>

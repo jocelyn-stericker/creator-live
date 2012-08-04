@@ -17,10 +17,10 @@ list (APPEND app-pitch_cpp
     pitch_dotlive.cpp
 )
 
-list (APPEND app-pitch_h
+list (APPEND app-pitch
 )
 
-list (APPEND app-pitch_h_qobject
+list (APPEND app-pitch_qobject
     pitchapp.h
     pitchapp_p.h
     pitchframe.h
@@ -57,7 +57,7 @@ include_directories (${cmake_binary_dir}
     ../liblivewidgets/
 )
 
-qt4_wrap_cpp (app-pitch_moc ${app-pitch_h_qobject})
+qt4_wrap_cpp (app-pitch_moc ${app-pitch_qobject})
 qt4_wrap_ui (app-pitch_moc ${app-pitch_ui}) 
 qt4_add_resources (app-pitch_rcc ${app-pitch_qrc})
 
