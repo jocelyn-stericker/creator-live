@@ -48,7 +48,7 @@ list (APPEND creator-live_ui
 )
 
 list (APPEND creator-live_qrc
-    Icons/Icons.qrc
+    icons/icons.qrc
     styleSheet.qrc
 )
 
