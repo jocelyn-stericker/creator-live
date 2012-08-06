@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>384</width>
-    <height>365</height>
+    <height>350</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -507,49 +507,6 @@ color: white;</string>
        </widget>
       </item>
       <item>
-       <widget class="live_widgets::ToolButton" name="loopOff">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>51</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>51</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="autoFillBackground">
-         <bool>false</bool>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">border-top-left-radius: 0px;
-border-bottom-left-radius: 0px;
-border-top-right-radius: 0px;
-border-bottom-right-radius: 0px;</string>
-        </property>
-        <property name="text">
-         <string>off</string>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>35</width>
-          <height>35</height>
-         </size>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="live_widgets::ToolButton" name="loopPlay">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
@@ -559,14 +516,14 @@ border-bottom-right-radius: 0px;</string>
         </property>
         <property name="minimumSize">
          <size>
-          <width>51</width>
-          <height>0</height>
+          <width>0</width>
+          <height>41</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>51</width>
-          <height>16777215</height>
+          <height>41</height>
          </size>
         </property>
         <property name="autoFillBackground">
@@ -580,6 +537,10 @@ border-bottom-right-radius: 0px;</string>
         </property>
         <property name="text">
          <string>play</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>:/icons/play.png</normaloff>:/icons/play.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -602,14 +563,14 @@ border-bottom-right-radius: 0px;</string>
         </property>
         <property name="minimumSize">
          <size>
-          <width>51</width>
-          <height>0</height>
+          <width>0</width>
+          <height>41</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>51</width>
-          <height>16777215</height>
+          <height>41</height>
          </size>
         </property>
         <property name="autoFillBackground">
@@ -623,6 +584,10 @@ border-bottom-right-radius: 0px;</string>
         </property>
         <property name="text">
          <string>rec</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>:/icons/record.png</normaloff>:/icons/record.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -645,14 +610,14 @@ border-bottom-right-radius: 0px;</string>
         </property>
         <property name="minimumSize">
          <size>
-          <width>51</width>
-          <height>0</height>
+          <width>0</width>
+          <height>41</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>51</width>
-          <height>16777215</height>
+          <height>41</height>
          </size>
         </property>
         <property name="autoFillBackground">
@@ -688,14 +653,14 @@ border-bottom-right-radius: 0px;</string>
         </property>
         <property name="minimumSize">
          <size>
-          <width>51</width>
-          <height>0</height>
+          <width>0</width>
+          <height>40</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>51</width>
-          <height>16777215</height>
+          <height>40</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -722,14 +687,14 @@ border-bottom-right-radius: 0px;</string>
         </property>
         <property name="minimumSize">
          <size>
-          <width>51</width>
-          <height>0</height>
+          <width>0</width>
+          <height>41</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>51</width>
-          <height>16777215</height>
+          <height>41</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -740,6 +705,53 @@ border-bottom-right-radius: 0px;</string>
         </property>
         <property name="text">
          <string>sub</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="live_widgets::ToolButton" name="loopOff">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>41</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>51</width>
+          <height>41</height>
+         </size>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-top-left-radius: 0px;
+border-bottom-left-radius: 0px;
+border-top-right-radius: 0px;
+border-bottom-right-radius: 0px;</string>
+        </property>
+        <property name="text">
+         <string>off</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>:/icons/stop.png</normaloff>:/icons/stop.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>35</width>
+          <height>35</height>
+         </size>
         </property>
         <property name="checkable">
          <bool>true</bool>

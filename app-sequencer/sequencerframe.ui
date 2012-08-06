@@ -458,96 +458,8 @@ border-bottom-right-radius: 0px;</string>
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="../creator-live/Icons/Icons.qrc">
+        <iconset>
          <normaloff>:/icons/play.png</normaloff>:/icons/play.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>35</width>
-         <height>35</height>
-        </size>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="live_widgets::ToolButton" name="clip">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>51</width>
-         <height>60</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>51</width>
-         <height>90</height>
-        </size>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border-top-left-radius: 0px;
-border-bottom-left-radius: 0px;
-border-top-right-radius: 0px;
-border-bottom-right-radius: 0px;</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="../creator-live/Icons/Icons.qrc">
-         <normaloff>:/icons/clip.png</normaloff>:/icons/clip.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>35</width>
-         <height>35</height>
-        </size>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="live_widgets::ToolButton" name="mute">
-       <property name="minimumSize">
-        <size>
-         <width>51</width>
-         <height>60</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>51</width>
-         <height>90</height>
-        </size>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border-top-left-radius: 0px;
-border-bottom-left-radius: 0px;
-border-top-right-radius: 0px;
-border-bottom-right-radius: 0px;</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="../creator-live/Icons/Icons.qrc">
-         <normaloff>:/icons/mute.png</normaloff>:/icons/mute.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -594,8 +506,96 @@ border-bottom-right-radius: 0px;</string>
         <string>R</string>
        </property>
        <property name="icon">
-        <iconset resource="../creator-live/Icons/Icons.qrc">
+        <iconset>
          <normaloff>:/icons/record.png</normaloff>:/icons/record.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>35</width>
+         <height>35</height>
+        </size>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="live_widgets::ToolButton" name="clip">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>51</width>
+         <height>60</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>51</width>
+         <height>90</height>
+        </size>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">border-top-left-radius: 0px;
+border-bottom-left-radius: 0px;
+border-top-right-radius: 0px;
+border-bottom-right-radius: 0px;</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>:/icons/clip.png</normaloff>:/icons/clip.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>35</width>
+         <height>35</height>
+        </size>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="live_widgets::ToolButton" name="mute">
+       <property name="minimumSize">
+        <size>
+         <width>51</width>
+         <height>60</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>51</width>
+         <height>90</height>
+        </size>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">border-top-left-radius: 0px;
+border-bottom-left-radius: 0px;
+border-top-right-radius: 0px;
+border-bottom-right-radius: 0px;</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>:/icons/mute.png</normaloff>:/icons/mute.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -843,8 +843,6 @@ border-bottom-right-radius: 4px;</string>
    <header>live_widgets/toolbutton.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../creator-live/Icons/Icons.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
