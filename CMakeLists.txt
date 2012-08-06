@@ -28,7 +28,7 @@ add_subdirectory (livevst)
 
 add_subdirectory (bridge) 
 add_subdirectory (creator-live) 
-#add_subdirectory (pluginTester) 
+add_subdirectory (pluginTester) 
 
 ####################### DEPENDENCIES ########################
 
@@ -63,8 +63,22 @@ add_dependencies (bridge liblivecore)
 add_dependencies (bridge liblivewidgets)
 add_dependencies (bridge livemidi)
 
+add_dependencies (pluginTester liblivecore)
+add_dependencies (pluginTester liblivewidgets)
+add_dependencies (pluginTester 3rd-calf)
+add_dependencies (pluginTester app-bpm)
+add_dependencies (pluginTester app-calf)
+add_dependencies (pluginTester app-mixer)
+add_dependencies (pluginTester app-sequencer)
+add_dependencies (pluginTester app-sampler)
+add_dependencies (pluginTester app-pitch)
+add_dependencies (pluginTester livemidi)
+add_dependencies (pluginTester livesf2)
+add_dependencies (pluginTester livevst)
+
 add_dependencies (creator-live liblivecore)
 add_dependencies (creator-live liblivewidgets)
+add_dependencies (creator-live 3rd-calf)
 add_dependencies (creator-live app-bpm)
 add_dependencies (creator-live app-calf)
 add_dependencies (creator-live app-mixer)

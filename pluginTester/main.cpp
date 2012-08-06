@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
     }
     audio::refresh();
 
-    song::current=new song("Default System");
+    song::setCurrent(new song("Default System"));
 
     midi::refresh();
 
