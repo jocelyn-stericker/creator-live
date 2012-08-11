@@ -57,8 +57,13 @@ TrackGroupAudio::TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent, bo
     instLabel->setObjectName("instLabel");
     s_hathorView->setObjectName("s_hathorView");
     AudioOutputChooser* aoo=new AudioOutputChooser(this);
-    mainLayout->addWidget(aoo);
-    setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    mainLayout->addWidget(s_hathorView);
+//    for (int i = s_hathorView->count(); i != -1; --i) {
+//        if(dynamic_cast<Track*>(s_hathorView->at(i))) {
+//            dynamic_cast<Track*>(s_hathorView->at(i))->addApp(); <- todo
+//        }
+//    }
+//    setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     s_hathorView->hide();
     connect(aoo,SIGNAL(outputChosen(live::ObjectPtr)),this,SLOT(setLastOutput(live::ObjectPtr)));
 }

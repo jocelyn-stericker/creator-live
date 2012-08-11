@@ -81,6 +81,7 @@ protected:
 public slots:
     void setOutput(live::ObjectPtr output,live::ObjectPtr loopback=0);
     void setInput(live::ObjectPtr input);
+    void addWidget(int i,QWidget* frame);
     void addApp(int i,live_widgets::AppFrame* appUi,live::ObjectPtr app);
     void delApp(int i);
     void outputSelection();

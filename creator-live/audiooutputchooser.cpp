@@ -25,11 +25,9 @@ AudioOutputChooser::AudioOutputChooser(QWidget *parent) :
     s_ui->setupUi(this);
 
     connect(s_ui->Bwidget,SIGNAL(clicked(QModelIndex)),s_ui->Bwidget,SLOT(setCurrentIndex(QModelIndex)));
-    connect(s_ui->Bwidget,SIGNAL(clicked(QModelIndex)),s_ui->pushButton_create,SLOT(click()));
-    connect(s_ui->Bwidget,SIGNAL(doubleClicked(QModelIndex)),s_ui->pushButton_create,SLOT(animateClick()));
+    connect(s_ui->Bwidget,SIGNAL(clicked(QModelIndex)),this,SLOT(go()));
+    connect(s_ui->Bwidget,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(go()));
     connect(s_ui->Bwidget,SIGNAL(currentRowChanged(int)),this,SLOT(rowChangedEvent()));
-    connect(s_ui->pushButton_create,SIGNAL(clicked()),this,SLOT(go()));
-    connect(s_ui->pushButton_refresh,SIGNAL(clicked()),this,SLOT(refresh()));
 
     internalStockChangedEvent();
 
@@ -45,11 +43,11 @@ AudioOutputChooser::~AudioOutputChooser()
 
 void AudioOutputChooser::resizeEvent(QResizeEvent *e)
 {
-     int w=width()-s_ui->line_4->width();
-     s_ui->Awidget->setFixedWidth(w/2);
-     float phi=(1+sqrt(5.0))/2.0;
-     s_ui->Bwidget->setFixedWidth(w/2.00/phi);
-     s_ui->Cwidget->setFixedWidth(w/2.00/phi/phi);
+//     int w=width()-s_ui->line_4->width();
+//     s_ui->Awidget->setFixedWidth(w/2);
+//     float phi=(1+sqrt(5.0))/2.0;
+//     s_ui->Bwidget->setFixedWidth(w/2.00/phi);
+//     s_ui->Cwidget->setFixedWidth(w/2.00/phi/phi);
 
      if (e) QWidget::resizeEvent(e);
 }
@@ -68,7 +66,7 @@ void AudioOutputChooser::refresh()
 }
 
 void AudioOutputChooser::rowChangedEvent() {
-    s_ui->pushButton_create->setEnabled(s_ui->Bwidget->currentRow()!=-1);
+//    s_ui->pushButton_create->setEnabled(s_ui->Bwidget->currentRow()!=-1);
 }
 
 void AudioOutputChooser::internalStockChangedEvent()
@@ -83,5 +81,5 @@ void AudioOutputChooser::internalStockChangedEvent()
         s_ui->Bwidget->clear();
         s_ui->Bwidget->insertItems(0,all);
     }
-    s_ui->Bwidget->setFixedHeight(v.size()*38+(v.size()-1)*8+5);
+//    s_ui->Bwidget->setFixedHeight(v.size()*38+(v.size()-1)*8+5);
 }

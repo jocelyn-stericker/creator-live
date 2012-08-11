@@ -275,6 +275,10 @@ void Track::setInput(live::ObjectPtr input) {
     Object::endAsyncAction();
 }
 
+void Track::addWidget(int i, QWidget *frame) {
+
+}
+
 void Track::addApp(int i,AppFrame* appUi,live::ObjectPtr app) {
     Object::beginAsyncAction();
     if(s_th) {
