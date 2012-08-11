@@ -12,6 +12,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "audiooutputchooser.h"
 
 #include <live_widgets/pushbutton.h>
+#include <live_widgets/trackinputwidget.h>
 
 int TrackGroup::s_lastId = -1;
 using namespace live;
@@ -25,10 +26,11 @@ TrackGroupAudio::TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent, bo
     s_hathorView = new VScrollContainer(0);
     s_hathorView->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
-    instLabel = new RotatedLabel;
-    instLabel->setText(c_input->name());
-    instLabel->setMinimumHeight(220);
-    instLabel->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
+    instLabel = new live_widgets::TrackInputWidget;
+    instLabel->b_trackName = c_input->name();
+    instLabel->b_audio = true;
+    instLabel->setMinimumHeight(350);
+    instLabel->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Expanding);
 
     s_hathorView->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
     setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
@@ -45,7 +47,7 @@ TrackGroupAudio::TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent, bo
     s_hathorView->compact = 1;
     s_hathorView->updateItems();
 
-    instLabel->setFixedWidth(15);
+    instLabel->setFixedWidth(64);
     mainLayout->addWidget(instLabel,0, Qt::AlignTop | Qt::AlignLeft);
     mainLayout->addWidget(s_hathorView);
     s_hathorView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
