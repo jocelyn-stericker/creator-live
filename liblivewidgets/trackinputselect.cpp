@@ -7,9 +7,9 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include <live_widgets/newinput.h>
+#include <live_widgets/trackinputselect.h>
 #include <live/audio>
-#include "ui_newinput.h"
+#include "ui_trackinputselect.h"
 #include <cmath>
 #include <math.h>
 #include <QPropertyAnimation>
@@ -18,7 +18,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 using namespace live_widgets;
 using namespace live;
 
-NewInput::NewInput(QWidget*parent, bool popout, bool allowMidi, bool allowAudio)
+TrackInputSelect::TrackInputSelect(QWidget*parent, bool popout, bool allowMidi, bool allowAudio)
   : QFrame(parent)
   , s_ui(new Ui_Frame)
   , s_allowMidi(allowMidi)
@@ -57,7 +57,7 @@ NewInput::NewInput(QWidget*parent, bool popout, bool allowMidi, bool allowAudio)
     }
 }
 
-void NewInput::internalStockChangedEvent() {
+void TrackInputSelect::internalStockChangedEvent() {
     int flags = InputOnly|NoRefresh;
 
     if (s_allowAudio && !s_allowMidi)
@@ -77,7 +77,7 @@ void NewInput::internalStockChangedEvent() {
 //    s_ui->input_combo->setFixedHeight(v.size()*38+(v.size()-1)*8);
 }
 
-void NewInput::go() {
+void TrackInputSelect::go() {
     if (width() != 53) {
         minimize();
         QTimer::singleShot(200, this, SLOT(go()));
@@ -86,17 +86,17 @@ void NewInput::go() {
     }
 }
 
-void NewInput::refresh() {
+void TrackInputSelect::refresh() {
     midi::refresh();
     audio::refresh();
     internalStockChangedEvent();
 }
 
-void NewInput::rowChangedEvent() {
+void TrackInputSelect::rowChangedEvent() {
 //    s_ui->pushButton_create->setEnabled(s_ui->input_combo->currentRow()!=-1);
 }
 
-void NewInput::resizeEvent(QResizeEvent *e) {
+void TrackInputSelect::resizeEvent(QResizeEvent *e) {
 //     int w=width()-s_ui->line_4->width();
 //     s_ui->Awidget->setFixedWidth(w/2);
 //     float phi=(1+sqrt(5.0))/2.0;
@@ -107,7 +107,7 @@ void NewInput::resizeEvent(QResizeEvent *e) {
          QFrame::resizeEvent(e);
 }
 
-void NewInput::minimize(bool reverse) {
+void TrackInputSelect::minimize(bool reverse) {
     if (s_ui->inputType->isChecked() != reverse) {
         s_ui->inputType->setChecked(reverse);
         return;
@@ -137,7 +137,7 @@ void NewInput::minimize(bool reverse) {
         squareCorners();
 }
 
-void NewInput::onSetAudio(bool b) {
+void TrackInputSelect::onSetAudio(bool b) {
     if (b) {
         s_ui->inputType->setIcon(QIcon(":/icons/microphone.png"));
     } else {
@@ -145,7 +145,7 @@ void NewInput::onSetAudio(bool b) {
     }
 }
 
-void NewInput::roundCorners() {
+void TrackInputSelect::roundCorners() {
     QString ss = s_ui->inputType->styleSheet();
     ss.replace("border-top-right-radius: 0px;", "border-top-right-radius: 4px;");
     s_ui->inputType->setStyleSheet(ss);
@@ -155,7 +155,7 @@ void NewInput::roundCorners() {
     s_ui->missile->setStyleSheet(ss);
 }
 
-void NewInput::squareCorners() {
+void TrackInputSelect::squareCorners() {
     QString ss = s_ui->inputType->styleSheet();
     ss.replace("border-top-right-radius: 4px;", "border-top-right-radius: 0px;");
     s_ui->inputType->setStyleSheet(ss);

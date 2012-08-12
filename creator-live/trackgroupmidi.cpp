@@ -10,7 +10,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "trackgroupmidi.h"
 #include "midioutputchooser.h"
 
-#include <live_widgets/newinput.h>
+#include <live_widgets/trackinputselect.h>
 #include <live_widgets/pianokey.h>
 #include <live_widgets/pushbutton.h>
 #include <QGraphicsView>
@@ -30,7 +30,7 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
 
     QVBoxLayout* ui_topLayout=new QVBoxLayout();
 
-    instLabel = new live_widgets::NewInput(this, false, true, false);
+    instLabel = new live_widgets::TrackInputSelect(this, false, true, false);
     instLabel->b_trackName = c_input->name();
     instLabel->b_audio = true;
     instLabel->setMinimumHeight(350);

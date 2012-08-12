@@ -25,7 +25,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live/midibinding>
 #include <live/object>
 #include <live_widgets/vscrollcontainer.h>
-#include <live_widgets/newinput.h>
+#include <live_widgets/trackinputselect.h>
 #include <live_widgets/draglabel.h>
 #include <live_widgets/introwizard.h>
 
@@ -159,7 +159,7 @@ void LiveWindow::newInput()
         delete s_iw;
         s_iw=0;
     }
-    NewInput* ni=new NewInput(ui->sac_contents, true, true, true);
+    TrackInputSelect* ni=new TrackInputSelect(ui->sac_contents, true, true, true);
     connect(ni,SIGNAL(created(live::ObjectPtr )),this,SLOT(reactOnCreation(live::ObjectPtr )));
     ui->sac_contents->push_back(ni);
     ui->sac_contents->updateItems();

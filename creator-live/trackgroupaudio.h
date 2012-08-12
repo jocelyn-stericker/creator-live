@@ -12,11 +12,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include "trackgroup.h"
 
-#include <live_widgets/newinput.h>
-
-namespace live_widgets {
-    class TrackInputWidget;
-}
+#include <live_widgets/trackinputselect.h>
 
 class TrackGroupAudio : public TrackGroup
 {

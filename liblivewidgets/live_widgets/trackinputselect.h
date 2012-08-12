@@ -7,8 +7,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#ifndef NEWINPUT_H
-#define NEWINPUT_H
+#ifndef TRACKINPUTSELECT_H
+#define TRACKINPUTSELECT_H
 
 #include <QDesktopWidget>
 #include <QSettings>
@@ -20,7 +20,7 @@ class Ui_Frame;
 
 namespace live_widgets {
 
-class LIBLIVEWIDGETSSHARED_EXPORT NewInput : public QFrame {
+class LIBLIVEWIDGETSSHARED_EXPORT TrackInputSelect : public QFrame {
     Q_OBJECT
 private:
     Ui_Frame* s_ui;
@@ -28,7 +28,7 @@ private:
     bool s_allowAudio;
 public:
     QStringList all;
-    NewInput(QWidget*parent, bool popout, bool allowMidi, bool allowAudio);
+    TrackInputSelect(QWidget*parent, bool popout, bool allowMidi, bool allowAudio);
 
     void resizeEvent(QResizeEvent *);
 
@@ -57,4 +57,4 @@ signals:
 
 }
 
-#endif // NEWINPUT_H
+#endif // TRACKINPUTSELECT_H

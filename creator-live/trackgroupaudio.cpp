@@ -14,7 +14,6 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live/audio>
 
 #include <live_widgets/pushbutton.h>
-#include <live_widgets/trackinputwidget.h>
 
 int TrackGroup::s_lastId = -1;
 using namespace live;
@@ -30,7 +29,7 @@ TrackGroupAudio::TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent, bo
     s_hathorView = new VScrollContainer(0);
     s_hathorView->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
-    instLabel = new live_widgets::NewInput(this, false, false, true);
+    instLabel = new live_widgets::TrackInputSelect(this, false, false, true);
     instLabel->b_trackName = c_input->name();
     instLabel->b_audio = true;
     instLabel->setMinimumHeight(350);

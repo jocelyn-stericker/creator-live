@@ -9,7 +9,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include "trackgroup.h"
 
-#include <live_widgets/newinput.h>
+#include <live_widgets/trackinputselect.h>
 
 #include <QResizeEvent>
 

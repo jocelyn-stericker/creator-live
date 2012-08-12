@@ -15,7 +15,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "live_widgets/bindableparent.h"
 
 namespace live_widgets {
-    class NewInput;
+    class TrackInputSelect;
 }
 
 class TrackGroup : public QFrame, public live_widgets::BindableParent
@@ -23,7 +23,7 @@ class TrackGroup : public QFrame, public live_widgets::BindableParent
     Q_OBJECT
 protected:                      /*IN CHILDREN*/
     live::ObjectPtr  s_input;             /*CONSTRUCT*/
-    live_widgets::NewInput *instLabel;
+    live_widgets::TrackInputSelect *instLabel;
 public:
     live_widgets::VScrollContainer* s_hathorView;   /*003*/
     int s_id;                   /*004*/
