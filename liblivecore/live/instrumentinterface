@@ -24,7 +24,7 @@ public:
      *   - define signal 'void instrumentUpdated(ObjectPtr out, ObjectPtr loopback);'
      *   - inherit QWidget
      */
-    virtual QObject* selectionWidget(ObjectPtr current, ObjectPtr loopback)=0;
+    virtual QWidget* selectionWidget(ObjectPtr current, ObjectPtr loopback)=0;
 
     /** The name of the settings widget, as should appear in the Live menu,
      *  or blank for null.

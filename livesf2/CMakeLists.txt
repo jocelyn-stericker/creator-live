@@ -13,14 +13,16 @@ cmake_minimum_required(VERSION 2.8)
 
 list (APPEND livesf2_cpp
     livesf2wizard.cpp
+    sf2interface.cpp
 )
 
 list (APPEND livesf2_h
-    livesf2wizard.h
     livesf2_global.h
 )
 
 list (APPEND livesf2_h_qobject
+    livesf2wizard.h
+    sf2interface.h
 )
 
 list (APPEND livesf2_ui

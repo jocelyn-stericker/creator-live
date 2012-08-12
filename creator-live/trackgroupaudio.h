@@ -11,6 +11,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define TRACKGROUPAUDIO_H
 
 #include "trackgroup.h"
+
 namespace live_widgets {
     class TrackInputWidget;
 }
@@ -26,10 +27,7 @@ public:
     explicit TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent,bool empty=0);
     ~TrackGroupAudio();
 
-signals:
-
 public slots:
-    void setLastOutput(live::ObjectPtr);
     void newHathorAuto();
 
 public:

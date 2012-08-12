@@ -130,6 +130,9 @@ public:
     static void endAsyncAction();
 
 
+    static void XRUN();
+
+
     virtual QByteArray save() { qCritical() << "Hybrid::save() called on "<<s_name; qCritical("Hybrid::save() called on a non-savable type!!"); return QByteArray(); }
     friend class SecretMidi;
 
@@ -200,6 +203,8 @@ protected:
             mixer_at[chan]=0;
         }
     }
+
+    static bool ss_XRUN;
 };
 
 void doAudioConnect(const Object* a, const Object* b);

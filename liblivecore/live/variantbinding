@@ -130,6 +130,10 @@ public:
     {
         set((QVariant)that);
     }
+    void set(const QString& that)
+    {
+        set((QString)that);
+    }
     void set_(void* x)
     {
         Q_ASSERT(0);

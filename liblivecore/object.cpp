@@ -30,6 +30,7 @@ public:
 };
 
 LIBLIVECORESHARED_EXPORT TheMutex* TheMutex::me=new TheMutex();
+LIBLIVECORESHARED_EXPORT bool live::Object::ss_XRUN=false;
 
 LIBLIVECORESHARED_EXPORT void live::Object::beginProc() {
     TheMutex::me->LOCK.lock();
@@ -42,11 +43,31 @@ LIBLIVECORESHARED_EXPORT void live::Object::beginAsyncAction() {
 
 LIBLIVECORESHARED_EXPORT void live::Object::endProc() {
     TheMutex::me->LOCK.unlock();
+
+    if (ss_XRUN) {
+        qCritical() << "XRUN:: PROC guilty!";
+        ss_XRUN = false;
+    }
 }
 
 LIBLIVECORESHARED_EXPORT void live::Object::endAsyncAction() {
     TheMutex::me->LOCK.unlock();
+
+    if (ss_XRUN) {
+        qCritical() << "XRUN:: AsyncAction guilty!";
+        ss_XRUN = false;
+    }
     //    TheMutex::me->joinLock.unlock();
+}
+
+LIBLIVECORESHARED_EXPORT void live::Object::XRUN() {
+    if (!TheMutex::me->LOCK.tryLock(1)) {
+        ss_XRUN = true;
+    } else {
+        TheMutex::me->LOCK.unlock();
+        qDebug() << "XRUN:: Mutex innocent.";
+        ss_XRUN = false;
+    }
 }
 
 void live::Object::aOut(const float *data, int chan, live::ObjectChain* p) {

@@ -47,54 +47,6 @@ public slots:
     virtual void updateGeometriesOrDie() = 0;
 };
 
-class Track : public AbstractTrack, public live_widgets::BindableParent {
-    Q_OBJECT
-public:
-    live_widgets::TrackHint* s_th;
-    live::Ambition& s_ambition;   /*003*/
-
-    QList<live_widgets::AppFrame*> s_appUi_;  /*003B*/    //reintegrate
-
-    int s_id;                   /*004*/
-    static int s_lastId;
-
-    bool s_busy;
-
-    live_widgets::RotatedLabel* ui_outputName;
-    live_widgets::ChainTypeWidget* ui_chainWidget;
-
-    Track(live::ObjectPtr cinput, live::ObjectPtr coutput);
-    Track(live::Ambition* bp);
-    ~Track();
-    void resizeEvent(QResizeEvent *e);
-
-    int getMaximumWidthFor(QWidget*);
-public slots:
-    void remakeChainWidget();
-
-private:
-    void clearUiPipeline();
-    void makeUiPipeline();
-protected:
-    void dragEnterEvent(QDragEnterEvent *e);
-    void dropEvent(QDropEvent *e);
-public slots:
-    void setOutput(live::ObjectPtr output,live::ObjectPtr loopback=0);
-    void setInput(live::ObjectPtr input);
-    void addWidget(int i,QWidget* frame);
-    void addApp(int i,live_widgets::AppFrame* appUi,live::ObjectPtr app);
-    void delApp(int i);
-    void outputSelection();
-    void logic_appBack();
-    void logic_appDel();
-    void logic_appNext();
-    void updateGeometriesIfNeeded();
-    void updateGeometriesOrDie();
-signals:
-    void outputSelected();
-public:
-    QByteArray save();
-    static Track* load(const QByteArray&);
-};
+class Track; // let app define
 
 #endif // TRACK_H

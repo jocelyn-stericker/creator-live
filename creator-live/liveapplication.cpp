@@ -12,6 +12,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "settingslinux.h"
 #include <live/core>
 #include <live/appinterface>
+#include <live/instrument>
+#include <live/instrumentinterface>
 #include <QFontDatabase>
 #include <QSettings>
 #include <QMessageBox>
@@ -66,17 +68,36 @@ LiveApplication::LiveApplication(int& argc,char** argv) :
 
 #ifndef __QNX__
     QDir pluginsDir = QDir(qApp->applicationDirPath()+"/../plugins");
-    qDebug()<<pluginsDir;
+    std::cerr << "Plugin directory:" << pluginsDir.absolutePath().toAscii().data() << std::endl;
     foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
-        qDebug()<<qPrintable(qApp->applicationDirPath()+"/../plugins/"+fileName);
         if (!fileName.endsWith(".so")&&!fileName.endsWith(".dll",Qt::CaseInsensitive)) continue;
+        std::cerr << "Info for plugin " << qPrintable(qApp->applicationDirPath()+"/../plugins/"+fileName) << ": ";
         QPluginLoader loader(qApp->applicationDirPath()+"/../plugins/"+fileName);
         QObject *plugin = loader.instance();
         if (plugin) {
-            std::cerr<<"Trying to load plugin...\n";
             AppInterface* appi=qobject_cast<AppInterface*>(plugin);
-            if (appi) do app::registerInterface(appi); while ((appi=appi->next()));
-        } else qDebug() << "Couldn't load plugin:"<<qPrintable(loader.errorString());
+            if (appi) {
+                std::cerr << "APP[";
+                do {
+                    std::cerr << " " << appi->name().toAscii().data();
+                    app::registerInterface(appi);
+                } while ((appi=appi->next())); // Extra parentheses to avoid warning
+                std::cerr << " ]";
+            }
+
+            InstrumentInterface * insi = qobject_cast<InstrumentInterface*>(plugin);
+            if (insi) {
+                std::cerr << "INSTRUMENT[";
+                do {
+                    std::cerr << " " << insi->name().toAscii().data();
+                    instrument::registerInterface(insi);
+                } while ((insi = insi->next())); // Extra parentheses to avoid warning
+                std::cerr << " ]";
+            }
+
+            std::cerr << endl;
+
+        } else std::cerr << "ERROR[ " << qPrintable(loader.errorString()) << " ]" << std::endl;
     }
 
 #else

@@ -163,7 +163,7 @@ void LooperFrame::syncState()
 void LooperFrame::setMore(bool more)
 {
     int sugWidth = 300;
-    Track* t = dynamic_cast<Track*>(parent());
+    AbstractTrack* t = dynamic_cast<AbstractTrack*>(parent());
     if (t) {
         sugWidth = t->getMaximumWidthFor(this);
     }

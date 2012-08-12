@@ -52,7 +52,7 @@ SequencerFrame::SequencerFrame(SequencerApp* backend,AbstractTrack *parent)
     MidiBindingQtSys::addWidget(this);
     syncState();
 
-    ui->menu->setText("Track "+QString::number(app.s_id));
+    ui->menu->setText("Track");
     ui->menu->setMenu(action_menu=new QMenu(this));
     ui->menu->menu()->addAction(action_import=new QAction("Import",this));
     connect(action_import,SIGNAL(triggered()),this,SLOT(logicImport()));
@@ -164,7 +164,7 @@ void SequencerFrame::toggleMinimized()
 void SequencerFrame::setMore(bool more)
 {
     int sugWidth = 300;
-    Track* t = dynamic_cast<Track*>(parent());
+    AbstractTrack* t = dynamic_cast<AbstractTrack*>(parent());
     if (t) {
         sugWidth = t->getMaximumWidthFor(this);
     }

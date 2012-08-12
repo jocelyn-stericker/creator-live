@@ -2,7 +2,7 @@
 #define VSTWIZARD_H
 
 #include "hackwidget.h"
-#include <QWizard>
+#include <QStackedWidget>
 #include <QWizardPage>
 #include <live/object>
 
@@ -10,7 +10,7 @@ namespace Ui {
 class VstWizard;
 }
 
-class VstWizard : public QWizard
+class VstWizard : public QStackedWidget
 {
     Q_OBJECT
     
@@ -27,6 +27,10 @@ public slots:
     void pageChangeEvent(int);
     void finishUp();
     void stockChangedEvent();
+
+    void next();
+    void back();
+    void restart();
 
 signals:
     void instrumentUpdated(live::ObjectPtr s_out, live::ObjectPtr s_loopback);  /*!!!*/

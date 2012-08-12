@@ -10,22 +10,21 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live/audiotrack>
 
 void live::AudioTrack::aThru(float*proc,int chan) {
-    // WARNING: This function must be threadsafe. It cannot unreasonable data to be set.
+    // TODO: Evaluate threadsafety.
 
     bool ok=1;
 
     float* RAW;
-    int count=s_container[chan]->getRawPointer(s_curPos,RAW,s_playback&&(s_record||s_overdub));
+    bool warning = false;
+    int count=s_container[chan]->getRawPointer(s_curPos,RAW,s_playback&&(s_record||s_overdub), &warning);
+    if (warning) {
+        QtConcurrent::run(this,&live::AudioTrack::async);
+    }
     RAW-=RAW?1:0;
-    for (int i=0; i<nframes; i++) {
+    int i;
+    for (i=0; i<nframes; i++) {
         if ((RAW=RAW?RAW+1:0),--count==-1) {
             count=s_container[chan]->getRawPointer(s_curPos+i,RAW,s_playback&&(s_record||s_overdub));
-
-            if (s_playback&&(s_record||s_overdub)&&(
-                        s_container[chan]->s_data.size()>=(int)(s_curPos+i)/live::audio::sampleRate()||
-                        !s_container[chan]->s_data[(int)((s_curPos+i)/live::audio::sampleRate()+1)])) {
-                QtConcurrent::run(this,&live::AudioTrack::async);
-            }
         }
 
         float* b = &(proc[i]);
@@ -128,7 +127,7 @@ float live::AudioTrack::length() const {
 }
 
 void live::AudioTrack::setVol(int vol) {
-    NOSYNC;
+    ;
     Q_ASSERT((vol>=0)&&(vol<=100));
     s_vol=vol;
 }
@@ -193,7 +192,7 @@ void live::AudioTrack::stopMute() {
 }
 
 void live::AudioTrack::setPos(long pos) {
-    //SYNC
+    // TODO: evaluate threadsafety
     pos=(long)(((float)live::audio::sampleRate())*((float)pos)/1000.0f);
     s_curPos=pos;
 }
@@ -343,7 +342,7 @@ bool live::AudioTrack::importFile(QString filename) {
         int counter=frames?(s_container[i]->getRawPointer(0,dataPtr,1)):0;
         dataPtr--;
         for (int j=0;j<frames/2;j++) {
-            NOSYNC;
+            NOSYNC; // FIXME: This is not okay.
             if (j!=frames/2) {
                 if ((dataPtr?++dataPtr:0),--counter==-1) {
                     counter=s_container[i]->getRawPointer(j,dataPtr,1)-1;
@@ -360,9 +359,8 @@ bool live::AudioTrack::importFile(QString filename) {
 }
 
 void live::AudioTrack::async() {
-    NOSYNC;
     //this function prevents data allocation in the real-time thread.
     float*a;
-    s_container[0]->getRawPointer((int)s_curPos/live::audio::sampleRate()+1,a,1);
-    s_container[1]->getRawPointer((int)s_curPos/live::audio::sampleRate()+1,a,1);
+    s_container[0]->getRawPointer((unsigned)s_curPos + live::audio::sampleRate(),a,1);
+    s_container[1]->getRawPointer((unsigned)s_curPos + live::audio::sampleRate(),a,1);
 }

@@ -36,6 +36,9 @@ public slots:
     void refresh();
     void rowChangedEvent();
 
+    void maximize(bool reverse = false) { minimize(!reverse); }
+    void minimize(bool reverse = false);
+
 signals:
     void created(live::ObjectPtr device);
 

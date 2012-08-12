@@ -3,7 +3,7 @@
     Part of the Creator Live Music Production Suite.
 Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
-                 ( ( ( VST PLUGIN ) ) )
+                 ( ( ( SF2 PLUGIN ) ) )
 
 *******************************************************/
 
@@ -11,27 +11,28 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define VSTINTERFACE_H
 
 #include <live/instrumentinterface>
-#include "vstwizard.h"
-#include "vstsettingswidget.h"
+#include "livesf2wizard.h"
+//#include "vstsettingswidget.h"
 #include <QObject>
 
-class VstInterface : public QObject, public live::InstrumentInterface
+class SF2Interface : public QObject, public live::InstrumentInterface
 {
     Q_OBJECT
     Q_INTERFACES(live::InstrumentInterface)
 public:
-    VstInterface();
-    QString name() { return "VST Instrument"; }
-    QString description() { return "Steinberg VST Instrument plugin"; }
+    SF2Interface();
+    QString name() { return "SoundFont"; }
+    QString description() { return ":)"; }
     /** selectionWidget should define a signal:
      * 'void instrumentUpdated(ObjectPtr out, ObjectPtr loopback);'
      */
     QWidget* selectionWidget(live::ObjectPtr current, live::ObjectPtr loopback) {
-        return new VstWizard(current,loopback,0);
+//        return new LiveSF2Wizard(current,loopback,0);
+        return new LiveSF2Wizard();
     }
 
-    QString settingsWidgetName() { return "VST Instruments..."; }
-    QObject* settingsWidget() { return new VstSettingsWidget; }
+    QString settingsWidgetName() { return "SoundFonts..."; }
+    QObject* settingsWidget() { return 0; }
 
     InstrumentInterface* next() { return 0; }
 };

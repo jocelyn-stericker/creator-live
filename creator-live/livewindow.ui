@@ -76,7 +76,7 @@ QPushButton:hover {
         <string>Creator Live</string>
        </property>
        <property name="icon">
-        <iconset resource="Icons/Icons.qrc">
+        <iconset resource="icons/icons.qrc">
          <normaloff>:/icons/creatorLive.jpeg</normaloff>:/icons/creatorLive.jpeg</iconset>
        </property>
        <property name="iconSize">
@@ -224,7 +224,7 @@ QToolButton::checked {
            <string>edit</string>
           </property>
           <property name="icon">
-           <iconset resource="Icons/Icons.qrc">
+           <iconset>
             <normaloff>:/icons/cl-add-setup.png</normaloff>:/icons/cl-add-setup.png</iconset>
           </property>
          </widget>
@@ -485,7 +485,7 @@ QToolButton::checked {
            <string>go</string>
           </property>
           <property name="icon">
-           <iconset resource="Icons/Icons.qrc">
+           <iconset>
             <normaloff>:/icons/1301786966_metronome-music.png</normaloff>:/icons/1301786966_metronome-music.png</iconset>
           </property>
           <property name="checkable">
@@ -650,7 +650,7 @@ QComboBox:hover {
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: white;</string>
+      <string notr="true">background-color: rgb(190,190,190);</string>
      </property>
     </widget>
    </item>
@@ -682,7 +682,7 @@ QComboBox:hover {
       </property>
       <property name="styleSheet">
        <string notr="true">QWidget#sac_insert {
-	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:0.243243 rgb(77, 76, 77), stop:0.972973 rgba(255, 255, 255, 255), stop:1 rgba(255, 255, 255, 255));
+	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(190, 190, 190, 190), stop:0.243243 rgb(77, 76, 77), stop:0.972973 rgba(190, 190, 190, 255), stop:1 rgba(190, 190, 190, 255));
 
 	color: rgb(255, 255, 255);
     border-radius:0;
@@ -726,12 +726,24 @@ QComboBox:hover {
            <height>16777215</height>
           </size>
          </property>
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
          <property name="styleSheet">
-          <string notr="true">* {
-	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:0.243243 rgb(77, 76, 77), stop:0.972973 rgba(255, 255, 255, 255), stop:1 rgba(255, 255, 255, 255));
-  border-width:0;
-  color: black;
-}</string>
+          <string notr="true">*{
+	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(190, 190, 190, 190), stop:0.243243 rgb(77, 76, 77), stop:0.972973 rgba(190, 190, 190, 255), stop:1 rgba(190, 190, 190, 255));
+
+	color: rgb(255, 255, 255);
+    border-radius:0;
+    border-style: groove;
+    border-right-width:0;
+    border-top-width:0;
+    border-bottom-width:0;
+    border-left-width:0;
+	border-color: white;
+    outline: none;
+}
+</string>
          </property>
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
@@ -779,7 +791,7 @@ QComboBox:hover {
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: white;</string>
+      <string notr="true">background-color: rgb(190,190,190);</string>
      </property>
     </widget>
    </item>
@@ -810,11 +822,6 @@ QComboBox:hover {
  </widget>
  <customwidgets>
   <customwidget>
-   <class>live_widgets::PushButton</class>
-   <extends>QPushButton</extends>
-   <header>live_widgets/pushbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>live_widgets::ToolButton</class>
    <extends>QToolButton</extends>
    <header>live_widgets/toolbutton.h</header>
@@ -822,7 +829,12 @@ QComboBox:hover {
   <customwidget>
    <class>live_widgets::RotatedLabel</class>
    <extends>QLabel</extends>
-   <header>live_widgets/rotatedlabel.h</header>
+   <header location="global">live_widgets/rotatedlabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>live_widgets::PushButton</class>
+   <extends>QPushButton</extends>
+   <header>live_widgets/pushbutton.h</header>
   </customwidget>
   <customwidget>
    <class>live_widgets::VScrollContainer</class>
@@ -842,7 +854,7 @@ QComboBox:hover {
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="Icons/Icons.qrc"/>
+  <include location="icons/icons.qrc"/>
  </resources>
  <connections/>
 </ui>

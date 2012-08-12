@@ -22,7 +22,7 @@
 using namespace live;
 
 VstWizard::VstWizard(live::ObjectPtr out, live::ObjectPtr loopback, QWidget *parent) :
-    QWizard(parent),
+    QStackedWidget(parent),
     s_out(out),
     s_loopback(loopback),
     ui(new Ui::VstWizard)
@@ -34,11 +34,11 @@ VstWizard::VstWizard(live::ObjectPtr out, live::ObjectPtr loopback, QWidget *par
     connect(ui->listWidget_vsti,SIGNAL(clicked(QModelIndex)),ui->listWidget_vsti,SLOT(setCurrentIndex(QModelIndex)));   //overwrite double-click select on certain systems
     connect(ui->listWidget_vsti,SIGNAL(currentRowChanged(int)),this,SLOT(vstChanged(int)));
     connect(ui->listWidget_vsti,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(next()));
+    connect(ui->listWidget_out, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(next()));
+    connect(ui->listWidget_chan, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(next()));
+    connect(ui->listWidget_inst, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(next()));
 
     connect(ui->listWidget_inst,SIGNAL(clicked(QModelIndex)),ui->listWidget_inst,SLOT(setCurrentIndex(QModelIndex)));   //overwrite double-click select on certain systems
-
-    connect(this,SIGNAL(currentIdChanged(int)),this,SLOT(pageChangeEvent(int)));
-    connect(this,SIGNAL(finished(int)),this,SLOT(finishUp()));
 
     stockChangedEvent();
     if (ui->listWidget_vsti->count()) ui->listWidget_vsti->setCurrentRow(0);
@@ -46,6 +46,16 @@ VstWizard::VstWizard(live::ObjectPtr out, live::ObjectPtr loopback, QWidget *par
 
     connect(live::object::singleton(),SIGNAL(stockChanged()),this,SLOT(stockChangedEvent()));
 
+    connect(ui->toolButton_back2, SIGNAL(clicked()), this, SLOT(back()));
+    connect(ui->toolButton_back3, SIGNAL(clicked()), this, SLOT(back()));
+    connect(ui->toolButton_back4, SIGNAL(clicked()), this, SLOT(back()));
+
+    connect(ui->toolButton_next1, SIGNAL(clicked()), this, SLOT(next()));
+    connect(ui->toolButton_next2, SIGNAL(clicked()), this, SLOT(next()));
+    connect(ui->toolButton_next3, SIGNAL(clicked()), this, SLOT(next()));
+    connect(ui->toolButton_next4, SIGNAL(clicked()), this, SLOT(finishUp()));
+
+    connect(this, SIGNAL(currentChanged(int)), this, SLOT(pageChangeEvent(int)));
 }
 
 void VstWizard::vstChanged(int z) {
@@ -207,6 +217,7 @@ void VstWizard::finishUp()
     }
 
     emit instrumentUpdated(s_out=a->rep->s_sidekicks[z],s_loopback=ol[index]);
+    deleteLater();
 }
 
 VstWizard::~VstWizard()
@@ -217,7 +228,7 @@ VstWizard::~VstWizard()
 void VstWizard::stockChangedEvent()
 {
     qDebug() << "RESCAN"<<s_out.valid()<<dynamic_cast<live_private::MidiNull*>(s_out.data());
-    bool ok=(currentId()==2)?!ui->listWidget_inst->currentRow():(currentId()<2);  //before selecting inst
+    bool ok=(currentIndex()==2)?!ui->listWidget_inst->currentRow():(currentIndex()<2);  //before selecting inst
     ui->listWidget_vsti->clear();
     ui->listWidget_vsti->addItems(Vst::getVstPaths());
     if (ui->listWidget_inst->currentItem()) for (int i=0;i<Vst::s_map.size();i++) {
@@ -227,7 +238,7 @@ void VstWizard::stockChangedEvent()
             ok=1;
         }
     }
-    if (!ok&&(currentId())) {
+    if (!ok&&(currentIndex())) {
         restart();
     }
 
@@ -246,4 +257,20 @@ void VstWizard::stockChangedEvent()
         QMessageBox::critical(this,"No Outputs","No outputs are available. Please adjust audio settings in the Creator Live menu.");
         close();
     }
+}
+
+void VstWizard::next() {
+    if (currentIndex() + 1 != count()) {
+        setCurrentIndex(currentIndex() + 1);
+    }
+}
+
+void VstWizard::back() {
+    if (currentIndex()) {
+        setCurrentIndex(currentIndex() - 1);
+    }
+}
+
+void VstWizard::restart() {
+    setCurrentIndex(0);
 }

@@ -1,10 +1,11 @@
-/*****************************************************
+/*******************************************************
 
-  Part of the Creator Live Music Workstation Project
-  Copyright Joshua Netterfield  (trintith@gmail.com)
+    Part of the Creator Live Music Production Suite.
+Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
-                 All rights reserved.
-*****************************************************/
+                  All rights reserved.
+
+*******************************************************/
 
 #include "settingslinux.h"
 #include "ui_settingslinux.h"

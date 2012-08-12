@@ -97,7 +97,7 @@ public:
     //if called for the next frame.
     //By default, if no data exists(i.e., it is all null), data will be returned as
     //a null pointer. If instead, data should be created, forceCreation should be true.
-    int getRawPointer(const quint64&frame,float*& data,bool forceCreation=0)
+    int getRawPointer(const quint64&frame,float*& data,bool forceCreation=0, bool* warning = 0)
     {
         sampleRate=audio::sampleRate();
         if((s_dataSize<=frame/sampleRate||!s_data[frame/sampleRate])&&!forceCreation)
@@ -114,9 +114,13 @@ public:
             }
         }
 
-        if(!s_data[frame/sampleRate])
-        {
+        if(!s_data[frame/sampleRate]) {
             s_data[(int)(frame/sampleRate)]=new AudioSecond((frame/sampleRate)*sampleRate);
+        }
+
+        if (warning) {
+            *warning = (static_cast<unsigned>(s_data.size()) <= static_cast<unsigned>(frame/sampleRate + 1) || !s_data[frame/sampleRate + 1]);
+            // the goal of warning is to force creation of next frame in a non-RT thread.
         }
 
         int id=(int)(frame/sampleRate);

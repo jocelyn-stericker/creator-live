@@ -3,10 +3,21 @@
 
 #include "livesf2_global.h"
 
-class LIVESF2SHARED_EXPORT LiveSF2Wizard
+#include <QWizard>
+
+namespace Ui {
+    class LiveSF2Wizard;
+}
+
+class LIVESF2SHARED_EXPORT LiveSF2Wizard : public QWizard
 {
+    Q_OBJECT
 public:
     LiveSF2Wizard();
+
+private:
+    Ui::LiveSF2Wizard* ui;
+
 };
 
 #endif // LIVESF2WIZARD_H

@@ -18,11 +18,12 @@ int TrackGroup::s_lastId = -1;
 using namespace live;
 using namespace live_widgets;
 
-TrackGroupAudio::TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent, bool empty) :
-    TrackGroup(c_input,c_parent)
+TrackGroupAudio::TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent, bool empty)
+  : TrackGroup(c_input,c_parent)
 {
     // init GUI
     mainLayout = new QHBoxLayout;
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     s_hathorView = new VScrollContainer(0);
     s_hathorView->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
@@ -59,30 +60,15 @@ TrackGroupAudio::TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent, bo
     instLabel->setObjectName("instLabel");
     s_hathorView->setObjectName("s_hathorView");
     AudioOutputChooser* aoo=new AudioOutputChooser(this);
+    connect(aoo, SIGNAL(resized()), this, SLOT(resizeEvent()));
     mainLayout->addWidget(s_hathorView);
-//    for (int i = s_hathorView->count(); i != -1; --i) {
-//        if(dynamic_cast<Track*>(s_hathorView->at(i))) {
-//            dynamic_cast<Track*>(s_hathorView->at(i))->addApp(); <- todo
-//        }
-//    }
-//    setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    adjustSize();
     s_hathorView->hide();
-    connect(aoo,SIGNAL(outputChosen(live::ObjectPtr)),this,SLOT(setLastOutput(live::ObjectPtr)));
-}
-
-void TrackGroupAudio::setLastOutput(live::ObjectPtr obj)
-{
-    s_hathorView->show();
-    bool ok=0;
-    for (int i=s_hathorView->count()-1;(i!=-1)&&!ok;--i) {
-        qDebug()<<s_hathorView->at(i);
-        if (dynamic_cast<Track*>(s_hathorView->at(i))) {
-            dynamic_cast<Track*>(s_hathorView->at(i))->setOutput(obj);
-            ok=1;
-        }
-    }
-    emit outputSelected();
-    Q_ASSERT(ok);
+    ui_selectWidget = aoo;
+    aoo->setGeometry(width() - aoo->width(), 0, aoo->width(), aoo->height());
+    connect(aoo, SIGNAL(outputChosen(live::ObjectPtr)), this, SLOT(setLastOutput(live::ObjectPtr)));
+    connect(aoo, SIGNAL(outputChosen(live::ObjectPtr)), this, SLOT(clearSelect()));
 }
 
 TrackGroupAudio::~TrackGroupAudio()

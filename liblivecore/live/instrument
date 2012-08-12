@@ -11,7 +11,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define INSTRUMENT_H
 
 #include <QStringList>
-#include "live/object"
+#include <live/object>
 
 namespace live {
 

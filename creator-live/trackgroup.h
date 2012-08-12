@@ -24,13 +24,20 @@ public:
     int s_id;                   /*004*/
     static int s_lastId;
 
-    explicit TrackGroup(live::ObjectPtr  cinput, QWidget *parent = 0) :
-        QFrame(parent), BindableParent(this), s_input(cinput), s_hathorView(0), s_id(++s_lastId)
+    explicit TrackGroup(live::ObjectPtr  cinput, QWidget *parent = 0)
+      : QFrame(parent)
+      , BindableParent(this)
+      , s_input(cinput)
+      , s_hathorView(0)
+      , s_id(++s_lastId)
+      , ui_selectWidget(0)
     {
         setFrameStyle(QFrame::NoFrame);
         setLineWidth(0);
         setObjectName("TrackGroup_"+QString::number(s_id));
     }
+
+    QWidget* ui_selectWidget;
 
 signals:
     void outputSelected();
@@ -49,6 +56,9 @@ public slots:
         qDebug() << "OS!";
         disconnect(sender(),SIGNAL(outputSelected()),this,SLOT(onFirstOutputSelected()));
     }
+    void clearSelect();
+    void resizeEvent(QResizeEvent* e=0);
+    void setLastOutput(live::ObjectPtr obj, live::ObjectPtr = live::ObjectPtr(0));
 };
 
 #endif // METAHATHOR_H

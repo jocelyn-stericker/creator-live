@@ -12,6 +12,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "ui_newinput.h"
 #include <cmath>
 #include <math.h>
+#include <QPropertyAnimation>
+#include <QTimer>
 
 using namespace live_widgets;
 using namespace live;
@@ -33,6 +35,10 @@ NewInput::NewInput(QWidget*parent)
 
     connect(object::singleton(),SIGNAL(stockChanged()),this,SLOT(internalStockChangedEvent()));
     rowChangedEvent();
+
+    setFixedWidth(55);
+    maximize();
+    connect(s_ui->inputType, SIGNAL(toggled(bool)), this, SLOT(minimize(bool)));
 }
 
 void NewInput::internalStockChangedEvent() {
@@ -49,8 +55,13 @@ void NewInput::internalStockChangedEvent() {
 }
 
 void NewInput::go() {
-    emit created(object::get(InputOnly|NoRefresh)[s_ui->input_combo->currentRow()]);
-    deleteLater();
+    if (width() != 55) {
+        minimize();
+        QTimer::singleShot(200, this, SLOT(go()));
+    } else {
+        emit created(object::get(InputOnly|NoRefresh)[s_ui->input_combo->currentRow()]);
+        deleteLater();
+    }
 }
 
 void NewInput::refresh() {
@@ -72,4 +83,17 @@ void NewInput::resizeEvent(QResizeEvent *e) {
 
      if (e)
          QFrame::resizeEvent(e);
+}
+
+void NewInput::minimize(bool reverse) {
+    QPropertyAnimation* qaa[2];
+    qaa[0] = new QPropertyAnimation(this, "minimumWidth");
+    qaa[1] = new QPropertyAnimation(this, "maximumWidth");
+    for (int i = 0; i < 2; ++i) {
+        qaa[i]->setStartValue(width());
+        qaa[i]->setEndValue(reverse ? 400 : 55);
+        qaa[i]->setDuration(200);
+        qaa[i]->setEasingCurve(QEasingCurve::InQuad);
+        qaa[i]->start(QAbstractAnimation::DeleteWhenStopped);
+    }
 }

@@ -15,6 +15,9 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <cmath>
 #include <math.h>
 
+#include <QPropertyAnimation>
+#include <QTimer>
+
 using namespace live;
 using namespace live_widgets;
 
@@ -28,12 +31,18 @@ AudioOutputChooser::AudioOutputChooser(QWidget *parent) :
     connect(s_ui->Bwidget,SIGNAL(clicked(QModelIndex)),this,SLOT(go()));
     connect(s_ui->Bwidget,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(go()));
     connect(s_ui->Bwidget,SIGNAL(currentRowChanged(int)),this,SLOT(rowChangedEvent()));
+    connect(&b_trackName, SIGNAL(changeObserved(QString,QString)), s_ui->inputName, SLOT(setText(QString)));
 
     internalStockChangedEvent();
 
     MidiBindingQtSys::addWidget(this);
 
     connect(object::singleton(),SIGNAL(stockChanged()),this,SLOT(internalStockChangedEvent()));
+
+    setFixedWidth(55);
+    maximize();
+
+    connect(s_ui->inputType, SIGNAL(toggled(bool)), this, SLOT(minimize(bool)));
 }
 
 AudioOutputChooser::~AudioOutputChooser()
@@ -49,13 +58,18 @@ void AudioOutputChooser::resizeEvent(QResizeEvent *e)
 //     s_ui->Bwidget->setFixedWidth(w/2.00/phi);
 //     s_ui->Cwidget->setFixedWidth(w/2.00/phi/phi);
 
-     if (e) QWidget::resizeEvent(e);
+    emit resized();
+    if (e) QWidget::resizeEvent(e);
 }
 
 void AudioOutputChooser::go()
 {
-    emit outputChosen(object::get(OutputOnly|AudioOnly|NoRefresh)[s_ui->Bwidget->currentRow()]);
-    deleteLater();
+    if (width() != 55) {
+        minimize();
+        QTimer::singleShot(200, this, SLOT(go()));
+    } else {
+        emit outputChosen(object::get(OutputOnly|AudioOnly|NoRefresh)[s_ui->Bwidget->currentRow()]);
+    }
 }
 
 void AudioOutputChooser::refresh()
@@ -81,5 +95,43 @@ void AudioOutputChooser::internalStockChangedEvent()
         s_ui->Bwidget->clear();
         s_ui->Bwidget->insertItems(0,all);
     }
-//    s_ui->Bwidget->setFixedHeight(v.size()*38+(v.size()-1)*8+5);
+}
+
+void AudioOutputChooser::minimize(bool reverse) {
+    s_ui->inputType->setChecked(reverse);
+    QPropertyAnimation* qaa[2];
+    qaa[0] = new QPropertyAnimation(this, "minimumWidth");
+    qaa[1] = new QPropertyAnimation(this, "maximumWidth");
+    for (int i = 0; i < 2; ++i) {
+        qaa[i]->setStartValue(width());
+        qaa[i]->setEndValue(reverse ? 400 : 55);
+        qaa[i]->setDuration(200);
+        qaa[i]->setEasingCurve(QEasingCurve::InQuad);
+        qaa[i]->start(QAbstractAnimation::DeleteWhenStopped);
+        connect(qaa[i], SIGNAL(destroyed()), this, SIGNAL(doneResizing())); // yes, twice.
+    }
+    if(!reverse)
+        connect(qaa[1], SIGNAL(destroyed()), this, SLOT(roundCorners()));
+    else
+        squareCorners();
+}
+
+void AudioOutputChooser::roundCorners() {
+    QString ss = s_ui->inputType->styleSheet();
+    ss.replace("border-top-left-radius: 0px;", "border-top-left-radius: 4px;");
+    s_ui->inputType->setStyleSheet(ss);
+
+    ss = s_ui->frame_2->styleSheet();
+    ss.replace("border-bottom-left-radius: 0px;", "border-bottom-left-radius: 4px;");
+    s_ui->frame_2->setStyleSheet(ss);
+}
+
+void AudioOutputChooser::squareCorners() {
+    QString ss = s_ui->inputType->styleSheet();
+    ss.replace("border-top-left-radius: 4px;", "border-top-left-radius: 0px;");
+    s_ui->inputType->setStyleSheet(ss);
+
+    ss = s_ui->frame_2->styleSheet();
+    ss.replace("border-bottom-left-radius: 4px;", "border-bottom-left-radius: 0px;");
+    s_ui->frame_2->setStyleSheet(ss);
 }

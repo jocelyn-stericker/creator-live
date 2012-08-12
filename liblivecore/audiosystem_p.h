@@ -184,7 +184,7 @@ public:
 
     static int xrunCallback( void * )
     {
-        qDebug() << "XRUN!!!";
+        live::Object::XRUN();
         return 0;
     }
 

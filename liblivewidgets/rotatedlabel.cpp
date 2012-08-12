@@ -20,6 +20,7 @@ void live_widgets::RotatedLabel::paintEvent( QPaintEvent * ) {
     QPainter painter( this );
     painter.save();
     painter.rotate( 90 );
+    painter.translate(0,-QFontMetrics(font()).descent());
 
     QString a= this->text();
     a.remove("\n");

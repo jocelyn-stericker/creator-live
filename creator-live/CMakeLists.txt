@@ -23,6 +23,7 @@ list (APPEND creator-live_cpp
     app_dotlive.cpp
     liveapplication.cpp
     audiooutputchooser.cpp
+    midioutputchooser.cpp
 )
 
 list (APPEND creator-live_h
@@ -38,6 +39,7 @@ list (APPEND creator-live_h_qobject
     settingstabwidget.h
     liveapplication.h
     audiooutputchooser.h
+    midioutputchooser.h
 )
 
 list (APPEND creator-live_ui
@@ -45,6 +47,7 @@ list (APPEND creator-live_ui
     settingslinux.ui
     settingstabwidget.ui
     audiooutputchooser.ui
+    midioutputchooser.ui
 )
 
 list (APPEND creator-live_qrc

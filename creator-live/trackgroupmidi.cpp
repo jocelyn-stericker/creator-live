@@ -8,6 +8,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 *******************************************************/
 
 #include "trackgroupmidi.h"
+#include "midioutputchooser.h"
 
 #include <live_widgets/pianokey.h>
 #include <live_widgets/pushbutton.h>
@@ -53,6 +54,8 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
         ui_topLayout->addWidget(ui_colourSelect[i]);
         connect(ui_colourSelect[i],SIGNAL(toggled(bool)),this,SLOT(changeActiveFilter(bool)));
         bg->addButton(ui_colourSelect[i]);
+
+        ui_colourSelect[i]->hide();
     }
 
     for (int i=0;i<5;i++)
@@ -65,6 +68,8 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
         ui_modeSelect[i]->setProperty("mode_id",i);
         ui_modeSelect[i]->setText(QString::number(i));
         ui_modeSelect[i]->setStyleSheet("*{padding:0px;}");
+
+        ui_modeSelect[i]->hide();
         ui_topLayout->addWidget(ui_modeSelect[i]);
         connect(ui_modeSelect[i],SIGNAL(toggled(bool)),this,SLOT(changeActiveMode(bool)));
         bg->addButton(ui_modeSelect[i]);
@@ -120,7 +125,18 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
     {
         ui_colourSelect[i]->setObjectName("ui_colourSelect"+QString::number(i));
     }
-//    setStyleSheet("background:black;");
+
+    MidiOutputChooser* moc=new MidiOutputChooser(this);
+    connect(moc, SIGNAL(resized()), this, SLOT(resizeEvent()));
+    setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    adjustSize();
+    s_hathorView->hide();
+    ui_instLabel->hide();
+    ui_instView->hide();
+    ui_selectWidget = moc;
+    moc->setGeometry(width() - moc->width(), 0, moc->width(), moc->height());
+    connect(moc,SIGNAL(outputChosen(live::ObjectPtr, live::ObjectPtr)),this,SLOT(setLastOutput(live::ObjectPtr, live::ObjectPtr)));
+    connect(moc, SIGNAL(destroyed()), this, SLOT(clearSelect()));
 }
 
 void TrackGroupMidi::newHathorAuto()
