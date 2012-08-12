@@ -159,7 +159,7 @@ void LiveWindow::newInput()
         delete s_iw;
         s_iw=0;
     }
-    NewInput* ni=new NewInput(ui->sac_contents);
+    NewInput* ni=new NewInput(ui->sac_contents, true, true, true);
     connect(ni,SIGNAL(created(live::ObjectPtr )),this,SLOT(reactOnCreation(live::ObjectPtr )));
     ui->sac_contents->push_back(ni);
     ui->sac_contents->updateItems();
@@ -171,6 +171,9 @@ void LiveWindow::reactOnCreation(live::ObjectPtr s)
 {
     curPatch()->widgets.removeOne(qobject_cast<QWidget*>(sender()));
     ui->sac_contents->removeOne(qobject_cast<QWidget*>(sender()));
+
+    sender()->deleteLater();
+
     if (s->isMidiObject())
     {
         TrackGroupMidi* h=new TrackGroupMidi(s, ui->sac_contents);

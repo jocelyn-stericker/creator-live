@@ -10,8 +10,10 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef AMBITION_H
 #define AMBITION_H
 
-#include "live/object"
-#include "live/variantbinding"
+#include <live/object>
+#include <live/variantbinding>
+#include <live/midieventcounter>
+
 #include <iostream>
 
 namespace live {
@@ -63,6 +65,7 @@ class Ambition
     live::ObjectChain s_chain;        /*004*/
     live::ObjectPtr s_output;         /*005*/
     live::ObjectPtr s_loopbackOut;    /*006*/
+    live::MidiEventCounter* s_ec;
     QList<Connection*> s_connections;
     friend class live::Object;
 public:
@@ -70,6 +73,7 @@ public:
     live::Bound<QString> b_output;
     Ambition(live::ObjectPtr cinput=0,live::ObjectChain chain=live::ObjectChain(), live::ObjectPtr coutput=0, live::ObjectPtr cloop=0);
     ~Ambition();
+
 
     void setInput(live::ObjectPtr o)
     {

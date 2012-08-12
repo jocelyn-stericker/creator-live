@@ -119,13 +119,15 @@ public:
     void deleteConnection();
 };
 
-class LIBLIVECORESHARED_EXPORT AudioNull : public live::Object
+class LIBLIVECORESHARED_EXPORT AudioNull : public QObject, public live::Object
 {
+    Q_OBJECT
 public:
     LIVE_AUDIO
     LIVE_INPUT
     bool mOn() const{ return 0; } bool aOn() const { return 1; }
     int     chans;
+    QMutex p;
 
     AudioNull(int cchans) :
         live::Object("Null Audio Device",false,false),
@@ -137,6 +139,8 @@ public:
         aOut(data,chan,p);
         p->pop_back();
     }
+
+    QObject* qoThis() { return this; }
 };
 
 class LIBLIVECORESHARED_EXPORT SecretAudio : public QObject, public live::AudioInterface
@@ -197,6 +201,8 @@ public slots:
     bool refresh();
     void process();
     void jack_disconnect(QString readPort,QString writePort);
+
+    void removeNull(QObject*);
 
 public:
     virtual QString name() { return "Jack Audio"; }

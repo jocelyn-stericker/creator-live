@@ -77,8 +77,6 @@ public slots:
     void logic_appNext();
     void updateGeometriesIfNeeded();
     void updateGeometriesOrDie();
-signals:
-    void outputSelected();
 public:
     QByteArray save();
     static Track* load(const QByteArray&);

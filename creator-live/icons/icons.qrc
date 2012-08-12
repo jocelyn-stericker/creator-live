@@ -60,5 +60,6 @@
         <file>skip-completely.png</file>
         <file>move.png</file>
         <file>hdd.png</file>
+        <file>addChain.png</file>
     </qresource>
 </RCC>

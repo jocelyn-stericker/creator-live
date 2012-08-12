@@ -24,11 +24,16 @@ class LIBLIVEWIDGETSSHARED_EXPORT NewInput : public QFrame {
     Q_OBJECT
 private:
     Ui_Frame* s_ui;
+    bool s_allowMidi;
+    bool s_allowAudio;
 public:
     QStringList all;
-    NewInput(QWidget*parent);
+    NewInput(QWidget*parent, bool popout, bool allowMidi, bool allowAudio);
 
     void resizeEvent(QResizeEvent *);
+
+    live::Bound<QString> b_trackName;
+    live::Bound<bool> b_audio;  // else midi
 
 public slots:
     void internalStockChangedEvent();
@@ -39,8 +44,14 @@ public slots:
     void maximize(bool reverse = false) { minimize(!reverse); }
     void minimize(bool reverse = false);
 
+    void onSetAudio(bool);
+
+    void squareCorners();
+    void roundCorners();
+
 signals:
     void created(live::ObjectPtr device);
+    void newOutputRequested();
 
 };
 

@@ -664,8 +664,21 @@ LIBLIVECORESHARED_EXPORT live::ObjectPtr live::audio::null(int chan) {
 }
 
 live::ObjectPtr live_private::SecretAudio::getNull(int chans) {
-    nulls.push_back( new AudioNull(chans) );
-    return nulls.back();
+    live::Object::beginAsyncAction();
+
+    AudioNull* ret;
+    nulls.push_back( ret = new AudioNull(chans) );
+    connect(nulls.back(), SIGNAL(destroyed(QObject*)), this, SLOT(removeNull(QObject*)), Qt::DirectConnection);
+
+    live::Object::endAsyncAction();
+
+    return ret;
+}
+
+void live_private::SecretAudio::removeNull(QObject* o) {
+    live::Object::beginAsyncAction();
+    nulls.removeAll(static_cast<AudioNull*>(o));
+    live::Object::endAsyncAction();
 }
 
 //LIBLIVECORESHARED_EXPORT void live::audio::reset()

@@ -14,11 +14,16 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "live_widgets/vscrollcontainer.h"
 #include "live_widgets/bindableparent.h"
 
+namespace live_widgets {
+    class NewInput;
+}
+
 class TrackGroup : public QFrame, public live_widgets::BindableParent
 {
     Q_OBJECT
 protected:                      /*IN CHILDREN*/
     live::ObjectPtr  s_input;             /*CONSTRUCT*/
+    live_widgets::NewInput *instLabel;
 public:
     live_widgets::VScrollContainer* s_hathorView;   /*003*/
     int s_id;                   /*004*/
@@ -43,19 +48,18 @@ signals:
     void outputSelected();
 
 public slots:
-    void newHathor(live::ObjectPtr coutput)
+    void newHathor(live::ObjectPtr coutput);
+
+    void setInput(live::ObjectPtr in)
     {
-        Track* t = 0;
-        s_hathorView->insert(s_hathorView->count()-1,t = new Track(s_input,coutput));
-        s_hathorView->updateItems();
-        connect(t, SIGNAL(outputSelected()), this, SLOT(onFirstOutputSelected()));
+        for (int i = 0; i < s_hathorView->count(); ++i) {
+            Track* t = qobject_cast<Track*>(s_hathorView->at(i));
+            if (t)
+                t->setInput(in);
+        }
+        s_input = in;
     }
 
-    void onFirstOutputSelected()
-    {
-        qDebug() << "OS!";
-        disconnect(sender(),SIGNAL(outputSelected()),this,SLOT(onFirstOutputSelected()));
-    }
     void clearSelect();
     void resizeEvent(QResizeEvent* e=0);
     void setLastOutput(live::ObjectPtr obj, live::ObjectPtr = live::ObjectPtr(0));

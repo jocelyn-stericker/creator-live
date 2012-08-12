@@ -376,7 +376,10 @@ void live::ObjectPtr::detach() {
     if (s_obj) {
         s_obj->s_ptrList.removeOne(this);
         if (!s_obj->s_ptrList.size()&&s_obj->isTemporary()) {
-            delete s_obj;
+            if (s_obj->qoThis())
+                s_obj->qoThis()->deleteLater();
+            else
+                delete s_obj;
         }
     }
     for (QMap<QString,ObjectPtr*>::iterator it=Object::zombies->begin(); it!=Object::zombies->end(); ++it) {

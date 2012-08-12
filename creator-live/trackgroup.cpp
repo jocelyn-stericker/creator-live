@@ -9,6 +9,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include "trackgroup.h"
 
+#include <live_widgets/newinput.h>
+
 #include <QResizeEvent>
 
 void TrackGroup::resizeEvent(QResizeEvent *) {
@@ -35,4 +37,15 @@ void TrackGroup::setLastOutput(live::ObjectPtr obj, live::ObjectPtr loop)
     }
     emit outputSelected();
     Q_ASSERT(ok);
+}
+
+void TrackGroup::newHathor(live::ObjectPtr coutput)
+{
+    if (instLabel)
+        instLabel->setFixedHeight(instLabel->height() + 350);
+
+    Track* t = 0;
+    s_hathorView->insert(s_hathorView->count(),t = new Track(s_input,coutput));
+    s_hathorView->updateItems();
+    t->setOutputChooser(new AudioOutputChooser);
 }

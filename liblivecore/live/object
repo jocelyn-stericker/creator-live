@@ -251,7 +251,9 @@ public:
     }
 
     ~ObjectPtr() {
+        Object::beginAsyncAction();
         detach();
+        Object::endAsyncAction();
     }
 
     void detach();

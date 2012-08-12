@@ -25,7 +25,6 @@ public:
 
     QHBoxLayout* ui_mainLayout;
     QVBoxLayout* ui_subLayout1;
-    live_widgets::RotatedLabel *ui_instLabel;
     QGraphicsView* ui_instView;
     QGraphicsScene* ui_instScene;
     QWidget* ui_actionw_parent;

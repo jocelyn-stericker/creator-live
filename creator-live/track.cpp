@@ -41,6 +41,7 @@ Track::Track(live::ObjectPtr cinput, live::ObjectPtr coutput)
 
     setObjectName("Track_"+QString::number(s_id));
     setGeometry(geometry());
+    qDebug() << "XX" << coutput->name();
     Object::endAsyncAction();
 
 }
@@ -238,8 +239,6 @@ void Track::setOutput(live::ObjectPtr output,live::ObjectPtr loopback) {
     s_ambition.setOutput(output);
     s_ambition.setLoopbackOut(loopback);
     Object::endAsyncAction();
-
-    emit outputSelected();
 }
 
 void Track::setInput(live::ObjectPtr input) {
@@ -458,6 +457,7 @@ void Track::setOutputChooser(AudioOutputChooser* a) {
     ui_outputName->setObjectName("ui_outputName");
     ui_outputName->show();
     connect(ui_outputName, SIGNAL(resized()), this, SLOT(updateGeometriesIfNeeded()));
+    connect(ui_outputName, SIGNAL(outputChosen(live::ObjectPtr)), this, SLOT(setOutput(live::ObjectPtr)));
     connect(ui_outputName, SIGNAL(doneResizing()), this, SLOT(updateGeometriesOrDie()));
     updateGeometriesOrDie();
 }

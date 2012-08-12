@@ -34,16 +34,16 @@ public:
 public slots:
     void removeOne(QObject* a) { QList<QWidget*>::removeOne(qobject_cast<QWidget*>(a)); }
 public:
-    VScrollContainer(bool cresizeable=1) :
-        BindableParent(this),
-        s_sHathorView(new ShadowContainer),
-        compact(0),
-        c(0),
-        s_vBox(new QVBoxLayout(this)),
-        s_resizeable(cresizeable) {
+    VScrollContainer(bool cresizeable=1)
+      : BindableParent(this)
+      , s_sHathorView(new ShadowContainer)
+      , compact(0)
+      , c(0)
+      , s_vBox(new QVBoxLayout(this))
+      , s_resizeable(cresizeable)
+      { s_vBox->setContentsMargins(0, 0, 0, 0);
         live_widgets::MidiBindingQtSys::addWidget(this);
         s_vBox->setSizeConstraint(QLayout::SetMaximumSize);
-        s_vBox->setContentsMargins(0,0,0,0);
     }
 
     ~VScrollContainer() {

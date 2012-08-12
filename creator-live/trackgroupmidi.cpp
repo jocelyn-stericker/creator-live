@@ -10,6 +10,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "trackgroupmidi.h"
 #include "midioutputchooser.h"
 
+#include <live_widgets/newinput.h>
 #include <live_widgets/pianokey.h>
 #include <live_widgets/pushbutton.h>
 #include <QGraphicsView>
@@ -29,12 +30,15 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
 
     QVBoxLayout* ui_topLayout=new QVBoxLayout();
 
-    ui_instLabel = new RotatedLabel;
-    ui_instLabel->setText(c_input->name());
-    ui_instLabel->setMinimumHeight(ui_instLabel->sizeHint().width()+15);
-    ui_instLabel->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
-    ui_instLabel->setMaximumWidth(15);
-    ui_topLayout->addWidget(ui_instLabel,0, Qt::AlignTop | Qt::AlignLeft);
+    instLabel = new live_widgets::NewInput(this, false, true, false);
+    instLabel->b_trackName = c_input->name();
+    instLabel->b_audio = true;
+    instLabel->setMinimumHeight(350);
+    instLabel->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Expanding);
+    connect(instLabel,SIGNAL(created(live::ObjectPtr )),this,SLOT(setInput(live::ObjectPtr)));
+    connect(instLabel,SIGNAL(newOutputRequested()),this,SLOT(newHathorAuto()));
+    ui_topLayout->addWidget(instLabel,0, Qt::AlignTop | Qt::AlignLeft);
+    instLabel->setObjectName("instLabel");
 
     QButtonGroup* bg=new QButtonGroup;
     ui_mainLayout->addLayout(ui_topLayout);
@@ -80,10 +84,7 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
 
     s_hathorView->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     if (!empty)
-    {
-        QList<ObjectPtr> list=object::get(OutputOnly|MidiOnly);
-        s_hathorView->push_back(new Track(c_input,list.first()));
-    }
+        s_hathorView->push_back(new Track(c_input,midi::getNull()));
     PushButton* xpush=new PushButton("Insert new Output");
     xpush->setObjectName("xpush");
     s_hathorView->push_back(xpush);
@@ -118,7 +119,6 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
     }
     song::current()->midiMaps.insert(c_input,s_midiFilters[0]);
 
-    ui_instLabel->setObjectName("ui_instLabel");
     ui_instView->setObjectName("ui_instView");
     ui_instScene->setObjectName("ui_instScene");
     for (int i=0;i<5;i++)
@@ -131,7 +131,6 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
     setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     adjustSize();
     s_hathorView->hide();
-    ui_instLabel->hide();
     ui_instView->hide();
     ui_selectWidget = moc;
     moc->setGeometry(width() - moc->width(), 0, moc->width(), moc->height());
