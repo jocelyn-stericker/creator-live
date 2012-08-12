@@ -15,7 +15,7 @@ using namespace live;
 int SamplerDJ::s_lastId=-1;
 
 SamplerDJ::SamplerDJ(MidiTrack**cmidiTracks,AudioTrack**caudioTracks,bool newId) :
-    live::Object("SAMPLERDJ",0,0), s_bindingMode(-1), s_record(0), s_play(1), s_multi(1), s_id(newId?++s_lastId:-1), csMutex(QMutex::Recursive)
+    live::Object("SAMPLERDJ",0,0), s_bindingMode(-1), s_record(0), s_play(1), s_multi(1), s_id(newId?++s_lastId:-1)
 {
     Object::beginAsyncAction();
     for (int i=0;i<8;i++)
@@ -72,125 +72,123 @@ SamplerDJ::~SamplerDJ()
 
 const bool& SamplerDJ::isRecordMode()
 {
-    NOSYNC
     return s_record;
 }
 
 const bool& SamplerDJ::isPlayMode()
 {
-    NOSYNC
     return s_play;
 }
 
 const bool& SamplerDJ::isMultiMode()
 {
-    NOSYNC
     return s_multi;
 }
 
-void SamplerDJ::setRecordMode(bool r)
-{
+void SamplerDJ::setRecordMode(bool r) {
     if (!r) return setPlayMode();
-    NOSYNC
     if (s_record)
     {
         return;
     }
 
-    for (int i=0;i<8;i++)
-    {
-        s_midiTracks[i]->startRecord();
-        s_audioTracks[i]->startRecord();
+    live_async {
+        for (int i=0;i<8;i++)
+        {
+            s_midiTracks[i]->startRecord();
+            s_audioTracks[i]->startRecord();
+        }
+        s_play=0;
+        s_record=1;
+        emit recordModeSet(1);
+        emit playModeSet(0);
     }
-    s_play=0;
-    s_record=1;
-    emit recordModeSet(1);
-    emit playModeSet(0);
 }
 
-void SamplerDJ::setPlayMode()
-{
-    NOSYNC
+void SamplerDJ::setPlayMode() {
     if (s_play)
     {
         return;
     }
 
-    for (int i=0;i<8;i++)
-    {
-        s_midiTracks[i]->stopRecord();
-        s_audioTracks[i]->stopRecord();
-    }
+    live_async {
+        for (int i=0;i<8;i++)
+        {
+            s_midiTracks[i]->stopRecord();
+            s_audioTracks[i]->stopRecord();
+        }
 
-    s_play=1;
-    s_record=0;
-    emit recordModeSet(0);
-    emit playModeSet(1);
+        s_play=1;
+        s_record=0;
+        emit recordModeSet(0);
+        emit playModeSet(1);
+    }
 }
 
-void SamplerDJ::setMultiMode(bool r)
-{
+void SamplerDJ::setMultiMode(bool r) {
     if (!r) return unsetMultiMode();
-    NOSYNC
     if (s_multi)
     {
         return;
     }
-    s_multi=1;
-    emit multiModeSet(1);
+
+    live_async {
+        s_multi=1;
+        emit multiModeSet(1);
+    }
 }
 
-void SamplerDJ::unsetMultiMode()
-{
-    NOSYNC
+void SamplerDJ::unsetMultiMode() {
     if (!s_multi)
     {
         return;
     }
-    s_multi=0;
-    emit multiModeSet(0);
+
+    live_async {
+        s_multi=0;
+        emit multiModeSet(0);
+    }
 }
 
-void SamplerDJ::hit(int button)
-{
-    NOSYNC
+void SamplerDJ::hit(int button) {
     Q_ASSERT(button>=0&&button<=15);
-    if (s_midiTracks[button]->isPlay())
-    {
-        s_midiTracks[button]->stopPlayback();
-        s_audioTracks[button]->stopPlayback();
-    }
-    s_midiTracks[button]->setPos(0);
-    s_audioTracks[button]->setPos(0);
 
-    if (s_midiTracks[button]->isRecord())
-    {
-        s_midiTracks[button]->clearData();
-        s_audioTracks[button]->clearData();
-    }
+    live_async {
+        if (s_midiTracks[button]->isPlay())
+        {
+            s_midiTracks[button]->stopPlayback();
+            s_audioTracks[button]->stopPlayback();
+        }
+        s_midiTracks[button]->setPos(0);
+        s_audioTracks[button]->setPos(0);
 
-    s_midiTracks[button]->startPlayback();
-    s_audioTracks[button]->startPlayback();
+        if (s_midiTracks[button]->isRecord())
+        {
+            s_midiTracks[button]->clearData();
+            s_audioTracks[button]->clearData();
+        }
+
+        s_midiTracks[button]->startPlayback();
+        s_audioTracks[button]->startPlayback();
+    }
 }
 
-void SamplerDJ::release(int button)
-{
-    NOSYNC
+void SamplerDJ::release(int button) {
     Q_ASSERT(button>=0&&button<=15);
-    if (s_midiTracks[button]->isPlay())
-    {
-        s_midiTracks[button]->stopPlayback();
-        s_audioTracks[button]->stopPlayback();
+
+    live_async {
+        if (s_midiTracks[button]->isPlay()) {
+            s_midiTracks[button]->stopPlayback();
+            s_audioTracks[button]->stopPlayback();
+        }
     }
 }
 
 void SamplerDJ::setBindingMode(int b)
 {
-    NOSYNC
     s_bindingMode=b;
-    if (s_bindingMode!=-1)
-    {
-        MidiBinding::customNow=this;
+    if (s_bindingMode!=-1) {
+        live_async MidiBinding::customNow=this;
     }
 }
 
@@ -231,14 +229,6 @@ void SamplerDJ::aIn(const float *in, int chan, ObjectChain*p)
 
 void SamplerDJ::mIn(const Event *data, ObjectChain*p)
 {
-    NOSYNC;
-//    if (!MidiBindingQt::customKey->value(p->first(),0))
-//    {
-//        p->push_back(this);
-//        mOut(data,p);
-//        p->pop_back();
-//        return;
-//    }
     if (!s_customBindings.value(p->first()))
     {
         s_customBindings.insert(p->first(),new int[200]);    //mem

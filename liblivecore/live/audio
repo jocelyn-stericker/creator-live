@@ -23,7 +23,7 @@ public:
     static void registerInterface(AudioInterface*);
     static QObject* getCurrentInterface();
 
-    static const int& nFrames();
+    static const unsigned long &nFrames();
     // Assumes: N/A
     // State changes: none, fast
     // Returns: number of frames per period for jack callback

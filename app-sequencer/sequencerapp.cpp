@@ -22,8 +22,7 @@ SequencerApp::SequencerApp(QString name,MidiTrack*cmidiTrack,AudioTrack*caudioTr
     b_clipped(0),
     s_id(newId?SequencerSys::newIdForTrack():-1),
     s_audioOverdubForced(0),
-    s_scale(2646000),
-    csMutex(QMutex::Recursive)
+    s_scale(2646000)
 {
     Q_ASSERT(name=="SEQUENCER"||name=="LOOPER");    //awkward inheritance
     s_midiTrack->hybridConnect(this);
@@ -83,89 +82,91 @@ bool SequencerApp::clipped() const
 
 void SequencerApp::startRecord()
 {
-    NOSYNC;
-    s_midiTrack->startRecord();
-//    if (s_audioOverdubForced) s_audioTrack->startOverdub();
-    /*else */s_audioTrack->startRecord();
+    live_async {
+        s_midiTrack->startRecord();
+        s_audioTrack->startRecord();
+    }
 }
 
 void SequencerApp::stopRecord()
 {
-    NOSYNC;
-    s_midiTrack->stopRecord();
-//    if (s_audioOverdubForced) s_audioTrack->stopRecord();
-    /*else*/ s_audioTrack->stopRecord();
+    live_async {
+        s_midiTrack->stopRecord();
+        s_audioTrack->stopRecord();
+    }
 }
 
 void SequencerApp::startOverdub()
 {
-    NOSYNC;
-    s_midiTrack->startOverdub();
-    s_audioTrack->startOverdub();
+    live_async {
+        s_midiTrack->startOverdub();
+        s_audioTrack->startOverdub();
+    }
 }
 
 void SequencerApp::stopOverdub()
 {
-    NOSYNC;
-    s_midiTrack->stopOverdub();
-    s_audioTrack->stopOverdub();
+    live_async {
+        s_midiTrack->stopOverdub();
+        s_audioTrack->stopOverdub();
+    }
 }
 
 void SequencerApp::startPlayback()
 {
-    NOSYNC;
-    s_midiTrack->startPlayback();
-    s_audioTrack->startPlayback();
+    live_async {
+        s_midiTrack->startPlayback();
+        s_audioTrack->startPlayback();
+    }
     emit playbackStarted();
 }
 
 void SequencerApp::stopPlayback()
 {
-    NOSYNC;
-    s_midiTrack->stopPlayback();
-    s_audioTrack->stopPlayback();
+    live_async {
+        s_midiTrack->stopPlayback();
+        s_audioTrack->stopPlayback();
+    }
     emit playbackStopped();
 }
 
 void SequencerApp::startMute()
 {
-    NOSYNC;
-    s_midiTrack->startMute();
-    s_audioTrack->startMute();
+    live_async {
+        s_midiTrack->startMute();
+        s_audioTrack->startMute();
+    }
 }
 
 void SequencerApp::stopMute()
 {
-    NOSYNC;
-    s_midiTrack->stopMute();
-    s_audioTrack->stopMute();
+    live_async {
+        s_midiTrack->stopMute();
+        s_audioTrack->stopMute();
+    }
 }
 
 void SequencerApp::setPos(int pos)
 {
-    NOSYNC;
-    s_midiTrack->setPos(pos);
-    s_audioTrack->setPos(pos);
+    live_async {
+        s_midiTrack->setPos(pos);
+        s_audioTrack->setPos(pos);
+    }
     emit posSet(pos);
 }
 
 void SequencerApp::setClipped(bool clipped)
 {
-    NOSYNC;
     if (clipped&&!b_clipped)
-    {
         SequencerSys::registerClippedSeq(this);
-    }
     else if (b_clipped&&!clipped)
-    {
         SequencerSys::deregisterClippedSeq(this);
-    }
+
     b_clipped=clipped;
 }
 
 
-void SequencerApp::aIn(const float *data, int chan, ObjectChain*p)
-{
+void SequencerApp::aIn(const float *data, int chan, ObjectChain*p) {
     if (p->back()==s_audioTrack) {  // FIXME: eliminate ObjectChain
         aOut(data,chan,p);
     } else {

@@ -494,7 +494,7 @@ QByteArray audio::save()
 
     //////////////////////////////////////////////////////////////////
 
-    int nFrames=audio::nFrames();
+    quint32 nFrames=audio::nFrames();
     ret IO nFrames;  /* NOT A PROPERTY */
     if (IS_LOAD)
     {

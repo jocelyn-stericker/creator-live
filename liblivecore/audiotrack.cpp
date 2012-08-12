@@ -76,7 +76,6 @@ live::AudioTrack::AudioTrack(int cchans) :
     s_overdub(0),
     s_playback(0),
     s_mute(0),
-    csMutex(QMutex::Recursive),
     s_simpleCount(0),
     s_updateCounter(0),
     s_boringCounter(0) {
@@ -133,60 +132,51 @@ void live::AudioTrack::setVol(int vol) {
 }
 
 void live::AudioTrack::setPan(int pan) {
-    NOSYNC;
     Q_ASSERT((pan>=0)&&(pan<=100));
     Q_ASSERT(s_chans==2);
     s_pan=pan;
 }
 
 void live::AudioTrack::startRecord() {
-    NOSYNC;
     Q_ASSERT(!s_record);
     Q_ASSERT(!s_overdub);
     s_record=1;
 }
 
 void live::AudioTrack::stopRecord() {
-    NOSYNC;
     Q_ASSERT(s_record);
     Q_ASSERT(!s_overdub);
     s_record=0;
 }
 
 void live::AudioTrack::startOverdub() {
-    NOSYNC;
     Q_ASSERT(!s_overdub);
     Q_ASSERT(!s_record);
     s_overdub=1;
 }
 
 void live::AudioTrack::stopOverdub() {
-    NOSYNC;
     Q_ASSERT(s_overdub);
     Q_ASSERT(!s_record);
     s_overdub=0;
 }
 
 void live::AudioTrack::startPlayback() {
-    NOSYNC;
     Q_ASSERT(!s_playback);
     s_playback=1;
 }
 
 void live::AudioTrack::stopPlayback() {
-    NOSYNC;
     Q_ASSERT(s_playback);
     s_playback=0;
 }
 
 void live::AudioTrack::startMute() {
-    NOSYNC;
     Q_ASSERT(!s_mute);
     s_mute=1;
 }
 
 void live::AudioTrack::stopMute() {
-    NOSYNC;
     Q_ASSERT(s_mute);
     s_mute=0;
 }
@@ -317,6 +307,7 @@ bool live::AudioTrack::exportFile(QString filename,QString format,int depth) {
 }
 
 bool live::AudioTrack::importFile(QString filename) {
+    lthread::ui();
 #if !defined(_WIN32) && !defined(__QNX__)
     s_container[0]->clear();
     s_container[1]->clear();
@@ -341,8 +332,7 @@ bool live::AudioTrack::importFile(QString filename) {
         float*dataPtr;
         int counter=frames?(s_container[i]->getRawPointer(0,dataPtr,1)):0;
         dataPtr--;
-        for (int j=0;j<frames/2;j++) {
-            NOSYNC; // FIXME: This is not okay.
+        for (int j = 0; j < frames/2; ++j) live_async {
             if (j!=frames/2) {
                 if ((dataPtr?++dataPtr:0),--counter==-1) {
                     counter=s_container[i]->getRawPointer(j,dataPtr,1)-1;

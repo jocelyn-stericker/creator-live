@@ -176,7 +176,6 @@ public:
     static MidiBindingQtSys* singleton;
     static void addWidget(QWidget* w);
     static void delWidget(QWidget* w);
-    QMutex csMutex;
 private:
     QList<QWidget*> widgets;
     QMenu* currentCM;
@@ -184,7 +183,6 @@ private:
     live::MidiBinding::GuiType activeWidgetType;
 public:
     MidiBindingQtSys() :
-        csMutex(QMutex::Recursive),
         currentCM(0) {
     }
 

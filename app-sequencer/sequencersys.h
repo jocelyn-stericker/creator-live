@@ -17,7 +17,6 @@ class SequencerSys : public QObject
     Q_OBJECT
     QList<SequencerApp*> _u;
     bool ignoreLock;
-    QMutex csMutex;
     int _lastId;
     static SequencerSys* self;
 public:
@@ -32,7 +31,7 @@ public:
     static int newIdForTrack();
 
 protected:
-    SequencerSys() : ignoreLock(0),csMutex(QMutex::Recursive),_lastId(0) {Q_ASSERT(!self);self=this;}
+    SequencerSys() : ignoreLock(0), _lastId(0) {Q_ASSERT(!self);self=this;}
     void registerSeq_real(SequencerApp* that);
     void deregisterSeq_real(SequencerApp* that);
     ~SequencerSys();

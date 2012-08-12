@@ -41,7 +41,6 @@ void SecretMidi::run() { // [MIDI THREAD]
     forever {
         msleep(12);
         live::Object::beginProc();
-        NOSYNC;
 
         for(int i=0;i<withheld_ev.size();i++) {
             if(withheld_ev[i]->time.toTime_ms()-live::midi::getTime_msec()<5) {
@@ -76,7 +75,7 @@ void SecretMidi::queue(const live::Event* ev, int device, live::ObjectChain from
 }
 
 void SecretMidi::cancel(live::ObjectPtr from) {
-    NOSYNC;
+    live::lthread::midi();
     for(int i=0; i<fromqueue.size(); i++) {
         bool ok=0;
         for(int j=0;j<fromqueue[i].size();j++) {
@@ -105,7 +104,7 @@ void SecretMidi::cancel(live::ObjectPtr from) {
 }
 
 void SecretMidi::mWithhold(live::Event* x,live::ObjectChain p,live::ObjectPtr obj, bool reverse) {
-    NOSYNC;
+    live::lthread::midi();
     x->buddy=0;
     withheld_ev.push_back(x);
     withheld_p.push_back(p);
@@ -114,7 +113,7 @@ void SecretMidi::mWithhold(live::Event* x,live::ObjectChain p,live::ObjectPtr ob
 }
 
 void SecretMidi::mRemoveWithheld(live::ObjectPtr obj) {
-    NOSYNC;
+    live::lthread::midi();
     for(int i=0;i<withheld_ev.size();i++) {
         if(withheld_obj[i]==obj) {
             delete withheld_ev.takeAt(i);
@@ -127,7 +126,7 @@ void SecretMidi::mRemoveWithheld(live::ObjectPtr obj) {
 }
 
 void SecretMidi::mRemoveWithheld_object_dest(live::Object* obj) {
-    NOSYNC;
+    live::lthread::midi();
     for(int i=0;i<withheld_ev.size();i++) {
         if(withheld_obj[i].data()==obj) {
             delete withheld_ev.takeAt(i);

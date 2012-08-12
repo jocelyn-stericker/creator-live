@@ -147,7 +147,7 @@ public:
     QString s_error;
     static SecretAudio* singleton;
 
-    int nframes;
+    unsigned long nframes;
     QList< AudioIn* > inputs;
     QList< AudioOut* > outputs;
     QList< AudioNull* > nulls;
@@ -177,6 +177,9 @@ public:
 
     static int jackCallback( jack_nframes_t nframes, void* )
     {
+        if (SecretAudio::singleton->nframes != nframes)
+            live::lthread::audioInit();
+
         SecretAudio::singleton->nframes=nframes;
         singleton->process();
         return 0;
@@ -188,7 +191,7 @@ public:
         return 0;
     }
 
-    const int& nFrames() { return nframes; }
+    const unsigned long& nFrames() { return nframes; }
     qint32 sampleRate();
 
 public slots:

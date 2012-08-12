@@ -54,7 +54,6 @@ private:
     bool s_overdub;
     bool s_playback;
     bool s_mute;
-    QMutex csMutex;
     int s_simpleCount;
     int s_updateCounter;
     int s_boringCounter;

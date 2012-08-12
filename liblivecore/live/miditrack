@@ -10,7 +10,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef MIDITRACK_H
 #define MIDITRACK_H
 
-#include "live/object"
+#include <live/object>
 #include <QMutex>
 #include <QFile>
 #include "live/extern/midifile/MidiFile.h"
@@ -38,7 +38,6 @@ public:
 private:
     /*013*/ QList<Event*>* s_data;
     /*014*/ int mTrack_id;
-    QMutex csMutex;
     /*015B*/ static int lastId;
     QList<Event> s_cache;
     bool s_thru;    /*NOT SAVED, keep it that way*/
@@ -52,7 +51,6 @@ public:
     const bool& isMute();
     const int& pos();
     QList<Event> getData() {
-        NOSYNC;
         QList<Event> ret;
         for(int i=0;i<s_data->size();i++) {
             ret.push_back(*(*s_data)[i]);
@@ -60,7 +58,6 @@ public:
         return ret;
     }
     void remove(int a,int b) {
-        NOSYNC;
         for(int i=s_data->size()-1; i>=0; i--)
         {
             if((*s_data)[i]->time.toTime_ms()>=a&&(*s_data)[i]->time.toTime_ms()<=b)
@@ -102,7 +99,6 @@ public slots:
     void mIn(const Event *data, ObjectChain*p);
     void timeEvent();
     virtual void clearData() {
-        NOSYNC;
         EventListDeleter* eld=new EventListDeleter(s_data);
         QtConcurrent::run(eld,&EventListDeleter::run);
         s_data=new QList<Event*>;

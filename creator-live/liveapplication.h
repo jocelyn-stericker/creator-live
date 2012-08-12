@@ -38,6 +38,7 @@ public:
 signals:
 
 public slots:
+    void init();
 
 };
 

@@ -12,6 +12,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <math.h>
 
 void live::Metronome::clock() {
+    live::lthread::metronomeInit();
     if (s_isActive) {
         int time( startTime.msecsTo(QTime::currentTime()) );
         int bpm( (s_ts.denomenator==4) ? b_bpm : b_bpm*2 );

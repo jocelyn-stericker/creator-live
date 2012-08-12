@@ -20,6 +20,11 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 using namespace live_private;
 
+LIBLIVECORESHARED_EXPORT Qt::HANDLE live::lthread::uiThreadId = -1;
+LIBLIVECORESHARED_EXPORT Qt::HANDLE live::lthread::metronomeThreadId = -1;
+LIBLIVECORESHARED_EXPORT Qt::HANDLE live::lthread::audioThreadId = -1;
+LIBLIVECORESHARED_EXPORT Qt::HANDLE live::lthread::midiThreadId = -1;
+
 class TheMutex {
 public:
     static TheMutex* me;

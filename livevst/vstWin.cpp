@@ -149,7 +149,6 @@ void Vst::init()
     if (!SecretVst::singleton) new SecretVst;
     Q_ASSERT(SecretVst::singleton);
 
-    QMutexLocker lock(&csMutex);
     Q_UNUSED(lock);
 
     rep=new VstR(this,SecretVst::singleton->s_loadPlugin(filename));
@@ -200,7 +199,6 @@ void Vst::hide()
 
 void Vst::aIn(const float* x, int chan, ObjectChain*s)
 {
-    QMutexLocker lock(&csMutex);
     Q_UNUSED(lock);
     Q_UNUSED(s);
 
@@ -214,7 +212,6 @@ void Vst::aIn(const float* x, int chan, ObjectChain*s)
 } //////////////////////////////// GOES TO ////////////////////////////////
 void Vst::PROC_VST()
 {
-    QMutexLocker lock(&csMutex);
     Q_UNUSED(lock);
 
     const int&nframes=AudioSys::nFrames();
@@ -238,7 +235,6 @@ void Vst::mIn(const Event *data, ObjectChain*p)
     p->pop_back();
 
     if (data->simpleStatus()==-1) return;
-    QMutexLocker lock(&csMutex);
     Q_UNUSED(lock);
 
     Event* ev=new Event;

@@ -346,6 +346,7 @@ bool SecretAudio::makeClient() {
         //Unimplemented functionality
         qDebug("Couldn't connect to JACK!");
         s_error="Couldn't connect to Jack server!";
+        live::Object::endAsyncAction();
         return 0;
 #endif
     }
@@ -407,7 +408,7 @@ void SecretAudio::process() {
     foreach( AudioNull* i, nulls ) {
         for ( int j = 0; j < i->chans; j++ ) {
             float* buffer = new float[ nframes ]; //{
-            for (int k=0; k<nframes; k++) {
+            for (unsigned k=0; k<nframes; k++) {
                 buffer[k]=0.0;
             }
             live::ObjectChain p;
@@ -553,7 +554,7 @@ QObject* live::audio::getCurrentInterface() {
 
 void live::audio::refresh() { if (s_audioInterface) s_audioInterface->refresh(); }
 
-LIBLIVECORESHARED_EXPORT const int& live::audio::nFrames() {
+LIBLIVECORESHARED_EXPORT const unsigned long& live::audio::nFrames() {
     return s_audioInterface->nFrames();
 }
 

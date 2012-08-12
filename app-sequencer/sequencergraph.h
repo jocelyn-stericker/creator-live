@@ -48,7 +48,6 @@ private:
     int s_redrawpos_st,s_redrawpos_nd;
     int s_leftMost, s_rightMost;
     int s_scale;
-    QMutex csMutex;
 //Audio
     live::AudioTrack* audioTrack;
     QPixmap* audioOriginal[2];

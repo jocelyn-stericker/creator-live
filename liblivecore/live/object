@@ -15,10 +15,13 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QMap>
 #include <QDebug>
 #include <QStringList>
+#include <QThread>
 #include <QMutexLocker>
-#include <algorithm>
 
-#include "liblivecore_global"
+#include <algorithm>
+#include <iostream>
+
+#include <live/liblivecore_global>
 
 class LiveWindow;
 
@@ -218,7 +221,110 @@ void doMidiConnect(const Object* a, const Object* b);
 #define LIVE_OUTPUT public: virtual bool isOutput(){return 1;} virtual bool isInput() {return 0;}
 #define LIVE_EFFECT public: virtual bool isInput(){return 1;} virtual bool isOutput() {return 1;}
 
-#define NOSYNC QMutexLocker lock(&csMutex);Q_UNUSED(lock)
+#ifndef TCRASH
+#define TCRASH() do { \
+    *(int *)(unsigned*)0xdeadbeef = 0; \
+    ((void(*)())0)(); \
+} while(false)
+#endif // TCRASH
+
+class LIBLIVECORESHARED_EXPORT lthread {
+    static lthread* singleton;
+    static Qt::HANDLE uiThreadId;
+    static Qt::HANDLE metronomeThreadId;
+    static Qt::HANDLE audioThreadId;
+    static Qt::HANDLE midiThreadId;
+public:
+#ifndef PUBLIC_RELEASE
+    static inline void assert_thread(const Qt::HANDLE& thread, const char* str) {
+        if (thread != QThread::currentThreadId()) {
+            std::cerr << "### Thread assertion error ###\n";
+            std::cerr << "expected: " << str << "(" << QString::number(thread).toUtf8().data() << ")\n";
+            QString is;
+            if (QThread::currentThreadId() == uiThreadId)
+                is = "user interface";
+            if (QThread::currentThreadId() == metronomeThreadId)
+                is = "metronome";
+            if (QThread::currentThreadId() == audioThreadId)
+                is = "audio";
+            if (QThread::currentThreadId() == midiThreadId)
+                is = "midi";
+
+            std::cerr << "got: " << is.toUtf8().data() << "(" << QString::number(QThread::currentThreadId()).toUtf8().data() << ")\n";
+            std::flush(std::cerr);
+            TCRASH();
+        }
+    }
+
+    static inline void ui() {
+        assert_thread(uiThreadId, "user interface");
+    }
+
+    static inline void metronome() {
+        assert_thread(metronomeThreadId, "metronome");
+    }
+
+    static inline void audio() {
+        assert_thread(audioThreadId, "audio");
+    }
+
+    static inline void midi() {
+        assert_thread(midiThreadId, "midi");
+    }
+
+    struct ScopedLock {
+        unsigned decr : 1;
+        ScopedLock()
+          : decr(true)
+          {
+            Object::beginAsyncAction();
+        }
+        ~ScopedLock() {
+            Object::endAsyncAction();
+        }
+    };
+
+    struct ScopedMutexLock {
+        unsigned decr : 1;
+        QMutex& m_m;
+        ScopedMutexLock(QMutex& m)
+          : decr(true)
+          , m_m(m)
+          {
+            m_m.lock();
+        }
+        ~ScopedMutexLock() {
+            m_m.unlock();
+        }
+    };
+
+    #define live_async \
+        for (live::lthread::ScopedLock s; s.decr; s.decr = false)
+    // use like live_async { }
+
+    #define live_mutex(MUTEX) \
+        for (live::lthread::ScopedMutexLock locker(MUTEX); locker.decr; locker.decr = false)
+
+    static void uiInit() {
+        uiThreadId = QThread::currentThreadId();
+    }
+
+    static void midiInit() {
+        midiThreadId = QThread::currentThreadId();
+    }
+
+    static void metronomeInit() {
+        metronomeThreadId = QThread::currentThreadId();
+    }
+
+    static void audioInit() {
+        audioThreadId = QThread::currentThreadId();
+    }
+
+#else
+#error FIXME
+#endif
+};
 
 #define RELOADABLE(x) \
     public:QByteArray save(); \

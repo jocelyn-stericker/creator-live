@@ -65,6 +65,9 @@ class LIBLIVECORESHARED_EXPORT SecretMidi : public QThread
     Q_OBJECT //Midi.cpp
 public:
     static SecretMidi* me;
+
+    QMutex m_midiThreadMutex; // Every function must use this.
+
     QList< MidiIn* > inputs;
     QList< MidiOut*> outputs;
     MidiNull* null;
@@ -80,22 +83,28 @@ public:
     QList<bool> withheld_reverse;
 
 public:
-    SecretMidi() : QThread(), inputs(),outputs(),null(new MidiNull),pmouts(),pmins(),pmqueue(), idqueue(), csMutex(QMutex::Recursive)
-    {
-        init();
+    SecretMidi()
+      : QThread()
+      , m_midiThreadMutex(QMutex::Recursive)
+      , inputs()
+      , outputs()
+      , null(new MidiNull)
+      , pmouts()
+      , pmins()
+      , pmqueue()
+      , idqueue()
+      { init();
     }
 
     void init();
     void run();
+
     void refresh();
     void queue(const live::Event* ev, int device, live::ObjectChain from);
     void cancel(live::ObjectPtr from);
     void mWithhold(live::Event* x, live::ObjectChain p, live::ObjectPtr obj, bool reverse=0);
     void mRemoveWithheld(live::ObjectPtr obj);
     void mRemoveWithheld_object_dest(live::Object* obj);
-
-private:
-    QMutex csMutex;
 };
 #else
 class LIBLIVECORESHARED_EXPORT SecretMidi : public QThread
@@ -115,9 +124,16 @@ public:
     QList<bool> withheld_reverse;
 
 public:
-    SecretMidi() : QThread(), inputs(),outputs(),null(new MidiNull),/*pmouts(),pmins(),pmqueue(), idqueue(), */csMutex(QMutex::Recursive)
-    {
-        init();
+    SecretMidi()
+      : QThread()
+      , inputs()
+      , outputs()
+      , null(new MidiNull)
+    /*, pmouts()
+      , pmins()
+      , pmqueue()
+      , idqueue() */
+      { init();
     }
 
     void init();
@@ -128,9 +144,6 @@ public:
     void mWithhold(live::Event* x, live::ObjectChain p, live::ObjectPtr obj, bool reverse=0);
     void mRemoveWithheld(live::ObjectPtr obj);
     void mRemoveWithheld_object_dest(live::Object* obj);
-
-private:
-    QMutex csMutex;
 };
 #endif
 

@@ -12,7 +12,6 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 int live::MidiTrack::lastId=-1;
 
 void live::MidiTrack::startPlayback() {
-    NOSYNC;
     Q_ASSERT(!b_playback);
     b_playback=1;
 
@@ -57,7 +56,6 @@ void live::MidiTrack::startPlayback() {
 }
 
 void live::MidiTrack::stopPlayback() {
-    NOSYNC;
     Q_ASSERT(b_playback);
     s_ec->panic();
 
@@ -82,7 +80,6 @@ void live::MidiTrack::stopPlayback() {
 }
 
 void live::MidiTrack::mIn(const Event *ev, ObjectChain*p) {
-    NOSYNC;   // <<!!!
     if (p->size()&&p->back()==s_ec&&s_thru) {
 
         mOut(ev,p);
@@ -154,9 +151,21 @@ void live::MidiTrack::mIn(const Event *ev, ObjectChain*p) {
     emit dataUpdated();
 }
 
-live::MidiTrack::MidiTrack() : Object("MIDI Track",false,false), s_ec(new MidiEventCounter), b_curPos(0), b_lastPos(0), b_recStart(-1), b_systemTimeStart(-1), b_record(0), b_overdub(0), b_playback(0),
-    b_mute(0), s_data(new QList<Event*>), mTrack_id(++lastId), csMutex(QMutex::Recursive), s_thru(1) {
-    setTemporary(0);
+live::MidiTrack::MidiTrack()
+  : Object("MIDI Track",false,false)
+  , s_ec(new MidiEventCounter)
+  , b_curPos(0)
+  , b_lastPos(0)
+  , b_recStart(-1)
+  , b_systemTimeStart(-1)
+  , b_record(0)
+  , b_overdub(0)
+  , b_playback(0)
+  , b_mute(0)
+  , s_data(new QList<Event*>)
+  , mTrack_id(++lastId)
+  , s_thru(1)
+  { setTemporary(0);
     s_ec->remit=0;
     this->hybridConnect(s_ec);
     s_ec->hybridConnect(this);
@@ -186,47 +195,40 @@ const int& live::MidiTrack::pos() {
 }
 
 void live::MidiTrack::startRecord() {
-    NOSYNC;
     Q_ASSERT(!b_record);
     Q_ASSERT(!b_overdub);
     b_record=1;
 }
 
-void live::MidiTrack::stopRecord() {
-    NOSYNC;
+void live::MidiTrack::  stopRecord() {
     Q_ASSERT(b_record);
     Q_ASSERT(!b_overdub);
     b_record=0;
 }
 
 void live::MidiTrack::startOverdub() {
-    NOSYNC;
     Q_ASSERT(!b_overdub);
     Q_ASSERT(!b_record);
     b_overdub=1;
 }
 
 void live::MidiTrack::stopOverdub() {
-    NOSYNC;
     Q_ASSERT(b_overdub);
     Q_ASSERT(!b_record);
     b_overdub=0;
 }
 
 void live::MidiTrack::startMute() {
-    NOSYNC;
     Q_ASSERT(!b_mute);
     b_mute=1;
 }
 
 void live::MidiTrack::stopMute() {
-    NOSYNC;
     Q_ASSERT(b_mute);
     b_mute=0;
 }
 
 void live::MidiTrack::setPos(int pos) {
-    NOSYNC;
     Q_ASSERT(pos>=0);
     if (isPlay()) {
         stopPlayback();
@@ -282,7 +284,6 @@ void live::MidiTrack::exportFile(QString path) {
 }
 
 void live::MidiTrack::timeEvent() {
-    NOSYNC
     if (isPlay()) {
 //        QTimer::singleShot(20,this,SLOT(timeEvent()));
     } else {
