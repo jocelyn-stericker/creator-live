@@ -26,8 +26,8 @@
 #include <set>
 #include <vector>
 #include <gtk/gtk.h>
-#include <3rd-calf/gui.h>
-#include <3rd-calf/jackhost.h>
+#include <app-calf/gui.h>
+#include <app-calf/jackhost.h>
 #include "custom_ctl.h"
 
 namespace calf_plugins {

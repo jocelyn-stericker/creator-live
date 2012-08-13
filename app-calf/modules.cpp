@@ -23,9 +23,9 @@
 #if USE_JACK
 #include <jack/jack.h>
 #endif
-#include <3rd-calf/giface.h>
-#include <3rd-calf/metadata.h>
-#include <3rd-calf/audio_fx.h>
+#include <app-calf/giface.h>
+#include <app-calf/metadata.h>
+#include <app-calf/audio_fx.h>
 
 using namespace dsp;
 using namespace calf_plugins;
@@ -481,6 +481,6 @@ void calf_plugins::get_all_plugins(std::vector<plugin_metadata_iface *> &plugins
 {
     #define PER_MODULE_ITEM(name, isSynth, jackname) plugins.push_back(new name##_metadata);
     #define PER_SMALL_MODULE_ITEM(...)
-    #include <3rd-calf/modulelist.h>
+    #include <app-calf/modulelist.h>
 }
 

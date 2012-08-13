@@ -19,9 +19,9 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "3rd-calf/giface.h"
-#include "3rd-calf/modules.h"
-#include "3rd-calf/utils.h"
+#include "app-calf/giface.h"
+#include "app-calf/modules.h"
+#include "app-calf/utils.h"
 
 #include <live/audio>
 #include <live/midi>

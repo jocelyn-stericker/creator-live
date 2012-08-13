@@ -20,8 +20,8 @@
  */
 #include <assert.h>
 #include <memory.h>
-#include <3rd-calf/giface.h>
-#include <3rd-calf/osctlnet.h>
+#include <app-calf/giface.h>
+#include <app-calf/osctlnet.h>
 #include <stdio.h>
 using namespace std;
 using namespace calf_utils;

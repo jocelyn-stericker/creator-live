@@ -19,8 +19,8 @@
  */
 #include <stdio.h>
 #include <assert.h>
-#include <3rd-calf/osctl.h>
-#include <3rd-calf/utils.h>
+#include <app-calf/osctl.h>
+#include <app-calf/utils.h>
 #include <sstream>
 
 using namespace std;

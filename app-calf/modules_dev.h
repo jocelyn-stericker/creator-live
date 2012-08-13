@@ -21,8 +21,8 @@
 #ifndef __CALF_MODULES_DEV_H
 #define __CALF_MODULES_DEV_H
 
-#include <3rd-calf/metadata.h>
-#include <3rd-calf/modules.h>
+#include <app-calf/metadata.h>
+#include <app-calf/modules.h>
 
 namespace calf_plugins {
 

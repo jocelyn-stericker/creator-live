@@ -24,9 +24,9 @@
 #if USE_JACK
 #include <jack/jack.h>
 #endif
-#include <3rd-calf/giface.h>
-#include <3rd-calf/modules.h>
-#include <3rd-calf/modules_dev.h>
+#include <app-calf/giface.h>
+#include <app-calf/modules.h>
+#include <app-calf/modules_dev.h>
 
 using namespace dsp;
 using namespace calf_plugins;

@@ -24,7 +24,7 @@
 
 #include <arpa/inet.h>
 #include <sys/socket.h>
-#include <3rd-calf/osctl.h>
+#include <app-calf/osctl.h>
 
 namespace osctl
 {

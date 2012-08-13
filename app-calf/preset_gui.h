@@ -20,8 +20,8 @@
 #define __CALF_PRESET_GUI_H
 
 
-#include <3rd-calf/giface.h>
-#include <3rd-calf/gui.h>
+#include <app-calf/giface.h>
+#include <app-calf/gui.h>
 
 namespace calf_plugins {
 

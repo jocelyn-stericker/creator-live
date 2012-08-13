@@ -23,8 +23,8 @@
 
 #if USE_LV2
 
-#include <3rd-calf/lv2_event.h>
-#include <3rd-calf/lv2_uri_map.h>
+#include <app-calf/lv2_event.h>
+#include <app-calf/lv2_uri_map.h>
 
 class uri_map_access
 {

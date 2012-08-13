@@ -26,13 +26,13 @@
 #include <string>
 #include <vector>
 #include <lv2.h>
-#include <3rd-calf/giface.h>
-#include <3rd-calf/lv2-midiport.h>
-#include <3rd-calf/lv2_contexts.h>
-#include <3rd-calf/lv2_event.h>
-#include <3rd-calf/lv2_progress.h>
-#include <3rd-calf/lv2_string_port.h>
-#include <3rd-calf/lv2_uri_map.h>
+#include <app-calf/giface.h>
+#include <app-calf/lv2-midiport.h>
+#include <app-calf/lv2_contexts.h>
+#include <app-calf/lv2_event.h>
+#include <app-calf/lv2_progress.h>
+#include <app-calf/lv2_string_port.h>
+#include <app-calf/lv2_uri_map.h>
 
 namespace calf_plugins {
 

@@ -94,7 +94,7 @@ find_package (Qt4 REQUIRED)
 include (${QT_USE_FILE})
 
 include_directories (${cmake_binary_dir}
-    ${CMAKE_BINARY_DIR}/3rd-calf
+    ${CMAKE_BINARY_DIR}/app-calf
     ../
     ../liblivecore/
     ../liblivewidgets/

@@ -22,7 +22,7 @@
 #define __CALF_CUSTOM_CTL
 
 #include <gtk/gtk.h>
-#include <3rd-calf/giface.h>
+#include <app-calf/giface.h>
 
 G_BEGIN_DECLS
 
