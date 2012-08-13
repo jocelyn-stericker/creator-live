@@ -16,6 +16,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "livebar.h"
 #include "tracktab.h"
 
+#include <QtPlugin>
+
 using namespace live;
 
 DJContext::DJContext(QWidget *parent)
@@ -105,3 +107,5 @@ void DJContext::monitorChanged_logic(QString)
 {
     // FIXME
 }
+
+Q_EXPORT_PLUGIN2(live::ModeInterface, DJModeInterface)

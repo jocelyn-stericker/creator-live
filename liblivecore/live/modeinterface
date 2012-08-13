@@ -1,0 +1,35 @@
+/*******************************************************
+
+    Part of the Creator Live Music Production Suite.
+Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
+
+                  All rights reserved.
+
+*******************************************************/
+
+#ifndef MODE
+#define MODE
+
+#include <live/liblivecore_global>
+#include <QObject>
+
+namespace live {
+
+class LIBLIVECORESHARED_EXPORT ModeInterface
+{
+public:
+    virtual ~ModeInterface() {}
+    virtual QString name() = 0;
+    virtual QString description() = 0;
+    virtual QWidget* create() = 0;
+    virtual QWidget* load(const QByteArray&) = 0;
+    virtual QWidget* livebarExtFor(QWidget* interface) = 0;
+    virtual QIcon icon() = 0;
+    virtual ModeInterface* next() = 0; // for including multiple interfaces in one plugin
+};
+
+}
+
+Q_DECLARE_INTERFACE(live::ModeInterface, "ca.nettek.live.modeInterface/0.01")
+
+#endif // MODE

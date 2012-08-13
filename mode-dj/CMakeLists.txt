@@ -11,7 +11,7 @@
 
 cmake_minimum_required(VERSION 2.8)
 
-list (APPEND context-dj_cpp
+list (APPEND mode-dj_cpp
     collectioncontext.cpp
     djcontext.cpp
     effectstab.cpp
@@ -21,10 +21,10 @@ list (APPEND context-dj_cpp
     tracktab.cpp
 )
 
-list (APPEND context-dj_h
+list (APPEND mode-dj_h
 )
 
-list (APPEND context-dj_h_qobject
+list (APPEND mode-dj_h_qobject
     collectioncontext.h
     djcontext.h
     effectstab.h
@@ -34,7 +34,7 @@ list (APPEND context-dj_h_qobject
     tracktab.h
 )
 
-list (APPEND context-dj_ui
+list (APPEND mode-dj_ui
     collectioncontext.ui
     djcontext.ui
     effectstab.ui
@@ -43,7 +43,7 @@ list (APPEND context-dj_ui
     tracktab.ui
 )
 
-list (APPEND context-dj_qrc
+list (APPEND mode-dj_qrc
 )
 
 ################## PLATFORM-SPECIFIC CODE ##################
@@ -60,21 +60,21 @@ find_package (Qt4 REQUIRED)
 include (${QT_USE_FILE})
 
 include_directories (${cmake_binary_dir}
-    ${CMAKE_BINARY_DIR}/context-dj
+    ${CMAKE_BINARY_DIR}/mode-dj
     ../liblivecore/
     ../liblivewidgets/
 )
 
-qt4_wrap_cpp (context-dj_moc ${context-dj_h_qobject})
-qt4_wrap_ui (context-dj_moc ${context-dj_ui}) 
+qt4_wrap_cpp (mode-dj_moc ${mode-dj_h_qobject})
+qt4_wrap_ui (mode-dj_moc ${mode-dj_ui}) 
 qt4_add_resources (livevst_rcc ${livevst_qrc})
 
-add_library (context-dj SHARED
-    ${context-dj_cpp}
-    ${context-dj_moc}
+add_library (mode-dj SHARED
+    ${mode-dj_cpp}
+    ${mode-dj_moc}
     ${livevst_qrc}
 )
 
-set_target_properties(context-dj PROPERTIES
+set_target_properties(mode-dj PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins
 )

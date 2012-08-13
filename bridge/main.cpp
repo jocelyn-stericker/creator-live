@@ -15,7 +15,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QTcpSocket>
 #include "live/../midibridge.h"
 #include "live/../midisystem_p.h"
-#include "../context-dj/djcontext.h"
+#include "../mode-dj/djcontext.h"
 
 int main(int argc, char *argv[])
 {

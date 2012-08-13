@@ -42,6 +42,7 @@ list (APPEND liblivecore_cpp
     instrument.cpp 
     midibridge.cpp
     ambition.cpp
+    modeinterface.cpp
 )
 
 list (APPEND liblivecore
@@ -66,6 +67,7 @@ list (APPEND liblivecore
     live/app 
     live/instrument 
     live/midieventcounter 
+    live/modeinterface
 )
 
 list (APPEND liblivecore_qobject
