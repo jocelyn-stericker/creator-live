@@ -332,30 +332,30 @@ bool SecretAudio::makeClient() {
 #ifndef __QNX__
     if (client) return 1;
     Q_ASSERT(qApp);
-    live::Object::beginAsyncAction();
-    qDebug() << "Trying to connect to jackd... (you can start the JACK server with qjackctl, for example...)";
-    QObject::connect(qApp,SIGNAL(aboutToQuit()),SecretAudioShutdownHandler::singleton,SLOT(byeBye()));
-    SecretAudioShutdownHandler::singleton->byeBye();
-    client = jack_client_open("Hathor", JackNullOption, 0);
-    if (!client) {
+    live_async {
+        qDebug() << "Trying to connect to jackd... (you can start the JACK server with qjackctl, for example...)";
+        QObject::connect(qApp,SIGNAL(aboutToQuit()),SecretAudioShutdownHandler::singleton,SLOT(byeBye()));
+        SecretAudioShutdownHandler::singleton->byeBye();
+        client = jack_client_open("Hathor", JackNullOption, 0);
+        if (!client) {
 #ifdef _WIN32
-        QMessageBox::critical(0,"Error","Please ensure that Live is installed correctly.");
-        exit(0); return;
+            QMessageBox::critical(0,"Error","Please ensure that Live is installed correctly.");
+            exit(0); return;
 #else
-//        QMessageBox::critical(0,"Error","Couldn't connect to JACK. Is it running?");
-        //Unimplemented functionality
-        qDebug("Couldn't connect to JACK!");
-        s_error="Couldn't connect to Jack server!";
-        live::Object::endAsyncAction();
-        return 0;
+            //        QMessageBox::critical(0,"Error","Couldn't connect to JACK. Is it running?");
+            //Unimplemented functionality
+            qDebug("Couldn't connect to JACK!");
+            s_error="Couldn't connect to Jack server!";
+            live::Object::endAsyncAction();
+            return 0;
 #endif
-    }
+        }
 
-    qDebug() << "Connected to jackd... Yay!";
-    jack_set_process_callback( client, jackCallback, 0 );
-    jack_set_xrun_callback(client, xrunCallback, 0);
-    jack_activate( client );    // before refresh
-    live::Object::endAsyncAction();
+        qDebug() << "Connected to jackd... Yay!";
+        jack_set_process_callback( client, jackCallback, 0 );
+        jack_set_xrun_callback(client, xrunCallback, 0);
+        jack_activate( client );    // before refresh
+    }
 
     refresh();
 #endif
@@ -430,108 +430,108 @@ void SecretAudio::process() {
 
 bool SecretAudio::refresh() {
 #ifndef __QNX__
-    live::Object::beginAsyncAction();
-    for (int i=0;i<outputMappings;i++) {
-        bool ok=1;
-        for (int j=0;j<outputs;j++) {
-            if (outputs[j]->name()==outputMappingsName[i]) {
-                ok=0;
+    live_async {
+        for (int i=0;i<outputMappings;i++) {
+            bool ok=1;
+            for (int j=0;j<outputs;j++) {
+                if (outputs[j]->name()==outputMappingsName[i]) {
+                    ok=0;
+                }
+            }
+            if (ok) {
+                outputs.append( new AudioOut(outputMappings[i], outputMappingsName[i],1) );
             }
         }
-        if (ok) {
-            outputs.append( new AudioOut(outputMappings[i], outputMappingsName[i],1) );
-        }
-    }
-    QStringList outputStrs = jackGetInputPorts();
-    for (int i=0;i<outputStrs;i++) {
-        if (outputStrs[i].contains("Hathor",Qt::CaseInsensitive)) {
-            continue;
-        }
-        bool ok=1;
-        for (int j=0;j<outputs;j++) {
-            if (outputs[j]->name()==outputStrs[i]) {
-                ok=0;
-                break;
+        QStringList outputStrs = jackGetInputPorts();
+        for (int i=0;i<outputStrs;i++) {
+            if (outputStrs[i].contains("Hathor",Qt::CaseInsensitive)) {
+                continue;
             }
-        }
-        if (ok) {
-            for (int j=0;j<outputMappings;j++) {
-                if (outputMappings[j].contains(outputStrs[i])) {
+            bool ok=1;
+            for (int j=0;j<outputs;j++) {
+                if (outputs[j]->name()==outputStrs[i]) {
                     ok=0;
                     break;
                 }
             }
-        }
-        if (ok) {
-            if (i+1<outputStrs.size()) {
-//                QStringList adhocMapping;
-//                adhocMapping.push_back(outputStrs[i]);
-//                adhocMapping.push_back(outputStrs[i+1]);
-//                outputMappings.push_back(adhocMapping);
-//                outputMappingsName.push_back("Adhoc "+outputStrs[i]);
-//                outputs.append( new AudioOut(adhocMapping, "Adhoc "+outputStrs[i],1) );
+            if (ok) {
+                for (int j=0;j<outputMappings;j++) {
+                    if (outputMappings[j].contains(outputStrs[i])) {
+                        ok=0;
+                        break;
+                    }
+                }
+            }
+            if (ok) {
+                if (i+1<outputStrs.size()) {
+                    //                QStringList adhocMapping;
+                    //                adhocMapping.push_back(outputStrs[i]);
+                    //                adhocMapping.push_back(outputStrs[i+1]);
+                    //                outputMappings.push_back(adhocMapping);
+                    //                outputMappingsName.push_back("Adhoc "+outputStrs[i]);
+                    //                outputs.append( new AudioOut(adhocMapping, "Adhoc "+outputStrs[i],1) );
+                }
             }
         }
-    }
 
-    for (int i=0;i<inputMappings;i++) {
-        bool ok=1;
-        for (int j=0;j<inputs;j++) {
-            if (inputs[j]->name()==inputMappingsName[i]) {
-                ok=0;
+        for (int i=0;i<inputMappings;i++) {
+            bool ok=1;
+            for (int j=0;j<inputs;j++) {
+                if (inputs[j]->name()==inputMappingsName[i]) {
+                    ok=0;
+                }
+            }
+            if (ok) {
+                inputs.append( new AudioIn(inputMappings[i], inputMappingsName[i],1) );
             }
         }
-        if (ok) {
-            inputs.append( new AudioIn(inputMappings[i], inputMappingsName[i],1) );
-        }
-    }
-    QStringList inputStrs = jackGetOutputPorts();
-    for (int i=0;i<inputStrs;i++) {
-        if (inputStrs[i].contains("Hathor",Qt::CaseInsensitive)) {
-            continue;
-        }
-        bool ok=1;
-        QString inputStrx=inputStrs[i];
-        inputStrx.replace(':',"_");
-        for (int j=0;j<inputs;j++) {
-            if (inputs[j]->name()==inputStrx) {
-                ok=0;
-                break;
+        QStringList inputStrs = jackGetOutputPorts();
+        for (int i=0;i<inputStrs;i++) {
+            if (inputStrs[i].contains("Hathor",Qt::CaseInsensitive)) {
+                continue;
             }
-        }
-        if (ok) {
-            for (int j=0;j<inputMappings;j++) {
-                if (inputMappings[j].contains(inputStrx)) {
+            bool ok=1;
+            QString inputStrx=inputStrs[i];
+            inputStrx.replace(':',"_");
+            for (int j=0;j<inputs;j++) {
+                if (inputs[j]->name()==inputStrx) {
                     ok=0;
                     break;
                 }
             }
-        }
-        if (ok) {
-            if (i+1<inputStrs.size()) {
-//                QStringList adhocMapping;
-//                adhocMapping.push_back(inputStrx);
-//                QString inputName=inputStrx;
-//                inputStrx=inputStrs[i+1];
-//                inputStrx.replace(':','_');
-//                adhocMapping.push_back(inputStrx);
-//                inputMappings.push_back(adhocMapping);
-//                inputMappingsName.push_back("Adhoc "+inputName);
-//                inputs.append( new AudioIn(adhocMapping, "Adhoc "+inputName,1) );
+            if (ok) {
+                for (int j=0;j<inputMappings;j++) {
+                    if (inputMappings[j].contains(inputStrx)) {
+                        ok=0;
+                        break;
+                    }
+                }
+            }
+            if (ok) {
+                if (i+1<inputStrs.size()) {
+                    //                QStringList adhocMapping;
+                    //                adhocMapping.push_back(inputStrx);
+                    //                QString inputName=inputStrx;
+                    //                inputStrx=inputStrs[i+1];
+                    //                inputStrx.replace(':','_');
+                    //                adhocMapping.push_back(inputStrx);
+                    //                inputMappings.push_back(adhocMapping);
+                    //                inputMappingsName.push_back("Adhoc "+inputName);
+                    //                inputs.append( new AudioIn(adhocMapping, "Adhoc "+inputName,1) );
+                }
             }
         }
-    }
 
-    //store.
-    live::object::clear(live::AudioOnly|live::InputOnly|live::NoRefresh);
-    live::object::clear(live::AudioOnly|live::OutputOnly|live::NoRefresh);
-    for (int i=0;i<inputs.size();i++) {
-        live::object::set(inputs[i]);
+        //store.
+        live::object::clear(live::AudioOnly|live::InputOnly|live::NoRefresh);
+        live::object::clear(live::AudioOnly|live::OutputOnly|live::NoRefresh);
+        for (int i=0;i<inputs.size();i++) {
+            live::object::set(inputs[i]);
+        }
+        for (int i=0;i<outputs.size();i++) {
+            live::object::set(outputs[i]);
+        }
     }
-    for (int i=0;i<outputs.size();i++) {
-        live::object::set(outputs[i]);
-    }
-    live::Object::endAsyncAction();
 #endif
     return 1;
 }

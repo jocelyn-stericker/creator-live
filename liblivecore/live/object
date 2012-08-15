@@ -125,6 +125,7 @@ public:
     /** Call this function when finished callinging aIn(...) or mIn(...) ouside of an mIn(...) or aIn(...) stack. Forgetting to do so will cause some actions to never be performed. */
     static void endProc();
 
+protected:
     /** Call this function before you do something which could mess up audio or midi processing, such as changing connections. These actions must be efficient! Calling this from inside
       * {begin|end}proc() will result in a deadlock. Instead, take advantage of QtConcurrent::run(...). Calling this more than once _WILL_ result in a deadlock.
       */
@@ -132,7 +133,7 @@ public:
     /** Call this function when done doing things which cannot be done concurrently with audio/midi processing. */
     static void endAsyncAction();
 
-
+public:
     static void XRUN();
 
 
@@ -174,6 +175,7 @@ protected:
     friend class ObjectPtr;
     friend class live_private::SecretAudio;
     friend class live::Ambition;
+    friend class ScopedLock;
     friend void doAudioConnect(const Object* a, const Object* b);
     friend void doMidiConnect(const Object* a, const Object* b);
     QList<ObjectPtr*> s_ptrList;
@@ -271,40 +273,6 @@ public:
     static inline void midi() {
         assert_thread(midiThreadId, "midi");
     }
-
-    struct ScopedLock {
-        unsigned decr : 1;
-        ScopedLock()
-          : decr(true)
-          {
-            Object::beginAsyncAction();
-        }
-        ~ScopedLock() {
-            Object::endAsyncAction();
-        }
-    };
-
-    struct ScopedMutexLock {
-        unsigned decr : 1;
-        QMutex& m_m;
-        ScopedMutexLock(QMutex& m)
-          : decr(true)
-          , m_m(m)
-          {
-            m_m.lock();
-        }
-        ~ScopedMutexLock() {
-            m_m.unlock();
-        }
-    };
-
-    #define live_async \
-        for (live::lthread::ScopedLock s; s.decr; s.decr = false)
-    // use like live_async { }
-
-    #define live_mutex(MUTEX) \
-        for (live::lthread::ScopedMutexLock locker(MUTEX); locker.decr; locker.decr = false)
-
     static void uiInit() {
         uiThreadId = QThread::currentThreadId();
     }
@@ -325,6 +293,39 @@ public:
 #error FIXME
 #endif
 };
+
+struct ScopedLock {
+    unsigned decr : 1;
+    ScopedLock()
+      : decr(true)
+      {
+        Object::beginAsyncAction();
+    }
+    ~ScopedLock() {
+        Object::endAsyncAction();
+    }
+};
+
+struct ScopedMutexLock {
+    unsigned decr : 1;
+    QMutex& m_m;
+    ScopedMutexLock(QMutex& m)
+      : decr(true)
+      , m_m(m)
+      {
+        m_m.lock();
+    }
+    ~ScopedMutexLock() {
+        m_m.unlock();
+    }
+};
+
+#define live_async \
+    for (live::ScopedLock farmerJohnEatsCows; farmerJohnEatsCows.decr; farmerJohnEatsCows.decr = false)
+// use like live_async { }
+
+#define live_mutex(MUTEX) \
+    for (live::ScopedMutexLock farmerJohnEatsCows(MUTEX); farmerJohnEatsCows.decr; farmerJohnEatsCows.decr = false)
 
 #define RELOADABLE(x) \
     public:QByteArray save(); \
@@ -479,7 +480,7 @@ public:
 signals:
     void stockChanged();
 public slots:
-    void notify() { Object::beginAsyncAction(); emit stockChanged(); Object::endAsyncAction(); }
+    void notify() { live_async emit stockChanged(); }
 };
 
 }

@@ -204,8 +204,6 @@ void SecretMidi::refresh() {
         for (int i=0;i<outputs.size();i++) {
             live::object::set(outputs[i]);
         }
-
-        live::Object::endAsyncAction();
     }
 }
 

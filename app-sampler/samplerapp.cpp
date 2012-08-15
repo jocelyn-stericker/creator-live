@@ -17,8 +17,7 @@ int SamplerApp::s_lastId=-1;
 SamplerApp::SamplerApp(MidiTrack**cmidiTracks,AudioTrack**caudioTracks,bool newId) :
     live::Object("SAMPLER",0,0), s_bindingMode(-1), s_record(0), s_play(1), s_multi(1), s_id(newId?++s_lastId:-1)
 {
-    Object::beginAsyncAction();
-    for (int i=0;i<16;i++)
+    live_async for (int i=0;i<16;i++)
     {
         s_midiTracks[i]=(cmidiTracks&&cmidiTracks[i])?cmidiTracks[i]:new MidiTrack;
         if (s_midiTracks[i]->isPlay())
@@ -58,7 +57,6 @@ SamplerApp::SamplerApp(MidiTrack**cmidiTracks,AudioTrack**caudioTracks,bool newI
             s_audioTracks[i]->stopMute();
         }
     }
-    Object::endAsyncAction();
 }
 
 SamplerApp::~SamplerApp()

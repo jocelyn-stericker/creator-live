@@ -17,8 +17,7 @@ int SamplerDJ::s_lastId=-1;
 SamplerDJ::SamplerDJ(MidiTrack**cmidiTracks,AudioTrack**caudioTracks,bool newId) :
     live::Object("SAMPLERDJ",0,0), s_bindingMode(-1), s_record(0), s_play(1), s_multi(1), s_id(newId?++s_lastId:-1)
 {
-    Object::beginAsyncAction();
-    for (int i=0;i<8;i++)
+    live_async for (int i=0;i<8;i++)
     {
         s_midiTracks[i]=(cmidiTracks&&cmidiTracks[i])?cmidiTracks[i]:new MidiTrack;
         if (s_midiTracks[i]->isPlay())
@@ -58,7 +57,6 @@ SamplerDJ::SamplerDJ(MidiTrack**cmidiTracks,AudioTrack**caudioTracks,bool newId)
             s_audioTracks[i]->stopMute();
         }
     }
-    Object::endAsyncAction();
 }
 
 SamplerDJ::~SamplerDJ()

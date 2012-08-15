@@ -622,8 +622,7 @@ void SequencerGraph::keyPressEvent(QKeyEvent *ev)
 {
     lthread::ui();
 
-    Object::beginAsyncAction();
-    if (ev->key()==Qt::Key_Delete&&selection!=-1)
+    live_async if (ev->key()==Qt::Key_Delete&&selection!=-1)
     {
         {
             float a=qMin(selection/1000.0f*audio::sampleRate(),(float)app->pos()/1000.0f*audio::sampleRate());
@@ -639,7 +638,6 @@ void SequencerGraph::keyPressEvent(QKeyEvent *ev)
         midiTrack->remove(a,b);
 
     }
-    Object::endAsyncAction();
 }
 
 void SequencerGraph::incrScroll()

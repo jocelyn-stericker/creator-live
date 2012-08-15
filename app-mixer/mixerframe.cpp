@@ -40,9 +40,9 @@ MixerFrame::MixerFrame(MixerApp *backend, AbstractTrack *parent) :
 
 MixerFrame::~MixerFrame()
 {
-    Object::beginAsyncAction();
-    delete &app;
-    Object::endAsyncAction();
+    live_async {
+        delete &app;
+    }
     delete ui;
 }
 

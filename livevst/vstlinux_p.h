@@ -64,126 +64,128 @@ public:
         QStringList lastAudioIn;
         do
         {
-            QStringList newAudioIn = live::audio::getInputChanStringList();
-            QStringList newAudioOut = live::audio::getOutputChanStringList();
-            QList<live::ObjectPtr> newMidi = live::object::get(live::OutputOnly|live::MidiOnly);
-            bool goOn=(lastAudioIn==newAudioIn);
-            lastAudioIn=newAudioIn;
-            if(goOn&& (newAudioIn!=origAudioIn))
-            {
-                QStringList xAudioIn,xAudioOut;
-                QList<live::ObjectPtr> xMidi;
-                for(int i=0; i<newAudioIn; i++)
+            live_async {
+                QStringList newAudioIn = live::audio::getInputChanStringList();
+                QStringList newAudioOut = live::audio::getOutputChanStringList();
+                QList<live::ObjectPtr> newMidi = live::object::get(live::OutputOnly|live::MidiOnly);
+                bool goOn=(lastAudioIn==newAudioIn);
+                lastAudioIn=newAudioIn;
+                if(goOn&& (newAudioIn!=origAudioIn))
                 {
-                    if(!origAudioIn.contains(newAudioIn[i]))
+                    QStringList xAudioIn,xAudioOut;
+                    QList<live::ObjectPtr> xMidi;
+                    for(int i=0; i<newAudioIn; i++)
                     {
-                        xAudioIn.push_back(newAudioIn[i]);
-                        QStringList l=live::audio::getOutputChanStringList();
-                        for(int j=0;j<l.size();j++) {
-                            if(!xAudioIn.back().contains("system")&&!l[j].contains("system")) continue;
-                            qDebug()<<xAudioIn.back()<<l[j];
-                            QMetaObject::invokeMethod(live::audio::getCurrentInterface(),"jack_disconnect",Qt::DirectConnection,
-                                Q_ARG(QString,xAudioIn.back()), Q_ARG(QString,l[j]) );
-                        }
-                    }
-                }
-                for(int i=0; i<newAudioOut; i++)
-                {
-                    if(!origAudioOut.contains(newAudioOut[i]))
-                    {
-                        xAudioOut.push_back(newAudioOut[i]);
-                    }
-                }
-                for(int i=0; i<newMidi; i++)
-                {
-                    if(!origMidi.contains(newMidi[i]->name()))
-                    {
-                        xMidi.push_back(newMidi[i]);
-                    }
-                }
-
-                if((xMidi.size())&&xAudioIn.size())
-                {
-                    midiOut=xMidi[0];
-
-                    if(xAudioIn.size()%2==1) {
-                        qDebug() << "New inputs not modulo 2";
-                        _ok=0;
-                        return;
-                    }
-
-                    QStringList sidekicks_from;
-                    for(int i=0;i<xAudioIn.size();i+=2)
-                    {
-                        QStringList dual;
-                        dual<<xAudioIn[i]<<xAudioIn[i+1];
-                        qDebug() << "VVVVV"<<dual;
-                        live::audio::addMapping(dual,1,"In from VST Audio ("+QString::number(_id)+","+QString::number(i/2)+")");
-                        sidekicks_from.push_back("In from VST Audio ("+QString::number(_id)+","+QString::number(i/2)+")");
-                    }
-
-                    QList<live::ObjectPtr> ninl=live::object::get(live::InputOnly|live::AudioOnly);
-                    bool ok=0;
-                    for(int i=0;i<ninl.size();i++)
-                    {
-                        if(ninl[i]->name()=="In from VST Audio ("+QString::number(_id)+",0)")
+                        if(!origAudioIn.contains(newAudioIn[i]))
                         {
-                            audioFromVst=ninl[i];
-                            ok=1;
-                        }
-                    }
-                    if(!ok)
-                    {
-                        _ok=0;
-                        qDebug() << "VstLinux_p: Failed err 1.";
-                        return;
-                    }
-
-                    ok=0;
-                    QStringList sidekicks_to;
-                    for(int i=0;i<xAudioOut.size();i+=2)
-                    {
-                        ok=1;
-                        QStringList dual;
-                        dual<<xAudioOut[i]<<xAudioOut[i+1];
-                        qDebug() << "Out to VST Audio ("+QString::number(_id)+","+QString::number(i/2)+")"<<dual;
-                        live::audio::addMapping(dual,0,"Out to VST Audio ("+QString::number(_id)+","+QString::number(i/2)+")");
-                        sidekicks_to.push_back("Out to VST Audio ("+QString::number(_id)+","+QString::number(i/2)+")");
-                    }
-
-                    if(ok)
-                    {
-                        live::audio::refresh();
-                        QList<live::ObjectPtr> noutl=live::object::get(live::OutputOnly|live::AudioOnly);
-
-                        bool ok=0;
-                        int l=0;
-                        for(int i=0;i<noutl.size();i++)
-                        {
-                            qDebug()<<xAudioOut.size() << "#"<<noutl[i]->name()<<("Out to VST Audio ("+QString::number(_id)+","+QString::number(l)+")");
-                            if(noutl[i]->name()==("Out to VST Audio ("+QString::number(_id)+","+QString::number(l)+")"))
-                            {
-                                ++l;
-                                ok=1;
-                                audioToVst=noutl[i];
-                                audioToVst->newConnection();
+                            xAudioIn.push_back(newAudioIn[i]);
+                            QStringList l=live::audio::getOutputChanStringList();
+                            for(int j=0;j<l.size();j++) {
+                                if(!xAudioIn.back().contains("system")&&!l[j].contains("system")) continue;
+                                qDebug()<<xAudioIn.back()<<l[j];
+                                QMetaObject::invokeMethod(live::audio::getCurrentInterface(),"jack_disconnect",Qt::DirectConnection,
+                                                          Q_ARG(QString,xAudioIn.back()), Q_ARG(QString,l[j]) );
                             }
                         }
-//                        Q_ASSERT(ok);
+                    }
+                    for(int i=0; i<newAudioOut; i++)
+                    {
+                        if(!origAudioOut.contains(newAudioOut[i]))
+                        {
+                            xAudioOut.push_back(newAudioOut[i]);
+                        }
+                    }
+                    for(int i=0; i<newMidi; i++)
+                    {
+                        if(!origMidi.contains(newMidi[i]->name()))
+                        {
+                            xMidi.push_back(newMidi[i]);
+                        }
+                    }
+
+                    if((xMidi.size())&&xAudioIn.size())
+                    {
+                        midiOut=xMidi[0];
+
+                        if(xAudioIn.size()%2==1) {
+                            qDebug() << "New inputs not modulo 2";
+                            _ok=0;
+                            return;
+                        }
+
+                        QStringList sidekicks_from;
+                        for(int i=0;i<xAudioIn.size();i+=2)
+                        {
+                            QStringList dual;
+                            dual<<xAudioIn[i]<<xAudioIn[i+1];
+                            qDebug() << "VVVVV"<<dual;
+                            live::audio::addMapping(dual,1,"In from VST Audio ("+QString::number(_id)+","+QString::number(i/2)+")");
+                            sidekicks_from.push_back("In from VST Audio ("+QString::number(_id)+","+QString::number(i/2)+")");
+                        }
+
+                        QList<live::ObjectPtr> ninl=live::object::get(live::InputOnly|live::AudioOnly);
+                        bool ok=0;
+                        for(int i=0;i<ninl.size();i++)
+                        {
+                            if(ninl[i]->name()=="In from VST Audio ("+QString::number(_id)+",0)")
+                            {
+                                audioFromVst=ninl[i];
+                                ok=1;
+                            }
+                        }
                         if(!ok)
                         {
                             _ok=0;
-                            qDebug() << "VstLinux_p: Failed err 2.";
+                            qDebug() << "VstLinux_p: Failed err 1.";
                             return;
                         }
+
+                        ok=0;
+                        QStringList sidekicks_to;
+                        for(int i=0;i<xAudioOut.size();i+=2)
+                        {
+                            ok=1;
+                            QStringList dual;
+                            dual<<xAudioOut[i]<<xAudioOut[i+1];
+                            qDebug() << "Out to VST Audio ("+QString::number(_id)+","+QString::number(i/2)+")"<<dual;
+                            live::audio::addMapping(dual,0,"Out to VST Audio ("+QString::number(_id)+","+QString::number(i/2)+")");
+                            sidekicks_to.push_back("Out to VST Audio ("+QString::number(_id)+","+QString::number(i/2)+")");
+                        }
+
+                        if(ok)
+                        {
+                            live::audio::refresh();
+                            QList<live::ObjectPtr> noutl=live::object::get(live::OutputOnly|live::AudioOnly);
+
+                            bool ok=0;
+                            int l=0;
+                            for(int i=0;i<noutl.size();i++)
+                            {
+                                qDebug()<<xAudioOut.size() << "#"<<noutl[i]->name()<<("Out to VST Audio ("+QString::number(_id)+","+QString::number(l)+")");
+                                if(noutl[i]->name()==("Out to VST Audio ("+QString::number(_id)+","+QString::number(l)+")"))
+                                {
+                                    ++l;
+                                    ok=1;
+                                    audioToVst=noutl[i];
+                                    audioToVst->newConnection();
+                                }
+                            }
+                            //                        Q_ASSERT(ok);
+                            if(!ok)
+                            {
+                                _ok=0;
+                                qDebug() << "VstLinux_p: Failed err 2.";
+                                return;
+                            }
+                        }
+                        this->hybridConnect(&me);
+                        addSidekicks(sidekicks_to, sidekicks_from);
+                        _ok=1;
+                        break;
                     }
-                    this->hybridConnect(&me);
-                    addSidekicks(sidekicks_to, sidekicks_from);
-                    _ok=1;
-                    break;
                 }
             }
-            live::Object::endAsyncAction();
+
             qApp->processEvents();
             QTimer timer;
             timer.setSingleShot(1);
@@ -192,17 +194,15 @@ public:
             connect(&timer,SIGNAL(timeout()),&l,SLOT(quit()));
             timer.start();
             l.exec();
-            live::Object::beginAsyncAction();
-
         } while (++count<80);
     }
     ~VstR()
     {
-        live::Object::beginAsyncAction();
-        kill();
-//        while (s_sidekicks.size()) delete s_sidekicks.takeFirst().data();
-        _magic->kill();
-        live::Object::endAsyncAction();
+        live_async {
+            kill();
+            //        while (s_sidekicks.size()) delete s_sidekicks.takeFirst().data();
+            _magic->kill();
+        }
     }
 
     void addSidekicks(QStringList to, QStringList from);
