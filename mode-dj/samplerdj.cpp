@@ -17,7 +17,7 @@ int SamplerDJ::s_lastId=-1;
 SamplerDJ::SamplerDJ(MidiTrack**cmidiTracks,AudioTrack**caudioTracks,bool newId) :
     live::Object("SAMPLERDJ",0,0), s_bindingMode(-1), s_record(0), s_play(1), s_multi(1), s_id(newId?++s_lastId:-1)
 {
-    live_async for (int i=0;i<8;i++)
+    kill_kitten for (int i=0;i<8;i++)
     {
         s_midiTracks[i]=(cmidiTracks&&cmidiTracks[i])?cmidiTracks[i]:new MidiTrack;
         if (s_midiTracks[i]->isPlay())
@@ -90,7 +90,7 @@ void SamplerDJ::setRecordMode(bool r) {
         return;
     }
 
-    live_async {
+    kill_kitten {
         for (int i=0;i<8;i++)
         {
             s_midiTracks[i]->startRecord();
@@ -109,7 +109,7 @@ void SamplerDJ::setPlayMode() {
         return;
     }
 
-    live_async {
+    kill_kitten {
         for (int i=0;i<8;i++)
         {
             s_midiTracks[i]->stopRecord();
@@ -130,7 +130,7 @@ void SamplerDJ::setMultiMode(bool r) {
         return;
     }
 
-    live_async {
+    kill_kitten {
         s_multi=1;
         emit multiModeSet(1);
     }
@@ -142,7 +142,7 @@ void SamplerDJ::unsetMultiMode() {
         return;
     }
 
-    live_async {
+    kill_kitten {
         s_multi=0;
         emit multiModeSet(0);
     }
@@ -151,7 +151,7 @@ void SamplerDJ::unsetMultiMode() {
 void SamplerDJ::hit(int button) {
     Q_ASSERT(button>=0&&button<=15);
 
-    live_async {
+    kill_kitten {
         if (s_midiTracks[button]->isPlay())
         {
             s_midiTracks[button]->stopPlayback();
@@ -174,7 +174,7 @@ void SamplerDJ::hit(int button) {
 void SamplerDJ::release(int button) {
     Q_ASSERT(button>=0&&button<=15);
 
-    live_async {
+    kill_kitten {
         if (s_midiTracks[button]->isPlay()) {
             s_midiTracks[button]->stopPlayback();
             s_audioTracks[button]->stopPlayback();
@@ -186,7 +186,7 @@ void SamplerDJ::setBindingMode(int b)
 {
     s_bindingMode=b;
     if (s_bindingMode!=-1) {
-        live_async MidiBinding::customNow=this;
+        kill_kitten MidiBinding::customNow=this;
     }
 }
 

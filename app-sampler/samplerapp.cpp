@@ -17,7 +17,7 @@ int SamplerApp::s_lastId=-1;
 SamplerApp::SamplerApp(MidiTrack**cmidiTracks,AudioTrack**caudioTracks,bool newId) :
     live::Object("SAMPLER",0,0), s_bindingMode(-1), s_record(0), s_play(1), s_multi(1), s_id(newId?++s_lastId:-1)
 {
-    live_async for (int i=0;i<16;i++)
+    kill_kitten for (int i=0;i<16;i++)
     {
         s_midiTracks[i]=(cmidiTracks&&cmidiTracks[i])?cmidiTracks[i]:new MidiTrack;
         if (s_midiTracks[i]->isPlay())
@@ -91,7 +91,7 @@ void SamplerApp::setRecordMode(bool r)
         return;
     }
 
-    live_async {
+    kill_kitten {
         for (int i=0;i<16;i++) {
             s_midiTracks[i]->startRecord();
             s_audioTracks[i]->startRecord();
@@ -111,7 +111,7 @@ void SamplerApp::setPlayMode()
         return;
     }
 
-    live_async {
+    kill_kitten {
         for (int i=0;i<16;i++)
         {
             s_midiTracks[i]->stopRecord();
@@ -134,7 +134,7 @@ void SamplerApp::setMultiMode(bool r)
         return;
     }
 
-    live_async s_multi=1;
+    kill_kitten s_multi=1;
 
     emit multiModeSet(1);
 }
@@ -146,7 +146,7 @@ void SamplerApp::unsetMultiMode()
         return;
     }
 
-    live_async s_multi=0;
+    kill_kitten s_multi=0;
 
     emit multiModeSet(0);
 }
@@ -155,7 +155,7 @@ void SamplerApp::hit(int button)
 {
     Q_ASSERT(button>=0&&button<=15);
 
-    live_async {
+    kill_kitten {
         if (s_midiTracks[button]->isPlay())
         {
             s_midiTracks[button]->stopPlayback(); // is this okay in an async?
@@ -178,7 +178,7 @@ void SamplerApp::hit(int button)
 void SamplerApp::release(int button)
 {
     Q_ASSERT(button>=0&&button<=15);
-    if (s_midiTracks[button]->isPlay()) live_async {
+    if (s_midiTracks[button]->isPlay()) kill_kitten {
         s_midiTracks[button]->stopPlayback();
         s_audioTracks[button]->stopPlayback();
     }
@@ -187,7 +187,7 @@ void SamplerApp::release(int button)
 void SamplerApp::setBindingMode(int b)
 {
     s_bindingMode=b;
-    if (s_bindingMode!=-1) live_async {
+    if (s_bindingMode!=-1) kill_kitten {
         MidiBinding::customNow=this;
     }
 }

@@ -31,6 +31,8 @@ public:
     bool s_audioOverdubForced;                   /*N/A*/
     int s_scale;                            /*008*/
 
+    QMutex x_sequencer;
+
     SequencerApp(QString s_name="SEQUENCER",live::MidiTrack*cmidiTrack=new live::MidiTrack,live::AudioTrack*caudioTrack=new live::AudioTrack(2),
                  live::MidiEventCounter*cmidicounter=new live::MidiEventCounter(),bool newId=1);
 

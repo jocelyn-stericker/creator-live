@@ -75,7 +75,7 @@ public:
                 list << QVariant(type, a[i + 1]);
             }
 
-            live_async {
+            kill_kitten {
                 bool ok=1;
                 qDebug() << "SLOT:"<<s_dSlot;
                 if(list.size()==4||!ok) {

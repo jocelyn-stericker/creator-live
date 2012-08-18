@@ -67,22 +67,23 @@ void live::AudioTrack::aThru(float*proc,int chan) {
     s_curPos += s_playback&&(chan==s_chans-1) ? nframes : 0;
 }
 
-live::AudioTrack::AudioTrack(int cchans) :
-    live::Object("Audio Track",false,false),
-    nframes(live::audio::nFrames()),
-    s_container( new AudioContainer*[cchans] ),
-    s_chans(cchans),
-    s_curPos(0),
-    s_vol(100),
-    s_pan(50),
-    s_record(0),
-    s_overdub(0),
-    s_playback(0),
-    s_mute(0),
-    s_simpleCount(0),
-    s_updateCounter(0),
-    s_boringCounter(0) {
-    setTemporary(0);
+live::AudioTrack::AudioTrack(int cchans)
+  : live::Object("Audio Track",false,false)
+  , nframes(live::audio::nFrames())
+  , s_container( new AudioContainer*[cchans] )
+  , s_chans(cchans)
+  , s_curPos(0)
+  , s_vol(100)
+  , s_pan(50)
+  , s_record(0)
+  , s_overdub(0)
+  , s_playback(0)
+  , s_mute(0)
+  , s_simpleCount(0)
+  , s_updateCounter(0)
+  , s_boringCounter(0)
+  , m_proc(new float[live::audio::nFrames()])
+  { setTemporary(0);
     for (int i=0; i<cchans; i++) {
         s_container[i]=new AudioContainer;
     }
@@ -190,22 +191,18 @@ void live::AudioTrack::setPos(long pos) {
 }
 
 void live::AudioTrack::aIn(const float *in, int chan, ObjectChain*p) {
-    // TODO: this is slow, so use of this should be discouraged.
-
     if (!s_playback && !(s_record||s_overdub)) {
         p->push_back(this);
         aOut(in, chan, p);
         p->pop_back();
     }
-    float* proc=new float[nframes];
-    memcpy(proc,in,sizeof(float)*nframes);
+    memcpy(m_proc,in,sizeof(float)*nframes);
 
-    aThru(proc,chan);
+    aThru(m_proc,chan);
 
     p->push_back(this);
-    aOut(proc,chan,p);
+    aOut(m_proc,chan,p);
     p->pop_back();
-    delete[] proc;
 }
 
 void live::AudioTrack::clearData() {
@@ -341,7 +338,7 @@ bool live::AudioTrack::importFile(QString filename) {
         float*dataPtr;
         int counter=frames?(s_container[i]->getRawPointer(0,dataPtr,1)):0;
         dataPtr--;
-        for (int j = 0; j < frames/2; ++j) live_async {
+        for (int j = 0; j < frames/2; ++j) kill_kitten {
             if (j!=frames/2) {
                 if ((dataPtr?++dataPtr:0),--counter==-1) {
                     counter=s_container[i]->getRawPointer(j,dataPtr,1)-1;

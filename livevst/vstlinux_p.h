@@ -64,7 +64,7 @@ public:
         QStringList lastAudioIn;
         do
         {
-            live_async {
+            kill_kitten {
                 QStringList newAudioIn = live::audio::getInputChanStringList();
                 QStringList newAudioOut = live::audio::getOutputChanStringList();
                 QList<live::ObjectPtr> newMidi = live::object::get(live::OutputOnly|live::MidiOnly);
@@ -198,7 +198,7 @@ public:
     }
     ~VstR()
     {
-        live_async {
+        kill_kitten {
             kill();
             //        while (s_sidekicks.size()) delete s_sidekicks.takeFirst().data();
             _magic->kill();

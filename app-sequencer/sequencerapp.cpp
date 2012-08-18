@@ -82,7 +82,7 @@ bool SequencerApp::clipped() const
 
 void SequencerApp::startRecord()
 {
-    live_async {
+    live_mutex(x_sequencer) {
         s_midiTrack->startRecord();
         s_audioTrack->startRecord();
     }
@@ -90,7 +90,7 @@ void SequencerApp::startRecord()
 
 void SequencerApp::stopRecord()
 {
-    live_async {
+    live_mutex(x_sequencer) {
         s_midiTrack->stopRecord();
         s_audioTrack->stopRecord();
     }
@@ -98,7 +98,7 @@ void SequencerApp::stopRecord()
 
 void SequencerApp::startOverdub()
 {
-    live_async {
+    live_mutex(x_sequencer) {
         s_midiTrack->startOverdub();
         s_audioTrack->startOverdub();
     }
@@ -106,7 +106,7 @@ void SequencerApp::startOverdub()
 
 void SequencerApp::stopOverdub()
 {
-    live_async {
+    live_mutex(x_sequencer) {
         s_midiTrack->stopOverdub();
         s_audioTrack->stopOverdub();
     }
@@ -114,7 +114,7 @@ void SequencerApp::stopOverdub()
 
 void SequencerApp::startPlayback()
 {
-    live_async {
+    live_mutex(x_sequencer) {
         s_midiTrack->startPlayback();
         s_audioTrack->startPlayback();
     }
@@ -123,7 +123,7 @@ void SequencerApp::startPlayback()
 
 void SequencerApp::stopPlayback()
 {
-    live_async {
+    live_mutex(x_sequencer) {
         s_midiTrack->stopPlayback();
         s_audioTrack->stopPlayback();
     }
@@ -132,7 +132,7 @@ void SequencerApp::stopPlayback()
 
 void SequencerApp::startMute()
 {
-    live_async {
+    live_mutex(x_sequencer) {
         s_midiTrack->startMute();
         s_audioTrack->startMute();
     }
@@ -140,7 +140,7 @@ void SequencerApp::startMute()
 
 void SequencerApp::stopMute()
 {
-    live_async {
+    live_mutex(x_sequencer) {
         s_midiTrack->stopMute();
         s_audioTrack->stopMute();
     }
@@ -148,7 +148,7 @@ void SequencerApp::stopMute()
 
 void SequencerApp::setPos(int pos)
 {
-    live_async {
+    live_mutex(x_sequencer) {
         s_midiTrack->setPos(pos);
         s_audioTrack->setPos(pos);
     }
@@ -157,12 +157,14 @@ void SequencerApp::setPos(int pos)
 
 void SequencerApp::setClipped(bool clipped)
 {
-    if (clipped&&!b_clipped)
-        SequencerSys::registerClippedSeq(this);
-    else if (b_clipped&&!clipped)
-        SequencerSys::deregisterClippedSeq(this);
+    live_mutex(x_sequencer) {
+        if (clipped&&!b_clipped)
+            SequencerSys::registerClippedSeq(this);
+        else if (b_clipped&&!clipped)
+            SequencerSys::deregisterClippedSeq(this);
 
-    b_clipped=clipped;
+        b_clipped=clipped;
+    }
 }
 
 
@@ -178,8 +180,10 @@ void SequencerApp::aIn(const float *data, int chan, ObjectChain*p) {
 
 void SequencerApp::setScale(int z)
 {
-    s_scale=z;
-    emit scaleChanged(z);
+    live_mutex(x_sequencer) {
+        s_scale=z;
+        emit scaleChanged(z);
+    }
 }
 
 void SequencerApp::mIn(const Event *data, ObjectChain*p)

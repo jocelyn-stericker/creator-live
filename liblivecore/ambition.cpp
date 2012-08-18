@@ -18,8 +18,8 @@ Ambition::Ambition(ObjectPtr cinput, ObjectChain chain, ObjectPtr coutput
   , s_output(coutput)
   , s_loopbackOut(cloop)
   , s_ec(new MidiEventCounter)
-  , b_output(s_output->name())
   , x_ambition(QMutex::Recursive)
+  , b_output(s_output->name())
   { b_output = s_output->name();
     setChain(s_chain);
     ambition::self()->notifyCreated(this);

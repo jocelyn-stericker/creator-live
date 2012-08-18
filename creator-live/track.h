@@ -39,6 +39,8 @@ public:
 
     QList<live_widgets::AppFrame*> s_appUi_;  /*003B*/    //reintegrate
 
+    QMutex x_me;
+
     int s_id;                   /*004*/
     static int s_lastId;
 
@@ -49,6 +51,9 @@ public:
 
     Track(live::ObjectPtr cinput, live::ObjectPtr coutput);
     Track(live::Ambition* bp);
+protected:
+    void initialize();
+public:
     ~Track();
 
     int getMaximumWidthFor(QWidget*);

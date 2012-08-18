@@ -32,15 +32,15 @@ SequencerFrame::SequencerFrame(SequencerApp* backend,AbstractTrack *parent)
 {
     ui->setupUi(this);
 
-    async_connect(&app.s_midiTrack->b_mute,SIGNAL(changeObserved(bool,bool)),ui->mute,SLOT(setChecked(bool)));
-    async_connect(&app.s_midiTrack->b_playback,SIGNAL(changeObserved(bool,bool)),ui->play,SLOT(setChecked(bool)));
-    async_connect(&app.s_midiTrack->b_record,SIGNAL(changeObserved(bool,bool)),ui->record,SLOT(setChecked(bool)));
-    async_connect(&app.b_clipped,SIGNAL(changeObserved(bool,bool)),ui->clip,SLOT(setChecked(bool)));
+    connect(&app.s_midiTrack->b_mute,SIGNAL(changeObserved(bool,bool)),ui->mute,SLOT(setChecked(bool)));
+    connect(&app.s_midiTrack->b_playback,SIGNAL(changeObserved(bool,bool)),ui->play,SLOT(setChecked(bool)));
+    connect(&app.s_midiTrack->b_record,SIGNAL(changeObserved(bool,bool)),ui->record,SLOT(setChecked(bool)));
+    connect(&app.b_clipped,SIGNAL(changeObserved(bool,bool)),ui->clip,SLOT(setChecked(bool)));
 
-    async_connect(ui->mute,SIGNAL(clicked(bool)),this,SLOT(logicMute(bool)));
-    async_connect(ui->play,SIGNAL(clicked(bool)),this,SLOT(logicPlay(bool)));
-    async_connect(ui->record,SIGNAL(clicked(bool)),this,SLOT(logicRecord(bool)));
-    async_connect(ui->clip,SIGNAL(clicked(bool)),&app,SLOT(setClipped(bool)));
+    connect(ui->mute,SIGNAL(clicked(bool)),this,SLOT(logicMute(bool)));
+    connect(ui->play,SIGNAL(clicked(bool)),this,SLOT(logicPlay(bool)));
+    connect(ui->record,SIGNAL(clicked(bool)),this,SLOT(logicRecord(bool)));
+    connect(ui->clip,SIGNAL(clicked(bool)),&app,SLOT(setClipped(bool)));
 
     connect(ui->rightButton,SIGNAL(clicked()),&graph,SLOT(incrScroll()));
     connect(ui->leftButton,SIGNAL(clicked()),&graph,SLOT(decrScroll()));

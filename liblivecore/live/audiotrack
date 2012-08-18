@@ -58,6 +58,8 @@ private:
     int s_updateCounter;
     int s_boringCounter;
 
+    float* m_proc;
+
 public:
     AudioTrack(int cchans);
     ~AudioTrack();

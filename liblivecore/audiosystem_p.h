@@ -150,6 +150,7 @@ class LIBLIVECORESHARED_EXPORT SecretAudio : public QObject, public live::AudioI
 public:
     QString s_error;
     static SecretAudio* singleton;
+    QMutex x_sa;
 
     unsigned long nframes;
     QList< AudioIn* > inputs;

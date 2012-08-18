@@ -27,7 +27,7 @@ int SequencerSys::newIdForTrack()
 
 void SequencerSys::registerSeq_real(SequencerApp* that)
 {
-    live_async {
+    kill_kitten {
         Q_ASSERT(!_u.contains(that));
         // states __must be__ identical
         if (_u.size())
@@ -56,7 +56,7 @@ void SequencerSys::registerSeq_real(SequencerApp* that)
 
 void SequencerSys::deregisterSeq_real(SequencerApp* that)
 {
-    live_async {
+    kill_kitten {
         Q_ASSERT(_u.contains(that));
         that->disconnect(this);
         _u.removeOne(that);
@@ -72,7 +72,7 @@ void SequencerSys::startPlayback()
 {
     SequencerApp*send=(qobject_cast<SequencerApp*>(sender()));
 
-    live_async for (int i=0;i<_u.size();i++)
+    kill_kitten for (int i=0;i<_u.size();i++)
     {
         if (_u[i]!=send&&_u[i]->clipped())
         {
@@ -85,7 +85,7 @@ void SequencerSys::stopPlayback()
 {
     SequencerApp*send=(qobject_cast<SequencerApp*>(sender()));
 
-    live_async for (int i=0;i<_u.size();i++)
+    kill_kitten for (int i=0;i<_u.size();i++)
     {
         if (_u[i]!=send&&_u[i]->clipped())
         {
@@ -98,7 +98,7 @@ void SequencerSys::setPos(int pos)
 {
     SequencerApp*send=(qobject_cast<SequencerApp*>(sender()));
 
-    live_async for (int i=0;i<_u.size();i++)
+    kill_kitten for (int i=0;i<_u.size();i++)
     {
         if (_u[i]!=send&&_u[i]->clipped())
         {

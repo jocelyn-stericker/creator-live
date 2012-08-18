@@ -40,7 +40,7 @@ MixerFrame::MixerFrame(MixerApp *backend, AbstractTrack *parent) :
 
 MixerFrame::~MixerFrame()
 {
-    live_async {
+    kill_kitten {
         delete &app;
     }
     delete ui;

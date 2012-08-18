@@ -171,6 +171,9 @@ protected:
     bool s_mOn;
     bool s_temp;
     bool s_allowMixer;
+#if !defined(NDEBUG) && defined(__linux__)
+    static std::vector<unsigned long> s_asyncTime;
+#endif
 
     friend class ObjectPtr;
     friend class live_private::SecretAudio;
@@ -332,9 +335,9 @@ struct ScopedMutexLock {
     }
 };
 
-#define live_async \
+#define kill_kitten \
     for (live::ScopedLock farmerJohnEatsCows; farmerJohnEatsCows.decr; farmerJohnEatsCows.decr = false)
-// use like live_async { }
+// use like kill_kitten { }
 
 #define live_mutex(MUTEX) \
     for (live::ScopedMutexLock farmerJohnEatsCows(MUTEX); farmerJohnEatsCows.decr; farmerJohnEatsCows.decr = false)
@@ -352,15 +355,21 @@ class LIBLIVECORESHARED_EXPORT ObjectPtr
 protected:
     void obliviate();
     bool restore(Object *a);
+    QMutex x_ptr;
     friend class Object;
 //    bool s_isInput, s_isOutput, s_isAudio, s_isMidi;
-    ObjectPtr(QString,Object* o) : s_obj(o) {
+    ObjectPtr(QString,Object* o)
+      : s_obj(o)
+      , x_ptr(QMutex::Recursive)
+      {
         s_obj->s_ptrList.push_back(this);
     }
 
 public:
-    ObjectPtr(Object* o=0) : s_obj(o) {
-        if(s_obj) {
+    ObjectPtr(Object* o=0)
+      : s_obj(o)
+      , x_ptr(QMutex::Recursive)
+      { if(s_obj) live_mutex(x_ptr) {
             s_obj->s_ptrList.push_back(this);
 //            s_isInput=s_obj->isInput();
 //            s_isOutput=s_obj->isOutput();
@@ -370,15 +379,15 @@ public:
     }
 
     ~ObjectPtr() {
-        Object::beginAsyncAction();
         detach();
-        Object::endAsyncAction();
     }
 
     void detach();
-    ObjectPtr(const ObjectPtr& other) {
-        s_obj=const_cast<ObjectPtr&>(other).data();
-        if(other.data()) {
+
+    ObjectPtr(const ObjectPtr& other)
+      : x_ptr(QMutex::Recursive)
+      { s_obj=const_cast<ObjectPtr&>(other).data();
+        if(other.data()) live_mutex(x_ptr) {
             s_obj->s_ptrList.push_back(this);
 //            s_isInput=s_obj->isInput();
 //            s_isOutput=s_obj->isOutput();
@@ -389,25 +398,29 @@ public:
 
     ObjectPtr& operator=(Object* other) {
         detach();
-        s_obj=other;
-        if(other) {
-            s_obj->s_ptrList.push_back(this);
-//            s_isInput=s_obj->isInput();
-//            s_isOutput=s_obj->isOutput();
-//            s_isAudio=s_obj->isAudioObject();
-//            s_isMidi=s_obj->isMidiObject();
+        live_mutex(x_ptr) {
+            s_obj=other;
+            if(other) live_mutex(x_ptr) {
+                s_obj->s_ptrList.push_back(this);
+                //            s_isInput=s_obj->isInput();
+                //            s_isOutput=s_obj->isOutput();
+                //            s_isAudio=s_obj->isAudioObject();
+                //            s_isMidi=s_obj->isMidiObject();
+            }
         }
         return* this;
     }
     ObjectPtr& operator=(const ObjectPtr& other) {
         detach();
-        s_obj=const_cast<ObjectPtr&>(other).data();
-        if(other.data()) {
-            s_obj->s_ptrList.push_back(this);
-//            s_isInput=s_obj->isInput();
-//            s_isOutput=s_obj->isOutput();
-//            s_isAudio=s_obj->isAudioObject();
-//            s_isMidi=s_obj->isMidiObject();
+        live_mutex(x_ptr) {
+            s_obj=const_cast<ObjectPtr&>(other).data();
+            if(other.data()) live_mutex(x_ptr) {
+                s_obj->s_ptrList.push_back(this);
+                //            s_isInput=s_obj->isInput();
+                //            s_isOutput=s_obj->isOutput();
+                //            s_isAudio=s_obj->isAudioObject();
+                //            s_isMidi=s_obj->isMidiObject();
+            }
         }
         return* this;
     }
@@ -494,7 +507,7 @@ public:
 signals:
     void stockChanged();
 public slots:
-    void notify() { live_async emit stockChanged(); }
+    void notify() { emit stockChanged(); }
 };
 
 }

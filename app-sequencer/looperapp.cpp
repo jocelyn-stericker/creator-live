@@ -123,7 +123,7 @@ void LooperApp::looperLogic()
                 b_loopMode=Playing;
             case Playing:
             case Overdubbing:
-                live_async {
+                kill_kitten {
                     stopPlayback();
                     setPos(0);
                     startPlayback();

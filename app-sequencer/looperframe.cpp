@@ -37,22 +37,22 @@ LooperFrame::LooperFrame(LooperApp*backend,AbstractTrack *parent) :
     bg->setExclusive(1);
     // SUBSTITUE
     bg->addButton(ui->loopSub);
-    async_connect(ui->loopSub,SIGNAL(clicked(bool)),this,SLOT(logicSub(bool)));
+    connect(ui->loopSub,SIGNAL(clicked(bool)),this,SLOT(logicSub(bool)));
     // REPLACE
     bg->addButton(ui->loopReplace);
-    async_connect(ui->loopReplace,SIGNAL(clicked(bool)),this,SLOT(logicReplace(bool)));
+    connect(ui->loopReplace,SIGNAL(clicked(bool)),this,SLOT(logicReplace(bool)));
     // OVERDUB
     bg->addButton(ui->loopOverdub);
-    async_connect(ui->loopOverdub,SIGNAL(clicked(bool)),this,SLOT(logicOverdub(bool)));
+    connect(ui->loopOverdub,SIGNAL(clicked(bool)),this,SLOT(logicOverdub(bool)));
     // RECORD
     bg->addButton(ui->loopRecord);
-    async_connect(ui->loopRecord,SIGNAL(clicked(bool)),this,SLOT(logicRecord(bool)));
+    connect(ui->loopRecord,SIGNAL(clicked(bool)),this,SLOT(logicRecord(bool)));
     // PLAY
     bg->addButton(ui->loopPlay);
-    async_connect(ui->loopPlay,SIGNAL(clicked(bool)),this,SLOT(logicPlay(bool)));
+    connect(ui->loopPlay,SIGNAL(clicked(bool)),this,SLOT(logicPlay(bool)));
     // OFF
     bg->addButton(ui->loopOff);
-    async_connect(ui->loopOff,SIGNAL(clicked(bool)),this,SLOT(logicOff(bool)));
+    connect(ui->loopOff,SIGNAL(clicked(bool)),this,SLOT(logicOff(bool)));
 
     graph.show();
     ui->visLayout->addWidget(&graph);

@@ -110,19 +110,19 @@ public:
         {
             return;
         }
-        live_async s_ts=cts;
+        kill_kitten s_ts=cts;
     }
 
     void setBpm(const int& cbpm)
     {
         Q_ASSERT(this);
-        live_async b_bpm=cbpm;
+        kill_kitten b_bpm=cbpm;
     }
 
     void setPpq(const int& cppq)
     {
         Q_ASSERT(this);
-        live_async s_ppq=cppq;
+        kill_kitten s_ppq=cppq;
     }
 
     void pause()
@@ -130,7 +130,7 @@ public:
         Q_ASSERT(this);
         Q_ASSERT(s_isActive);
 
-        live_async {
+        kill_kitten {
             s_lastTime=( startTime.msecsTo(QTime::currentTime()) );
 
             s_barStart-=s_lastTime;
@@ -141,7 +141,7 @@ public:
     void start()
     {
         Q_ASSERT(this);
-        live_async {
+        kill_kitten {
             Q_ASSERT(!s_isActive);
             s_lastTime=( startTime.msecsTo(QTime::currentTime()) );
             s_barStart+=s_lastTime;
@@ -167,11 +167,11 @@ public:
 
     template<class T> void registerSync(T* t)
     {
-        live_async _as.push_back(new ConcreteSync<T>(t));
+        kill_kitten _as.push_back(new ConcreteSync<T>(t));
     }
     template<class T> void unregisterSync(T* t)
     {
-        live_async for(int i=0;i<_as.size();i++)
+        kill_kitten for(int i=0;i<_as.size();i++)
         {
             if(_as[i]->abst_t==t) {
                 delete _as.takeAt(i);

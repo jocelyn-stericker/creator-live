@@ -332,7 +332,8 @@ bool SecretAudio::makeClient() {
 #ifndef __QNX__
     if (client) return 1;
     Q_ASSERT(qApp);
-    live_async {
+    live::Object::beginProc();
+    {
         qDebug() << "Trying to connect to jackd... (you can start the JACK server with qjackctl, for example...)";
         QObject::connect(qApp,SIGNAL(aboutToQuit()),SecretAudioShutdownHandler::singleton,SLOT(byeBye()));
         SecretAudioShutdownHandler::singleton->byeBye();
@@ -346,7 +347,7 @@ bool SecretAudio::makeClient() {
             //Unimplemented functionality
             qDebug("Couldn't connect to JACK!");
             s_error="Couldn't connect to Jack server!";
-            live::Object::endAsyncAction();
+            live::Object::endProc();
             return 0;
 #endif
         }
@@ -356,6 +357,8 @@ bool SecretAudio::makeClient() {
         jack_set_xrun_callback(client, xrunCallback, 0);
         jack_activate( client );    // before refresh
     }
+
+    live::Object::endProc();
 
     refresh();
 #endif
@@ -390,22 +393,25 @@ bool SecretAudio::delClient() {
 }
 
 void SecretAudio::process() {
-    live::Object::beginProc();
 
     foreach( AudioIn* i, inputs ) {
         if ( i ) {
-            // note: concurrency causes too many problems.
+            live::Object::beginProc();
             i->proc();
+            live::Object::endProc();
         }
     }
 #ifdef _WIN32
     foreach(Vst* v, Vst::s_vst) {
+        live::Object::beginProc();
         v->PROC_VST();
+        live::Object::endProc();
     }
 
 #endif
 
     foreach( AudioNull* i, nulls ) {
+        live::Object::beginProc();
         for ( int j = 0; j < i->chans; j++ ) {
             float* buffer = new float[ nframes ]; //{
             for (unsigned k=0; k<nframes; k++) {
@@ -415,6 +421,7 @@ void SecretAudio::process() {
             i->aIn(buffer, j, &p);
             delete[] buffer;                      //}
         }
+        live::Object::endProc();
     }
 
     if (live::song::current()&&live::song::current()->metronome) {
@@ -424,13 +431,11 @@ void SecretAudio::process() {
         live::song::current()->metronome->clock();
 //#endif
     }
-
-    live::Object::endProc();
 }
 
 bool SecretAudio::refresh() {
 #ifndef __QNX__
-    live_async {
+    live_mutex(x_sa) {
         for (int i=0;i<outputMappings;i++) {
             bool ok=1;
             for (int j=0;j<outputs;j++) {
@@ -665,13 +670,12 @@ LIBLIVECORESHARED_EXPORT live::ObjectPtr live::audio::null(int chan) {
 }
 
 live::ObjectPtr live_private::SecretAudio::getNull(int chans) {
-    live::Object::beginAsyncAction();
-
     AudioNull* ret;
-    nulls.push_back( ret = new AudioNull(chans) );
-    connect(nulls.back(), SIGNAL(destroyed(QObject*)), this, SLOT(removeNull(QObject*)), Qt::DirectConnection);
 
-    live::Object::endAsyncAction();
+    live_mutex(x_sa) kill_kitten {
+        nulls.push_back( ret = new AudioNull(chans) );
+        connect(nulls.back(), SIGNAL(destroyed(QObject*)), this, SLOT(removeNull(QObject*)), Qt::DirectConnection);
+    }
 
     return ret;
 }

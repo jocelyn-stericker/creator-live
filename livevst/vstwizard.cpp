@@ -121,7 +121,7 @@ void VstWizard::pageChangeEvent(int page) {
                     p.setCancelButton(0);
                     p.setWindowTitle("Launching VSTi");
                     qApp->processEvents();
-                    live_async
+                    kill_kitten
                         s_vst=new Vst(ui->listWidget_vsti->currentItem()->text(),s);
                     if (!(cast<Vst*>(s_vst)->ok())) {
                         ok=0;
