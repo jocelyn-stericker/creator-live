@@ -37,9 +37,7 @@ int LooperApp::pos() const
 
 void LooperApp::modeChanged(int now)
 {
-    NOSYNC;
-    switch (now)
-    {
+    switch (now) {
     case Off:
         if (isPlaying())
             stopPlayback();
@@ -110,7 +108,6 @@ void LooperApp::modeChanged(int now)
 
 void LooperApp::looperLogic()
 {
-    NOSYNC;
     if (isPlaying())
     {
         int curpos=pos();
@@ -126,9 +123,11 @@ void LooperApp::looperLogic()
                 b_loopMode=Playing;
             case Playing:
             case Overdubbing:
-                stopPlayback();
-                setPos(0);
-                startPlayback();
+                live_async {
+                    stopPlayback();
+                    setPos(0);
+                    startPlayback();
+                }
                 break;
             case Multiplying:
                 Q_ASSERT(0);    //don't feel like it right now.

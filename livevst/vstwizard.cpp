@@ -121,9 +121,8 @@ void VstWizard::pageChangeEvent(int page) {
                     p.setCancelButton(0);
                     p.setWindowTitle("Launching VSTi");
                     qApp->processEvents();
-                    Object::beginAsyncAction();
-                    s_vst=new Vst(ui->listWidget_vsti->currentItem()->text(),s);
-                    Object::endAsyncAction();
+                    live_async
+                        s_vst=new Vst(ui->listWidget_vsti->currentItem()->text(),s);
                     if (!(cast<Vst*>(s_vst)->ok())) {
                         ok=0;
                         QMessageBox::critical(this,"Error starting VST","Could not start "+ui->listWidget_vsti->currentItem()->text());

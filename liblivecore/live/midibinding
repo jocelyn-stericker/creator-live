@@ -143,7 +143,7 @@ public:
         lastEventTime(-1),
         controller(ccontroller)
     {
-        pending=ckey==-1;
+        pending = (ckey == -1);
         QList<ObjectPtr> midiIn=object::get(live::MidiOnly|live::InputOnly|live::NoRefresh);
         for(int i=0;i<midiIn;i++)
         {
@@ -151,12 +151,14 @@ public:
         }
     }
 
-protected:
+public slots:
     virtual void doAction(int vel=0) = 0;
 
 public slots:
     void mIn(const Event *data, ObjectChain*p)
     {
+        lthread::midi();
+
         if(midi::getTime_msec()-lastEventTime<100)
         {
             return;
@@ -179,7 +181,8 @@ public slots:
                 return;
             }
             lastEventTime=midi::getTime_msec();
-            doAction(controller?data->velocity():0);
+            QMetaObject::invokeMethod(this, "doAction", Qt::BlockingQueuedConnection, Q_ARG(int, controller?data->velocity():0) );
+            // FIXME: Remove Qt::BlockQueuedConnection as soon as this is verified to work
         }
     }
 };

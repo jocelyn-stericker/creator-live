@@ -25,7 +25,6 @@ class SamplerDJ : public QObject, public live::Object
     bool s_play;                            /*^^^*/
     bool s_multi;                           /*007*/
     int s_id;                               /*005*/
-    QMutex csMutex;
 public:
     LIVE_HYBRID
     LIVE_EFFECT

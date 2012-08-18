@@ -34,7 +34,6 @@ protected:
     float* incache[2];  /*N/A*/
 public:
     VstR* rep;          /*N/A*/
-    QMutex csMutex;     /*N/A*/
     bool mOn() const{ return 1; }
     bool aOn() const { return 1; }
     bool ok() const;
@@ -46,7 +45,6 @@ public:
         live::Object("VST("+path+')',false,false),
         vstId(++lastVstId),
         rep(0),
-        csMutex(QMutex::Recursive),
         filename(path),
         instname(instance)
     {

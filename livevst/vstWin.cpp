@@ -149,11 +149,10 @@ void Vst::init()
     if (!SecretVst::singleton) new SecretVst;
     Q_ASSERT(SecretVst::singleton);
 
-    QMutexLocker lock(&csMutex);
     Q_UNUSED(lock);
 
     rep=new VstR(this,SecretVst::singleton->s_loadPlugin(filename));
-    const int& nframes=AudioSys::nFrames();
+    const unsigned long& nframes=AudioSys::nFrames();
     channelData = new float*[ rep->_vst->numInputs ];
     outData = new float*[ rep->_vst->numOutputs ];
     for (int i=0;i<rep->_vst->numInputs;i++)
@@ -200,12 +199,11 @@ void Vst::hide()
 
 void Vst::aIn(const float* x, int chan, ObjectChain*s)
 {
-    QMutexLocker lock(&csMutex);
     Q_UNUSED(lock);
     Q_UNUSED(s);
 
     //todo: should be mixer.
-    const int& nframes = AudioSys::nFrames();
+    const unsigned long& nframes = AudioSys::nFrames();
     for (long frame = 0; frame < nframes; ++frame)
     {
         channelData[chan][frame] = x[frame];
@@ -214,10 +212,9 @@ void Vst::aIn(const float* x, int chan, ObjectChain*s)
 } //////////////////////////////// GOES TO ////////////////////////////////
 void Vst::PROC_VST()
 {
-    QMutexLocker lock(&csMutex);
     Q_UNUSED(lock);
 
-    const int&nframes=AudioSys::nFrames();
+    const unsigned long& nframes=AudioSys::nFrames();
 
     rep->silenceChannel( outData, rep->_vst->numOutputs, nframes );
     rep->processAudio( channelData, outData, nframes );
@@ -238,7 +235,6 @@ void Vst::mIn(const Event *data, ObjectChain*p)
     p->pop_back();
 
     if (data->simpleStatus()==-1) return;
-    QMutexLocker lock(&csMutex);
     Q_UNUSED(lock);
 
     Event* ev=new Event;

@@ -42,6 +42,7 @@ public:
 
 protected:
     virtual void doAction(int ccval=-1) {
+        live::lthread::ui();
         QComboBox *cb = NULL;
         QAbstractSlider *s = NULL;
         switch( type ) {
@@ -176,7 +177,6 @@ public:
     static MidiBindingQtSys* singleton;
     static void addWidget(QWidget* w);
     static void delWidget(QWidget* w);
-    QMutex csMutex;
 private:
     QList<QWidget*> widgets;
     QMenu* currentCM;
@@ -184,7 +184,6 @@ private:
     live::MidiBinding::GuiType activeWidgetType;
 public:
     MidiBindingQtSys() :
-        csMutex(QMutex::Recursive),
         currentCM(0) {
     }
 

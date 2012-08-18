@@ -8,9 +8,10 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 *******************************************************/
 
 #include <live/audiotrack>
+#include <live/object>
 
 void live::AudioTrack::aThru(float*proc,int chan) {
-    // TODO: Evaluate threadsafety.
+    live::lthread::audio();
 
     bool ok=1;
 
@@ -18,10 +19,12 @@ void live::AudioTrack::aThru(float*proc,int chan) {
     bool warning = false;
     int count=s_container[chan]->getRawPointer(s_curPos,RAW,s_playback&&(s_record||s_overdub), &warning);
     if (warning) {
+        // as we get xruns if we alloc a second of audio data in this thread,
+        // do it async.
         QtConcurrent::run(this,&live::AudioTrack::async);
     }
     RAW-=RAW?1:0;
-    int i;
+    unsigned i;
     for (i=0; i<nframes; i++) {
         if ((RAW=RAW?RAW+1:0),--count==-1) {
             count=s_container[chan]->getRawPointer(s_curPos+i,RAW,s_playback&&(s_record||s_overdub));
@@ -76,7 +79,6 @@ live::AudioTrack::AudioTrack(int cchans) :
     s_overdub(0),
     s_playback(0),
     s_mute(0),
-    csMutex(QMutex::Recursive),
     s_simpleCount(0),
     s_updateCounter(0),
     s_boringCounter(0) {
@@ -127,66 +129,56 @@ float live::AudioTrack::length() const {
 }
 
 void live::AudioTrack::setVol(int vol) {
-    ;
     Q_ASSERT((vol>=0)&&(vol<=100));
     s_vol=vol;
 }
 
 void live::AudioTrack::setPan(int pan) {
-    NOSYNC;
     Q_ASSERT((pan>=0)&&(pan<=100));
     Q_ASSERT(s_chans==2);
     s_pan=pan;
 }
 
 void live::AudioTrack::startRecord() {
-    NOSYNC;
     Q_ASSERT(!s_record);
     Q_ASSERT(!s_overdub);
     s_record=1;
 }
 
 void live::AudioTrack::stopRecord() {
-    NOSYNC;
     Q_ASSERT(s_record);
     Q_ASSERT(!s_overdub);
     s_record=0;
 }
 
 void live::AudioTrack::startOverdub() {
-    NOSYNC;
     Q_ASSERT(!s_overdub);
     Q_ASSERT(!s_record);
     s_overdub=1;
 }
 
 void live::AudioTrack::stopOverdub() {
-    NOSYNC;
     Q_ASSERT(s_overdub);
     Q_ASSERT(!s_record);
     s_overdub=0;
 }
 
 void live::AudioTrack::startPlayback() {
-    NOSYNC;
     Q_ASSERT(!s_playback);
     s_playback=1;
 }
 
 void live::AudioTrack::stopPlayback() {
-    NOSYNC;
     Q_ASSERT(s_playback);
     s_playback=0;
 }
 
 void live::AudioTrack::startMute() {
-    NOSYNC;
     Q_ASSERT(!s_mute);
     s_mute=1;
 }
 
 void live::AudioTrack::stopMute() {
-    NOSYNC;
     Q_ASSERT(s_mute);
     s_mute=0;
 }
@@ -198,6 +190,13 @@ void live::AudioTrack::setPos(long pos) {
 }
 
 void live::AudioTrack::aIn(const float *in, int chan, ObjectChain*p) {
+    // TODO: this is slow, so use of this should be discouraged.
+
+    if (!s_playback && !(s_record||s_overdub)) {
+        p->push_back(this);
+        aOut(in, chan, p);
+        p->pop_back();
+    }
     float* proc=new float[nframes];
     memcpy(proc,in,sizeof(float)*nframes);
 
@@ -317,6 +316,7 @@ bool live::AudioTrack::exportFile(QString filename,QString format,int depth) {
 }
 
 bool live::AudioTrack::importFile(QString filename) {
+    lthread::ui();
 #if !defined(_WIN32) && !defined(__QNX__)
     s_container[0]->clear();
     s_container[1]->clear();
@@ -341,8 +341,7 @@ bool live::AudioTrack::importFile(QString filename) {
         float*dataPtr;
         int counter=frames?(s_container[i]->getRawPointer(0,dataPtr,1)):0;
         dataPtr--;
-        for (int j=0;j<frames/2;j++) {
-            NOSYNC; // FIXME: This is not okay.
+        for (int j = 0; j < frames/2; ++j) live_async {
             if (j!=frames/2) {
                 if ((dataPtr?++dataPtr:0),--counter==-1) {
                     counter=s_container[i]->getRawPointer(j,dataPtr,1)-1;
@@ -359,8 +358,9 @@ bool live::AudioTrack::importFile(QString filename) {
 }
 
 void live::AudioTrack::async() {
-    //this function prevents data allocation in the real-time thread.
+    // this function prevents data allocation in the real-time thread.
+    // FIXME: possible memory loss
     float*a;
-    s_container[0]->getRawPointer((unsigned)s_curPos + live::audio::sampleRate(),a,1);
-    s_container[1]->getRawPointer((unsigned)s_curPos + live::audio::sampleRate(),a,1);
+    s_container[0]->getRawPointer((unsigned)s_curPos + live::audio::sampleRate(),a,1,0,0);
+    s_container[1]->getRawPointer((unsigned)s_curPos + live::audio::sampleRate(),a,1,0,0);
 }

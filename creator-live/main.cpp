@@ -17,8 +17,6 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 using namespace live;
 using namespace std;
 
-QMutex csMutex(QMutex::Recursive);
-
 int main(int argc,char** argv)
 {
     cout<<"Creator Live is copyright Joshua Netterfield 2010-2012. All rights are reserved."<<std::endl;

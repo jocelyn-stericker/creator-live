@@ -20,6 +20,11 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 using namespace live_private;
 
+LIBLIVECORESHARED_EXPORT Qt::HANDLE live::lthread::uiThreadId = -1;
+LIBLIVECORESHARED_EXPORT Qt::HANDLE live::lthread::metronomeThreadId = -1;
+LIBLIVECORESHARED_EXPORT Qt::HANDLE live::lthread::audioThreadId = -1;
+LIBLIVECORESHARED_EXPORT Qt::HANDLE live::lthread::midiThreadId = -1;
+
 class TheMutex {
 public:
     static TheMutex* me;
@@ -71,6 +76,7 @@ LIBLIVECORESHARED_EXPORT void live::Object::XRUN() {
 }
 
 void live::Object::aOut(const float *data, int chan, live::ObjectChain* p) {
+    live::lthread::audio();
     for (int i=0;i<aConnections.size();i++) {
         Q_ASSERT(aConnections[i]->aInverseConnections.size());
         if (aConnections[i]->aInverseConnections.size()<=1||!aConnections[i]->s_allowMixer) aConnections[i]->aIn(data,chan,p);
@@ -96,33 +102,32 @@ live::Object::Object(QString cname, bool isPhysical, bool allowMixer) : s_name(c
 }
 
 live::Object::~Object() {
-    beginAsyncAction();
-    kill();
-    for (int i=0;i<2;i++) delete[] mixer_data[i];
+    live_async {
+        kill();
+        for (int i=0;i<2;i++) delete[] mixer_data[i];
 
-    QTimer::singleShot(0,live::object::singleton(),SLOT(notify()));
-    endAsyncAction();
+        QTimer::singleShot(0,live::object::singleton(),SLOT(notify()));
+    }
 }
 
 void live::Object::kill() {
-    beginAsyncAction();
-    qDebug() << "KILLING"<<s_name;
-    if (!SecretMidi::me) new SecretMidi;
-    SecretMidi::me->mRemoveWithheld_object_dest(this);
-    while (aConnections.size()) this->audioConnect(aConnections[0]);
-    while (mConnections.size()) this->midiConnect(mConnections[0]);
-    while (aInverseConnections.size()) aInverseConnections[0]->audioConnect(this);
-    while (mInverseConnections.size()) mInverseConnections[0]->midiConnect(this);
-    Q_ASSERT(!aConnections.size());
-    Q_ASSERT(!mConnections.size());
-    Q_ASSERT(!aInverseConnections.size());
-    Q_ASSERT(!mInverseConnections.size());
-    qDebug() << "Pointer zombified"<<s_name<<s_ptrList.size();
-    for (int i=0;i<s_ptrList.size();i++) {
-        s_ptrList[i]->obliviate();
-        zombies->insertMulti(s_name,s_ptrList[i]);
+    live_async {
+        if (!SecretMidi::me) new SecretMidi;
+        SecretMidi::me->mRemoveWithheld_object_dest(this);
+        while (aConnections.size()) this->audioConnect(aConnections[0]);
+        while (mConnections.size()) this->midiConnect(mConnections[0]);
+        while (aInverseConnections.size()) aInverseConnections[0]->audioConnect(this);
+        while (mInverseConnections.size()) mInverseConnections[0]->midiConnect(this);
+        Q_ASSERT(!aConnections.size());
+        Q_ASSERT(!mConnections.size());
+        Q_ASSERT(!aInverseConnections.size());
+        Q_ASSERT(!mInverseConnections.size());
+        qDebug() << "Pointer zombified"<<s_name<<s_ptrList.size();
+        for (int i=0;i<s_ptrList.size();i++) {
+            s_ptrList[i]->obliviate();
+            zombies->insertMulti(s_name,s_ptrList[i]);
+        }
     }
-    endAsyncAction();
 }
 
 void live::Object::hybridConnect(const live::ObjectPtr &b) {
@@ -140,7 +145,7 @@ void live::Object::audioConnect(const live::ObjectPtr& b) {
 
 void live::Object::mOut(const live::Event *data, live::ObjectChain* p) {
     if (!SecretMidi::me) SecretMidi::me=new SecretMidi;
-    if (data->time.sec!=-1&&(data->time.toTime_ms()-5>live::midi::getTime_msec())) {
+    if (!live::lthread::isMidi() || (data->time.sec!=-1&&(data->time.toTime_ms()-5>live::midi::getTime_msec()))) {
         live::Event* x=new live::Event;
         *x=*data;
         SecretMidi::me->mWithhold(x,*p,this);    //now owner.
@@ -155,7 +160,7 @@ void live::Object::mOut(const live::Event *data, live::ObjectChain* p) {
 
 void live::Object::mOutverse(const live::Event *data, live::ObjectChain* p) {
     if (!SecretMidi::me) SecretMidi::me=new SecretMidi;
-    if (data->time.sec!=-1&&(data->time.toTime_ms()-5>live::midi::getTime_msec())) {
+    if (!live::lthread::isMidi() || (data->time.sec!=-1&&(data->time.toTime_ms()-5>live::midi::getTime_msec()))) {
         live::Event* x=new live::Event;
         *x=*data;
         SecretMidi::me->mWithhold(x,*p,this,1);    //now owner.
@@ -173,35 +178,36 @@ void live::doAudioConnect(const live::Object* al,const live::Object* bl) {
     live::Object* a=const_cast<live::Object*>(al);
     live::Object* b=const_cast<live::Object*>(bl);
 
-    live::Object::beginAsyncAction();
+    live_async {
 
-    bool ok=1;
-    for (int i=0;i<b->aConnections.size();i++) if (b->aConnections[i].data()==a) ok=0;
+        bool ok=1;
+        for (int i=0;i<b->aConnections.size();i++) if (b->aConnections[i].data()==a) ok=0;
 
-    if (ok) {
-        a->newConnection();
+        if (ok) {
+            a->newConnection();
 
-        b->aConnections.push_back(a);
-        a->aInverseConnections.push_back(b);
-        a->mixer_resetStatus();
-    } else {
-        for (int i=0;i<b->aConnections.size();i++) {
-            if (b->aConnections[i].data()==a) {
-                b->aConnections.removeAt(i);
-                break;
+            b->aConnections.push_back(a);
+            a->aInverseConnections.push_back(b);
+            a->mixer_resetStatus();
+        } else {
+            for (int i=0;i<b->aConnections.size();i++) {
+                if (b->aConnections[i].data()==a) {
+                    b->aConnections.removeAt(i);
+                    break;
+                }
             }
-        }
-        for (int i=0;i<a->aInverseConnections.size();i++) {
-            if (a->aInverseConnections[i].data()==b) {
-                a->aInverseConnections.removeAt(i);
-                a->mixer_resetStatus();
-                break;
+            for (int i=0;i<a->aInverseConnections.size();i++) {
+                if (a->aInverseConnections[i].data()==b) {
+                    a->aInverseConnections.removeAt(i);
+                    a->mixer_resetStatus();
+                    break;
+                }
             }
+            a->deleteConnection();
+
         }
-        a->deleteConnection();
 
     }
-    live::Object::endAsyncAction();
 
 }
 
@@ -212,56 +218,54 @@ void live::doMidiConnect(const live::Object* al, const live::Object* bl) {
     bool ok=1;
     for (int i=0;i<b->mConnections.size();i++) if (b->mConnections[i].data()==a) ok=0;
 
-    live::Object::beginAsyncAction();
-    if (ok) {
-        b->mConnections.push_back(a);
-        a->mInverseConnections.push_back(b);
-    } else {
-        for (int i=0;i<b->mConnections.size();i++) {
-            if (b->mConnections[i].data()==a) {
-                b->mConnections.removeAt(i);
-                i--;
+    live_async {
+        if (ok) {
+            b->mConnections.push_back(a);
+            a->mInverseConnections.push_back(b);
+        } else {
+            for (int i=0;i<b->mConnections.size();i++) {
+                if (b->mConnections[i].data()==a) {
+                    b->mConnections.removeAt(i);
+                    i--;
+                }
             }
-        }
-        for (int i=0;i<a->mInverseConnections.size();i++) {
-            if (a->mInverseConnections[i].data()==b) {
-                a->mInverseConnections.removeAt(i);
-                i--;
+            for (int i=0;i<a->mInverseConnections.size();i++) {
+                if (a->mInverseConnections[i].data()==b) {
+                    a->mInverseConnections.removeAt(i);
+                    i--;
+                }
             }
         }
     }
-    live::Object::endAsyncAction();
-
 }
 
 void live::Object::mixer_resetStatus() {
-    live::Object::beginAsyncAction();
-    mixer_nframes=live::audio::nFrames();
-    mixer_at[0]=mixer_at[1]=0;
-    for (int i=0;i<2;i++) { if (mixer_data[i]) delete[] mixer_data[i]; mixer_data[i]=0; }
-    if (aInverseConnections.size()>1) {
-        for (int i=0;i<2;i++) mixer_data[i] = new float[mixer_nframes];
+    live_async {
+        mixer_nframes=live::audio::nFrames();
+        mixer_at[0]=mixer_at[1]=0;
+        for (int i=0;i<2;i++) { if (mixer_data[i]) delete[] mixer_data[i]; mixer_data[i]=0; }
+        if (aInverseConnections.size()>1) {
+            for (int i=0;i<2;i++) mixer_data[i] = new float[mixer_nframes];
+        }
     }
-    live::Object::endAsyncAction();
 }
 
 void live::ObjectPtr::obliviate() {
-    qDebug() << "OBLIVIATE!";
-    live::Object::beginAsyncAction();
-    live::ObjectPtr x=live::midi::getNull();
-    x.data()->setTemporary(0);
-    s_obj=x.data();
-    live::Object::endAsyncAction();
+    live_async {
+        live::ObjectPtr x=live::midi::getNull();
+        x.data()->setTemporary(0);
+        s_obj=x.data();
+    }
 }
 
 bool live::ObjectPtr::restore(live::Object* a) {
-    live::Object::beginAsyncAction();
-    if (dynamic_cast<MidiNull*>(s_obj)) delete s_obj;
-    s_obj=a;
-    a->s_ptrList.push_back(this);
-    live::Object::endAsyncAction();
+    live_async {
+        if (dynamic_cast<MidiNull*>(s_obj)) delete s_obj;
+        s_obj=a;
+        a->s_ptrList.push_back(this);
+        live::Object::endAsyncAction();
+    }
     return 1;
-    return 0;
 }
 
 void audioConnect(live::Object&a,live::Object&b) {
@@ -276,47 +280,47 @@ void midiConnect(live::Object&a,live::Object&b) {
 LIBLIVECORESHARED_EXPORT live::object* live::object::me=0;
 
 QList<live::ObjectPtr> live::object::get(int flags) {
-    live::Object::beginAsyncAction();
-    me=me?me:new object;
-
-    if ( (((flags&Input)||(flags&Output))&&!((flags&Input)&&(flags&Output))) && !(flags&NoRefresh) ) {   //Grr...
-        //Debug<<"REFRESH!!";
-        live::audio::refresh();
-        live::midi::refresh();
-    }
-
     QList<live::ObjectPtr> ret;
-    for (int i=0;i<me->s_objects.size();i++) {
-        if (!me->s_objects[i]) {   // cleanup
-            me->s_objects.takeAt(i);
-            i--;
-            continue;
+    live_async {
+        me=me?me:new object;
+
+        if ( (((flags&Input)||(flags&Output))&&!((flags&Input)&&(flags&Output))) && !(flags&NoRefresh) ) {   //Grr...
+            //Debug<<"REFRESH!!";
+            live::audio::refresh();
+            live::midi::refresh();
         }
-        if ((flags&Instrument)&&me->s_objects[i]->isInput()&&me->s_objects[i]->isOutput()) {
-            ret<<me->s_objects[i];
-        } else if ( (!(flags&Input)&&!(flags&Output)) ||
-                 (((flags&Input  && me->s_objects[i]->isInput()  && (!(flags&NotOutput) || !me->s_objects[i]->isOutput() )) ||
-                   (flags&Output && me->s_objects[i]->isOutput() && (!(flags&NotInput)  || !me->s_objects[i]->isInput()  ))) &&
-                  (!((flags&Input) && (flags&Output)) || (me->s_objects[i]->isInput()&&me->s_objects[i]->isOutput())))) {   // satisfies I/O requirements
-            if ( (!(flags&Midi)&&!(flags&Audio)) ||
-                    ((((flags&Audio) && me->s_objects[i]->isAudioObject() && (!(flags&NotMidi)  || !me->s_objects[i]->isMidiObject() )) ||
-                      ((flags&Midi)  && me->s_objects[i]-> isMidiObject() && (!(flags&NotAudio) || !me->s_objects[i]->isAudioObject()))) &&
-                     (!((flags&Audio) && (flags&Midi)) || (me->s_objects[i]->isAudioObject()&&me->s_objects[i]->isMidiObject())))) {   // satisfies A/M requirements
+
+        for (int i=0;i<me->s_objects.size();i++) {
+            if (!me->s_objects[i]) {   // cleanup
+                me->s_objects.takeAt(i);
+                i--;
+                continue;
+            }
+            if ((flags&Instrument)&&me->s_objects[i]->isInput()&&me->s_objects[i]->isOutput()) {
                 ret<<me->s_objects[i];
+            } else if ( (!(flags&Input)&&!(flags&Output)) ||
+                        (((flags&Input  && me->s_objects[i]->isInput()  && (!(flags&NotOutput) || !me->s_objects[i]->isOutput() )) ||
+                          (flags&Output && me->s_objects[i]->isOutput() && (!(flags&NotInput)  || !me->s_objects[i]->isInput()  ))) &&
+                         (!((flags&Input) && (flags&Output)) || (me->s_objects[i]->isInput()&&me->s_objects[i]->isOutput())))) {   // satisfies I/O requirements
+                if ( (!(flags&Midi)&&!(flags&Audio)) ||
+                     ((((flags&Audio) && me->s_objects[i]->isAudioObject() && (!(flags&NotMidi)  || !me->s_objects[i]->isMidiObject() )) ||
+                       ((flags&Midi)  && me->s_objects[i]-> isMidiObject() && (!(flags&NotAudio) || !me->s_objects[i]->isAudioObject()))) &&
+                      (!((flags&Audio) && (flags&Midi)) || (me->s_objects[i]->isAudioObject()&&me->s_objects[i]->isMidiObject())))) {   // satisfies A/M requirements
+                    ret<<me->s_objects[i];
+                }
             }
         }
     }
-    live::Object::endAsyncAction();
     return ret;
 }
 
 void live::object::clear(int flags) {
-    live::Object::beginAsyncAction();
-    QList<live::ObjectPtr> toClear=get(flags);
-    while (toClear.size()) {
-        me->s_objects.removeOne(toClear.takeFirst());
+    live_async {
+        QList<live::ObjectPtr> toClear=get(flags);
+        while (toClear.size()) {
+            me->s_objects.removeOne(toClear.takeFirst());
+        }
     }
-    live::Object::endAsyncAction();
 }
 
 void live::object::set(live::ObjectPtr o) {

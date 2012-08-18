@@ -122,7 +122,7 @@ float BPMApp::getBPM()
 
 void BPMApp::aIn(const float *data, int chan, ObjectChain*p)
 {
-    const int& nframes=audio::nFrames();
+    const unsigned long& nframes=audio::nFrames();
     if (s_lastBPM>20.0f) {
         int boxes=qRound(1.0f/s_lastBPM*60.0f*(float)audio::sampleRate()/(float)(audio::nFrames()*8));
         int boxLength=1.0f/s_lastBPM*60.f*(float)audio::sampleRate()/boxes;
@@ -141,7 +141,7 @@ void BPMApp::aIn(const float *data, int chan, ObjectChain*p)
 
 //        qDebug()<< log(qAbs(data[0])*1000.0f);
         float val;
-        for (int k=0;k<nframes;k++) {
+        for (unsigned k=0;k<nframes;k++) {
             val=log(qAbs(data[k])*1000.0f);
             if (val>0) s_histogram[s_histoBox_i]+=val;
             if (++s_histoBox_j==s_boxLength) {

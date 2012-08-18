@@ -21,6 +21,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "live/../audiosystem_p.h"
 #include <QDir>
 #include <QDebug>
+#include <QTimer>
 #include <QWaitCondition>
 #include <iostream>
 
@@ -34,6 +35,7 @@ LiveApplication* liveApp=0;
 LiveApplication::LiveApplication(int& argc,char** argv) :
     QApplication(argc,argv), _mainWindow(0)
 {
+    lthread::uiInit(); // this thread is temporarily the ui thread. will be overriden in init().
     liveApp=this;
     audio::registerInterface(new live_private::SecretAudio);
 
@@ -51,6 +53,8 @@ LiveApplication::LiveApplication(int& argc,char** argv) :
         (new LiveAudioSettingsWidget)->exec();
     }
     init.setValue("Initialized",1);
+
+    QTimer::singleShot(0, this, SLOT(init()));
 
 #ifndef __QNX__
     // By default, the PlayBook is already setup and good to go, so whatever.
@@ -129,3 +133,7 @@ LiveApplication::LiveApplication(int& argc,char** argv) :
 //{
 //    _vsts.push_back(vst);
 //}
+
+void LiveApplication::init() {
+    lthread::uiInit();
+}

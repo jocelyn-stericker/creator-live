@@ -28,7 +28,6 @@ SequencerGraph::SequencerGraph( QWidget* parent,SequencerApp* capp ) :
     s_redrawpos_st(-1),
     s_redrawpos_nd(-1),
     s_scale(2646000),
-    csMutex(QMutex::Recursive),
     audioTrack(0),
     audioEstart(0),
     simpleCounter(0),
@@ -102,12 +101,11 @@ inline int xoctave(int mPitch)
 
 void SequencerGraph::updateAudioData( int t1, int t2 )
 {
+    lthread::ui();
+
     if (!updatesEnabled()||!isVisible()||parentWidget()->width()<30) return;
 
     updateMidiData();
-
-    NOSYNC;
-
 
     if (!midiOriginal)
     {
@@ -142,11 +140,11 @@ void SequencerGraph::updateAudioData( int t1, int t2 )
             painter.begin( audioOriginal[i] );
             painter.setCompositionMode(QPainter::CompositionMode_Source);
             painter.setRenderHint(QPainter::Antialiasing,1);
-            float*dataPtr;
+            const float*dataPtr;
 
             int START=qMax(0,(s_initial/wscale_inv)*wscale_inv);
 
-            int counter=DATA[i]->getRawPointer(START,dataPtr);
+            int counter=DATA[i]->getConstPointer(START,dataPtr);
             dataPtr-=dataPtr?1:0;
             int c=0;
             for ( int j = START; j < s_initial+width+wscale_inv;j+= wscale_inv ) //hack
@@ -157,7 +155,7 @@ void SequencerGraph::updateAudioData( int t1, int t2 )
                     if (dataPtr) ++dataPtr;
                     if (--counter==-1)
                     {
-                        counter=DATA[i]->getRawPointer(j+k,dataPtr);
+                        counter=DATA[i]->getConstPointer(j+k,dataPtr);
                         counter--;
                     }
                     if (dataPtr) {
@@ -185,13 +183,13 @@ void SequencerGraph::updateAudioData( int t1, int t2 )
             QPainter painter;
 
             painter.begin( audioOriginal[i] );
-            float*dataPtr;
+            const float*dataPtr;
 
             int START=qMax(0,(t1/wscale_inv)*wscale_inv-wscale_inv);
 
-            int counter=DATA[i]->getRawPointer(START,dataPtr);
+            int counter=DATA[i]->getConstPointer(START,dataPtr);
             dataPtr-=dataPtr?1:0;
-//            const int& nFrames=audio::nFrames();
+//            const unsigned long& nFrames=audio::nFrames();
             int c=0;
             for ( int j = START; j < t2; j+=wscale_inv  )
             {
@@ -204,7 +202,7 @@ void SequencerGraph::updateAudioData( int t1, int t2 )
                     if (dataPtr) ++dataPtr;
                     if (--counter==-1)
                     {
-                        counter=DATA[i]->getRawPointer(j+k,dataPtr);
+                        counter=DATA[i]->getConstPointer(j+k,dataPtr);
                         counter--;
                     }
 
@@ -251,10 +249,11 @@ void SequencerGraph::updateAudioData( int t1, int t2 )
 
 void SequencerGraph::updateMidiData(float t1, float t2)
 {
+    lthread::ui();
+
     if (!updatesEnabled()||!isVisible()||parentWidget()->width()<30) return;
 
     if (midiOriginal) return;
-    NOSYNC;
     int width = s_scale;
     float wscale = (float) this->width() / ( float ) width;
 //    float wscale = 1.0f;
@@ -386,10 +385,11 @@ QList<Event> SequencerGraph::getEvents(int evx, int evy)
 
 void SequencerGraph::paintEvent( QPaintEvent* ev )
 {
+    lthread::ui();
+
     if (!isVisible()||parentWidget()->width()<30)
     if (!midiOriginal) updateMidiData();
     if (!audioOriginal[0]) updateAudioData();
-    NOSYNC;
     Q_UNUSED(ev);
     QPainter painter;
     painter.begin( this );
@@ -464,6 +464,8 @@ void SequencerGraph::paintEvent( QPaintEvent* ev )
 
 void SequencerGraph::mousePressEvent( QMouseEvent* ev )
 {
+    lthread::ui();
+
     if (ev->button()==Qt::LeftButton) {
         if (s_bindMode) {
             emit customContextMenuRequested(ev->pos());
@@ -471,7 +473,6 @@ void SequencerGraph::mousePressEvent( QMouseEvent* ev )
         }
     }
 
-    NOSYNC;
     if ( !app )
     {
         return;
@@ -498,6 +499,8 @@ void SequencerGraph::mousePressEvent( QMouseEvent* ev )
 
 void SequencerGraph::mouseMoveEvent(QMouseEvent *ev)
 {
+    lthread::ui();
+
     setFocus();
     if (!app||!(ev->buttons()&Qt::LeftButton))
     {
@@ -509,7 +512,6 @@ void SequencerGraph::mouseMoveEvent(QMouseEvent *ev)
     selection=time*1000;
 
     {
-        NOSYNC;
         s_leftMost=qMin(s_leftMost,(int)(time*audio::sampleRate()));
         s_rightMost=qMax(s_rightMost,(int)(time*audio::sampleRate()));
         int one=app->pos()/1000.0*audio::sampleRate();
@@ -548,19 +550,20 @@ void SequencerGraph::wheelEvent(QWheelEvent *ev)
         int b=qMax(selection/1000.0f*audio::sampleRate(),(float)app->pos()/1000.0f*audio::sampleRate());
         for (int h=0;h<2;h++)
         {
-            float*dataPtr;
-            int counter=DATA[h]->getRawPointer(a,dataPtr);
+            const float* dataPtr;
+            int counter=DATA[h]->getConstPointer(a,dataPtr);
             dataPtr-=dataPtr?1:0;
 
             for (int i=a;i<b;i++)
             {
                 if ((dataPtr+=dataPtr?1:0),--counter==-1)
                 {
-                    counter=DATA[h]->getRawPointer(i,dataPtr);
+                    counter=DATA[h]->getConstPointer(i,dataPtr);
                 }
                 if (dataPtr)
                 {
-                    *dataPtr=(*dataPtr)*(1+((float)ev->delta()/8.0/15.0/10.0));
+                    // remove this functionality
+//                    *dataPtr=(*dataPtr)*(1+((float)ev->delta()/8.0/15.0/10.0));
                 }
             }
         }
@@ -618,9 +621,9 @@ void SequencerGraph::wheelEvent(QWheelEvent *ev)
 
 void SequencerGraph::keyPressEvent(QKeyEvent *ev)
 {
-    NOSYNC;
-    Object::beginAsyncAction();
-    if (ev->key()==Qt::Key_Delete&&selection!=-1)
+    lthread::ui();
+
+    live_async if (ev->key()==Qt::Key_Delete&&selection!=-1)
     {
         {
             float a=qMin(selection/1000.0f*audio::sampleRate(),(float)app->pos()/1000.0f*audio::sampleRate());
@@ -636,7 +639,6 @@ void SequencerGraph::keyPressEvent(QKeyEvent *ev)
         midiTrack->remove(a,b);
 
     }
-    Object::endAsyncAction();
 }
 
 void SequencerGraph::incrScroll()
@@ -672,7 +674,8 @@ void SequencerGraph::updatePos(quint64 a)
 
 void SequencerGraph::setScale(int a)
 {
-    NOSYNC
+    lthread::ui();
+
     s_scale=a;
     updateAudioData();
     updateMidiData();

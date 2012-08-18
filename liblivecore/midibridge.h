@@ -8,6 +8,7 @@
 
 namespace live_private {
 
+// FIXME: needs to be own thread.
 class BridgeMidiIn : public QObject, public live::Object {
     Q_OBJECT
     LIVE_MIDI

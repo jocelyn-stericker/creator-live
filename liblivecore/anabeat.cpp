@@ -116,7 +116,9 @@ void live::AnaBeat::mIn(const live::Event *data, live::ObjectChain*p) {
     //          + (((double)data->time.nsec)/1000000000);
     ev->time = static_cast<double>(data->time.toTime_ms())/1000.0f;
     // FIX ME:: Above may be incorrect.
-    _unplacedEvents.append(ev);
+    live_mutex(x_anabeat) {
+        _unplacedEvents.append(ev);
+    }
 
     _updatePredictions();
     p->push_back(this);
@@ -125,89 +127,91 @@ void live::AnaBeat::mIn(const live::Event *data, live::ObjectChain*p) {
 }
 
 void live::AnaBeat::_updatePredictions() {
-    qDebug() << "_up";
-    if (!_sortBeats()) return;
+    live_mutex(x_anabeat) {
+        qDebug() << "_up";
+        if (!_sortBeats()) return;
 
-    QList<double> x_, y_, velocity;   // time, length, summativeVelocities
-    if (!_makeLists(&x_, &y_, &velocity)) return;
-    qDebug() << "_up2";
+        QList<double> x_, y_, velocity;   // time, length, summativeVelocities
+        if (!_makeLists(&x_, &y_, &velocity)) return;
+        qDebug() << "_up2";
 
-    QList<double> yuncorrected = y_;
-    double* highAndLow = _rotate(&x_, &y_);
-    if (highAndLow == NULL) return;
-    qDebug() << "_up3" << x_ << y_;
-    double highest = highAndLow[0];
-    double lowest = highAndLow[1];
+        QList<double> yuncorrected = y_;
+        double* highAndLow = _rotate(&x_, &y_);
+        if (highAndLow == NULL) return;
+        qDebug() << "_up3" << x_ << y_;
+        double highest = highAndLow[0];
+        double lowest = highAndLow[1];
 
-    int bins = 0;
-    QList<double> y = y_;
-    qSort(y);
-    int* count = _makeHistogram(&bins, &highest, &lowest, &y);
-    if (count == NULL) return;
-    qDebug() << "_up4";
+        int bins = 0;
+        QList<double> y = y_;
+        qSort(y);
+        int* count = _makeHistogram(&bins, &highest, &lowest, &y);
+        if (count == NULL) return;
+        qDebug() << "_up4";
 
-    int noteID = 0;
-    QList<double> last;
-    if (!_correctRatios(&noteID, &last, &bins, count /*array*/
-                      , &lowest, &highest, &y_, &yuncorrected, &velocity, &y))
-        return;
-    qDebug() << "_up4b" << last << y_;
-
-
-    QList<double> newX;
-    QList<double> beatCandidats = _findBeatCandidates(&last, &y_, &newX);
-    if (beatCandidats.isEmpty()) return;
-    qDebug() << "_up5";
-
-    double highestBC = _findTruePulse(&beatCandidats, &newX);
-    qDebug() << "PULSE IS " << 60.0/highestBC;  // Yay!!! XD
+        int noteID = 0;
+        QList<double> last;
+        if (!_correctRatios(&noteID, &last, &bins, count /*array*/
+                            , &lowest, &highest, &y_, &yuncorrected, &velocity, &y))
+            return;
+        qDebug() << "_up4b" << last << y_;
 
 
-    double oldFactor, factor, numLCD;  // (int?)
-    if (!_findNum(&oldFactor, &factor, &numLCD, &newX, &highestBC, &velocity))
-        return;
+        QList<double> newX;
+        QList<double> beatCandidats = _findBeatCandidates(&last, &y_, &newX);
+        if (beatCandidats.isEmpty()) return;
+        qDebug() << "_up5";
 
-    oldFactor = factor;
+        double highestBC = _findTruePulse(&beatCandidats, &newX);
+        qDebug() << "PULSE IS " << 60.0/highestBC;  // Yay!!! XD
 
-    if (numLCD == 2) {
-        oldFactor /= 2;  // shouldn't happen.
-                         // But picking up a 2 SHOULD probably be 4...
-        numLCD     = 4;
-    }
 
-    if (factor == 8) {
-        numLCD    /= 2;  // 8/8 doesn't exist.
-        oldFactor /= 4;
-    }
+        double oldFactor, factor, numLCD;  // (int?)
+        if (!_findNum(&oldFactor, &factor, &numLCD, &newX, &highestBC, &velocity))
+            return;
 
-    while (60.0/highestBC / oldFactor < 60) oldFactor /= 2;
-    while (60.0/highestBC / oldFactor > 140) oldFactor *= 2;
+        oldFactor = factor;
 
-    qCritical() << "Detected tempo at " << 60.0/highestBC / oldFactor
-                << " @ " << numLCD << "/" << denForNum(numLCD)
-                << " from pulse " << 60.0/highestBC;
+        if (numLCD == 2) {
+            oldFactor /= 2;  // shouldn't happen.
+            // But picking up a 2 SHOULD probably be 4...
+            numLCD     = 4;
+        }
 
-    //  return;
+        if (factor == 8) {
+            numLCD    /= 2;  // 8/8 doesn't exist.
+            oldFactor /= 4;
+        }
 
-    for (int i = 0; i < _giveHintTo; ++i) {
-        int cbpm = _giveHintTo[i]->bpm();
-        int tries = 0;
-        bool ok = 1;
-        while (qAbs(60.0 / highestBC / oldFactor - cbpm) > 40) {
-            oldFactor /= (60.0/highestBC / oldFactor) < cbpm ? 0.5 : 2.0;
-            if (++tries == 4) {
-                ok = 0;
-                break;
+        while (60.0/highestBC / oldFactor < 60) oldFactor /= 2;
+        while (60.0/highestBC / oldFactor > 140) oldFactor *= 2;
+
+        qCritical() << "Detected tempo at " << 60.0/highestBC / oldFactor
+                    << " @ " << numLCD << "/" << denForNum(numLCD)
+                    << " from pulse " << 60.0/highestBC;
+
+        //  return;
+
+        for (int i = 0; i < _giveHintTo; ++i) {
+            int cbpm = _giveHintTo[i]->bpm();
+            int tries = 0;
+            bool ok = 1;
+            while (qAbs(60.0 / highestBC / oldFactor - cbpm) > 40) {
+                oldFactor /= (60.0/highestBC / oldFactor) < cbpm ? 0.5 : 2.0;
+                if (++tries == 4) {
+                    ok = 0;
+                    break;
+                }
             }
+            if (!ok) {
+                continue;
+            }
+            _giveHintTo[i]->setBpm((60.0/highestBC / oldFactor));
         }
-        if (!ok) {
-            continue;
-        }
-        _giveHintTo[i]->setBpm((60.0/highestBC / oldFactor));
-    }
 
-    delete [] highAndLow;
-    delete [] count;
+        delete [] highAndLow;
+        delete [] count;
+    }
 }
 
 bool live::AnaBeat::_sortBeats() {

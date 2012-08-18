@@ -15,10 +15,13 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QMap>
 #include <QDebug>
 #include <QStringList>
+#include <QThread>
 #include <QMutexLocker>
-#include <algorithm>
 
-#include "liblivecore_global"
+#include <algorithm>
+#include <iostream>
+
+#include <live/liblivecore_global>
 
 class LiveWindow;
 
@@ -84,7 +87,7 @@ public:
     /** In aIn(...) call aOut(...) when processing is finished. This must be called EXACTLY ONCE (i.e., it must be called, and not more than once) from every aIn function. */
     void aOut(const float*data,int chan,ObjectChain*p);
     /** Use the LIVE_HYBRID, LIVE_MIDI and LIVE_AUDIO macros. */
-    virtual bool isAudioObject()=0;
+    virtual bool isAudioObject() const=0;
 
 
     /** Reimplement this function to handle midi data. If you call mIn from outside both an aIn or an mIn, use {begin|end}Proc().*/
@@ -106,14 +109,14 @@ public:
     /** See the note on mInverse. */
     void mOutverse(const Event* data,ObjectChain* p);
     /** Use the LIVE_HYBRID, LIVE_MIDI and LIVE_AUDIO macros. */
-    virtual bool isMidiObject()=0;
+    virtual bool isMidiObject() const=0;
 
 
     /** Use LIVE_INPUT, LIVE_OUTPUT, and LIVE_EFFECT macros. */
-    virtual bool isInput()=0;
+    virtual bool isInput() const=0;
 
     /** Use LIVE_INPUT, LIVE_OUTPUT, and LIVE_EFFECT macros. */
-    virtual bool isOutput()=0;
+    virtual bool isOutput() const=0;
 
 
     /** Call this function before calling aIn(...) or mIn(...) outside of an mIn(...) or aIn(...) stack. Calling this more than once will not result in a deadlock, but forgetting to undo it will
@@ -122,6 +125,7 @@ public:
     /** Call this function when finished callinging aIn(...) or mIn(...) ouside of an mIn(...) or aIn(...) stack. Forgetting to do so will cause some actions to never be performed. */
     static void endProc();
 
+protected:
     /** Call this function before you do something which could mess up audio or midi processing, such as changing connections. These actions must be efficient! Calling this from inside
       * {begin|end}proc() will result in a deadlock. Instead, take advantage of QtConcurrent::run(...). Calling this more than once _WILL_ result in a deadlock.
       */
@@ -129,7 +133,7 @@ public:
     /** Call this function when done doing things which cannot be done concurrently with audio/midi processing. */
     static void endAsyncAction();
 
-
+public:
     static void XRUN();
 
 
@@ -171,6 +175,7 @@ protected:
     friend class ObjectPtr;
     friend class live_private::SecretAudio;
     friend class live::Ambition;
+    friend class ScopedLock;
     friend void doAudioConnect(const Object* a, const Object* b);
     friend void doMidiConnect(const Object* a, const Object* b);
     QList<ObjectPtr*> s_ptrList;
@@ -184,7 +189,7 @@ protected:
 
     /***** MINI MIXER *****/
         float* mixer_data[2];
-        int mixer_nframes;
+        unsigned long mixer_nframes;
         int mixer_at[2];
     void mixer_resetStatus();
     inline void mixer_clear() {
@@ -194,7 +199,7 @@ protected:
 
     inline void mixer_process(const float* data, int chan) {
         Q_ASSERT(mixer_data[chan]);
-        for(int i=0;i<mixer_nframes;i++)
+        for(unsigned i=0;i<mixer_nframes;i++)
             mixer_data[chan][i]+=data[i];
         if(++mixer_at[chan]==aInverseConnections.size()) {
             ObjectChain p;
@@ -210,15 +215,129 @@ protected:
 void doAudioConnect(const Object* a, const Object* b);
 void doMidiConnect(const Object* a, const Object* b);
 
-#define LIVE_HYBRID public: virtual bool isAudioObject(){return 1;} virtual bool isMidiObject() {return 1;}
-#define LIVE_MIDI public: virtual bool isAudioObject(){return 0;} virtual bool isMidiObject() {return 1;}
-#define LIVE_AUDIO public: virtual bool isAudioObject(){return 1;} virtual bool isMidiObject() {return 0;}
+#define LIVE_HYBRID public: virtual bool isAudioObject() const {return 1;} virtual bool isMidiObject() const {return 1;}
+#define LIVE_MIDI public: virtual bool isAudioObject() const {return 0;} virtual bool isMidiObject() const {return 1;}
+#define LIVE_AUDIO public: virtual bool isAudioObject() const {return 1;} virtual bool isMidiObject() const {return 0;}
 
-#define LIVE_INPUT public: virtual bool isInput(){return 1;} virtual bool isOutput() {return 0;}
-#define LIVE_OUTPUT public: virtual bool isOutput(){return 1;} virtual bool isInput() {return 0;}
-#define LIVE_EFFECT public: virtual bool isInput(){return 1;} virtual bool isOutput() {return 1;}
+#define LIVE_INPUT public: virtual bool isInput() const {return 1;} virtual bool isOutput() const {return 0;}
+#define LIVE_OUTPUT public: virtual bool isOutput() const {return 1;} virtual bool isInput() const {return 0;}
+#define LIVE_EFFECT public: virtual bool isInput() const {return 1;} virtual bool isOutput() const {return 1;}
 
-#define NOSYNC QMutexLocker lock(&csMutex);Q_UNUSED(lock)
+#ifndef TCRASH
+#define TCRASH() do { \
+    *(int *)(unsigned*)0xdeadbeef = 0; \
+    ((void(*)())0)(); \
+} while(false)
+#endif // TCRASH
+
+class LIBLIVECORESHARED_EXPORT lthread {
+    static lthread* singleton;
+    static Qt::HANDLE uiThreadId;
+    static Qt::HANDLE metronomeThreadId;
+    static Qt::HANDLE audioThreadId;
+    static Qt::HANDLE midiThreadId;
+public:
+    static inline bool isAudio() {
+        return audioThreadId == QThread::currentThreadId();
+    }
+
+    static inline bool isMidi() {
+        return midiThreadId == QThread::currentThreadId();
+    }
+
+    static inline bool isUi() {
+        return uiThreadId == QThread::currentThreadId();
+    }
+
+#ifndef NDEBUG
+    static inline void assert_thread(const Qt::HANDLE& thread, const char* str) {
+        if (thread != QThread::currentThreadId()) {
+            std::cerr << "### Thread assertion error ###\n";
+            std::cerr << "expected: " << str << "(" << QString::number(thread).toUtf8().data() << ")\n";
+            QString is;
+            if (QThread::currentThreadId() == uiThreadId)
+                is = "user interface";
+            if (QThread::currentThreadId() == metronomeThreadId)
+                is = "metronome";
+            if (QThread::currentThreadId() == audioThreadId)
+                is = "audio";
+            if (QThread::currentThreadId() == midiThreadId)
+                is = "midi";
+
+            std::cerr << "got: " << is.toUtf8().data() << "(" << QString::number(QThread::currentThreadId()).toUtf8().data() << ")\n";
+            std::flush(std::cerr);
+            TCRASH();
+        }
+    }
+
+    static inline void ui() {
+        assert_thread(uiThreadId, "user interface");
+    }
+
+    static inline void metronome() {
+        assert_thread(metronomeThreadId, "metronome");
+    }
+
+    static inline void audio() {
+        assert_thread(audioThreadId, "audio");
+    }
+
+    static inline void midi() {
+        assert_thread(midiThreadId, "midi");
+    }
+    static void uiInit() {
+        uiThreadId = QThread::currentThreadId();
+    }
+
+    static void midiInit() {
+        midiThreadId = QThread::currentThreadId();
+    }
+
+    static void metronomeInit() {
+        metronomeThreadId = QThread::currentThreadId();
+    }
+
+    static void audioInit() {
+        audioThreadId = QThread::currentThreadId();
+    }
+
+#else
+#error FIXME
+#endif
+};
+
+struct ScopedLock {
+    unsigned decr : 1;
+    ScopedLock()
+      : decr(true)
+      {
+        Object::beginAsyncAction();
+    }
+    ~ScopedLock() {
+        Object::endAsyncAction();
+    }
+};
+
+struct ScopedMutexLock {
+    unsigned decr : 1;
+    QMutex& m_m;
+    ScopedMutexLock(QMutex& m)
+      : decr(true)
+      , m_m(m)
+      {
+        m_m.lock();
+    }
+    ~ScopedMutexLock() {
+        m_m.unlock();
+    }
+};
+
+#define live_async \
+    for (live::ScopedLock farmerJohnEatsCows; farmerJohnEatsCows.decr; farmerJohnEatsCows.decr = false)
+// use like live_async { }
+
+#define live_mutex(MUTEX) \
+    for (live::ScopedMutexLock farmerJohnEatsCows(MUTEX); farmerJohnEatsCows.decr; farmerJohnEatsCows.decr = false)
 
 #define RELOADABLE(x) \
     public:QByteArray save(); \
@@ -375,7 +494,7 @@ public:
 signals:
     void stockChanged();
 public slots:
-    void notify() { Object::beginAsyncAction(); emit stockChanged(); Object::endAsyncAction(); }
+    void notify() { live_async emit stockChanged(); }
 };
 
 }
