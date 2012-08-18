@@ -21,6 +21,7 @@ namespace live {
 class LIBLIVECORESHARED_EXPORT MidiTrack : public QObject, public Object
 {
     Q_OBJECT
+    QMutex x_mTrack;
 public:
     LIVE_MIDI
     LIVE_EFFECT
@@ -45,20 +46,22 @@ private:
 public:
     MidiTrack();
     void _setThru(bool a) { s_thru=a; }
-    const bool& isRecord();
-    const bool& isOverdub();
-    const bool& isPlay();
-    const bool& isMute();
+    const bool& isRecord() const;
+    const bool& isOverdub() const;
+    const bool& isPlay() const;
+    const bool& isMute() const;
     const int& pos();
     QList<Event> getData() {
         QList<Event> ret;
-        for(int i=0;i<s_data->size();i++) {
-            ret.push_back(*(*s_data)[i]);
+        live_mutex(x_mTrack) {
+            for(int i=0;i<s_data->size();i++) {
+                ret.push_back(*(*s_data)[i]);
+            }
         }
         return ret;
     }
     void remove(int a,int b) {
-        for(int i=s_data->size()-1; i>=0; i--)
+        live_mutex(x_mTrack) for(int i=s_data->size()-1; i>=0; i--)
         {
             if((*s_data)[i]->time.toTime_ms()>=a&&(*s_data)[i]->time.toTime_ms()<=b)
             {
@@ -99,9 +102,11 @@ public slots:
     void mIn(const Event *data, ObjectChain*p);
     void timeEvent();
     virtual void clearData() {
-        EventListDeleter* eld=new EventListDeleter(s_data);
-        QtConcurrent::run(eld,&EventListDeleter::run);
-        s_data=new QList<Event*>;
+        live_mutex(x_mTrack) {
+            EventListDeleter* eld=new EventListDeleter(s_data);
+            QtConcurrent::run(eld,&EventListDeleter::run);
+            s_data=new QList<Event*>;
+        }
     }
 
 public:

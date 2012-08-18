@@ -49,11 +49,11 @@ SecretMidi
 SecretMidi* SecretMidi::me=0;
 
 void SecretMidi::init() {
-    live_mutex(m_midiThreadMutex) {
+    live_mutex(x_midi) {
         Q_ASSERT(!SecretMidi::me);
         SecretMidi::me=this;
 
-        live_mutex(m_midiThreadMutex) {
+        live_mutex(x_midi) {
             Pm_GetDefaultInputDeviceID();
             Pt_Start( 0, 0, 0 );
 
@@ -101,7 +101,7 @@ void SecretMidi::init() {
 }
 
 void SecretMidi::refresh() {
-    live_mutex(m_midiThreadMutex) {
+    live_mutex(x_midi) {
         while (pmouts.size()) {
             Pm_Close(pmouts.takeFirst());
         }
@@ -212,7 +212,7 @@ void SecretMidi::run() { // [MIDI THREAD]
 
     forever {
         msleep(12);
-        live_mutex(m_midiThreadMutex) {
+        live_mutex(x_midi) {
             for ( int i = 0; i < pmins.size(); i++ ) {
                 while ( pmins[i] && Pm_Poll( pmins[i] ) ) {
                     PmEvent evnp;
@@ -278,7 +278,7 @@ void SecretMidi::run() { // [MIDI THREAD]
 }
 
 void SecretMidi::queue(const live::Event* ev, int device, live::ObjectChain from) { // NOT MIDI THREAD
-    live_mutex(m_midiThreadMutex) {
+    live_mutex(x_midi) {
         PmEvent* pmev = new PmEvent;
         pmev->message = Pm_Message(ev->message,ev->data1,ev->data2);
 
@@ -310,7 +310,7 @@ void SecretMidi::queue(const live::Event* ev, int device, live::ObjectChain from
 }
 
 void SecretMidi::cancel(live::ObjectPtr from) {    
-    live_mutex(m_midiThreadMutex) {
+    live_mutex(x_midi) {
         for (int i=0; i<fromqueue.size(); i++) {
             if (!pmqueue[i]->timestamp) continue;
             bool ok=0;
@@ -342,7 +342,7 @@ void SecretMidi::cancel(live::ObjectPtr from) {
 }
 
 void SecretMidi::mWithhold(live::Event* x,live::ObjectChain p,live::ObjectPtr obj, bool reverse) {
-    live_mutex(m_midiThreadMutex) {
+    live_mutex(x_midi) {
         x->buddy=0;
         withheld_ev.push_back(x);
         withheld_p.push_back(p);
@@ -352,7 +352,7 @@ void SecretMidi::mWithhold(live::Event* x,live::ObjectChain p,live::ObjectPtr ob
 }
 
 void SecretMidi::mRemoveWithheld(live::ObjectPtr obj) {
-    live_mutex(m_midiThreadMutex) {
+    live_mutex(x_midi) {
         for (int i=0;i<withheld_ev.size();i++) {
             if (withheld_obj[i]==obj) {
                 delete withheld_ev.takeAt(i);
@@ -366,7 +366,7 @@ void SecretMidi::mRemoveWithheld(live::ObjectPtr obj) {
 }
 
 void SecretMidi::mRemoveWithheld_object_dest(live::Object* obj) {
-    live_mutex(m_midiThreadMutex) {
+    live_mutex(x_midi) {
         for (int i=0;i<withheld_ev.size();i++) {
             if (withheld_obj[i].data()==obj) {
                 delete withheld_ev.takeAt(i);

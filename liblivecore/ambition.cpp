@@ -13,11 +13,12 @@ namespace live {
 
 Ambition::Ambition(ObjectPtr cinput, ObjectChain chain, ObjectPtr coutput
                  , ObjectPtr cloop)
-    : s_input(cinput)
-    , s_chain(chain)
-    , s_output(coutput)
-    , s_loopbackOut(cloop) {
-    b_output = s_output->name();
+  : s_input(cinput)
+  , s_chain(chain)
+  , s_output(coutput)
+  , s_loopbackOut(cloop)
+  , x_ambition(QMutex::Recursive)
+  { b_output = s_output->name();
     setChain(s_chain);
     ambition::self()->notifyCreated(this);
 }

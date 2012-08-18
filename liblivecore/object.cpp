@@ -76,6 +76,7 @@ LIBLIVECORESHARED_EXPORT void live::Object::XRUN() {
 }
 
 void live::Object::aOut(const float *data, int chan, live::ObjectChain* p) {
+    live::lthread::audio();
     for (int i=0;i<aConnections.size();i++) {
         Q_ASSERT(aConnections[i]->aInverseConnections.size());
         if (aConnections[i]->aInverseConnections.size()<=1||!aConnections[i]->s_allowMixer) aConnections[i]->aIn(data,chan,p);
@@ -144,7 +145,7 @@ void live::Object::audioConnect(const live::ObjectPtr& b) {
 
 void live::Object::mOut(const live::Event *data, live::ObjectChain* p) {
     if (!SecretMidi::me) SecretMidi::me=new SecretMidi;
-    if (data->time.sec!=-1&&(data->time.toTime_ms()-5>live::midi::getTime_msec())) {
+    if (!live::lthread::isMidi() || (data->time.sec!=-1&&(data->time.toTime_ms()-5>live::midi::getTime_msec()))) {
         live::Event* x=new live::Event;
         *x=*data;
         SecretMidi::me->mWithhold(x,*p,this);    //now owner.
@@ -159,7 +160,7 @@ void live::Object::mOut(const live::Event *data, live::ObjectChain* p) {
 
 void live::Object::mOutverse(const live::Event *data, live::ObjectChain* p) {
     if (!SecretMidi::me) SecretMidi::me=new SecretMidi;
-    if (data->time.sec!=-1&&(data->time.toTime_ms()-5>live::midi::getTime_msec())) {
+    if (!live::lthread::isMidi() || (data->time.sec!=-1&&(data->time.toTime_ms()-5>live::midi::getTime_msec()))) {
         live::Event* x=new live::Event;
         *x=*data;
         SecretMidi::me->mWithhold(x,*p,this,1);    //now owner.
@@ -263,8 +264,8 @@ bool live::ObjectPtr::restore(live::Object* a) {
         s_obj=a;
         a->s_ptrList.push_back(this);
         live::Object::endAsyncAction();
-        return 1;
     }
+    return 1;
 }
 
 void audioConnect(live::Object&a,live::Object&b) {
@@ -279,6 +280,7 @@ void midiConnect(live::Object&a,live::Object&b) {
 LIBLIVECORESHARED_EXPORT live::object* live::object::me=0;
 
 QList<live::ObjectPtr> live::object::get(int flags) {
+    QList<live::ObjectPtr> ret;
     live_async {
         me=me?me:new object;
 
@@ -288,7 +290,6 @@ QList<live::ObjectPtr> live::object::get(int flags) {
             live::midi::refresh();
         }
 
-        QList<live::ObjectPtr> ret;
         for (int i=0;i<me->s_objects.size();i++) {
             if (!me->s_objects[i]) {   // cleanup
                 me->s_objects.takeAt(i);
@@ -309,8 +310,8 @@ QList<live::ObjectPtr> live::object::get(int flags) {
                 }
             }
         }
-        return ret;
     }
+    return ret;
 }
 
 void live::object::clear(int flags) {

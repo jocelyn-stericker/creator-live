@@ -66,7 +66,7 @@ class LIBLIVECORESHARED_EXPORT SecretMidi : public QThread
 public:
     static SecretMidi* me;
 
-    QMutex m_midiThreadMutex; // Every function must use this.
+    QMutex x_midi; // Every function must use this.
 
     QList< MidiIn* > inputs;
     QList< MidiOut*> outputs;
@@ -85,7 +85,7 @@ public:
 public:
     SecretMidi()
       : QThread()
-      , m_midiThreadMutex(QMutex::Recursive)
+      , x_midi(QMutex::Recursive)
       , inputs()
       , outputs()
       , null(new MidiNull)

@@ -23,6 +23,7 @@ class LIBLIVECORESHARED_EXPORT AnaBeat : public QObject, public live::Object
 {
     Q_OBJECT
 
+    QMutex x_anabeat;
 public:
     LIVE_MIDI
     LIVE_INPUT
@@ -41,6 +42,7 @@ public:
 
     explicit AnaBeat() :
         Object("MIDI Beat Analyzer",false,false),
+        x_anabeat(QMutex::Recursive),
         _started(0),
         _bpm(-1),
         _bar(-1),
@@ -70,14 +72,14 @@ public slots:
     void mIn(const Event *data, ObjectChain*p);
 
 public:
-    TimeSignature predictedTS()
+    TimeSignature predictedTS() // helper
     {
         _updatePredictions();
         return _ts;
     }
 
     // Returns -1 upon not enough info
-    int predictedBPM()
+    int predictedBPM() // helper
     {
         _updatePredictions();
         return _bpm;

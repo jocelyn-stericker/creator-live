@@ -27,13 +27,13 @@ public:
     Mapping(QString cname,ObjectPtr other);
 
     void aIn (const float*data,int chan,ObjectChain*p);
-    virtual bool isAudioObject();
+    virtual bool isAudioObject() const;
 
     virtual void mIn(const Event*data,ObjectChain*p);
-    virtual bool isMidiObject();
+    virtual bool isMidiObject() const;
 
-    virtual bool isInput();
-    virtual bool isOutput();
+    virtual bool isInput() const;
+    virtual bool isOutput() const;
 };
 
 }

@@ -140,11 +140,11 @@ void SequencerGraph::updateAudioData( int t1, int t2 )
             painter.begin( audioOriginal[i] );
             painter.setCompositionMode(QPainter::CompositionMode_Source);
             painter.setRenderHint(QPainter::Antialiasing,1);
-            float*dataPtr;
+            const float*dataPtr;
 
             int START=qMax(0,(s_initial/wscale_inv)*wscale_inv);
 
-            int counter=DATA[i]->getRawPointer(START,dataPtr);
+            int counter=DATA[i]->getConstPointer(START,dataPtr);
             dataPtr-=dataPtr?1:0;
             int c=0;
             for ( int j = START; j < s_initial+width+wscale_inv;j+= wscale_inv ) //hack
@@ -155,7 +155,7 @@ void SequencerGraph::updateAudioData( int t1, int t2 )
                     if (dataPtr) ++dataPtr;
                     if (--counter==-1)
                     {
-                        counter=DATA[i]->getRawPointer(j+k,dataPtr);
+                        counter=DATA[i]->getConstPointer(j+k,dataPtr);
                         counter--;
                     }
                     if (dataPtr) {
@@ -183,13 +183,13 @@ void SequencerGraph::updateAudioData( int t1, int t2 )
             QPainter painter;
 
             painter.begin( audioOriginal[i] );
-            float*dataPtr;
+            const float*dataPtr;
 
             int START=qMax(0,(t1/wscale_inv)*wscale_inv-wscale_inv);
 
-            int counter=DATA[i]->getRawPointer(START,dataPtr);
+            int counter=DATA[i]->getConstPointer(START,dataPtr);
             dataPtr-=dataPtr?1:0;
-//            const int& nFrames=audio::nFrames();
+//            const unsigned long& nFrames=audio::nFrames();
             int c=0;
             for ( int j = START; j < t2; j+=wscale_inv  )
             {
@@ -202,7 +202,7 @@ void SequencerGraph::updateAudioData( int t1, int t2 )
                     if (dataPtr) ++dataPtr;
                     if (--counter==-1)
                     {
-                        counter=DATA[i]->getRawPointer(j+k,dataPtr);
+                        counter=DATA[i]->getConstPointer(j+k,dataPtr);
                         counter--;
                     }
 
@@ -550,19 +550,20 @@ void SequencerGraph::wheelEvent(QWheelEvent *ev)
         int b=qMax(selection/1000.0f*audio::sampleRate(),(float)app->pos()/1000.0f*audio::sampleRate());
         for (int h=0;h<2;h++)
         {
-            float*dataPtr;
-            int counter=DATA[h]->getRawPointer(a,dataPtr);
+            const float* dataPtr;
+            int counter=DATA[h]->getConstPointer(a,dataPtr);
             dataPtr-=dataPtr?1:0;
 
             for (int i=a;i<b;i++)
             {
                 if ((dataPtr+=dataPtr?1:0),--counter==-1)
                 {
-                    counter=DATA[h]->getRawPointer(i,dataPtr);
+                    counter=DATA[h]->getConstPointer(i,dataPtr);
                 }
                 if (dataPtr)
                 {
-                    *dataPtr=(*dataPtr)*(1+((float)ev->delta()/8.0/15.0/10.0));
+                    // remove this functionality
+//                    *dataPtr=(*dataPtr)*(1+((float)ev->delta()/8.0/15.0/10.0));
                 }
             }
         }

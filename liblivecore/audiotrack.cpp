@@ -8,9 +8,10 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 *******************************************************/
 
 #include <live/audiotrack>
+#include <live/object>
 
 void live::AudioTrack::aThru(float*proc,int chan) {
-    // TODO: Evaluate threadsafety.
+    live::lthread::audio();
 
     bool ok=1;
 
@@ -18,10 +19,12 @@ void live::AudioTrack::aThru(float*proc,int chan) {
     bool warning = false;
     int count=s_container[chan]->getRawPointer(s_curPos,RAW,s_playback&&(s_record||s_overdub), &warning);
     if (warning) {
+        // as we get xruns if we alloc a second of audio data in this thread,
+        // do it async.
         QtConcurrent::run(this,&live::AudioTrack::async);
     }
     RAW-=RAW?1:0;
-    int i;
+    unsigned i;
     for (i=0; i<nframes; i++) {
         if ((RAW=RAW?RAW+1:0),--count==-1) {
             count=s_container[chan]->getRawPointer(s_curPos+i,RAW,s_playback&&(s_record||s_overdub));
@@ -126,7 +129,6 @@ float live::AudioTrack::length() const {
 }
 
 void live::AudioTrack::setVol(int vol) {
-    ;
     Q_ASSERT((vol>=0)&&(vol<=100));
     s_vol=vol;
 }
@@ -188,6 +190,13 @@ void live::AudioTrack::setPos(long pos) {
 }
 
 void live::AudioTrack::aIn(const float *in, int chan, ObjectChain*p) {
+    // TODO: this is slow, so use of this should be discouraged.
+
+    if (!s_playback && !(s_record||s_overdub)) {
+        p->push_back(this);
+        aOut(in, chan, p);
+        p->pop_back();
+    }
     float* proc=new float[nframes];
     memcpy(proc,in,sizeof(float)*nframes);
 
@@ -349,8 +358,9 @@ bool live::AudioTrack::importFile(QString filename) {
 }
 
 void live::AudioTrack::async() {
-    //this function prevents data allocation in the real-time thread.
+    // this function prevents data allocation in the real-time thread.
+    // FIXME: possible memory loss
     float*a;
-    s_container[0]->getRawPointer((unsigned)s_curPos + live::audio::sampleRate(),a,1);
-    s_container[1]->getRawPointer((unsigned)s_curPos + live::audio::sampleRate(),a,1);
+    s_container[0]->getRawPointer((unsigned)s_curPos + live::audio::sampleRate(),a,1,0,0);
+    s_container[1]->getRawPointer((unsigned)s_curPos + live::audio::sampleRate(),a,1,0,0);
 }

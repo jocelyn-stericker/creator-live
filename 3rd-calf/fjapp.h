@@ -41,7 +41,7 @@ template<class Module> class FJApp : public live::Object, public calf_plugins::p
     bool s_changed;
     float s_param[param_count];
 
-    const int& r_nFrames;
+    const unsigned long& r_nFrames;
     float* s_out[2];
 
 public:

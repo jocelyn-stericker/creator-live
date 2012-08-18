@@ -194,7 +194,7 @@ void SamplerApp::setBindingMode(int b)
 
 void SamplerApp::aIn(const float *in, int chan, ObjectChain*p)
 {
-    int nframes=audio::nFrames();
+    const unsigned long& nframes=audio::nFrames();
 
     bool cpy_record=s_record;
 

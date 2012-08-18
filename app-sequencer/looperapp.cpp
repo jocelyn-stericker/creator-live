@@ -127,8 +127,8 @@ void LooperApp::looperLogic()
                     stopPlayback();
                     setPos(0);
                     startPlayback();
-                break;
                 }
+                break;
             case Multiplying:
                 Q_ASSERT(0);    //don't feel like it right now.
             case Recording:

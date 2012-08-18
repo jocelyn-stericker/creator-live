@@ -29,7 +29,7 @@ public:
     LIVE_EFFECT
     bool aOn() const { return 1; }
     bool mOn() const{ return 0; }
-    const int&nframes;
+    const unsigned long& nframes;
     AudioContainer** acquireData() {
         for(int i=0;i<s_chans;i++) {
             if(s_container[i]) s_container[i]->lock();
