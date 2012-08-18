@@ -52,7 +52,7 @@ void live::AudioTrack::aThru(float*proc,int chan) {
         }
     }
 
-    if ((ok)||s_updateCounter==4) {
+    if ((ok)||s_updateCounter==8) {
         if (s_updateCounter) emit dataUpdated((int)(s_curPos-nframes*s_updateCounter),(int)(s_curPos));
         else if (++s_boringCounter==4) {
             s_boringCounter=0;

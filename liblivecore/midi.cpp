@@ -211,7 +211,7 @@ void SecretMidi::run() { // [MIDI THREAD]
     live::lthread::midiInit();
 
     forever {
-        msleep(12);
+        msleep(20);
         live_mutex(x_midi) {
             for ( int i = 0; i < pmins.size(); i++ ) {
                 while ( pmins[i] && Pm_Poll( pmins[i] ) ) {

@@ -78,7 +78,7 @@ LIBLIVECORESHARED_EXPORT void live::Object::endAsyncAction() {
     unsigned long l = ts.tv_sec * 1000000000 + ts.tv_nsec;
     if (l - s_asyncTime.back() > 1000000) {
         qCritical() << "My threading skills are bad, and I feel bad.\n";
-        TCRASH();
+//        TCRASH();
     }
     s_asyncTime.pop_back();
 #endif
