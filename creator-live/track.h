@@ -46,7 +46,7 @@ public:
 
     bool s_busy;
 
-    AudioOutputChooser* ui_outputName;
+    OutputChooser* ui_outputName;
     live_widgets::ChainTypeWidget* ui_chainWidget;
 
     Track(live::ObjectPtr cinput, live::ObjectPtr coutput);
@@ -62,7 +62,7 @@ public slots:
     void resizeEvent(QResizeEvent *e = 0);
     void remakeChainWidget();
 
-    void setOutputChooser(AudioOutputChooser*);
+    void setOutputChooser(OutputChooser *);
 
 private:
     void clearUiPipeline();

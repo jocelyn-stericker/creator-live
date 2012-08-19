@@ -58,8 +58,10 @@ void Vst::hide()
 
 Vst::~Vst()
 {
-    rep->setParent(0);
-    rep->deleteLater();
+    if (rep) {
+        rep->setParent(0);
+        rep->deleteLater();
+    }
     qDebug() << "Delete VST";
 }
 

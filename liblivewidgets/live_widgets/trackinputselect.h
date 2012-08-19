@@ -49,6 +49,8 @@ public slots:
     void squareCorners();
     void roundCorners();
 
+    void enableAddTrackButton();
+
 signals:
     void created(live::ObjectPtr device);
     void newOutputRequested();

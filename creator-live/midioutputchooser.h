@@ -11,6 +11,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define MIDIOUTPUTCHOOSER_H
 
 #include <live/object>
+#include "audiooutputchooser.h"
 
 #include <QWidget>
 
@@ -18,7 +19,7 @@ namespace Ui {
 class MidiOutputChooser;
 }
 
-class MidiOutputChooser : public QWidget
+class MidiOutputChooser : public OutputChooser
 {
     Q_OBJECT
     

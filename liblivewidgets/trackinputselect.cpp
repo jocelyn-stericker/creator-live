@@ -164,3 +164,7 @@ void TrackInputSelect::squareCorners() {
     ss.replace("border-bottom-right-radius: 4px;", "border-bottom-right-radius: 0px;");
     s_ui->missile->setStyleSheet(ss);
 }
+
+void TrackInputSelect::enableAddTrackButton() {
+    s_ui->inputNew->setEnabled(true);
+}

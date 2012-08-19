@@ -19,7 +19,19 @@ namespace Ui {
 class AudioOutputChooser;
 }
 
-class AudioOutputChooser : public QWidget
+class OutputChooser : public QWidget
+{
+    Q_OBJECT
+public:
+    OutputChooser(QWidget* parent)
+      : QWidget(parent)
+      {
+    }
+
+    live::Bound<QString> b_trackName;
+};
+
+class AudioOutputChooser : public OutputChooser
 {
     Q_OBJECT
     QStringList all;
@@ -27,7 +39,6 @@ class AudioOutputChooser : public QWidget
 public:
     explicit AudioOutputChooser(QWidget *parent = 0);
     ~AudioOutputChooser();
-    live::Bound<QString> b_trackName;
     
 public slots:
     void go();

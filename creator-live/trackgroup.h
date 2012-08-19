@@ -23,7 +23,7 @@ class TrackGroup : public QFrame, public live_widgets::BindableParent
     Q_OBJECT
 protected:                      /*IN CHILDREN*/
     live::ObjectPtr  s_input;             /*CONSTRUCT*/
-    live_widgets::TrackInputSelect *instLabel;
+    live_widgets::TrackInputSelect* instLabel;
 public:
     live_widgets::VScrollContainer* s_hathorView;   /*003*/
     int s_id;                   /*004*/

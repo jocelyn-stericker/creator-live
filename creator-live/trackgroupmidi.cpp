@@ -24,6 +24,7 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
 {
     // init GUI
     ui_mainLayout = new QHBoxLayout;
+    ui_mainLayout->setContentsMargins(0, 0, 0, 0);
     s_hathorView = new VScrollContainer(0);
     s_hathorView->setObjectName("s_hathorView");
     s_hathorView->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
@@ -37,7 +38,7 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
     instLabel->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Expanding);
     connect(instLabel,SIGNAL(created(live::ObjectPtr )),this,SLOT(setInput(live::ObjectPtr)));
     connect(instLabel,SIGNAL(newOutputRequested()),this,SLOT(newHathorAuto()));
-    ui_topLayout->addWidget(instLabel,0, Qt::AlignTop | Qt::AlignLeft);
+    ui_mainLayout->addWidget(instLabel,0, Qt::AlignTop | Qt::AlignLeft);
     instLabel->setObjectName("instLabel");
 
     QButtonGroup* bg=new QButtonGroup;
@@ -84,11 +85,7 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
 
     s_hathorView->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     if (!empty)
-        s_hathorView->push_back(new Track(c_input,midi::getNull()));
-    PushButton* xpush=new PushButton("Insert new Output");
-    xpush->setObjectName("xpush");
-    s_hathorView->push_back(xpush);
-    connect(xpush,SIGNAL(clicked()),this,SLOT(newHathorAuto()));
+        s_hathorView->push_back(new Track(c_input,midi::null()));
     s_hathorView->back()->setMinimumWidth(400);
     s_hathorView->compact=1;
     s_hathorView->updateItems();
@@ -140,7 +137,7 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
 
 void TrackGroupMidi::newHathorAuto()
 {
-    newHathor(object::get(OutputOnly|MidiOnly).first());
+    newHathor(midi::null());
 }
 
 // HELPER FUNCTIONS --

@@ -21,11 +21,10 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 using namespace live;
 using namespace live_widgets;
 
-AudioOutputChooser::AudioOutputChooser(QWidget *parent) :
-    QWidget(parent),
-    s_ui(new Ui::AudioOutputChooser)
-{
-    s_ui->setupUi(this);
+AudioOutputChooser::AudioOutputChooser(QWidget *parent)
+  : OutputChooser(parent)
+  , s_ui(new Ui::AudioOutputChooser)
+  { s_ui->setupUi(this);
 
     connect(s_ui->Bwidget,SIGNAL(clicked(QModelIndex)),s_ui->Bwidget,SLOT(setCurrentIndex(QModelIndex)));
     connect(s_ui->Bwidget,SIGNAL(clicked(QModelIndex)),this,SLOT(go()));

@@ -22,7 +22,7 @@ using namespace live;
 using namespace live_widgets;
 
 MidiOutputChooser::MidiOutputChooser(QWidget *parent)
-  : QWidget(parent)
+  : OutputChooser(parent)
   , s_busy(false)
   , s_ui(new Ui::MidiOutputChooser)
 {
@@ -36,6 +36,7 @@ MidiOutputChooser::MidiOutputChooser(QWidget *parent)
     connect(s_ui->Bwidget,SIGNAL(clicked(QModelIndex)),s_ui->Bwidget,SLOT(setCurrentIndex(QModelIndex)));
     connect(s_ui->Bwidget,SIGNAL(clicked(QModelIndex)),this,SLOT(step2()));
     connect(s_ui->Bwidget,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(step2()));
+    connect(&b_trackName, SIGNAL(changeObserved(QString,QString)), s_ui->inputName, SLOT(setText(QString)));
 
     MidiBindingQtSys::addWidget(this);
 

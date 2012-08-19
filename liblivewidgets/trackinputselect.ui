@@ -250,6 +250,9 @@ border-bottom-right-radius: 0px;</string>
       </item>
       <item>
        <widget class="live_widgets::ToolButton" name="inputNew">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>51</width>

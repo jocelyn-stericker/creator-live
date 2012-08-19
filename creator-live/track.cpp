@@ -422,7 +422,7 @@ int Track::getMaximumWidthFor(QWidget* w) {
     return -1;
 }
 
-void Track::setOutputChooser(AudioOutputChooser* a) {
+void Track::setOutputChooser(OutputChooser* a) {
     live_mutex(x_me) {
         if (ui_outputName)
             ui_outputName->deleteLater();

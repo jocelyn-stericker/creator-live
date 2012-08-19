@@ -300,7 +300,7 @@ void live::Object::mixer_resetStatus() {
 
 void live::ObjectPtr::obliviate() {
     kill_kitten {
-        live::ObjectPtr x=live::midi::getNull();
+        live::ObjectPtr x=live::midi::null();
         x.data()->setTemporary(0);
         s_obj=x.data();
     }
@@ -333,7 +333,7 @@ QList<live::ObjectPtr> live::object::get(int flags) {
         me=me?me:new object;
 
         if ( (((flags&Input)||(flags&Output))&&!((flags&Input)&&(flags&Output))) && !(flags&NoRefresh) ) {   //Grr...
-            //Debug<<"REFRESH!!";
+            qDebug()<<"REFRESH!!";
             live::audio::refresh();
             live::midi::refresh();
         }

@@ -19,7 +19,7 @@ class LIBLIVECORESHARED_EXPORT midi
 {
 public:
     static void refresh();
-    static ObjectPtr getNull();                // fast
+    static ObjectPtr null();                // fast
     static int getTime_msec();             // fast, but CC
     static Time getTime();
 };
