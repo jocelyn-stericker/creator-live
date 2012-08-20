@@ -51,9 +51,6 @@ int main(int argc, char *argv[])
 
     BridgeSettings w;
 
-    DJContext d;
-    d.show();
-
 //    live::object::get(live::MidiOnly|live::InputOnly)[1]->midiConnect(live::object::get(live::MidiOnly|live::OutputOnly)[1]);
     w.show();
     

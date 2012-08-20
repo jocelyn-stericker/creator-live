@@ -40,6 +40,9 @@ if (QNX)
 else (QNX)
 endif (QNX)
 
+########################## FILES! ##########################
+file (INSTALL grand.sf2 mustheory2.sf2 DESTINATION ${CMAKE_BINARY_DIR}/plugins)  
+
 ########################## BUILD! ##########################
 
 add_definitions(-Wall)

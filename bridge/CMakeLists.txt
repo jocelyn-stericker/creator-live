@@ -34,7 +34,6 @@ list (APPEND bridge_qrc
 list (APPEND bridge_libs
     livecore
     livewidgets
-    context-dj # tmp
 )
 
 ################## PLATFORM-SPECIFIC CODE ##################
