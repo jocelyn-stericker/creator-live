@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/sf2">
+        <file alias="programs">programs.txt</file>
+    </qresource>
+</RCC>

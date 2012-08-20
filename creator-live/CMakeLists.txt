@@ -53,6 +53,7 @@ list (APPEND creator-live_ui
 list (APPEND creator-live_qrc
     icons/icons.qrc
     styleSheet.qrc
+    programs.qrc
 )
 
 list (APPEND creator-live_libs
