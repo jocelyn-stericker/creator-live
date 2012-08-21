@@ -13,6 +13,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include <live/object>
 
+#include <QDesktopServices>
 #include <QFile>
 
 LiveSF2Wizard::LiveSF2Wizard()
@@ -70,10 +71,16 @@ void LiveSF2Wizard::next() {
         if (s_out.valid())
             s_out.detach();
 
-        if (l < 7)
-            s_out = live::ObjectPtr(new Soundfont("grand.sf2"));
+        QString dir =
+#ifndef __QNX__
+        qApp->applicationDirPath()+"/../plugins/";
+#else
+#error FIXME
+#endif
+        if (l < 3)
+            s_out = live::ObjectPtr(new Soundfont(dir + "grand.sf2"));
         else
-            s_out = live::ObjectPtr(new Soundfont("mustheory2.sf2"));
+            s_out = live::ObjectPtr(new Soundfont(dir + "mustheory2.sf2"));
 
         live::cast<Soundfont*>(s_out)->setProgram(0, l);
     }

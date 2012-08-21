@@ -26,8 +26,8 @@ public:
     LIVE_EFFECT
     Soundfont(QString url);
 
-    void mIn(const live::Event *data, live::ObjectChain &p);
-    void aIn(const float *data, int chan, live::ObjectChain &p);
+    void mIn(const live::Event* data, live::ObjectChain* p);
+    void aIn(const float* data, int chan, live::ObjectChain* p);
 
     bool aOn() const { return false; }
     bool mOn() const { return true; }

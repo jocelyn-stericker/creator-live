@@ -157,7 +157,8 @@ public:
                     stage=0;
                     live::ObjectPtr prev=s_input;
                     for(int i=0;i<s_chain.size();i++) {
-                        if(stage==0&&s_chain[i]->isAudioObject()) {
+                        if(stage==0&&!s_chain[i]->isMidiObject()) {
+                            qDebug() << "Stage 0";
                             s_connections.push_back(new Connection(prev,s_output,Connection::Midi));
                             s_connections.push_back(new Connection(s_output,s_chain[i],Connection::Audio));
 
@@ -171,6 +172,7 @@ public:
                                 stage=2;
                             }
                         } else if(stage==1&&!s_chain[i]->isMidiObject()) {
+                            qDebug() << "Stage 1";
                             s_connections.push_back(new Connection(prev,s_chain[i],Connection::Audio));
                             s_chain[i]->s_aOn=1;
                             s_chain[i]->s_mOn=0;
@@ -185,13 +187,16 @@ public:
                             ok=0;
                             break;
                         } else {
+                            qDebug() << "Stage 2";
                             if(stage==0||stage==1) {
+                                s_chain[i]->s_aOn=0;
                                 s_chain[i]->s_mOn=1;
                                 s_connections.push_back(new Connection(prev,s_chain[i],Connection::Midi));
                             } else s_chain[i]->s_mOn=0;
 
                             if(stage==1||stage==2) {
-                                s_connections.push_back(new Connection(prev,s_chain[i],Connection::Audio));                        s_chain[i]->s_aOn=1;
+                                s_connections.push_back(new Connection(prev,s_chain[i],Connection::Audio));
+                                s_chain[i]->s_mOn=0;
                                 s_chain[i]->s_aOn=1;
                             } else s_chain[i]->s_aOn=0;
                         }

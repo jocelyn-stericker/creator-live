@@ -19,16 +19,22 @@ Soundfont::Soundfont(QString url)
   , s_settings(new_fluid_settings())
   , s_synth(0)
   , s_cache()
-  { for(int i=0;i<2;i++)
+  { qDebug() << "Hi..." << url;
+
+    for(int i=0;i<2;i++)
         s_cache[i]=new float[live::audio::nFrames()];
     fluid_settings_setnum(s_settings,"synth.sample-rate",live::audio::sampleRate());
     fluid_settings_setnum(s_settings,"synth.gain",3.0);
     s_synth = new_fluid_synth(s_settings);
     fluid_synth_sfload(s_synth,url.toAscii(),1);
+
+    live::audio::null(2)->audioConnect(this);
 }
 
-void Soundfont::mIn(const live::Event *data, live::ObjectChain &p) {
+void Soundfont::mIn(const live::Event* data, live::ObjectChain *p) {
     Q_UNUSED(p);
+
+    qDebug() << "MIN!";
 
     if(data->cc()!=-1) {
         fluid_synth_cc(s_synth,data->chan(),data->cc(),data->data2);
@@ -57,12 +63,12 @@ void Soundfont::mIn(const live::Event *data, live::ObjectChain &p) {
     }
 }
 
-void Soundfont::aIn(const float *data, int chan, live::ObjectChain &p) {
+void Soundfont::aIn(const float* data, int chan, live::ObjectChain* p) {
     Q_UNUSED(data);
     Q_ASSERT(chan<2&&chan>=0);
 
     if(!chan) fluid_synth_write_float(s_synth,live::audio::nFrames(),s_cache[0],0,1,s_cache[1],0,1);
-    aOut(s_cache[chan],chan,&p);
+    aOut(s_cache[chan],chan, p);
 }
 
 void Soundfont::setProgram(int chan, int program) {
