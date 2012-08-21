@@ -45,7 +45,7 @@ void Soundfont::mIn(const live::Event* data, live::ObjectChain *p) {
     case live::Event::NOTE_ON:
         fluid_synth_noteon(s_synth, data->chan(), data->note(), data->velocity());
         break;
-    case live::Event::POLYPHNOIC_AFTERTOUCH:
+    case live::Event::POLYPHONIC_AFTERTOUCH:
         //IGNORED
         break;
     case live::Event::PROGRAM_CHANGE:
