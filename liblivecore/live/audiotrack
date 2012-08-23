@@ -29,7 +29,7 @@ public:
     LIVE_EFFECT
     bool aOn() const { return 1; }
     bool mOn() const{ return 0; }
-    const unsigned long& nframes;
+    const quint32& nframes;
     AudioContainer** acquireData() {
         for(int i=0;i<s_chans;i++) {
             if(s_container[i]) s_container[i]->lock();
@@ -47,7 +47,7 @@ public:
 private:
     AudioContainer** s_container;
     qint32 s_chans;
-    quint64 s_curPos;
+    quint32 s_curPos;
     qint32 s_vol;          //s_vol e (0,100)
     qint32 s_pan;          //s_pan e (0,100) i.e., (L to R)
     bool s_record;
@@ -103,7 +103,15 @@ public slots:
 
 signals:
     void dataUpdated(int start=-1, int end=-1);
-    void locationChanged(quint64);
+    void locationChanged(quint32);
+
+private:
+    AudioTrack(const live::AudioTrack&);
+
+    AudioTrack& operator=(const AudioTrack&) {
+        TCRASH();
+        return *this;
+    }
 };
 
 }

@@ -21,10 +21,8 @@ using namespace live_widgets;
 
 TrackGroupAudio::TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent, bool empty)
   : TrackGroup(c_input,c_parent)
-{
-    // init GUI
-    mainLayout = new QHBoxLayout;
-    mainLayout->setContentsMargins(0, 0, 0, 0);
+  , mainLayout(new QHBoxLayout)
+   {mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(3);
     s_hathorView = new VScrollContainer(0);
     s_hathorView->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
@@ -66,6 +64,12 @@ TrackGroupAudio::TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent, bo
     connect(aoo, SIGNAL(resized()), this, SLOT(resizeEvent()));
     connect(aoo, SIGNAL(outputChosen(live::ObjectPtr)), this, SLOT(setLastOutput(live::ObjectPtr)));
     connect(aoo, SIGNAL(outputChosen(live::ObjectPtr)), this, SLOT(clearSelect()));
+}
+
+TrackGroupAudio::TrackGroupAudio(const TrackGroupAudio&)
+  : TrackGroup(ObjectPtr(), 0)
+  , mainLayout(0)
+  { TCRASH();
 }
 
 TrackGroupAudio::~TrackGroupAudio()

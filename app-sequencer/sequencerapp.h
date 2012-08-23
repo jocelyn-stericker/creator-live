@@ -72,7 +72,7 @@ public slots:
     void setScale(int);
     virtual void mIn(const live::Event *data, live::ObjectChain*p);
 signals:
-    void posSet(quint64 pos);
+    void posSet(quint32 pos);
     void playbackStarted();
     void playbackStopped();
     void scaleChanged(int);

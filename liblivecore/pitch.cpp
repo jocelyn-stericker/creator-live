@@ -34,6 +34,14 @@ live::Pitch::Pitch(QString cpitch,int coctave) : s_root('_'),
     if (!failModePlus||!ok) { valid=0; }
 }
 
+live::Pitch::Pitch()
+  : s_root('_')
+  , s_accidental(Pitch::Natural)
+  , s_octave(4)
+  , valid(1) //FIXME
+  {
+}
+
 int live::Pitch::midiNote() {
     if (!valid) return INVALID;
     int realBase[]= {-3,-1,0,2,4,5,7};

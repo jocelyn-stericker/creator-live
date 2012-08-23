@@ -47,6 +47,21 @@ protected:
 public:
     static song* load(const QByteArray&str);
     QByteArray save();
+
+private:
+    song(const song&)
+      : metronome(0)
+      , keySignature(0)
+      , midiMaps()
+      , name("")
+      , songName("")
+      , colours()
+      { TCRASH();
+    }
+    song& operator=(const song&) {
+        TCRASH();
+        return *this;
+    }
 };
 
 }

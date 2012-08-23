@@ -20,7 +20,7 @@ class LIBLIVECORESHARED_EXPORT KeySignature : public Pitch
 public:
     enum Tonality
     {
-         Major,
+        Major,
         Minor
     };
 
@@ -33,7 +33,11 @@ public:
     QByteArray save();
     static KeySignature* load(const QByteArray&str);
 protected:
-    KeySignature() : Pitch() {}
+    KeySignature()
+      : Pitch('C', ' ')
+      , s_tonality(Major)
+      {
+    }
 };
 
 }

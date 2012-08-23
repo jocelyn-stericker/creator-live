@@ -129,9 +129,12 @@ public:
     int     chans;
     QMutex p;
 
-    AudioNull(int cchans) :
-        live::Object("Null Audio Device",false,false),
-        chans(cchans) {}
+    AudioNull(int cchans)
+      : live::Object("Null Audio Device",false,false)
+      , chans(cchans)
+      , p(QMutex::NonRecursive)
+      {
+    }
 
     virtual void aIn(const float*data,int chan, live::ObjectChain*p)
     {
@@ -152,7 +155,7 @@ public:
     static SecretAudio* singleton;
     QMutex x_sa;
 
-    unsigned long nframes;
+    quint32 nframes;
     QList< AudioIn* > inputs;
     QList< AudioOut* > outputs;
     QList< AudioNull* > nulls;
@@ -196,7 +199,7 @@ public:
         return 0;
     }
 
-    const unsigned long& nFrames() { return nframes; }
+    const quint32& nFrames() { return nframes; }
     qint32 sampleRate();
 
 public slots:
@@ -226,6 +229,10 @@ public:
 
     virtual QStringList getInputChanStringList();
     virtual QStringList getOutputChanStringList();
+
+private:
+    SecretAudio(const SecretAudio&);
+    SecretAudio& operator=(const SecretAudio&);
 };
 
 class LIBLIVECORESHARED_EXPORT SecretAudioShutdownHandler : public QObject

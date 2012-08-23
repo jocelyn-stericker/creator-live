@@ -25,6 +25,7 @@ class OutputChooser : public QWidget
 public:
     OutputChooser(QWidget* parent)
       : QWidget(parent)
+      , b_trackName(0)
       {
     }
 
@@ -60,6 +61,13 @@ signals:
     void resized();
     void doneResizing();
     void outputChosen(live::ObjectPtr);
+
+private:
+    AudioOutputChooser(const AudioOutputChooser&);
+    AudioOutputChooser& operator=(const AudioOutputChooser&) {
+        TCRASH();
+        return *this;
+    }
 };
 
 #endif // AUDIOOUTPUTCHOOSER_H

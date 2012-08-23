@@ -26,8 +26,8 @@ public:
 
     QByteArray save();
     static TimeSignature* load(const QByteArray&str);
-protected:
-    TimeSignature() {}
+private:
+    TimeSignature();
 };
 
 }

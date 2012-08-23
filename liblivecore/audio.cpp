@@ -559,7 +559,7 @@ QObject* live::audio::getCurrentInterface() {
 
 void live::audio::refresh() { if (s_audioInterface) s_audioInterface->refresh(); }
 
-LIBLIVECORESHARED_EXPORT const unsigned long& live::audio::nFrames() {
+LIBLIVECORESHARED_EXPORT const quint32& live::audio::nFrames() {
     return s_audioInterface->nFrames();
 }
 

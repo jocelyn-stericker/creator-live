@@ -19,12 +19,14 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 using namespace live;
 using namespace live_widgets;
 
-TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty) :
-    TrackGroup(c_input,c_parent), s_selectedFilter(0), s_selectedMode(0)
-{
-    // init GUI
-    ui_mainLayout = new QHBoxLayout;
-    ui_mainLayout->setContentsMargins(0, 0, 0, 0);
+TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
+  : TrackGroup(c_input,c_parent)
+  , s_selectedFilter(0)
+  , s_selectedMode(0)
+  , ui_mainLayout(new QHBoxLayout)
+  , ui_instScene(new QGraphicsScene)
+  , ui_instView(new QGraphicsView(ui_instScene))
+  { ui_mainLayout->setContentsMargins(0, 0, 0, 0);
     s_hathorView = new VScrollContainer(0);
     s_hathorView->setObjectName("s_hathorView");
     s_hathorView->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
@@ -91,8 +93,6 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
     s_hathorView->updateItems();
     //mainLayout->setSpacing(0);
 
-    ui_instScene = new QGraphicsScene;
-    ui_instView = new QGraphicsView(ui_instScene);
     ui_instView->setAlignment(Qt::AlignLeft | Qt::AlignTop );
     ui_instView->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     ui_instView->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );

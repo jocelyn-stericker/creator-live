@@ -37,6 +37,11 @@ class LiveWindow : public QWidget, public live_widgets::BindableParent
 public:
     class Patch {
     public:
+        Patch()
+          : ambitions()
+          , widgets()
+          {
+        }
         QList< live::Ambition* > ambitions;
         QList< QWidget* > widgets;
         void deactivate() {
@@ -100,6 +105,24 @@ public slots:
 private:
     void closeEvent(QCloseEvent *);
     Ui::LiveWindow *ui;
+
+    LiveWindow(const LiveWindow&)
+      : QWidget()
+      , BindableParent(this)
+      , s_patches()
+      , s_curPatch(-1)
+      , s_fileName("")
+      , s_recent()
+      , s_recentMenu(0)
+      , s_iw(0)
+      , ui(0)
+      { TCRASH();
+    }
+
+    LiveWindow& operator=(const LiveWindow&) {
+        TCRASH();
+        return *this;
+    }
 
     RELOADABLE(LiveWindow)
 };

@@ -34,11 +34,17 @@ using namespace live_widgets;
 
 LiveWindow* LiveWindow::singleton=0;
 
-LiveWindow::LiveWindow(QWidget *parent) :
-    QWidget(parent), BindableParent(this),
-    s_curPatch(0), s_iw(0), ui(new Ui::LiveWindow)
-{
-    singleton=this;
+LiveWindow::LiveWindow(QWidget *parent)
+  : QWidget(parent)
+  , BindableParent(this)
+  , s_patches()
+  , s_curPatch(0)
+  , s_fileName()
+  , s_recent()
+  , s_recentMenu(0)
+  , s_iw(0)
+  , ui(new Ui::LiveWindow)
+  { singleton=this;
     ui->setupUi(this);
     QMenu* m=new QMenu();
     m->addAction("&New Project",this,SLOT(newProject()));

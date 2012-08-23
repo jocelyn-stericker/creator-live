@@ -27,13 +27,13 @@ public:
         Midi=1,
         Hybrid=2
     } t;
-    Connection(live::ObjectPtr a,live::ObjectPtr b,const Connection::Type&t)
-    {
+
+    Connection(live::ObjectPtr ca,live::ObjectPtr cb,const Connection::Type& ct)
+      : a(ca)
+      , b(cb)
+      , t(ct)
+      { connect();
         qDebug() << "[CONNECT]"<<a->name() << "->"<<b->name() << "| type:"<<(int)t;
-        this->a=a;
-        this->b=b;
-        this->t=t;
-        connect();
     }
 
     ~Connection()
@@ -332,6 +332,24 @@ public:
     live::ObjectPtr at(int b)
     {
         return s_chain[b];
+    }
+
+private:
+    Ambition(const live::Ambition&)
+      : s_input()
+      , s_chain()
+      , s_output()
+      , s_loopbackOut()
+      , s_ec(0)
+      , s_connections()
+      , x_ambition(QMutex::Recursive)
+      , b_output()
+      { TCRASH();
+    }
+
+    Ambition& operator=(const Ambition&) {
+        TCRASH();
+        return *this;
     }
 };
 

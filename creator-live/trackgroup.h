@@ -33,6 +33,7 @@ public:
       : QFrame(parent)
       , BindableParent(this)
       , s_input(cinput)
+      , instLabel(0)
       , s_hathorView(0)
       , s_id(++s_lastId)
       , ui_selectWidget(0)
@@ -52,8 +53,8 @@ public slots:
 
     void setInput(live::ObjectPtr in)
     {
-        for (int i = 0; i < s_hathorView->count(); ++i) {
-            Track* t = qobject_cast<Track*>(s_hathorView->at(i));
+        for (unsigned i = 0; i < s_hathorView->count(); ++i) {
+            Track* t = qobject_cast<Track*>((*s_hathorView)[i]);
             if (t)
                 t->setInput(in);
         }
@@ -63,6 +64,24 @@ public slots:
     void clearSelect();
     void resizeEvent(QResizeEvent* e=0);
     void setLastOutput(live::ObjectPtr obj, live::ObjectPtr = live::ObjectPtr(0));
+
+private:
+    TrackGroup(const TrackGroup&)
+      : QFrame()
+      , BindableParent(this)
+      , s_input()
+      , instLabel(0)
+      , s_hathorView(0)
+      , s_id(-1)
+      , ui_selectWidget(0)
+      { TCRASH();
+    }
+
+    TrackGroup& operator=(const TrackGroup&) {
+        TCRASH();
+        return *this;
+    }
+
 };
 
 #endif // METAHATHOR_H

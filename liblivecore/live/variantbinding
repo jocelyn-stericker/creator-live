@@ -82,28 +82,32 @@ public:
         return s_t;
     }
 
-    void operator=(const U&that)    // slow
+    Bound<U>& operator=(const U&that)    // slow
     {
         QVariant a(s_t),b(that);
         s_t=that;
-        if(a==that) return;
+        if(a==that) return *this;
         emit changeObserved();
         emit changeObserved(b,a);
         emit changeObserved(b.toString(),a.toString());
         emit changeObserved(b.toInt(),a.toInt());
-        emit changeObserved(b.toBool(),a.toBool());    }
+        emit changeObserved(b.toBool(),a.toBool());
+        return *this;
+    }
 
-    void operator=(Bound<U>&that)    // slow
+    Bound<U>& operator=(Bound<U>&that)    // slow
     {
-        QVariant a(s_t),b(that.ref());
+        QVariant a(s_t), b(that.ref());
         s_t=that;
 
-        if(a==b) return;
+        if(a==b) return *this;
         emit changeObserved();
         emit changeObserved(b,a);
         emit changeObserved(b.toString(),a.toString());
         emit changeObserved(b.toInt(),a.toInt());
-        emit changeObserved(b.toBool(),a.toBool());    }
+        emit changeObserved(b.toBool(),a.toBool());
+        return *this;
+    }
 
     void operator==(const U&that)   // fast
     {

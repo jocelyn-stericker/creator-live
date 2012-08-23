@@ -22,10 +22,14 @@ bool LiveAudioSettingsWidget::started=0;
 QString LiveAudioSettingsWidget::s_in,LiveAudioSettingsWidget::s_out;
 QStringList LiveAudioSettingsWidget::s_inl, LiveAudioSettingsWidget::s_outl;
 
-LiveAudioSettingsWidget::LiveAudioSettingsWidget(QWidget *parent, bool automatic) :
-    QDialog(parent),
-    ui(new Ui::SettingsLinux),
-    s_automatic(automatic)
+LiveAudioSettingsWidget::LiveAudioSettingsWidget(QWidget *parent, bool automatic)
+  : QDialog(parent)
+  , s_inputMappings()
+  , s_inputMappingNames()
+  , s_outputMappings()
+  , s_outputMappingNames()
+  , ui(new Ui::SettingsLinux)
+  , s_automatic(automatic)
 {
     setModal(true);
     if (!automatic)

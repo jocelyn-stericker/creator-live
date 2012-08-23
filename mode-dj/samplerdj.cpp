@@ -192,7 +192,7 @@ void SamplerDJ::setBindingMode(int b)
 
 void SamplerDJ::aIn(const float *in, int chan, ObjectChain*p)
 {
-    const unsigned long& nframes=audio::nFrames();
+    const quint32& nframes=audio::nFrames();
 
     bool cpy_record=s_record;
 

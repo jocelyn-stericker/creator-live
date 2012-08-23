@@ -54,6 +54,10 @@ public slots:
     void destroyRow();
 signals:
     void modified();
+
+private:
+    InputDragWidget(const InputDragWidget&);
+    InputDragWidget& operator=(const InputDragWidget&);
 };
 
 class LIBLIVEWIDGETSSHARED_EXPORT OutputDragWidget : public QFrame {
@@ -72,6 +76,10 @@ public slots:
     void destroyRow();
 signals:
     void modified();
+
+private:
+    OutputDragWidget(const OutputDragWidget&);
+    OutputDragWidget& operator=(const OutputDragWidget&);
 };
 
 }

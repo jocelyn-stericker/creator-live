@@ -19,8 +19,12 @@ class LIBLIVECORESHARED_EXPORT QuantizedAction : public QObject
     QVariant s_data;
     bool s_ok;
 public:
-    QuantizedAction(QObject*reciever,const char*slot,int division=-1,QVariant data=QVariant()) :
-        s_cb(-1), s_division(division), s_data(data),s_ok(1)
+    QuantizedAction(QObject*reciever,const char*slot,int division=-1,QVariant data=QVariant())
+      : s_cb(-1)
+      , s_pulses(0)
+      , s_division(division)
+      , s_data(data)
+      , s_ok(1)
     {
         song::current()->metronome->registerSync(this);
         if(s_data.isNull())
@@ -69,7 +73,7 @@ public slots:
             s_cb=sd.beat;
             s_pulses=sd.pulses;
         }
-        else if(sd.beat!=s_cb||(s_division!=-1&&sd.pulses>=s_pulses+(float)sd.ppb/(float)s_division))
+        else if(sd.beat!=s_cb||(s_division!=-1&&sd.pulses>=s_pulses+static_cast<int>((float)sd.ppb/(float)s_division)))
         {
             emit activated();
             emit activated(s_data.toBool());
@@ -109,7 +113,9 @@ public:
         BindingStepDown = 6,
         BindingStepUp = 7,
         BindingSeqSetPos = 8,
-        BindingSlider = 9
+        BindingSlider = 9,
+        InvalidBinding = 10,
+        NumberOfBindingTypes = 11
     };
 
     enum GuiType
@@ -119,7 +125,9 @@ public:
         GuiAbstractSpinBox = 2,
         GuiAbstractSlider = 3,
         GuiAction = 4,
-        Sequencer = 5
+        Sequencer = 5,
+        InvalidType = 6,
+        NumberOfGuiTypes = 7
     };
 
     void* guiObject;    //ne delete pas.
@@ -132,18 +140,18 @@ public:
     int lastEventTime;
     bool controller;    //add this plz
 
-    MidiBinding(void* cGuiObject,GuiType cparentType,BindingType ctype,QString cdata=QString(),int ckey=-1,ObjectPtr cobj=0,bool ccontroller=0) :
-        Object("MIDI Binding",false,false),
-        guiObject(cGuiObject),
-        parentType(cparentType),
-        type(ctype),
-        data(cdata),
-        obj(cobj),
-        key(ckey),
-        lastEventTime(-1),
-        controller(ccontroller)
-    {
-        pending = (ckey == -1);
+    MidiBinding(void* cGuiObject,GuiType cparentType,BindingType ctype,QString cdata=QString(),int ckey=-1,ObjectPtr cobj=0,bool ccontroller=0)
+      : Object("MIDI Binding",false,false)
+      , guiObject(cGuiObject)
+      , parentType(cparentType)
+      , type(ctype)
+      , data(cdata)
+      , obj(cobj)
+      , key(ckey)
+      , pending(false)
+      , lastEventTime(-1)
+      , controller(ccontroller)
+      { pending = (ckey == -1);
         QList<ObjectPtr> midiIn=object::get(live::MidiOnly|live::InputOnly|live::NoRefresh);
         for(int i=0;i<midiIn;i++)
         {
@@ -184,6 +192,25 @@ public slots:
             QMetaObject::invokeMethod(this, "doAction", Qt::BlockingQueuedConnection, Q_ARG(int, controller?data->velocity():0) );
             // FIXME: Remove Qt::BlockQueuedConnection as soon as this is verified to work
         }
+    }
+private:
+    MidiBinding(const live::MidiBinding&)
+      : QObject()
+      , Object("TCRASH", 0, 0)
+      , guiObject(0)
+      , parentType(InvalidType)
+      , type(InvalidBinding)
+      , data()
+      , obj()
+      , key(-1)
+      , pending(false)
+      , lastEventTime(-1)
+      , controller(0)
+      { TCRASH();
+    }
+    MidiBinding& operator=(const MidiBinding&) {
+        TCRASH();
+        return *this;
     }
 };
 

@@ -30,9 +30,9 @@ void TrackGroup::setLastOutput(live::ObjectPtr obj, live::ObjectPtr loop)
     bool ok=0;
     for (int i=s_hathorView->count()-1;(i!=-1)&&!ok;--i) {
         qDebug()<<s_hathorView->at(i);
-        if (dynamic_cast<Track*>(s_hathorView->at(i))) {
-            static_cast<Track*>(s_hathorView->at(i))->setOutput(obj, loop);
-            static_cast<Track*>(s_hathorView->at(i))->setOutputChooser(dynamic_cast<AudioOutputChooser*>(sender()));
+        if (dynamic_cast<const Track*>(s_hathorView->at(i))) {
+            static_cast<Track*>((*s_hathorView)[i])->setOutput(obj, loop);
+            static_cast<Track*>((*s_hathorView)[i])->setOutputChooser(dynamic_cast<AudioOutputChooser*>(sender()));
             ok=1;
         }
     }

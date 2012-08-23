@@ -44,11 +44,12 @@ public:
     Pitch(char croot,Accidental caccidental,int coctave=AUTOOCTAVE);
     Pitch(char croot,char caccidental,int coctave=AUTOOCTAVE);
     Pitch(QString cpitch,int coctave=AUTOOCTAVE);
+    virtual ~Pitch() {}
     int midiNote();
     QByteArray save();
     static Pitch* load(const QByteArray&str);
 protected:
-    Pitch() {}
+    Pitch();
 };
 
 }

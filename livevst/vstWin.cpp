@@ -152,7 +152,7 @@ void Vst::init()
     Q_UNUSED(lock);
 
     rep=new VstR(this,SecretVst::singleton->s_loadPlugin(filename));
-    const unsigned long& nframes=AudioSys::nFrames();
+    const quint32& nframes=AudioSys::nFrames();
     channelData = new float*[ rep->_vst->numInputs ];
     outData = new float*[ rep->_vst->numOutputs ];
     for (int i=0;i<rep->_vst->numInputs;i++)
@@ -203,7 +203,7 @@ void Vst::aIn(const float* x, int chan, ObjectChain*s)
     Q_UNUSED(s);
 
     //todo: should be mixer.
-    const unsigned long& nframes = AudioSys::nFrames();
+    const quint32& nframes = AudioSys::nFrames();
     for (long frame = 0; frame < nframes; ++frame)
     {
         channelData[chan][frame] = x[frame];
@@ -214,7 +214,7 @@ void Vst::PROC_VST()
 {
     Q_UNUSED(lock);
 
-    const unsigned long& nframes=AudioSys::nFrames();
+    const quint32& nframes=AudioSys::nFrames();
 
     rep->silenceChannel( outData, rep->_vst->numOutputs, nframes );
     rep->processAudio( channelData, outData, nframes );

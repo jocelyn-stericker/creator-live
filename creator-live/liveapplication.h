@@ -40,6 +40,14 @@ signals:
 public slots:
     void init();
 
+private:
+    LiveApplication(const LiveApplication&);
+
+    LiveApplication& operator=(const LiveApplication&) {
+        TCRASH();
+        return *this;
+    }
+
 };
 
 extern LiveApplication* liveApp;    //like qApp

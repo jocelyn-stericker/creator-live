@@ -28,6 +28,10 @@ public:
     ~DropFrame();
     QString text();
     void setText(QString);
+
+private:
+    DropFrame(const DropFrame&);
+    DropFrame& operator=(const DropFrame&);
 };
 
 }

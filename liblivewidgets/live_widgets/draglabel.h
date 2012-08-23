@@ -10,10 +10,11 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef DRAGBUTTON_H
 #define DRAGBUTTON_H
 
+#include "liblivewidgets_global.h"
+#include <live/object>
+
 #include <QLabel>
 #include <QDebug>
-
-#include "liblivewidgets_global.h"
 
 class QDrag;
 
@@ -33,6 +34,18 @@ signals:
 
 public slots:
     void drag();
+
+private:
+    DragLabel(const DragLabel&)
+      : QLabel()
+      , s_drag(0)
+      { TCRASH();
+    }
+
+    DragLabel& operator=(const DragLabel&) {
+        TCRASH();
+        return *this;
+    }
 };
 
 }

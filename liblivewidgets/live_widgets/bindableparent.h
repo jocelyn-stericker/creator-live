@@ -13,6 +13,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QVariant>
 #include "liblivewidgets_global.h"
 
+#include <live/object>
+
 namespace live_widgets {
 
 /**
@@ -32,9 +34,23 @@ class LIBLIVEWIDGETSSHARED_EXPORT BindableParent {
     static void fillBlacklist();
 public:
     BindableParent(QObject* qo__this) : qo_this(qo__this) {qo_this->setProperty("bindableParentObject",QVariant::fromValue(true));_u.push_back(this);_u_qo.push_back(qo_this);}
-    ~BindableParent() {_u_qo.removeAt(_u.indexOf(this)); _u.removeOne(this);}
+    virtual ~BindableParent() {
+        _u_qo.removeAt(_u.indexOf(this));
+        _u.removeOne(this);
+    }
     virtual void loadBindings(const QByteArray&);
     virtual QByteArray saveBindings();
+
+private:
+    BindableParent(const BindableParent&)
+      : qo_this(0)
+      { TCRASH();
+    }
+
+    BindableParent& operator=(const BindableParent &) {
+        TCRASH();
+        return *this;
+    }
 };
 
 }

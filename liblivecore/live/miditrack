@@ -13,7 +13,6 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live/object>
 #include <QMutex>
 #include <QFile>
-#include "live/extern/midifile/MidiFile.h"
 #include "live/midieventcounter"
 
 namespace live {
@@ -112,6 +111,32 @@ public slots:
 public:
     QByteArray save();
     static MidiTrack* load(const QByteArray&str);
+
+private:
+    MidiTrack(const MidiTrack&)
+      : QObject()
+      , Object("TCRASH", 0, 0)
+      , x_mTrack(QMutex::Recursive)
+      , s_ec(0)
+      , b_curPos(0)
+      , b_lastPos(0)
+      , b_recStart(0)
+      , b_systemTimeStart(0)
+      , b_record(0)
+      , b_overdub(0)
+      , b_playback(0)
+      , b_mute(0)
+      , s_data(0)
+      , mTrack_id(0)
+      , s_cache()
+      , s_thru(0)
+      { TCRASH();
+    }
+
+    MidiTrack& operator=(const MidiTrack&) {
+        TCRASH();
+        return *this;
+    }
 
 signals:
     void dataUpdated();

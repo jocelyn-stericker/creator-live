@@ -51,7 +51,7 @@ public:
     virtual bool refresh()=0;
     virtual ObjectPtr getNull(int chans)=0;
     virtual qint32 sampleRate()=0;
-    virtual const unsigned long& nFrames()=0;
+    virtual const quint32& nFrames()=0;
 
     virtual bool resetMappings()=0;
     virtual bool addMapping(QStringList mapping, bool input,QString name)=0;

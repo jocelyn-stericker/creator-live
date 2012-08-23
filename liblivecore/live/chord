@@ -18,14 +18,24 @@ namespace live {
 
 class LIBLIVECORESHARED_EXPORT Chord
 {
+public:
     virtual QList<Pitch> notes(KeySignature sig)=0;
+    virtual ~Chord() { }
 };
 
-class LIBLIVECORESHARED_EXPORT SpecificChord : public Chord, public QList<Pitch>
+class LIBLIVECORESHARED_EXPORT SpecificChord : public Chord
 {
+    QList<Pitch> s_identity;
+public:
+    ~SpecificChord() { }
     QList<Pitch> notes(KeySignature);
     QByteArray save();
     static SpecificChord* load(const QByteArray&str);
+
+    int count() const { return s_identity.count(); }
+    Pitch& operator[](int z) { return s_identity[z]; }
+    const Pitch& operator[](int z) const { return s_identity[z]; }
+    void push_back(const Pitch& p) { s_identity.push_back(p); }
 };
 
 }

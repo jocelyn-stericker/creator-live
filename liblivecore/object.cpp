@@ -43,7 +43,7 @@ public:
 LIBLIVECORESHARED_EXPORT TheMutex* TheMutex::me=new TheMutex();
 LIBLIVECORESHARED_EXPORT bool live::Object::ss_XRUN = false;
 #if !defined(NDEBUG) && defined(__linux__)
-LIBLIVECORESHARED_EXPORT std::vector<unsigned long> live::Object::s_asyncTime;
+LIBLIVECORESHARED_EXPORT std::vector<quint32> live::Object::s_asyncTime;
 #endif
 
 LIBLIVECORESHARED_EXPORT void live::Object::beginProc() {
@@ -75,7 +75,7 @@ LIBLIVECORESHARED_EXPORT void live::Object::endAsyncAction() {
 #if !defined(NDEBUG) && defined(__linux__)
     timespec ts;
     clock_gettime(CLOCK_REALTIME, &ts);
-    unsigned long l = ts.tv_sec * 1000000000 + ts.tv_nsec;
+    quint32 l = ts.tv_sec * 1000000000 + ts.tv_nsec;
     if (l - s_asyncTime.back() > 1000000) {
         qCritical() << "My threading skills are bad, and I feel bad.\n";
 //        TCRASH();

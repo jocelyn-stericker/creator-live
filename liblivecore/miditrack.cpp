@@ -9,6 +9,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include <live/miditrack>
 
+#include "live/extern/midifile/MidiFile.h"
+
 int live::MidiTrack::lastId=-1;
 
 void live::MidiTrack::startPlayback() {

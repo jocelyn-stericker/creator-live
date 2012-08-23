@@ -42,6 +42,8 @@ signals:
     
 private:
     Ui::MidiOutputChooser *s_ui;
+    MidiOutputChooser(const MidiOutputChooser&);
+    MidiOutputChooser& operator=(const MidiOutputChooser&);
 };
 
 #endif // MIDIOUTPUTCHOOSER_H

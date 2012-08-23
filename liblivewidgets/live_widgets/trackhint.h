@@ -13,6 +13,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QWidget>
 #include "liblivewidgets_global.h"
 
+#include <live/object>
+
 namespace Ui {
     class TrackHint;
 }
@@ -28,6 +30,17 @@ public:
 
 private:
     Ui::TrackHint* ui;
+
+    TrackHint(const TrackHint&)
+      : QWidget()
+      , ui(0)
+      { TCRASH();
+    }
+
+    TrackHint& operator=(const TrackHint&) {
+        TCRASH();
+        return *this;
+    }
 };
 
 }

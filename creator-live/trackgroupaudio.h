@@ -19,7 +19,6 @@ class TrackGroupAudio : public TrackGroup
     Q_OBJECT
 protected:
     QHBoxLayout* mainLayout;
-    QWidget* actionw_parent;
 public:
     explicit TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent,bool empty=0);
     ~TrackGroupAudio();
@@ -30,6 +29,13 @@ public slots:
 public:
     static TrackGroupAudio* load(const QByteArray&,QWidget*parent);
     QByteArray save();
+
+private:
+    TrackGroupAudio(const TrackGroupAudio&);
+    TrackGroupAudio& operator=(TrackGroupAudio&) {
+        TCRASH();
+        return *this;
+    }
 
 };
 

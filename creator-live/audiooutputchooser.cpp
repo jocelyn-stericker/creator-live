@@ -23,6 +23,7 @@ using namespace live_widgets;
 
 AudioOutputChooser::AudioOutputChooser(QWidget *parent)
   : OutputChooser(parent)
+  , all()
   , s_ui(new Ui::AudioOutputChooser)
   { s_ui->setupUi(this);
 
@@ -42,6 +43,13 @@ AudioOutputChooser::AudioOutputChooser(QWidget *parent)
     maximize();
 
     connect(s_ui->inputType, SIGNAL(toggled(bool)), this, SLOT(minimize(bool)));
+}
+
+AudioOutputChooser::AudioOutputChooser(const AudioOutputChooser&)
+  : OutputChooser(0)
+  , all()
+  , s_ui(0)
+  {
 }
 
 AudioOutputChooser::~AudioOutputChooser()

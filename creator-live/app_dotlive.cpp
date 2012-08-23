@@ -234,13 +234,13 @@ QByteArray LiveWindow::save()
     ncount=0;
     if (IS_SAVE)
     {
-        for (int i=0;i<x->hathorView()->count();i++)
+        for (unsigned i=0;i<x->hathorView()->count();i++)
         {
-            if (qobject_cast<TrackGroupAudio*>(x->hathorView()->at(i)))
+            if (qobject_cast<TrackGroupAudio*>((*x->hathorView())[i]))
             {
                 ncount++;
             }
-            else if (qobject_cast<TrackGroupMidi*>(x->hathorView()->at(i)))
+            else if (qobject_cast<TrackGroupMidi*>((*x->hathorView())[i]))
             {
                 ncount++;
             }
@@ -249,20 +249,20 @@ QByteArray LiveWindow::save()
     ret IO ncount;
     if (IS_SAVE)
     {
-        for (int i=0;i<x->hathorView()->count();i++)
+        for (unsigned i=0;i<x->hathorView()->count();i++)
         {
-            if (qobject_cast<TrackGroupAudio*>(x->hathorView()->at(i)))
+            if (qobject_cast<TrackGroupAudio*>((*x->hathorView())[i]))
             {
                 xqstring="NEXT IS AudioTrackGroup";
                 ret IO xqstring;
-                xba=qobject_cast<TrackGroupAudio*>(x->hathorView()->at(i))->save();
+                xba=qobject_cast<TrackGroupAudio*>((*x->hathorView())[i])->save();
                 ret IO xba;
             }
-            else if (qobject_cast<TrackGroupMidi*>(x->hathorView()->at(i)))
+            else if (qobject_cast<TrackGroupMidi*>((*x->hathorView())[i]))
             {
                 xqstring="NEXT IS MidiTrackGroup";
                 ret IO xqstring;
-                xba=qobject_cast<TrackGroupMidi*>(x->hathorView()->at(i))->save();
+                xba=qobject_cast<TrackGroupMidi*>((*x->hathorView())[i])->save();
                 ret IO xba;
             }
         }
@@ -292,7 +292,7 @@ QByteArray LiveWindow::save()
     for (int i=0;i<x->s_patches;i++) {
         for (int k=0;k<x->s_patches[i]->widgets.size();k++)  {
             int l=-1;
-            for (int j=0;j<x->hathorView()->count();j++) {
+            for (unsigned j=0;j<x->hathorView()->count();j++) {
                 if ((*x->hathorView())[j]==x->s_patches[i]->widgets[k]) {
                     k=j;
                     break;
@@ -376,9 +376,9 @@ QByteArray TrackGroupAudio::save()
     qint32 ncount = 0;
     if (IS_SAVE)
     {
-        for (int i=0;i<x->s_hathorView->count();i++)
+        for (unsigned i=0;i<x->s_hathorView->count();i++)
         {
-            ncount+=(qobject_cast<Track*>(x->s_hathorView->at(i)))?1:0;
+            ncount+=(qobject_cast<Track*>((*x->s_hathorView)[i]))?1:0;
         }
     }
     ret IO ncount;
@@ -393,9 +393,9 @@ QByteArray TrackGroupAudio::save()
     }
     else
     {
-        for (int i=0;i<x->s_hathorView->count();i++)
+        for (unsigned i=0;i<x->s_hathorView->count();i++)
         {
-            Track*t=qobject_cast<Track*>(x->s_hathorView->at(i));
+            Track*t=qobject_cast<Track*>((*x->s_hathorView)[i]);
             if (t)
             {
                 xba=t->save();
@@ -470,13 +470,13 @@ QByteArray TrackGroupMidi::save()
     qint32 ncount = 0;
     if (IS_SAVE)
     {
-        for (int i=0;i<x->s_hathorView->count();i++)
+        for (unsigned i=0;i<x->s_hathorView->count();i++)
         {
             if ((*x->s_hathorView)[i]->objectName()=="xpush")
             {
                 continue;
             }
-            ncount+=(qobject_cast<Track*>(x->s_hathorView->at(i)))?1:0;
+            ncount+=(qobject_cast<Track*>((*x->s_hathorView)[i])?1:0);
         }
     }
     ret IO ncount;
@@ -491,9 +491,9 @@ QByteArray TrackGroupMidi::save()
     }
     else
     {
-        for (int i=0;i<x->s_hathorView->count();i++)
+        for (unsigned i=0;i<x->s_hathorView->count();i++)
         {
-            Track*t=qobject_cast<Track*>(x->s_hathorView->at(i));
+            Track*t=qobject_cast<Track*>((*x->s_hathorView)[i]);
             if (t)
             {
                 xba=t->save();

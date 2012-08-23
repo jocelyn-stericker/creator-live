@@ -38,7 +38,7 @@ public slots:
     void incrScroll();
     void decrScroll();
     void setShowBindingsChanged(bool ean);
-    void updatePos(quint64);
+    void updatePos(quint32);
     void setScale(int);
 
     void setUpdatesDisabled(bool b) { QWidget::setUpdatesEnabled(!b); if(!b) updateAudioData(); }

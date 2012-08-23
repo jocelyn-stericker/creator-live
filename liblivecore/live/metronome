@@ -10,9 +10,9 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef METRONOME_H
 #define METRONOME_H
 
-#include "live/object"
-#include "live/timesignature"
-#include "live/variantbinding"
+#include <live/object>
+#include <live/timesignature>
+#include <live/variantbinding>
 #include <QTime>
 
 namespace live {
@@ -42,8 +42,53 @@ public:
     }
 };
 
-class LIBLIVECORESHARED_EXPORT AbstractSync {public: void* abst_t; AbstractSync(void* abstt) : abst_t(abstt) {} virtual void sync(const SyncData &)=0; virtual ~AbstractSync() {} };
-template<class T> class LIBLIVECORESHARED_EXPORT ConcreteSync : public AbstractSync { public: ConcreteSync(T* at) : AbstractSync(at), t(at) {} T* t; void sync(const SyncData&s) { t->sync(s); } };
+class LIBLIVECORESHARED_EXPORT AbstractSync
+{
+public:
+    void* abst_t;
+    AbstractSync(void* abstt)
+      : abst_t(abstt)
+      {
+    }
+
+    virtual void sync(const SyncData &)=0;
+    virtual ~AbstractSync() {}
+private:
+    AbstractSync(const AbstractSync& t)
+      : abst_t(t.abst_t)
+      {
+    }
+    AbstractSync& operator=(const AbstractSync& t) {
+        abst_t = t.abst_t;
+        return *this;
+    }
+};
+
+template<class T> class LIBLIVECORESHARED_EXPORT ConcreteSync : public AbstractSync
+{
+public:
+    ConcreteSync(T* at)
+      : AbstractSync(at)
+      , t(at)
+      {
+    }
+
+    T* t;
+    void sync(const SyncData&s) {
+        t->sync(s);
+    }
+
+private:
+    ConcreteSync(const ConcreteSync<T>&)
+      : t(0)
+      { TCRASH();
+    }
+
+    ConcreteSync<T>& operator=(ConcreteSync<T>&) {
+        TCRASH();
+        return *this;
+    }
+};
 
 class LIBLIVECORESHARED_EXPORT Metronome : public QObject
 {
@@ -63,10 +108,17 @@ private:
 
 public:
     friend class SecretAudio;
-    Metronome(TimeSignature cts,int cbpm,int cppq=96) : startTime(QTime::currentTime()), s_ts(cts), b_bpm((const int&)cbpm), s_ppq(cppq), s_lastTime(startTime.msecsTo(QTime::currentTime())), s_barStart(startTime.msecsTo(QTime::currentTime())), s_lastPpq(0),
-        s_isActive(1)
-    {
-        pause();
+    Metronome(TimeSignature cts,int cbpm,int cppq=96)
+      : _as()
+      , startTime(QTime::currentTime())
+      , s_ts(cts)
+      , b_bpm((const int&)cbpm)
+      , s_ppq(cppq)
+      , s_lastTime(startTime.msecsTo(QTime::currentTime()))
+      , s_barStart(startTime.msecsTo(QTime::currentTime()))
+      , s_lastPpq(0)
+      , s_isActive(1)
+      { pause();
     }
 
     ~Metronome()
@@ -156,13 +208,13 @@ public:
 
     void pulse()
     {
-        int time( startTime.msecsTo(QTime::currentTime()) );
-        int bpm( (s_ts.denomenator==4) ? b_bpm : b_bpm*2 );
+        long time( startTime.msecsTo(QTime::currentTime()) );
+        long  bpm( (s_ts.denomenator==4) ? b_bpm : b_bpm*2 );
 //        int ppq( (s_ts.denomenator==4) ? s_ppq : s_ppq/2 );
         double pbeat=60000.0/(double)bpm;
 
         double curBeat=qRound((double)(time-s_barStart)/pbeat);
-        s_barStart=time-curBeat*pbeat;
+        s_barStart=time - static_cast<long>(curBeat * pbeat);
     }
 
     template<class T> void registerSync(T* t)

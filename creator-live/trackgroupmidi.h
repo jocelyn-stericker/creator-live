@@ -24,10 +24,8 @@ public:
     explicit TrackGroupMidi(live::ObjectPtr  c_input, QWidget* c_parent, bool empty=0);
 
     QHBoxLayout* ui_mainLayout;
-    QVBoxLayout* ui_subLayout1;
-    QGraphicsView* ui_instView;
     QGraphicsScene* ui_instScene;
-    QWidget* ui_actionw_parent;
+    QGraphicsView* ui_instView;
     live_widgets::ToolButton* ui_colourSelect[5];
     live_widgets::ToolButton* ui_modeSelect[5];
     live::MidiFilter* s_midiFilters[5];   /*007*/
@@ -44,6 +42,10 @@ public slots:
 public:
     static TrackGroupMidi* load(const QByteArray&str,QWidget*c_parent);
     QByteArray save();
+
+private:
+    TrackGroupMidi(const TrackGroupMidi&);
+    TrackGroupMidi& operator=(const TrackGroupMidi&);
 };
 
 #endif // METAHATHORMIDI_H

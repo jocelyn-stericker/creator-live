@@ -37,6 +37,7 @@ Track::Track(Ambition* bp)
   , s_appUi_()
   , x_me(QMutex::Recursive)
   , s_id(-1)
+  , s_busy(0)
   , ui_outputName(0)
   , ui_chainWidget(new ChainTypeWidget(this))
   { initialize(); }
@@ -102,7 +103,7 @@ void Track::makeUiPipeline() {
     live_mutex(x_me) {
         s_busy = 1;
         int remCount = s_appUi_.count();
-        int sizes[s_appUi_.count()];
+        int* sizes = new int[s_appUi_.count()];
         for (int i = 0; i < s_appUi_.count(); ++i) {
             sizes[i] = -1;
         }
@@ -131,6 +132,9 @@ void Track::makeUiPipeline() {
             ui->setGeometry(state_x, 0, sizes[i], height());
             state_x += sizes[i];
         }
+
+        delete[] sizes;
+
         if (ui_outputName) {
             qDebug() << ui_outputName->width();
             ui_outputName->setGeometry(width() - ui_outputName->width(), 0, ui_outputName->width(), height());
@@ -164,9 +168,13 @@ void Track::dropEvent(QDropEvent *e) {
             int x=e->pos().x();
             int pos=0;
             if(s_appUi_.size()) {
-                int lastHalfX=s_appUi_[0]->geometry().x()+0.5*s_appUi_[0]->geometry().width();
+                int lastHalfX = static_cast<int> (
+                            static_cast<float>(s_appUi_[0]->geometry().x())+0.5*static_cast<float>(s_appUi_[0]->geometry().width())
+                        );
                 for(int i=1;i<s_ambition.chainSize();i++) {
-                    int nextHalfX=s_appUi_[i]->geometry().x()+0.5*s_appUi_[i]->geometry().width();
+                    int nextHalfX = static_cast<int> (
+                            static_cast<float>(s_appUi_[i]->geometry().x())+0.5*static_cast<float>(s_appUi_[i]->geometry().width())
+                        );
                     if(lastHalfX<=x&&x<=nextHalfX) {
                         pos=i;
                         break;
@@ -198,9 +206,13 @@ void Track::dropEvent(QDropEvent *e) {
             int x=e->pos().x();
             int pos=0;
             if(s_appUi_.size()) {
-                int lastHalfX=s_appUi_[0]->geometry().x()+0.5*s_appUi_[0]->geometry().width();
+                int lastHalfX = static_cast<int> (
+                        static_cast<float>(s_appUi_[0]->geometry().x()) + 0.5*static_cast<float>(s_appUi_[0]->geometry().width())
+                    );
                 for(int i=1;i<s_ambition.chainSize();i++) {
-                    int nextHalfX=s_appUi_[i]->geometry().x()+0.5*s_appUi_[i]->geometry().width();
+                    int nextHalfX = static_cast<int> (
+                        static_cast<float>(s_appUi_[i]->geometry().x()) + 0.5*static_cast<float>(s_appUi_[i]->geometry().width())
+                    );
                     if(lastHalfX<=x&&x<=nextHalfX) {
                         pos=i;
                         break;
@@ -230,8 +242,8 @@ void Track::setInput(live::ObjectPtr input) {
     s_ambition.setInput(input);
 }
 
-void Track::addWidget(int i, QWidget *frame) {
-
+void Track::addWidget(int, QWidget *) {
+    TCRASH();
 }
 
 void Track::addApp(int i,AppFrame* appUi,live::ObjectPtr app) {

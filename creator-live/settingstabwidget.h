@@ -40,6 +40,8 @@ signals:
 
 private:
     Ui::SettingsTabWidget *ui;
+    SettingsTabWidget(const SettingsTabWidget&);
+    SettingsTabWidget& operator=(const SettingsTabWidget&);
 };
 
 #endif // SETTINGSTABWIDGET_H

@@ -23,7 +23,11 @@ protected:
     static app* s_singleton;
     QStringList s_appNames;
     QList<AppInterface*> s_apps;
-    app() { lthread::ui(); }
+    app()
+      : s_appNames()
+      , s_apps()
+      { lthread::ui();
+    }
     ~app();
 
 public:

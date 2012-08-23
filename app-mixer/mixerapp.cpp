@@ -56,7 +56,7 @@ void MixerApp::aIn(const float *data, int chan, ObjectChain* p)
         p->pop_back();
         return;
     }
-    const unsigned long& nframes=audio::nFrames();
+    const quint32& nframes=audio::nFrames();
     float* dx = s_period[chan];
     for (unsigned i=0;i<nframes;i++)
     {

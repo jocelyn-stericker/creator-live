@@ -34,10 +34,28 @@ class Event;
 class ObjectPtr;
 class Object;
 
-class LIBLIVECORESHARED_EXPORT ObjectChain : public QList<ObjectPtr>
+class LIBLIVECORESHARED_EXPORT ObjectChain
 {
+    QList<ObjectPtr> s_identity;
 public:
+    int size() const { return s_identity.size(); }
+
+    const ObjectPtr &at(int i) const { return s_identity.at(i); }
+    const ObjectPtr &operator[](int i) const { return s_identity[i]; }
+    ObjectPtr &operator[](int i) { return s_identity[i]; }
+
+    const ObjectPtr& back() const { return s_identity.back(); }
+    ObjectPtr& back() { return s_identity.back(); }
+    ObjectPtr& first() { return s_identity.first(); }
+    const ObjectPtr& first() const { return s_identity.first(); }
+
+    void insert(int a, const ObjectPtr& t) { s_identity.insert(a, t); }
+    void removeAt(int a) { s_identity.removeAt(a); }
+
+    bool contains(const ObjectPtr& p) const { return s_identity.contains(p); }
+
     ObjectChain();
+
     template<class T> QList<T*> ofType()
     {
         QList<T*> tlist;
@@ -47,8 +65,9 @@ public:
         }
         return tlist;
     }
-    inline void push_back(const ObjectPtr& o) { QList<ObjectPtr>::push_back(o); }
+    inline void push_back(const ObjectPtr& o) { s_identity.push_back(o); }
     void push_back(Object* o);
+    void pop_back() { s_identity.pop_back(); }
 };
 
 /**
@@ -172,7 +191,7 @@ protected:
     bool s_temp;
     bool s_allowMixer;
 #if !defined(NDEBUG) && defined(__linux__)
-    static std::vector<unsigned long> s_asyncTime;
+    static std::vector<quint32> s_asyncTime;
 #endif
 
     friend class ObjectPtr;
@@ -192,7 +211,7 @@ protected:
 
     /***** MINI MIXER *****/
         float* mixer_data[2];
-        unsigned long mixer_nframes;
+        quint32 mixer_nframes;
         int mixer_at[2];
     void mixer_resetStatus();
     inline void mixer_clear() {
@@ -213,6 +232,10 @@ protected:
     }
 
     static bool ss_XRUN;
+
+private:
+    Object& operator=(const live::Object&);
+    Object(const Object&);
 };
 
 void doAudioConnect(const Object* a, const Object* b);
@@ -316,7 +339,7 @@ struct ScopedLock {
       {
         Object::beginAsyncAction();
     }
-    ~ScopedLock() {
+    virtual ~ScopedLock() {
         Object::endAsyncAction();
     }
 };
@@ -330,7 +353,7 @@ struct ScopedMutexLock {
       {
         m_m.lock();
     }
-    ~ScopedMutexLock() {
+    virtual ~ScopedMutexLock() {
         m_m.unlock();
     }
 };
@@ -378,16 +401,16 @@ public:
         }
     }
 
-    ~ObjectPtr() {
+    virtual ~ObjectPtr() {
         detach();
     }
 
     void detach();
 
     ObjectPtr(const ObjectPtr& other)
-      : x_ptr(QMutex::Recursive)
-      { s_obj=const_cast<ObjectPtr&>(other).data();
-        if(other.data()) live_mutex(x_ptr) {
+      : s_obj(const_cast<ObjectPtr&>(other).data())
+      , x_ptr(QMutex::Recursive)
+      { if(other.data()) live_mutex(x_ptr) {
             s_obj->s_ptrList.push_back(this);
 //            s_isInput=s_obj->isInput();
 //            s_isOutput=s_obj->isOutput();

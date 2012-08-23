@@ -45,7 +45,16 @@ public:
 
     Event() : message(0), data1(0), data2(0), time(),isShadow(1), flareId(-1), buddy(0) { }
 
-    Event(const qint16& cmessage,const qint16&cdata1,const qint16&cdata2) : message(cmessage), data1(cdata1), data2(cdata2), time(),isShadow(1), flareId(-1) { }
+    Event(const qint16& cmessage,const qint16&cdata1,const qint16&cdata2)
+      : message(cmessage)
+      , data1(cdata1)
+      , data2(cdata2)
+      , time()
+      , isShadow(1)
+      , flareId(-1)
+      , buddy(0)
+      {
+    }
 
     virtual ~Event() {}
 
@@ -64,6 +73,28 @@ public:
     QByteArray save() const;
     static Event* load(const QByteArray&str);
     virtual void noOp() {}
+
+    Event(const Event& t)
+      : message(t.message)
+      , data1(t.data1)
+      , data2(t.data2)
+      , time(t.time)
+      , isShadow(t.isShadow)
+      , flareId(t.flareId)
+      , buddy(t.buddy)
+      {
+    }
+
+    Event& operator=(const Event& t) {
+        message = t.message;
+        data1 = t.data1;
+        data2 = t.data2;
+        time = t.time;
+        Q_ASSERT(!t.isShadow);
+        Q_ASSERT(!t.buddy);
+        flareId = t.flareId;
+        return *this;
+    }
 };
 
 }

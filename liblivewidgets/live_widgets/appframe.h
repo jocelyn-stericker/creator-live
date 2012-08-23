@@ -26,7 +26,10 @@ namespace live_widgets {
 class LIBLIVEWIDGETSSHARED_EXPORT AppFrame : public QFrame, public BindableParent {
     Q_OBJECT
     Q_PROPERTY(int desiredWidth READ getDesiredWidth WRITE setDesiredWidth)
-    ToolButton* _tbBack,* _tbClose,* _tbNext,* _tbMini;
+    ToolButton* _tbBack;
+    ToolButton* _tbClose;
+    ToolButton* _tbNext;
+    ToolButton* _tbMini;
     bool s_minimized;
     int s_desiredWidth;
 
@@ -50,6 +53,25 @@ signals:
 public slots:
     virtual void toggleMinimized();
     void setDesiredWidth(int);
+
+private:
+    AppFrame(const AppFrame&)
+      : QFrame()
+      , BindableParent(this)
+      , _tbBack(0)
+      , _tbClose(0)
+      , _tbNext(0)
+      , _tbMini(0)
+      , s_minimized(0)
+      , s_desiredWidth(0)
+      , b_resizing(0)
+      { TCRASH();
+    }
+
+    AppFrame& operator=(const AppFrame&) {
+        TCRASH();
+        return *this;
+    }
 };
 
 }

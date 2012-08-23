@@ -85,6 +85,25 @@ public slots:
 public:
     QByteArray save();
     static Track* load(const QByteArray&);
+
+private:
+    Track(const Track&)
+      : AbstractTrack()
+      , BindableParent(this)
+      , s_th(0)
+      , s_ambition(*new live::Ambition)
+      , s_appUi_()
+      , x_me(QMutex::Recursive)
+      , s_id(-1)
+      , s_busy(0)
+      , ui_outputName(0)
+      , ui_chainWidget(0)
+      { TCRASH();
+    }
+    Track& operator=(const Track&) {
+        TCRASH();
+        return *this;
+    }
 };
 
 #endif // CL_TRACK_H

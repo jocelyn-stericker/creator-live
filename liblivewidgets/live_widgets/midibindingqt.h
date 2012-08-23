@@ -157,16 +157,19 @@ protected:
             qFatal("BindingSeqSetPos Depricated");
         case BindingSlider: {
             if(parentType==GuiAbstractSpinBox) {
-                //GRR!!! THIS IS REALLY REALLY UNSAFE!!!!!!!!
+                // FIXME: Are you sure it's a plain SpinBox?
                 QSpinBox*sb=static_cast<QSpinBox*>(guiObject);
                 if(sb) {
-                    sb->setValue((float)ccval/127.0*(float)(sb->maximum()-sb->minimum())+sb->minimum());
+                    sb->setValue(static_cast<int>((float)ccval/127.0*(float)(sb->maximum()-sb->minimum()))+sb->minimum());
                 }
             } else if (parentType==GuiAbstractSlider) {
                 QAbstractSlider* as=static_cast<QAbstractSlider*>(guiObject);
-                as->setValue((float)ccval/127.0*(float)(as->maximum()-as->minimum())+as->minimum());
+                as->setValue(static_cast<int>((float)ccval/127.0*(float)(as->maximum()-as->minimum()))+as->minimum());
             }
         }
+        case InvalidBinding:
+        case NumberOfBindingTypes:
+            TCRASH();
         } // switch
     }
 };
@@ -183,11 +186,15 @@ private:
     QWidget* activeWidget;
     live::MidiBinding::GuiType activeWidgetType;
 public:
-    MidiBindingQtSys() :
-        currentCM(0) {
+    MidiBindingQtSys()
+      : widgets()
+      , currentCM(0)
+      , activeWidget(0)
+      , activeWidgetType(live::MidiBinding::InvalidType)
+      {
     }
 
-    ~MidiBindingQtSys();
+    virtual ~MidiBindingQtSys();
 
 public slots:
     void addWidgetReal(QWidget* w);
@@ -216,6 +223,21 @@ public slots:
     void bindSlider();
 
     void removeBind();
+
+private:
+    MidiBindingQtSys(const MidiBindingQtSys&)
+      : QObject()
+      , widgets()
+      , currentCM(0)
+      , activeWidget(0)
+      , activeWidgetType(live::MidiBinding::InvalidType)
+      { TCRASH();
+    }
+
+    MidiBindingQtSys& operator=(const MidiBindingQtSys&) {
+        TCRASH();
+        return *this;
+    }
 };
 
 }

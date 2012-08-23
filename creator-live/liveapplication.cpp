@@ -99,7 +99,7 @@ LiveApplication::LiveApplication(int& argc,char** argv) :
                 std::cerr << " ]";
             }
 
-            std::cerr << endl;
+            std::cerr << std::endl;
 
         } else std::cerr << "ERROR[ " << qPrintable(loader.errorString()) << " ]" << std::endl;
     }

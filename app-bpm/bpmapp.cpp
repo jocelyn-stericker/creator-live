@@ -122,7 +122,7 @@ float BPMApp::getBPM()
 
 void BPMApp::aIn(const float *data, int chan, ObjectChain*p)
 {
-    const unsigned long& nframes=audio::nFrames();
+    const quint32& nframes=audio::nFrames();
     if (s_lastBPM>20.0f) {
         int boxes=qRound(1.0f/s_lastBPM*60.0f*(float)audio::sampleRate()/(float)(audio::nFrames()*8));
         int boxLength=1.0f/s_lastBPM*60.f*(float)audio::sampleRate()/boxes;

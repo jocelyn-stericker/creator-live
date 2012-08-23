@@ -43,6 +43,10 @@ public slots:
     void applyAndQuit();
 
     static bool apply();
+
+private:
+    LiveAudioSettingsWidget(const LiveAudioSettingsWidget&);
+    LiveAudioSettingsWidget& operator=(const LiveAudioSettingsWidget&);
 };
 
 #endif // SETTINGSLINUX_H

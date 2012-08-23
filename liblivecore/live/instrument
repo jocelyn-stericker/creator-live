@@ -23,13 +23,21 @@ protected:
     static instrument* s_singleton;
     QStringList s_instrumentNames;
     QList<InstrumentInterface*> s_instruments;
-    instrument() {}
+    instrument()
+      : s_instrumentNames()
+      , s_instruments()
+      {
+    }
     ~instrument();
 
 public:
     static void registerInterface(InstrumentInterface* c);
     static QStringList names();
     static QList<InstrumentInterface*> interfaces();
+
+private:
+    instrument(const instrument&);
+    instrument& operator=(const instrument&);
 };
 
 }

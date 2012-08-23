@@ -43,7 +43,7 @@ SequencerGraph::SequencerGraph( QWidget* parent,SequencerApp* capp ) :
     connect(bindings::me(),SIGNAL(showBindingsChanged(bool)),this,SLOT(setShowBindingsChanged(bool)));
 //AUDIO
     connect(app->s_audioTrack,SIGNAL(dataUpdated(int,int)),this,SLOT(updateAudioData(int,int)));
-    connect(app,SIGNAL(posSet(quint64)),this,SLOT(updatePos(quint64)));
+    connect(app,SIGNAL(posSet(quint32)),this,SLOT(updatePos(quint32)));
     setMinimumSize( 50, 50 );
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
@@ -57,7 +57,7 @@ SequencerGraph::SequencerGraph( QWidget* parent,SequencerApp* capp ) :
 
 //MIDI
 //    connect(app->s_midiTrack, SIGNAL(dataUpdated()), this, SLOT(updateMidiData()) );
-    connect(app->s_audioTrack, SIGNAL(locationChanged(quint64)), this, SLOT(updatePos(quint64)));
+    connect(app->s_audioTrack, SIGNAL(locationChanged(quint32)), this, SLOT(updatePos(quint32)));
 
     midiTrack = app->s_midiTrack;
     midiOriginal = NULL;
@@ -189,7 +189,7 @@ void SequencerGraph::updateAudioData( int t1, int t2 )
 
             int counter=DATA[i]->getConstPointer(START,dataPtr);
             dataPtr-=dataPtr?1:0;
-//            const unsigned long& nFrames=audio::nFrames();
+//            const quint32& nFrames=audio::nFrames();
             int c=0;
             for ( int j = START; j < t2; j+=wscale_inv  )
             {
@@ -661,7 +661,7 @@ void SequencerGraph::setShowBindingsChanged(bool ean)
     update();
 }
 
-void SequencerGraph::updatePos(quint64 a)
+void SequencerGraph::updatePos(quint32 a)
 {
     int width = s_scale;
     float wscale = (float) this->width() / ( float ) width;

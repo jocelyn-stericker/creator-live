@@ -89,6 +89,25 @@ live::AudioTrack::AudioTrack(int cchans)
     }
 }
 
+live::AudioTrack::AudioTrack(const live::AudioTrack&)
+  : live::Object("Audio Track",false,false)
+  , nframes(live::audio::nFrames())
+  , s_container( new AudioContainer*[2] )
+  , s_chans(2)
+  , s_curPos(0)
+  , s_vol(100)
+  , s_pan(50)
+  , s_record(0)
+  , s_overdub(0)
+  , s_playback(0)
+  , s_mute(0)
+  , s_simpleCount(0)
+  , s_updateCounter(0)
+  , s_boringCounter(0)
+  , m_proc(new float[live::audio::nFrames()])
+  { TCRASH();
+}
+
 live::AudioTrack::~AudioTrack() {
     for (int i=0;i<s_chans;i++) {
         delete s_container[i];
