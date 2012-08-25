@@ -63,7 +63,7 @@ void Soundfont::mIn(const live::Event* data, live::ObjectChain *p) {
     }
 }
 
-void Soundfont::aIn(const float* data, int chan, live::ObjectChain* p) {
+void Soundfont::aIn(const float* data, int chan, live::Object* p) {
     Q_UNUSED(data);
     Q_ASSERT(chan<2&&chan>=0);
 

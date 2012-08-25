@@ -29,7 +29,7 @@ class VstSidekick : public live::Object
     int audioanOffset;
     live::ObjectPtr  audioToVst;
     live::ObjectPtr  audioFromVst;
-    live::ObjectChain lastP;
+    live::ObjectPtr lastP;
     bool aOn() const { return 1; } bool mOn() const{ return 1; }
 
 public:
@@ -59,27 +59,25 @@ public:
         live::object::singleton()->notify();
     }
 
-    void aIn(const float *data, int chan, live::ObjectChain* p)
+    void aIn(const float *data, int chan, live::Object* p)
     {
-        if(p->back()==audioFromVst)
+        if(p==audioFromVst.data())
         {
             if(chan==audioanOffset||chan==audioanOffset+1)
             {
-                aOut(data,chan%2,(audioToVst.valid()&&lastP.size())?&lastP:p);
+                aOut(data,chan%2,audioToVst.valid()?lastP.data():p);
             }
             return;
         }
-        p->push_back(this);
-        lastP=*p;
+        lastP=this;
         if(audioToVst.valid())
         {
-            audioToVst->aIn(data,chan+audioanOffset,p);
+            audioToVst->aIn(data,chan+audioanOffset,this);
         }
         else
         {
-            aOut(data,chan+audioanOffset, &lastP);
+            aOut(data,chan+audioanOffset, lastP.data());
         }
-        p->pop_back();
     }
     void mIn(const live::Event *data, live::ObjectChain* p)
     {

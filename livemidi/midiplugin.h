@@ -36,9 +36,7 @@ public:
         if (p->back() != s_out)
             return;
 
-        p->push_back(this);
-        aOut(data, chan, p);
-        p->pop_back();
+        aOut(data, chan, this);
     }
     void mIn(const live::Event* data, live::ObjectChain* p) {
         p->push_back(this);

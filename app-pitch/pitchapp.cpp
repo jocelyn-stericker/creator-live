@@ -50,7 +50,7 @@ void PitchApp::setShift(const int &s)
     s_audioR->setPitchShift(s);
 }
 
-void PitchApp::aIn(const float *data, int chan, ObjectChain*p)
+void PitchApp::aIn(const float *data, int chan, Object*p)
 {
     // if shift is 0, it's best to avoid running it through SoundTouch,
     // because that represents a degradation of sound quality.
@@ -59,15 +59,13 @@ void PitchApp::aIn(const float *data, int chan, ObjectChain*p)
         aOut(data, chan, p);
         return;
     }
-    if (p->back()==s_audioR)
+    if (p==s_audioR)
     {
         aOut(data,chan,p);
     }
     else
     {
-        p->push_back(this);
-        s_audioR->aIn(data,chan,p);
-        p->pop_back();
+        s_audioR->aIn(data,chan,this);
     }
 }
 
@@ -119,14 +117,12 @@ float PitchAppAudioR::latency_msec()
     return (float)s_latency/((float)audio::sampleRate())*1000.0f;
 }
 
-void PitchAppAudioR::aIn(const float *data, int chan, ObjectChain*p)
+void PitchAppAudioR::aIn(const float *data, int chan, Object*p)
 {
     Q_ASSERT(chan<2);
 
     if (!s_aOn) {
-        p->push_back(this);
-        aOut(data,chan,p);
-        p->pop_back();
+        aOut(data,chan,this);
         return;
     }
 
@@ -168,9 +164,7 @@ void PitchAppAudioR::aIn(const float *data, int chan, ObjectChain*p)
             proc[i]=s_outCache[2*i];
         }
     }
-    p->push_back(this);
-    aOut(proc,chan,p);
-    p->pop_back();
+    aOut(proc,chan,this);
     delete[]proc;
 }
 void PitchAppAudioR::setPitchShift(int x) {

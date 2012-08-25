@@ -62,20 +62,7 @@ public:
     }
 
     void init(); //Audio.cpp
-    void proc()
-    {
-        if(!s_suspend)
-        {
-            for(int i=0; i<chans; i++)
-            {
-                float* _buffer=(float*)jack_port_get_buffer(s_port_[i],live::audio::nFrames());
-                live::ObjectChain p;
-                p.push_back(this);
-                aOut(_buffer, i, &p);
-                p.pop_back();
-            }
-        }
-    }
+    void proc();
 
     virtual void suspend() { s_suspend=1; }
     virtual void resume() { s_suspend=0; }
@@ -111,12 +98,17 @@ public:
                 s_tracked[i][j]=0;
             }
         }
+
+        initConnection();
+    }
+    virtual ~AudioOut() {
+        destroyConnection();
     }
 
     virtual void aIn(const float*data,int chan, live::ObjectChain*p); //Audio.cpp
 
-    void newConnection();
-    void deleteConnection();
+    void initConnection();
+    void destroyConnection();
 };
 
 class LIBLIVECORESHARED_EXPORT AudioNull : public QObject, public live::Object
@@ -136,11 +128,9 @@ public:
       {
     }
 
-    virtual void aIn(const float*data,int chan, live::ObjectChain*p)
+    virtual void aIn(const float*data,int chan, live::Object*p)
     {
-        p->push_back(this);
-        aOut(data,chan,p);
-        p->pop_back();
+        aOut(data,chan,this);
     }
 
     QObject* qoThis() { return this; }
@@ -151,9 +141,43 @@ class LIBLIVECORESHARED_EXPORT SecretAudio : public QObject, public live::AudioI
     Q_OBJECT
     Q_INTERFACES(live::AudioInterface)
 public:
+    static int XRUNS;
     QString s_error;
     static SecretAudio* singleton;
-    QMutex x_sa;
+    static QMutex x_sa;
+
+    QList< jack_port_t*> s_availInPorts;
+    QList< QString > s_availInPortIds;
+
+    QList< jack_port_t*> s_availOutPorts;
+    QList< QString > s_availOutPortIds;
+
+    jack_port_t* getInputPort() {
+        Q_ASSERT(s_availInPorts.size());
+        if (!s_availInPorts.size())
+            return 0;
+        return s_availInPorts.takeFirst();
+    }
+    QString getInputPortId() {
+        Q_ASSERT(s_availInPortIds.size());
+        if (!s_availInPortIds.size())
+            return "NULL";
+        return s_availInPortIds.takeFirst();
+    }
+    jack_port_t* getOutputPort() {
+        Q_ASSERT(s_availOutPorts.size());
+        if (!s_availOutPorts.size())
+            return 0;
+        return s_availOutPorts.takeFirst();
+    }
+    QString getOutputPortId() {
+        Q_ASSERT(s_availOutPortIds.size());
+        if (!s_availOutPortIds.size())
+            return "NULL";
+        return s_availOutPortIds.takeFirst();
+    }
+
+    bool s_paused;
 
     quint32 nframes;
     QList< AudioIn* > inputs;
@@ -195,12 +219,21 @@ public:
 
     static int xrunCallback( void * )
     {
+        ++XRUNS;
+        std::cerr << "xrun\n";
         live::Object::XRUN();
         return 0;
+    }
+    static void QUITCALLBACK(jack_status_t code, const char* reason, void *)
+    {
+        std::cerr << "CODE: " << code <<", reason: "<<reason<< std::endl;
+        TCRASH();
     }
 
     const quint32& nFrames() { return nframes; }
     qint32 sampleRate();
+
+    bool valid() { return client; }
 
 public slots:
     bool delClient();
@@ -210,6 +243,9 @@ public slots:
     void jack_disconnect(QString readPort,QString writePort);
 
     void removeNull(QObject*);
+
+    void pause() { kill_kitten s_paused = true; }
+    void resume() { kill_kitten s_paused = false; }
 
 public:
     virtual QString name() { return "Jack Audio"; }

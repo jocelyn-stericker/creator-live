@@ -65,21 +65,17 @@ Vst::~Vst()
     qDebug() << "Delete VST";
 }
 
-void Vst::aIn(const float *data, int chan, ObjectChain*p)
+void Vst::aIn(const float *data, int chan, Object* p)
 {
     Q_ASSERT(chan<2);
     Q_ASSERT(rep->audioFromVst);
-    if (p->contains(rep->audioFromVst))
+    if (p == rep->audioFromVst.data())
     {
-        p->push_back(this);
-        aOut(data,chan,p); //really should add other items back to pipeline
-        p->pop_back();
+        aOut(data,chan,this);
     }
     else if (rep->audioToVst.valid())
     {
-        p->push_back(this);
-        rep->audioToVst->aIn(data,chan,p);
-        p->pop_back();
+        rep->audioToVst->aIn(data,chan,this);
     }
 }
 

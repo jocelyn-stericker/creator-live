@@ -168,13 +168,11 @@ void SequencerApp::setClipped(bool clipped)
 }
 
 
-void SequencerApp::aIn(const float *data, int chan, ObjectChain*p) {
-    if (p->back()==s_audioTrack) {  // FIXME: eliminate ObjectChain
+void SequencerApp::aIn(const float *data, int chan, Object*p) {
+    if (p==s_audioTrack) {
         aOut(data,chan,p);
     } else {
-        p->push_back(this);
-        s_audioTrack->aIn(data,chan,p);
-        p->pop_back();
+        s_audioTrack->aIn(data,chan,this);
     }
 }
 

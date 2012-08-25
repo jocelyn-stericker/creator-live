@@ -21,10 +21,12 @@ class LIBLIVECORESHARED_EXPORT audio
     static AudioInterface* s_audioInterface;
 public:
     static void registerInterface(AudioInterface*);
+    static bool valid();
+    static void shutdown();
     static QObject* getCurrentInterface();
 
     static const quint32 &nFrames();
-    // Assumes: N/A
+    // Assumes: Called from aIn function.
     // State changes: none, fast
     // Returns: number of frames per period for jack callback
 

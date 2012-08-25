@@ -185,8 +185,9 @@ void SamplerDJ::release(int button) {
 void SamplerDJ::setBindingMode(int b)
 {
     s_bindingMode=b;
-    if (s_bindingMode!=-1) {
-        kill_kitten MidiBinding::customNow=this;
+    if (s_bindingMode!=-1) kill_kitten {
+        if (!MidiBinding::customNow) MidiBinding::customNow = new ObjectPtr;
+        *MidiBinding::customNow=this;
     }
 }
 
@@ -206,9 +207,7 @@ void SamplerDJ::aIn(const float *in, int chan, ObjectChain*p)
     {
         for (int i=0;i<8;i++)
         {
-            p->push_back(this);
-            s_audioTracks[i]->aIn(in,chan,p);
-            p->pop_back();
+            s_audioTracks[i]->aIn(in,chan,this);
         }
     }
     else
@@ -219,9 +218,7 @@ void SamplerDJ::aIn(const float *in, int chan, ObjectChain*p)
         }
     }
 
-    p->push_back(this);
-    aOut(proc?proc:in,chan,p);
-    p->pop_back();
+    aOut(proc?proc:in,chan,this);
     delete[]proc;
 }
 

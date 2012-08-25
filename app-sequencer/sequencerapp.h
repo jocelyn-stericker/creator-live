@@ -62,7 +62,7 @@ public slots:
     virtual void startMute();
     virtual void stopMute();
     void setPos(int pos);
-    virtual void aIn(const float *data, int chan, live::ObjectChain*p);
+    virtual void aIn(const float *data, int chan, live::Object*p);
     void setClipped(bool clipped=1);
     inline void setFree()
     {

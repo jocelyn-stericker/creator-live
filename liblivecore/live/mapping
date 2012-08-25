@@ -26,7 +26,7 @@ public:
      */
     Mapping(QString cname,ObjectPtr other);
 
-    void aIn (const float*data,int chan,ObjectChain*p);
+    void aIn (const float*data,int chan,Object*p);
     virtual bool isAudioObject() const;
 
     virtual void mIn(const Event*data,ObjectChain*p);

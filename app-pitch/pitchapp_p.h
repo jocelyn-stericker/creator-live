@@ -35,7 +35,7 @@ public:
     float latency_msec();
 
 public slots:
-    void aIn(const float *data, int chan, live::ObjectChain*p);
+    void aIn(const float *data, int chan, live::Object*p);
     void setPitchShift(int x);
 };
 

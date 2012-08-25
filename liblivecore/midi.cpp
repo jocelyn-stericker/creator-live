@@ -101,7 +101,6 @@ void SecretMidi::init() {
 }
 
 void SecretMidi::refresh() {
-    qDebug() << "SM_R";
     live_mutex(x_midi) {
         while (pmouts.size()) {
             Pm_Close(pmouts.takeFirst());
@@ -122,7 +121,6 @@ void SecretMidi::refresh() {
         Pm_Initialize();
         int lastI=-1;
         for ( int i = 0; i < Pm_CountDevices(); i++ ) {
-            qDebug()<< "X!\n";
             const PmDeviceInfo* info = Pm_GetDeviceInfo(i);
             bool ok=1;
 
@@ -200,13 +198,10 @@ void SecretMidi::refresh() {
         kill_kitten {
             live::object::clear(live::MidiOnly|live::InputOnly|live::NoRefresh);
             live::object::clear(live::MidiOnly|live::OutputOnly|live::NoRefresh);
-            qDebug()<<inputs<<outputs<<"Hai.";
             for (int i=0;i<inputs.size();i++) {
-                qDebug() << "Found input:"<<inputs[i];
                 live::object::set(inputs[i]);
             }
             for (int i=0;i<outputs.size();i++) {
-                qDebug() << "Found input:"<<outputs[i];
                 live::object::set(outputs[i]);
             }
         }
@@ -242,10 +237,10 @@ void SecretMidi::run() { // [MIDI THREAD]
 
                     if (inverse!=-1) {
                         Q_ASSERT(live::MidiBinding::customKey->value(inputs[inverse],0));
-                        if ((live::MidiBinding::customKey->value(inputs[inverse],0)&&live::MidiBinding::customKey->value(inputs[inverse])[e->note()].valid())||live::MidiBinding::customNow.valid()) {
+                        if ((live::MidiBinding::customKey->value(inputs[inverse],0)&&live::MidiBinding::customKey->value(inputs[inverse])[e->note()].valid())||(*live::MidiBinding::customNow).valid()) {
                             live::ObjectChain p;
                             p.push_back(inputs[inverse]);
-                            (live::MidiBinding::customNow.valid()?live::MidiBinding::customNow:live::MidiBinding::customKey->value(inputs[inverse])[e->note()])->mIn(e, &p);
+                            ((*live::MidiBinding::customNow).valid()?*live::MidiBinding::customNow:live::MidiBinding::customKey->value(inputs[inverse])[e->note()])->mIn(e, &p);
                         }
 
                         live::ObjectChain p;  // FIXME?

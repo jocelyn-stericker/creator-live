@@ -139,18 +139,16 @@ void LooperApp::looperLogic()
     }
 }
 
-void LooperApp::aIn(const float *data, int chan, ObjectChain*p)
+void LooperApp::aIn(const float *data, int chan, Object*p)
 {
     looperLogic();
-    if (p->back()==s_audioTrack)
+    if (p==s_audioTrack)
     {
         SequencerApp::aIn(data,chan,p);
     }
     else
     {
-        p->push_back(this);
-        SequencerApp::aIn(data,chan,p);
-        p->pop_back();
+        SequencerApp::aIn(data,chan,this);
     }
 }
 

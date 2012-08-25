@@ -209,19 +209,15 @@ void live::AudioTrack::setPos(long pos) {
     s_curPos=pos;
 }
 
-void live::AudioTrack::aIn(const float *in, int chan, ObjectChain*p) {
+void live::AudioTrack::aIn(const float *in, int chan, Object*p) {
     if (!s_playback && !(s_record||s_overdub)) {
-        p->push_back(this);
-        aOut(in, chan, p);
-        p->pop_back();
+        aOut(in, chan, this);
     }
     memcpy(m_proc,in,sizeof(float)*nframes);
 
     aThru(m_proc,chan);
 
-    p->push_back(this);
-    aOut(m_proc,chan,p);
-    p->pop_back();
+    aOut(m_proc,chan,this);
 }
 
 void live::AudioTrack::clearData() {

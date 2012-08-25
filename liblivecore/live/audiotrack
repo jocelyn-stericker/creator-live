@@ -89,7 +89,7 @@ public slots:
     void startMute();
     void stopMute();
     void setPos(long pos);
-    void aIn(const float *in, int chan, ObjectChain*p);
+    void aIn(const float *in, int chan, Object *p);
     void aThru(float*proc,int chan);
     void clearData();
     void clearData(const float& a,const float& b);

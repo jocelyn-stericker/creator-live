@@ -102,9 +102,9 @@ public:
     // Audio data is sent first in chan 0 (left) then in chan 1 (right) as an array of AudioSys::nFrames() floats.
 
     /** Reimplement this function to handle audio data. If you call aIn from outside both an aIn or an mIn, use beginProc() and endProc().*/
-    virtual void aIn (const float*data,int chan,ObjectChain*p) { p->push_back(this); aOut(data,chan,p); p->pop_back(); }
+    virtual void aIn (const float*data,int chan,Object*) { aOut(data,chan,this); }
     /** In aIn(...) call aOut(...) when processing is finished. This must be called EXACTLY ONCE (i.e., it must be called, and not more than once) from every aIn function. */
-    void aOut(const float*data,int chan,ObjectChain*p);
+    void aOut(const float*data,int chan, Object* prev);
     /** Use the LIVE_HYBRID, LIVE_MIDI and LIVE_AUDIO macros. */
     virtual bool isAudioObject() const=0;
 
@@ -142,7 +142,7 @@ public:
       * cause cetain actions to never be performed.*/
     static void beginProc();
     /** Call this function when finished callinging aIn(...) or mIn(...) ouside of an mIn(...) or aIn(...) stack. Forgetting to do so will cause some actions to never be performed. */
-    static void endProc();
+    static void endProc(bool causesXruns = false);
 
 protected:
     /** Call this function before you do something which could mess up audio or midi processing, such as changing connections. These actions must be efficient! Calling this from inside
@@ -151,6 +151,8 @@ protected:
     static void beginAsyncAction();
     /** Call this function when done doing things which cannot be done concurrently with audio/midi processing. */
     static void endAsyncAction();
+
+    QMutex x_ptr;
 
 public:
     static void XRUN();
@@ -184,6 +186,11 @@ public:
     /** Apps should reimplement this to avoid crashes from incorrect deletion. */
     virtual QObject* qoThis() { return 0; }
 
+    int aConnectionCount() const { return aConnections.size(); }
+    int mConnectionCount() const { return mConnections.size(); }
+    int aInverseConnectionCount() const { return aInverseConnections.size(); }
+    int mInverseConnectionCount() const { return mInverseConnections.size(); }
+
 protected:
     QString s_name;
     bool s_aOn;
@@ -200,7 +207,7 @@ protected:
     friend class ScopedLock;
     friend void doAudioConnect(const Object* a, const Object* b);
     friend void doMidiConnect(const Object* a, const Object* b);
-    QList<ObjectPtr*> s_ptrList;
+    QSet<ObjectPtr*> s_ptrList;
     static QMap<QString, ObjectPtr*>* zombies;
 
     QList<ObjectPtr> aConnections;
@@ -219,17 +226,7 @@ protected:
         for(int i=0;i<2;i++) std::fill(mixer_data[i],&mixer_data[i][mixer_nframes],0.0f);
     }
 
-    inline void mixer_process(const float* data, int chan) {
-        Q_ASSERT(mixer_data[chan]);
-        for(unsigned i=0;i<mixer_nframes;i++)
-            mixer_data[chan][i]+=data[i];
-        if(++mixer_at[chan]==aInverseConnections.size()) {
-            ObjectChain p;
-            aIn(mixer_data[chan],chan, &p);
-            mixer_clear();
-            mixer_at[chan]=0;
-        }
-    }
+    void mixer_process(const float* data, int chan);
 
     static bool ss_XRUN;
 
@@ -378,27 +375,30 @@ class LIBLIVECORESHARED_EXPORT ObjectPtr
 protected:
     void obliviate();
     bool restore(Object *a);
-    QMutex x_ptr;
     friend class Object;
 //    bool s_isInput, s_isOutput, s_isAudio, s_isMidi;
     ObjectPtr(QString,Object* o)
       : s_obj(o)
-      , x_ptr(QMutex::Recursive)
       {
-        s_obj->s_ptrList.push_back(this);
+        s_obj->s_ptrList.insert(this);
     }
 
 public:
     ObjectPtr(Object* o=0)
       : s_obj(o)
-      , x_ptr(QMutex::Recursive)
-      { if(s_obj) live_mutex(x_ptr) {
-            s_obj->s_ptrList.push_back(this);
+      { if(s_obj) live_mutex(s_obj->x_ptr) {
+            s_obj->s_ptrList.insert(this);
 //            s_isInput=s_obj->isInput();
 //            s_isOutput=s_obj->isOutput();
 //            s_isAudio=s_obj->isAudioObject();
 //            s_isMidi=s_obj->isMidiObject();
         }
+    }
+
+    ObjectPtr(Object *o, bool)
+        : s_obj(o)
+    {
+
     }
 
     virtual ~ObjectPtr() {
@@ -409,9 +409,8 @@ public:
 
     ObjectPtr(const ObjectPtr& other)
       : s_obj(const_cast<ObjectPtr&>(other).data())
-      , x_ptr(QMutex::Recursive)
-      { if(other.data()) live_mutex(x_ptr) {
-            s_obj->s_ptrList.push_back(this);
+      { if(other.data()) live_mutex(s_obj->x_ptr) {
+            s_obj->s_ptrList.insert(this);
 //            s_isInput=s_obj->isInput();
 //            s_isOutput=s_obj->isOutput();
 //            s_isAudio=s_obj->isAudioObject();
@@ -421,24 +420,22 @@ public:
 
     ObjectPtr& operator=(Object* other) {
         detach();
-        live_mutex(x_ptr) {
+        live_mutex(other->x_ptr) {
             s_obj=other;
-            if(other) live_mutex(x_ptr) {
-                s_obj->s_ptrList.push_back(this);
+                s_obj->s_ptrList.insert(this);
                 //            s_isInput=s_obj->isInput();
                 //            s_isOutput=s_obj->isOutput();
                 //            s_isAudio=s_obj->isAudioObject();
                 //            s_isMidi=s_obj->isMidiObject();
-            }
         }
         return* this;
     }
     ObjectPtr& operator=(const ObjectPtr& other) {
         detach();
-        live_mutex(x_ptr) {
+        live_mutex(const_cast<ObjectPtr&>(other)->x_ptr) {
             s_obj=const_cast<ObjectPtr&>(other).data();
-            if(other.data()) live_mutex(x_ptr) {
-                s_obj->s_ptrList.push_back(this);
+            if(other.data()) {
+                s_obj->s_ptrList.insert(this);
                 //            s_isInput=s_obj->isInput();
                 //            s_isOutput=s_obj->isOutput();
                 //            s_isAudio=s_obj->isAudioObject();

@@ -44,6 +44,7 @@ public:
 
     virtual bool shouldDisplaySettingsWidget()=0;
 
+    virtual bool valid() = 0;
     virtual QString errorString()=0;
 
     virtual bool makeClient()=0;

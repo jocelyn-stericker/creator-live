@@ -51,9 +51,7 @@ void MixerApp::aIn(const float *data, int chan, ObjectChain* p)
 
     if (b_pan.ref()==50&&b_vol.ref()==100)
     {
-        p->push_back(this);
-        aOut(data,chan,p);
-        p->pop_back();
+        aOut(data,chan,this);
         return;
     }
     const quint32& nframes=audio::nFrames();
@@ -83,9 +81,7 @@ void MixerApp::aIn(const float *data, int chan, ObjectChain* p)
         }
     }
 
-    p->push_back(this);
-    aOut(dx,chan,p);
-    p->pop_back();
+    aOut(dx,chan,this);
 }
 
 void MixerApp::mIn(const Event *data, ObjectChain* p)

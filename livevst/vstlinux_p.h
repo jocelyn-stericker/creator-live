@@ -207,13 +207,11 @@ public:
 
     void addSidekicks(QStringList to, QStringList from);
 
-    void aIn(const float *data, int chan, live::ObjectChain*p)
+    void aIn(const float *data, int chan, live::Object*p)
     {
-        if(p->contains(audioFromVst))
+        if(p == audioFromVst.data())
         {
-            p->push_back(this);
-            aOut(data,chan,p);
-            p->pop_back();
+            aOut(data,chan,this);
         }
         else
         {

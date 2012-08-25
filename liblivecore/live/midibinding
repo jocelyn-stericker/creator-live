@@ -100,7 +100,7 @@ class LIBLIVECORESHARED_EXPORT MidiBinding : public QObject, public live::Object
     Q_OBJECT
 public:
     static QMap<ObjectPtr,ObjectPtr*>* customKey;
-    static ObjectPtr customNow;
+    static ObjectPtr* customNow;
     static QList<MidiBinding*> universe;
 
     enum BindingType
@@ -229,13 +229,11 @@ public:
 
     }
 public slots:
-    void aIn(const float *data, int chan, ObjectChain*p)
+    void aIn(const float *data, int chan, ObjectChain*)
     {
         if(allowAudio)
         {
-            p->push_back(this);
-            aOut(data,chan,p);
-            p->pop_back();
+            aOut(data,chan,this);
         }
     }
     void mIn(const Event *data, ObjectChain*p)

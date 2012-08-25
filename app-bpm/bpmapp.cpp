@@ -198,9 +198,7 @@ void BPMApp::aIn(const float *data, int chan, ObjectChain*p)
 
     }
 
-    p->push_back(this);
-    aOut(data,chan,p);
-    p->pop_back();
+    aOut(data,chan,this);
 }
 
 void BPMApp::mIn(const Event *data, ObjectChain*p)

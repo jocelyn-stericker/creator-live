@@ -65,8 +65,8 @@ public:
     void show();
     void hide();
 
-    void aIn(const float *data, int chan, live::ObjectChain*p);
-    void mIn(const live::Event *data, live::ObjectChain*p);
+    void aIn(const float *data, int chan, live::Object*p);
+    void mIn(const live::Event *data, live::ObjectChain* p);
 
 #ifdef _WIN32
     float** channelData;
