@@ -420,19 +420,19 @@ public:
 
     ObjectPtr& operator=(Object* other) {
         detach();
-        live_mutex(other->x_ptr) {
+        if (other) live_mutex(other->x_ptr) {
             s_obj=other;
                 s_obj->s_ptrList.insert(this);
                 //            s_isInput=s_obj->isInput();
                 //            s_isOutput=s_obj->isOutput();
                 //            s_isAudio=s_obj->isAudioObject();
                 //            s_isMidi=s_obj->isMidiObject();
-        }
+        } else s_obj = 0;
         return* this;
     }
     ObjectPtr& operator=(const ObjectPtr& other) {
         detach();
-        live_mutex(const_cast<ObjectPtr&>(other)->x_ptr) {
+        if (other.data()) live_mutex(const_cast<ObjectPtr&>(other)->x_ptr) {
             s_obj=const_cast<ObjectPtr&>(other).data();
             if(other.data()) {
                 s_obj->s_ptrList.insert(this);
@@ -441,7 +441,7 @@ public:
                 //            s_isAudio=s_obj->isAudioObject();
                 //            s_isMidi=s_obj->isMidiObject();
             }
-        }
+        } else s_obj = 0;
         return* this;
     }
 

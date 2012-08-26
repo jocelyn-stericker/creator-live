@@ -162,17 +162,14 @@ live::Object::Object(QString cname, bool isPhysical, bool allowMixer)
 }
 
 live::Object::~Object() {
-    kill_kitten {
-        kill();
-        for (int i=0;i<2;i++) delete[] mixer_data[i];
-
-        QTimer::singleShot(0,live::object::singleton(),SLOT(notify()));
-    }
+    kill();
+    for (int i=0;i<2;i++) delete[] mixer_data[i];
+    QTimer::singleShot(0,live::object::singleton(),SLOT(notify()));
 }
 
 void live::Object::kill() {
+    if (!SecretMidi::me) new SecretMidi;
     kill_kitten {
-        if (!SecretMidi::me) new SecretMidi;
         SecretMidi::me->mRemoveWithheld_object_dest(this);
         while (aConnections.size()) this->audioConnect(aConnections[0]);
         while (mConnections.size()) this->midiConnect(mConnections[0]);
@@ -335,6 +332,7 @@ public:
 };
 
 void live::Object::mixer_resetStatus() {
+    QList<float*> toDestroy;
     live_mutex(x_mixers) {
         mixer_nframes=live::audio::nFrames();
         mixer_at[0]=mixer_at[1]=0;
@@ -343,7 +341,7 @@ void live::Object::mixer_resetStatus() {
             for (int i = 0; i < 2; ++i) {
                 float* data = mixer_data[i];
                 mixer_data[i]=0;
-                if (data) QtConcurrent::run(new MixerDataDestroyer(data), &MixerDataDestroyer::go);
+                if (data) toDestroy.push_back(data);
             }
         } else if (aInverseConnections.size() > 1 && !mixer_data[0]) {
             for (int i = 0; i < 2; ++i) {
@@ -351,6 +349,8 @@ void live::Object::mixer_resetStatus() {
             }
         }
     }
+    for (int i = 0; i < toDestroy.size(); ++i)
+        QtConcurrent::run(new MixerDataDestroyer(toDestroy[i]), &MixerDataDestroyer::go);
 }
 
 void live::Object::mixer_process(const float* data, int chan) {
@@ -492,10 +492,15 @@ live::ObjectChain::ObjectChain() {
 }
 
 void live::ObjectPtr::detach() {
+    if (!s_obj)
+        return;
 
-    if (s_obj) live_mutex(s_obj->x_ptr) {
+    live_mutex(s_obj->x_ptr) {
         s_obj->s_ptrList.remove(this);
     }
+
+    // FIXME: we should assert that we're not currently killing kittens.
+    live::Object* toDelete = 0;
 
     live_mutex(s_obj->x_ptr) {
         if (!valid()) return;
@@ -504,7 +509,7 @@ void live::ObjectPtr::detach() {
                 if (s_obj->qoThis())
                     s_obj->qoThis()->deleteLater();
                 else
-                    delete s_obj;
+                    toDelete = s_obj;
             }
         }
         for (QMap<QString,ObjectPtr*>::iterator it=Object::zombies->begin(); it!=Object::zombies->end(); ++it) {
@@ -514,6 +519,7 @@ void live::ObjectPtr::detach() {
         }
         s_obj=0;
     }
+    delete toDelete;
 }
 
 bool live::ObjectPtr::valid() const {
