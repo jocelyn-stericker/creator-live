@@ -154,7 +154,6 @@ void AudioIn::proc()
 void AudioOut::initConnection() {
     live_mutex(SecretAudio::x_sa) {
         if (!s_counter) for (int i=0; i<chans; i++) {
-            std::cerr << "Reg port"<<QString( "clOut" + s_name + "_" + QString::number( s_counter*10+i  ) ).toAscii().data() << std::endl;
             s_port_[i].push_back(SecretAudio::singleton->getOutputPort());
 
             jackConnectPorts( SecretAudio::singleton->getOutputPortId(), s_realnames[i], 0 );

@@ -49,55 +49,56 @@ SecretMidi
 SecretMidi* SecretMidi::me=0;
 
 void SecretMidi::init() {
+
     live_mutex(x_midi) {
-        Q_ASSERT(!SecretMidi::me);
+        if (SecretMidi::me)
+            return;
+
         SecretMidi::me=this;
-
-        live_mutex(x_midi) {
-            Pm_GetDefaultInputDeviceID();
-            Pt_Start( 0, 0, 0 );
-
-            int lastI=-1;
-            int lastO=-1;
-            for ( int i = 0; i < Pm_CountDevices(); i++ ) {
-                const PmDeviceInfo* info = Pm_GetDeviceInfo(i);
-                if (info-> input) {
-                    pmins.push_back(NULL);
-
-                    Pm_OpenInput
-                            (
-                                &pmins.back(),
-                                i,
-                                DRIVER_INFO,
-                                INPUT_BUFFER_SIZE,
-                                TIME_PROC,
-                                TIME_INFO
-                                );
-
-                    inputs.push_back( new MidiIn(info->name, ++lastI) );
-                    // inputs correspond to pmins. They are equivalents in different systems
-                } else if (info->output) {
-                    pmouts.push_back(NULL);
-
-                    Pm_OpenOutput
-                            (
-                                &pmouts.back(),
-                                i,
-                                DRIVER_INFO,
-                                OUTPUT_BUFFER_SIZE,
-                                TIME_PROC,
-                                TIME_INFO,
-                                0
-                                );
-
-                    outputs.push_back( new MidiOut(info->name, ++lastO ) );
-                    // outputs correspond to pmouts. They are equivalents in different systems
-                }
-            }
-        }
-
-        this->start();
     }
+
+    Pm_GetDefaultInputDeviceID();
+    Pt_Start( 0, 0, 0 );
+
+    int lastI=-1;
+    int lastO=-1;
+    for ( int i = 0; i < Pm_CountDevices(); i++ ) {
+        const PmDeviceInfo* info = Pm_GetDeviceInfo(i);
+        if (info-> input) {
+            pmins.push_back(NULL);
+
+            Pm_OpenInput
+                    (
+                        &pmins.back(),
+                        i,
+                        DRIVER_INFO,
+                        INPUT_BUFFER_SIZE,
+                        TIME_PROC,
+                        TIME_INFO
+                        );
+
+            inputs.push_back( new MidiIn(info->name, ++lastI) );
+            // inputs correspond to pmins. They are equivalents in different systems
+        } else if (info->output) {
+            pmouts.push_back(NULL);
+
+            Pm_OpenOutput
+                    (
+                        &pmouts.back(),
+                        i,
+                        DRIVER_INFO,
+                        OUTPUT_BUFFER_SIZE,
+                        TIME_PROC,
+                        TIME_INFO,
+                        0
+                        );
+
+            outputs.push_back( new MidiOut(info->name, ++lastO ) );
+            // outputs correspond to pmouts. They are equivalents in different systems
+        }
+    }
+
+    this->start();
 }
 
 void SecretMidi::refresh() {

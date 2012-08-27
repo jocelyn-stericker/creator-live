@@ -216,6 +216,8 @@ protected:
     QList<ObjectPtr> aInverseConnections;
     QList<ObjectPtr> mInverseConnections;
 
+    bool s_isDestroying;
+
     /***** MINI MIXER *****/
         float* mixer_data[2];
         quint32 mixer_nframes;

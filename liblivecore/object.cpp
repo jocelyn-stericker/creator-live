@@ -87,7 +87,7 @@ LIBLIVECORESHARED_EXPORT void live::Object::endProc(bool oversized) {
         quint32 l = ts.tv_sec * 1000000000 + ts.tv_nsec;
         if (l - s_asyncTime.back() > 10000000) {
             qCritical() << "My threading skills are bad, and I feel bad.\n";
-            if (!oversized) TCRASH();
+//            if (!oversized) TCRASH();
         }
         s_asyncTime.pop_back();
     }
@@ -147,6 +147,7 @@ live::Object::Object(QString cname, bool isPhysical, bool allowMixer)
   , s_allowMixer(allowMixer)
   , aConnections()
   , mConnections()
+  , s_isDestroying(0)
   { if (isPhysical) {
         for (int i=0;i<zombies->values(cname).size();i++) {
             zombies->values(cname)[i]->restore(this);
@@ -162,15 +163,14 @@ live::Object::Object(QString cname, bool isPhysical, bool allowMixer)
 }
 
 live::Object::~Object() {
+    s_isDestroying = 1;
     kill();
     for (int i=0;i<2;i++) delete[] mixer_data[i];
     QTimer::singleShot(0,live::object::singleton(),SLOT(notify()));
 }
 
 void live::Object::kill() {
-    if (!SecretMidi::me) new SecretMidi;
     kill_kitten {
-        SecretMidi::me->mRemoveWithheld_object_dest(this);
         while (aConnections.size()) this->audioConnect(aConnections[0]);
         while (mConnections.size()) this->midiConnect(mConnections[0]);
         while (aInverseConnections.size()) aInverseConnections[0]->audioConnect(this);
@@ -179,11 +179,12 @@ void live::Object::kill() {
         Q_ASSERT(!mConnections.size());
         Q_ASSERT(!aInverseConnections.size());
         Q_ASSERT(!mInverseConnections.size());
-        qDebug() << "Pointer zombified"<<s_name<<s_ptrList.size();
-        for (QSet<ObjectPtr*>::iterator it = s_ptrList.begin(); it != s_ptrList.end(); ++it) {
-            (*it)->obliviate();
-            zombies->insertMulti(s_name,*it);
-        }
+    }
+    if (!SecretMidi::me) new SecretMidi;
+    SecretMidi::me->mRemoveWithheld_object_dest(this);
+    for (QSet<ObjectPtr*>::iterator it = s_ptrList.begin(); it != s_ptrList.end(); ++it) {
+        (*it)->obliviate();
+        zombies->insertMulti(s_name,*it);
     }
 }
 
@@ -505,10 +506,10 @@ void live::ObjectPtr::detach() {
     live_mutex(s_obj->x_ptr) {
         if (!valid()) return;
         if (s_obj) {
-            if (!s_obj->s_ptrList.size()&&s_obj->isTemporary()) {
-                if (s_obj->qoThis())
+            if (!s_obj->s_ptrList.size()&&s_obj->isTemporary()) { // FIXME
+                if (s_obj->qoThis() && !s_obj->s_isDestroying)
                     s_obj->qoThis()->deleteLater();
-                else
+                else if (!s_obj->s_isDestroying)
                     toDelete = s_obj;
             }
         }
