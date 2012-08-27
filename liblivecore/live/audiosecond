@@ -10,8 +10,9 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef AUDIOSECOND_H
 #define AUDIOSECOND_H
 
-#include "live/audio"
-#include "live/object"
+#include <live/audio>
+#include <live/audiograph>
+#include <live/object>
 #include <QReadWriteLock>
 #include <QtConcurrentRun>
 
@@ -22,11 +23,13 @@ class LIBLIVECORESHARED_EXPORT AudioSecond
        /*SAMPLE RATE->VERIFY->003*/
     quint32 s_sampleOffset;     /*004*/
     float* s_data;          /*005*/
+    QMap<long, AudioGraph*> s_graphs; /*???*/
 public:
     friend class AudioContainer;
     AudioSecond(quint32 cbegin)
       : s_sampleOffset(cbegin)
       , s_data(new float[live::audio::sampleRate()])
+      , s_graphs()
       { for(int i=0;i<live::audio::sampleRate();i++)
         {
             s_data[i]=0.0f;
@@ -34,9 +37,51 @@ public:
     }
     ~AudioSecond() { delete[]s_data; }
 
-    float& operator[](const int&sample)
+    inline float& operator[](const int&sample)
     {
         return s_data[sample-s_sampleOffset];
+    }
+
+    void newGraph(const long& boxSize)
+    {
+        for (QMap<long, AudioGraph*>::iterator it = s_graphs.begin(); it != s_graphs.end(); ++it) {
+            if ((*it)->size() == boxSize) {
+                (*it)->incrRef();
+                return;
+            }
+        }
+        AudioGraph* g = new AudioGraph(this, boxSize);
+        s_graphs.insert(boxSize,g);
+    }
+
+    inline void deleteGraph(const long& boxSize)
+    {
+        AudioGraph* g = s_graphs.value(boxSize);
+        Q_ASSERT(g);
+        if (!g) return;
+
+        if (g->decrRef()) {
+            s_graphs.remove(boxSize);
+            delete g;
+        }
+    }
+
+    void updateGraph(const long& frame) {
+        for (QMap<long, AudioGraph*>::iterator it = s_graphs.begin(); it != s_graphs.end(); ++it) {
+            it.value()->updateBoxWithFrame(frame);
+        }
+    }
+
+    void pointGraph(const long& frame) {
+        for (QMap<long, AudioGraph*>::iterator it = s_graphs.begin(); it != s_graphs.end(); ++it) {
+            it.value()->setPos(frame);
+        }
+    }
+
+    void appendGraph(const long& frames) {
+        for (QMap<long, AudioGraph*>::iterator it = s_graphs.begin(); it != s_graphs.end(); ++it) {
+            it.value()->append(frames);
+        }
     }
 
     static AudioSecond* load(const QByteArray&);
@@ -46,6 +91,7 @@ private:
     AudioSecond(const AudioSecond&)
       : s_sampleOffset(0)
       , s_data()
+      , s_graphs()
       { TCRASH();
     }
     AudioSecond& operator=(const AudioSecond&) {
@@ -62,6 +108,8 @@ protected:
     QList<AudioSecond*> s_data; /*004*/
     quint32 s_dataSize;             /*004*/
     QReadWriteLock s_readLock;          /*N/A*/
+    QMap<long, int> s_graphs; /* length -> refCount */
+    int s_graphPointingTo;
 public:
     friend class AudioTrack;
     AudioContainer()
@@ -70,7 +118,37 @@ public:
       , s_data()
       , s_dataSize(0)
       , s_readLock(QReadWriteLock::NonRecursive)
+      , s_graphs()
+      , s_graphPointingTo(-1)
       {
+    }
+
+    void newGraph(long size) {
+        if (++s_graphs[size] == 1) {
+            for (int i = 0; i < s_data.size(); ++i) {
+                s_data[i]->newGraph(size);
+            }
+        }
+    }
+
+    void regSecond(AudioSecond* s) {
+        for (QMap<long, int>::iterator it = s_graphs.begin(); it != s_graphs.end(); ++it) {
+            for (int i = 0; i < it.value(); ++i) {
+                s->newGraph(it.key());
+            }
+        }
+    }
+
+    void pointGraph(long frame) {
+        if (int(frame/sampleRate) < s_data.size()) {
+            s_data[(int)(frame/sampleRate)]->pointGraph(frame%sampleRate);
+            s_graphPointingTo = (int)(frame/sampleRate);
+        }
+    }
+
+    void appendGraph(long frames) {
+        if (s_graphPointingTo != -1)
+            s_data[s_graphPointingTo]->appendGraph(frames);
     }
 
     ~AudioContainer()
@@ -96,9 +174,11 @@ public:
         if(!s_data[(int)(frame/sampleRate)])
         {
             s_data[(int)(frame/sampleRate)]=new AudioSecond((frame/sampleRate)*sampleRate);
+            regSecond(s_data[(int)(frame/sampleRate)]);
         }
 
         (*s_data[(int)(frame/sampleRate)])[(int)frame]=data;
+        (*s_data[(int)(frame/sampleRate)]).updateGraph(frame);
     }
 
     const float& getData(const int&frame)
@@ -138,6 +218,7 @@ public:
 
         if(!s_data[(int)frame/sampleRate]) {
             s_data[(int)(frame/sampleRate)]=new AudioSecond((frame/sampleRate)*sampleRate);
+            regSecond(s_data[(int)(frame/sampleRate)]);
         }
 
         if (warning) {

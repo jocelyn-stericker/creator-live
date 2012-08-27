@@ -17,7 +17,8 @@ void live::AudioTrack::aThru(float*proc,int chan) {
 
     float* RAW;
     bool warning = false;
-    int count=s_container[chan]->getRawPointer(s_curPos,RAW,s_playback&&(s_record||s_overdub), &warning);
+    int size;
+    int count=size=s_container[chan]->getRawPointer(s_curPos,RAW,s_playback&&(s_record||s_overdub), &warning);
     if (warning) {
         // as we get xruns if we alloc a second of audio data in this thread,
         // do it async.
@@ -27,7 +28,8 @@ void live::AudioTrack::aThru(float*proc,int chan) {
     unsigned i;
     for (i=0; i<nframes; i++) {
         if ((RAW=RAW?RAW+1:0),--count==-1) {
-            count=s_container[chan]->getRawPointer(s_curPos+i,RAW,s_playback&&(s_record||s_overdub));
+            s_container[chan]->appendGraph(size);
+            count=size=s_container[chan]->getRawPointer(s_curPos+i,RAW,s_playback&&(s_record||s_overdub));
         }
 
         float* b = &(proc[i]);
@@ -232,12 +234,14 @@ void live::AudioTrack::clearData(const float &a, const float &b) {
     //cannot delete container.
     for (int h=0;h<s_chans;h++) {
         float*dataPtr;
-        int counter=s_container[h]->getRawPointer(a,dataPtr);
+        int size;
+        int counter=size=s_container[h]->getRawPointer(a,dataPtr);
         dataPtr-=dataPtr?1:0;
 
         for (int i=a;i<b;i++) {
             if ((dataPtr+=dataPtr?1:0),--counter==-1) {
-                counter=s_container[h]->getRawPointer(i,dataPtr)-1;
+                s_container[h]->appendGraph(size);
+                counter=size=s_container[h]->getRawPointer(i,dataPtr)-1;
             }
             if (dataPtr) {
                 *dataPtr=0.0f;
@@ -351,12 +355,14 @@ bool live::AudioTrack::importFile(QString filename) {
     file.readf(data,frames);
     for (int i=0;i<2;i++) {
         float*dataPtr;
-        int counter=frames?(s_container[i]->getRawPointer(0,dataPtr,1)):0;
+        int size;
+        int counter=size=frames?(s_container[i]->getRawPointer(0,dataPtr,1)):0;
         dataPtr--;
         for (int j = 0; j < frames/2; ++j) kill_kitten {
             if (j!=frames/2) {
                 if ((dataPtr?++dataPtr:0),--counter==-1) {
-                    counter=s_container[i]->getRawPointer(j,dataPtr,1)-1;
+                    s_container[i]->appendGraph(size);
+                    counter=size=s_container[i]->getRawPointer(j,dataPtr,1)-1;
                 }
                 (*dataPtr)=data[j*2+i];
             }

@@ -223,14 +223,9 @@ QByteArray live::Event::save() const
     //////////////////////////////////////////////////////////////////
 
     /*007*/
-    P_BOOL(x->isShadow);
-
-    //////////////////////////////////////////////////////////////////
-
-    /*008*/
     P_INT32(x->flareId);
 
-    /*009*/ (verify(ret,(QString)"END live::Event"));
+    /*008*/ (verify(ret,(QString)"END live::Event"));
 
     RETURN;
 }

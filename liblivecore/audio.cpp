@@ -160,7 +160,7 @@ void AudioOut::initConnection() {
         }
         s_counter++;
     }
-    jack_cycle_wait(getJackClient());
+//    jack_cycle_wait(getJackClient()); (FIXME)
 }
 #endif
 

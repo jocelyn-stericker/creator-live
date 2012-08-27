@@ -70,7 +70,6 @@ void live::MidiTrack::stopPlayback() {
     mOut(&can,&p);
 
     for (int i=0; i<s_data->size(); i++) {
-        (*s_data)[i]->isShadow=0;
         if ((*s_data)[i]->simpleStatus()==Event::NOTE_ON||(*s_data)[i]->simpleStatus()==Event::NOTE_OFF) {
             // -> I don't get this assert. I'll look at it later.
 //            Q_ASSERT(!((*s_data)[i]->velocity()&&!(*s_data)[i]->buddy));  /*all objects should have buddies via panic()*/
@@ -116,7 +115,7 @@ void live::MidiTrack::mIn(const Event *ev, ObjectChain*p) {
             for ( i = s_data->size()-1; i>=0; i-- ) {
                 if ( (*s_data)[i]->time > t ) break;
                 if ( (*s_data)[i]->time.toTime_ms() <= t.toTime_ms() ) {
-                    if ( !b_overdub && (b_recStart<(*s_data)[i]->time) &&!(*s_data)[i]->isShadow ) {
+                    if ( !b_overdub && (b_recStart<(*s_data)[i]->time)) {
                         delete s_data->takeAt( i );
                         emit dataUpdated();
                         if ( i+1 < *s_data ) {
@@ -303,7 +302,7 @@ void live::MidiTrack::timeEvent() {
             for ( i = s_data->size()-1; i>=0; i-- ) {
                 if ( (*s_data)[i]->time > t ) break;
                 if ( (*s_data)[i]->time.toTime_ms() <= t.toTime_ms() ) {
-                    if ( !b_overdub && (b_recStart<(*s_data)[i]->time) && !(*s_data)[i]->isShadow ) {
+                    if ( !b_overdub && (b_recStart<(*s_data)[i]->time)) {
                         delete s_data->takeAt( i );
                         emit dataUpdated();
                         if ( i+1 < *s_data ) {

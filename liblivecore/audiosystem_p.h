@@ -128,7 +128,7 @@ public:
       {
     }
 
-    virtual void aIn(const float*data,int chan, live::Object*p)
+    virtual void aIn(const float*data,int chan, live::Object*)
     {
         aOut(data,chan,this);
     }

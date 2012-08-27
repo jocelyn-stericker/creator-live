@@ -28,6 +28,7 @@ list (APPEND liblivecore_cpp
     chord.cpp 
     time.cpp 
     object.cpp 
+    audiograph.cpp
     audiotrack.cpp 
     miditrack.cpp 
     midieventcounter.cpp 
@@ -47,6 +48,7 @@ list (APPEND liblivecore_cpp
 
 list (APPEND liblivecore
     live/audio 
+    live/audiograph
     live/liblivecore_global 
     live/songsystem 
     live/timesignature 
