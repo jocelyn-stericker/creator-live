@@ -1,0 +1,50 @@
+/*******************************************************
+
+    Part of the Creator Live Music Production Suite.
+Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
+
+                  All rights reserved.
+
+*******************************************************/
+
+#ifndef AUDIOGRAPH_H
+#define AUDIOGRAPH_H
+
+#include <QObject>
+
+namespace live {
+
+class AudioSecond;
+
+class AudioGraph
+{
+    live::AudioSecond* m_second;
+    long m_boxSize;
+    long m_boxCount;
+    float* m_mins;
+    float* m_maxs;
+
+    long m_box;
+    long m_pos;
+
+    int m_refCount;
+public:
+    AudioGraph(live::AudioSecond* second, long boxSize);
+    long size() const { return m_boxSize; }
+
+    inline void resetBox(long box) { m_mins[box] = m_maxs[box] = 0.0f; }
+    void setPos(long pos); // updates data.
+    int pos() const { return m_box * m_boxSize + m_pos; }
+    void append(int length);
+
+    void updateBoxWithFrame(long pos);
+    const float* getMinimums() const { return m_mins; }
+    const float* getMaximums() const { return m_maxs; }
+
+    void incrRef() { ++m_refCount; }
+    bool decrRef() { return !--m_refCount; }
+};
+
+}
+
+#endif // AUDIOGRAPH_H
