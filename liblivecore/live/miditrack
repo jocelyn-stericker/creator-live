@@ -26,7 +26,6 @@ public:
     LIVE_EFFECT
     bool mOn() const{ return 1; }
     bool aOn() const { return 0; }
-    MidiEventCounter* s_ec;
     /*003*/ Bound<int> b_curPos;       //let s_curPos rep time in msec
     /*004*/ Bound<int> b_lastPos;
     /*005*/ Bound<int> b_recStart;     //msec at which recording began
@@ -117,7 +116,6 @@ private:
       : QObject()
       , Object("TCRASH", 0, 0)
       , x_mTrack(QMutex::Recursive)
-      , s_ec(0)
       , b_curPos(0)
       , b_lastPos(0)
       , b_recStart(0)

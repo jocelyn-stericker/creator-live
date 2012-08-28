@@ -52,7 +52,7 @@ public:
     static int s_lastId;
     QList<live::Event> s_missedList;
 
-    LooperApp(live::MidiTrack*mt=0,live::AudioTrack*at=0,live::MidiEventCounter*mc=0);
+    LooperApp(live::MidiTrack*mt=0,live::AudioTrack*at=0);
 
     const bool& isMute() const;
     int pos() const;

@@ -11,7 +11,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 using namespace live;
 
-MidiEventCounter::MidiEventCounter() : Object("Midi Event Counter",false,false), shift(0),remit(1) {
+MidiEventCounter::MidiEventCounter() : Object("Midi Event Counter",false,false), shift(0) {
     setTemporary(0);
     for (int i=0;i<200;i++)
         on[i]=0;
@@ -38,19 +38,28 @@ int MidiEventCounter::velocity(int note) {
     return on[note];
 }
 
+QList<Event> MidiEventCounter::flush() {
+    QList<Event> ret;
+    for (int i = 0; i < 127; ++i) {
+        if (on[i]) {
+            Event evoff(0x90, i, 0);
+            evoff.time = live::midi::getTime();
+            ret.push_back(evoff);
+            on[i] = 0;
+        }
+    }
+    return ret;
+
+}
+
 void MidiEventCounter::panic() {
+    QList<Event> on = flush();
+
     ObjectChain p;
     p.push_back(this);
-    for (qint16 i=0;i<127;i++) {
-        if (!on[i]) continue;
-        Event* evoff=new Event(0x90,i,0);
-//            evoff->time=MidiSys::getTime();
-        mOut(evoff,&p);
-        delete evoff;
-        on[i]=0;
+    for (int i = 0; i < on.size(); ++i) {
+        mOut(&on[i], &p);
     }
-    Event evoff(0xB0,64,0);
-    mOut(&evoff,&p);
 }
 
 MidiEventCounter::~MidiEventCounter() {}

@@ -157,19 +157,9 @@ QByteArray LooperApp::save()
         at = AudioTrack::load(xba);
     }
 
-    /*005*/
-    MidiEventCounter*mc=0;
-
-    xba=IS_SAVE?x->s_counter->save():QByteArray();
-    ret IO xba;
     if (IS_LOAD)
     {
-        mc = MidiEventCounter::load(xba);
-    }
-
-    if (IS_LOAD)
-    {
-        x=new LooperApp(mt,at,mc);
+        x=new LooperApp(mt,at);
     }
 
     /*006/7*/
@@ -258,21 +248,10 @@ QByteArray SequencerApp::save()
         caudioTrack = AudioTrack::load(xba);
     }
 
-    /*005*/
-    MidiEventCounter* cmidicounter=0;
-    Q_UNUSED(cmidicounter);
-
-    xba=IS_SAVE?x->s_counter->save():QByteArray();
-    ret IO xba;
-    if (IS_LOAD)
-    {
-        cmidicounter = MidiEventCounter::load(xba);
-    }
-
     //
     if (IS_LOAD)
     {
-        x=new SequencerApp("SEQUENCER",cmidiTrack,caudioTrack,cmidicounter,0);
+        x=new SequencerApp("SEQUENCER",cmidiTrack,caudioTrack);
     }
 
     //because audio/midi tracks take time to load, we might be a bit off now...
@@ -283,20 +262,20 @@ QByteArray SequencerApp::save()
 
     //////////////////////////////////////////////////////////////////
 
-    /*006*/
+    /*005*/
     P_BOOL(x->b_clipped);
 
-    /*007*/
+    /*006*/
     P_INT32(x->s_id);
     if (x->s_id>(SequencerSys::self?SequencerSys::self:new SequencerSys)->_lastId)
     {
         (SequencerSys::self?SequencerSys::self:new SequencerSys)->_lastId=x->s_id;
     }
 
-    /*008*/
+    /*007*/
     P_INT32(x->s_scale);
 
-    /*009*/
+    /*008*/
     (verify(ret,(QString)"END SequencerApp"));
 
     RETURN;

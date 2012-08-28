@@ -13,12 +13,11 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 using namespace live;
 //using namespace live_widgets;
 
-SequencerApp::SequencerApp(QString name,MidiTrack*cmidiTrack,AudioTrack*caudioTrack,MidiEventCounter*cmidicounter,bool newId) :
+SequencerApp::SequencerApp(QString name,MidiTrack*cmidiTrack,AudioTrack*caudioTrack,bool newId) :
     Object(name,false,false),
     s_midiTrack(cmidiTrack),
     s_audioTrack(caudioTrack),
     s_cheat(0),
-    s_counter(cmidicounter),
     b_clipped(0),
     s_id(newId?SequencerSys::newIdForTrack():-1),
     s_audioOverdubForced(0),
@@ -26,7 +25,6 @@ SequencerApp::SequencerApp(QString name,MidiTrack*cmidiTrack,AudioTrack*caudioTr
 {
     Q_ASSERT(name=="SEQUENCER"||name=="LOOPER");    //awkward inheritance
     s_midiTrack->hybridConnect(this);
-    s_counter->hybridConnect(s_midiTrack);
 
     s_audioTrack->hybridConnect(this);
 }
@@ -34,10 +32,8 @@ SequencerApp::SequencerApp(QString name,MidiTrack*cmidiTrack,AudioTrack*caudioTr
 
 SequencerApp::~SequencerApp()
 {
-    qDebug() << "!!DEL";
     delete s_midiTrack;
     delete s_audioTrack;
-    delete s_counter;
 }
 
 const bool& SequencerApp::isRecord() const
@@ -192,7 +188,6 @@ void SequencerApp::mIn(const Event *data, ObjectChain*p)
         return;
     }
     p->push_back(this);
-    s_counter->mIn(data,p);
     s_midiTrack->mIn(data,p);
     p->pop_back();
 }

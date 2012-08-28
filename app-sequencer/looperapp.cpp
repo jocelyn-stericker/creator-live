@@ -14,8 +14,8 @@ using namespace live;
 
 int LooperApp::s_lastId=-1;
 
-LooperApp::LooperApp(MidiTrack*mt,AudioTrack*at,MidiEventCounter*mc) :
-    SequencerApp("LOOPER",mt=(mt?mt:new MidiTrack),at=(at?at:new AudioTrack(2)),mc=(mc?mc:new MidiEventCounter),0),
+LooperApp::LooperApp(MidiTrack*mt,AudioTrack*at) :
+    SequencerApp("LOOPER",mt=(mt?mt:new MidiTrack),at=(at?at:new AudioTrack(2)),0),
     b_loopMode(Off),
     b_loopLength(0),
     s_id_looper(++s_lastId)

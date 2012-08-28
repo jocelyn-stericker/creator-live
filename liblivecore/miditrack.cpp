@@ -59,8 +59,7 @@ void live::MidiTrack::startPlayback() {
 
 void live::MidiTrack::stopPlayback() {
     Q_ASSERT(b_playback);
-    s_ec->panic();
-
+    mPanic();
 
     //FLARE:
     Event can;
@@ -81,12 +80,11 @@ void live::MidiTrack::stopPlayback() {
 }
 
 void live::MidiTrack::mIn(const Event *ev, ObjectChain*p) {
+    if (p->size() && cast<MidiEventCounter*>(p->back()) && s_thru) {
+        mOut(ev,p);
+        return;
+    }
     live_mutex(x_mTrack) {
-        if (p->size()&&p->back()==s_ec&&s_thru) {
-
-            mOut(ev,p);
-            return;
-        }
 
         if (isPlay()) {
             b_curPos=live::midi::getTime_msec()-b_systemTimeStart+b_recStart;
@@ -157,7 +155,7 @@ void live::MidiTrack::mIn(const Event *ev, ObjectChain*p) {
 live::MidiTrack::MidiTrack()
   : Object("MIDI Track",false,false)
   , x_mTrack(QMutex::Recursive)
-  , s_ec(new MidiEventCounter)
+
   , b_curPos(0)
   , b_lastPos(0)
   , b_recStart(-1)
@@ -170,9 +168,6 @@ live::MidiTrack::MidiTrack()
   , mTrack_id(++lastId)
   , s_thru(1)
   { setTemporary(0);
-    s_ec->remit=0;
-    this->hybridConnect(s_ec);
-    s_ec->hybridConnect(this);
 }
 
 const bool& live::MidiTrack::isRecord() const {

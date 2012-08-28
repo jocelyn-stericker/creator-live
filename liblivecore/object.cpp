@@ -15,6 +15,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live/mapping>
 #include <live/midi>
 #include <live/midievent>
+#include <live/midieventcounter>
 #include <live/object>
 
 #include <QtConcurrentRun>
@@ -148,6 +149,7 @@ live::Object::Object(QString cname, bool isPhysical, bool allowMixer)
   , aConnections()
   , mConnections()
   , s_isDestroying(0)
+  , s_ec(new live::MidiEventCounter())
   { if (isPhysical) {
         for (int i=0;i<zombies->values(cname).size();i++) {
             zombies->values(cname)[i]->restore(this);
@@ -208,8 +210,9 @@ void live::Object::mOut(const live::Event *data, live::ObjectChain* p) {
         *x=*data;
         SecretMidi::me->mWithhold(x,*p,this);    //now owner.
     } else for (int i=0;i<mConnections.size();i++) {
-        live::Event*x=new live::Event;
-        *x=*data;
+        s_ec->mIn(data,p);
+
+        live::Event*x=new live::Event(*data);
         x->buddy=0;
         mConnections[i]->mIn(x,p);
         delete x;
@@ -229,6 +232,14 @@ void live::Object::mOutverse(const live::Event *data, live::ObjectChain* p) {
         mConnections[i]->mInverse(x,p);
         delete x;
     }
+}
+
+void live::Object::mPanic() {
+    QList<live::Event> ons = s_ec->flush();
+    live::ObjectChain me;
+    me.push_back(this);
+    for (int i = 0; i < ons.size(); ++i)
+        mOut(&ons[i], &me);
 }
 
 
@@ -289,10 +300,10 @@ void live::doAudioConnect(const live::Object* al,const live::Object* bl) {
 }
 
 void live::doMidiConnect(const live::Object* al, const live::Object* bl) {
+    live::Object* a=const_cast<live::Object*>(al);
+    live::Object* b=const_cast<live::Object*>(bl);
+    b->mPanic();
     live::Object::beginProc(); {
-        live::Object* a=const_cast<live::Object*>(al);
-        live::Object* b=const_cast<live::Object*>(bl);
-
         bool ok=1;
         for (int i=0;i<b->mConnections.size();i++) if (b->mConnections[i].data()==a) ok=0;
 

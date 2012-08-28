@@ -24,17 +24,14 @@ public:
     live::MidiTrack* s_midiTrack;                 /*003*/
     live::AudioTrack* s_audioTrack;               /*004*/
     LooperApp* s_cheat;                     /*N/A*/
-        //null unless LooperApp
-    live::MidiEventCounter* s_counter;            /*005*/
-    live::Bound<bool> b_clipped;                  /*006*/
-    int s_id;                               /*007*/ /*006 in looper*/
+    live::Bound<bool> b_clipped;                  /*005*/
+    int s_id;                               /*006*/ /*007 in looper*/
     bool s_audioOverdubForced;                   /*N/A*/
-    int s_scale;                            /*008*/
+    int s_scale;                            /*007*/
 
     QMutex x_sequencer;
 
-    SequencerApp(QString s_name="SEQUENCER",live::MidiTrack*cmidiTrack=new live::MidiTrack,live::AudioTrack*caudioTrack=new live::AudioTrack(2),
-                 live::MidiEventCounter*cmidicounter=new live::MidiEventCounter(),bool newId=1);
+    SequencerApp(QString s_name="SEQUENCER", live::MidiTrack*cmidiTrack=new live::MidiTrack, live::AudioTrack*caudioTrack=new live::AudioTrack(2), bool newId=1);
 
     virtual ~SequencerApp();
 

@@ -65,7 +65,6 @@ class Ambition
     live::ObjectChain s_chain;        /*004*/
     live::ObjectPtr s_output;         /*005*/
     live::ObjectPtr s_loopbackOut;    /*006*/
-    live::MidiEventCounter* s_ec;
     QList<Connection*> s_connections;
     friend class live::Object;
     QMutex x_ambition;
@@ -340,7 +339,6 @@ private:
       , s_chain()
       , s_output()
       , s_loopbackOut()
-      , s_ec(0)
       , s_connections()
       , x_ambition(QMutex::Recursive)
       , b_output()

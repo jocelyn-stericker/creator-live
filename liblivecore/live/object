@@ -31,6 +31,7 @@ namespace live {
 
 class Ambition;
 class Event;
+class MidiEventCounter;
 class ObjectPtr;
 class Object;
 
@@ -191,6 +192,8 @@ public:
     int aInverseConnectionCount() const { return aInverseConnections.size(); }
     int mInverseConnectionCount() const { return mInverseConnections.size(); }
 
+    void mPanic();
+
 protected:
     QString s_name;
     bool s_aOn;
@@ -217,6 +220,8 @@ protected:
     QList<ObjectPtr> mInverseConnections;
 
     bool s_isDestroying;
+
+    MidiEventCounter* s_ec;
 
     /***** MINI MIXER *****/
         float* mixer_data[2];
