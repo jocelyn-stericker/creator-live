@@ -53,8 +53,8 @@ void AudioGraph::append(int length) {
         }
         ++MIN;
         ++MAX;
-        resetBox(++m_box);
         m_pos = 0;
+        resetBox(++m_box);
     }
 }
 

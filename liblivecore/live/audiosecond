@@ -78,6 +78,11 @@ public:
         }
     }
 
+    long framesRemainingInGraph() {
+        if (!s_graphs.size()) return 0;
+        return live::audio::sampleRate() - s_graphs.begin().value()->pos();
+    }
+
     void appendGraph(const long& frames) {
         for (QMap<long, AudioGraph*>::iterator it = s_graphs.begin(); it != s_graphs.end(); ++it) {
             it.value()->append(frames);
@@ -141,14 +146,26 @@ public:
 
     void pointGraph(long frame) {
         if (int(frame/sampleRate) < s_data.size()) {
-            s_data[(int)(frame/sampleRate)]->pointGraph(frame%sampleRate);
             s_graphPointingTo = (int)(frame/sampleRate);
+            s_data[s_graphPointingTo]->pointGraph(frame%sampleRate);
         }
     }
 
     void appendGraph(long frames) {
-        if (s_graphPointingTo != -1)
-            s_data[s_graphPointingTo]->appendGraph(frames);
+        while (s_graphPointingTo != -1) {
+            s_data[s_graphPointingTo]->appendGraph(qMin(frames, s_data[s_graphPointingTo]->framesRemainingInGraph()));
+            frames -= s_data[s_graphPointingTo]->framesRemainingInGraph();
+            if (frames >= 0) {
+                if (s_graphPointingTo + 1 < s_data.size())
+                    ++s_graphPointingTo;
+                else {
+                    s_graphPointingTo = -1;
+                    return;
+                }
+            } else {
+                return;
+            }
+        }
     }
 
     ~AudioContainer()
@@ -197,6 +214,7 @@ public:
     //if called for the next frame.
     //By default, if no data exists(i.e., it is all null), data will be returned as
     //a null pointer. If instead, data should be created, forceCreation should be true.
+    //Remember to set the graph position, and to append graph after use.
     int getRawPointer(const quint32&frame,float*& data,bool forceCreation=0, bool* warning = 0, bool enforceAudio = 1)
     {
         if (enforceAudio)

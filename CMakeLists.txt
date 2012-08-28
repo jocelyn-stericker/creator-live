@@ -30,7 +30,7 @@ add_subdirectory (bridge)
 add_subdirectory (pluginTester) 
 add_subdirectory (creator-live) 
 
-#add_subdirectory (test) 
+add_subdirectory (test) 
 
 ####################### DEPENDENCIES ########################
 
@@ -91,4 +91,4 @@ add_dependencies (creator-live livemidi)
 add_dependencies (creator-live livesf2)
 add_dependencies (creator-live livevst)
 
-#add_dependencies (test creator-live)
+add_dependencies (test creator-live)

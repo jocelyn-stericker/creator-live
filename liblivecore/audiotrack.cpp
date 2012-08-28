@@ -209,6 +209,8 @@ void live::AudioTrack::setPos(long pos) {
     // TODO: evaluate threadsafety
     pos=(long)(((float)live::audio::sampleRate())*((float)pos)/1000.0f);
     s_curPos=pos;
+    for (int i = 0; i < 2; ++i)
+        s_container[i]->pointGraph(s_curPos);
 }
 
 void live::AudioTrack::aIn(const float *in, int chan, Object*p) {
@@ -231,7 +233,7 @@ void live::AudioTrack::clearData() {
 }
 
 void live::AudioTrack::clearData(const float &a, const float &b) {
-    //cannot delete container.
+    //FIXME: delete data in another thread (i.e., with Container::clear)
     for (int h=0;h<s_chans;h++) {
         float*dataPtr;
         int size;
