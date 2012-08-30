@@ -27,6 +27,11 @@ class LIBLIVECORESHARED_EXPORT SpecificChord : public Chord
 {
     QList<Pitch> s_identity;
 public:
+    SpecificChord()
+      : s_identity()
+      {
+    }
+
     ~SpecificChord() { }
     QList<Pitch> notes(KeySignature);
     QByteArray save();

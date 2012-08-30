@@ -74,7 +74,7 @@ LIBLIVECORESHARED_EXPORT void live::Object::beginAsyncAction() {
 #endif
 }
 
-LIBLIVECORESHARED_EXPORT void live::Object::endProc(bool oversized) {
+LIBLIVECORESHARED_EXPORT void live::Object::endProc(bool/* oversized*/) {
     TheMutex::me->LOCK.unlock();
 
     if (ss_XRUN) {
@@ -146,10 +146,14 @@ live::Object::Object(QString cname, bool isPhysical, bool allowMixer)
   , s_mOn(1)
   , s_temp(1)
   , s_allowMixer(allowMixer)
+  , s_ptrList()
   , aConnections()
   , mConnections()
-  , s_isDestroying(0)
-  , s_ec(new live::MidiEventCounter())
+  , aInverseConnections()
+  , mInverseConnections()
+  , s_isDestroying(false)
+  , s_ec((cname == "Midi Event Counter") ? new live::MidiEventCounter() : 0)
+  , mixer_nframes(-1)
   { if (isPhysical) {
         for (int i=0;i<zombies->values(cname).size();i++) {
             zombies->values(cname)[i]->restore(this);
@@ -210,7 +214,7 @@ void live::Object::mOut(const live::Event *data, live::ObjectChain* p) {
         *x=*data;
         SecretMidi::me->mWithhold(x,*p,this);    //now owner.
     } else for (int i=0;i<mConnections.size();i++) {
-        s_ec->mIn(data,p);
+        if(s_ec) s_ec->mIn(data,p);
 
         live::Event*x=new live::Event(*data);
         x->buddy=0;
@@ -235,6 +239,9 @@ void live::Object::mOutverse(const live::Event *data, live::ObjectChain* p) {
 }
 
 void live::Object::mPanic() {
+    if (!s_ec)
+        return;
+
     QList<live::Event> ons = s_ec->flush();
     live::ObjectChain me;
     me.push_back(this);
@@ -500,7 +507,9 @@ void live::ObjectChain::push_back(live::Object *o) {
     push_back(live::ObjectPtr(o, false));
 }
 
-live::ObjectChain::ObjectChain() {
+live::ObjectChain::ObjectChain()
+  : s_identity()
+  {
 }
 
 void live::ObjectPtr::detach() {

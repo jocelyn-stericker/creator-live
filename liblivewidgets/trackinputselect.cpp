@@ -23,6 +23,9 @@ TrackInputSelect::TrackInputSelect(QWidget*parent, bool popout, bool allowMidi, 
   , s_ui(new Ui_Frame)
   , s_allowMidi(allowMidi)
   , s_allowAudio(allowAudio)
+  , all()
+  , b_trackName("NULL")
+  , b_audio(allowAudio)
   { s_ui->setupUi(this);
 
     connect(s_ui->input_combo,SIGNAL(clicked(QModelIndex)),s_ui->input_combo,SLOT(setCurrentIndex(QModelIndex)));

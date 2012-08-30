@@ -55,74 +55,82 @@
 // MFEvent::MFEvent -- Constructor classes
 //
 
-MFEvent::MFEvent(void) { 
-   time = 0;
-   track = 0;
-   data.allowGrowth();
-   data.setSize(0);
+MFEvent::MFEvent(void)
+  : time(0)
+  , track(0)
+  , data()
+  { data.allowGrowth();
+    data.setSize(0);
 }
 
-MFEvent::MFEvent(int command) { 
-   time = 0;
-   track = 0;
-   data.allowGrowth();
-   data.setSize(1);
-   data[0] = (uchar)command;
+MFEvent::MFEvent(int command)
+  : time(0)
+  , track(0)
+  , data()
+  { data.allowGrowth();
+    data.setSize(1);
+    data[0] = (uchar)command;
 }
 
-MFEvent::MFEvent(int command, int param1) { 
-   time = 0;
-   track = 0;
-   data.allowGrowth();
-   data.setSize(2);
-   data[0] = (uchar)command;
-   data[1] = (uchar)param1;
+MFEvent::MFEvent(int command, int param1)
+  : time(0)
+  , track(0)
+  , data()
+  { data.allowGrowth();
+    data.setSize(2);
+    data[0] = (uchar)command;
+    data[1] = (uchar)param1;
 }
 
-MFEvent::MFEvent(int command, int param1, int param2) { 
-   time = 0;
-   track = 0;
-   data.allowGrowth();
+MFEvent::MFEvent(int command, int param1, int param2)
+  : time(0)
+  , track(0)
+  , data()
+  { data.allowGrowth();
+    data.setSize(3);
+    data[0] = (uchar)command;
+    data[1] = (uchar)param1;
+    data[2] = (uchar)param2;
+}
+
+MFEvent::MFEvent(int aTrack, int command, int param1, int param2)
+  : time(0)
+  , track(aTrack)
+  , data()
+  { data.allowGrowth();
    data.setSize(3);
    data[0] = (uchar)command;
    data[1] = (uchar)param1;
    data[2] = (uchar)param2;
 }
 
-MFEvent::MFEvent(int aTrack, int command, int param1, int param2) { 
-   time = 0;
-   track = aTrack;
-   data.allowGrowth();
-   data.setSize(3);
-   data[0] = (uchar)command;
-   data[1] = (uchar)param1;
-   data[2] = (uchar)param2;
+MFEvent::MFEvent(int aTime, int aTrack, int command, int param1, int param2)
+  : time(aTime)
+  , track(aTrack)
+  , data()
+  { data.allowGrowth();
+    data.setSize(3);
+    data[0] = (uchar)command;
+    data[1] = (uchar)param1;
+    data[2] = (uchar)param2;
 }
 
-MFEvent::MFEvent(int aTime, int aTrack, int command, int param1, int param2) {
-   time = aTime;
-   track = aTrack;
-   data.allowGrowth();
-   data.setSize(3);
-   data[0] = (uchar)command;
-   data[1] = (uchar)param1;
-   data[2] = (uchar)param2;
-}
-
-MFEvent::MFEvent(int aTime, int aTrack, Array<uchar>& someData) {
-   time  = aTime;
-   track = aTrack;
-   data.setSize(someData.getSize());
-   memcpy(data.getBase(), someData.getBase(), sizeof(uchar) * data.getSize());
+MFEvent::MFEvent(int aTime, int aTrack, Array<uchar>& someData)
+  : time(aTime)
+  , track(aTrack)
+  , data()
+  { data.setSize(someData.getSize());
+    memcpy(data.getBase(), someData.getBase(), sizeof(uchar) * data.getSize());
 }
 
 
-MFEvent::MFEvent(MFEvent& mfevent) {
-   time  = mfevent.time;
-   track = mfevent.track;
-   data.setSize(mfevent.data.getSize());
-   memcpy(data.getBase(), mfevent.data.getBase(), 
-      sizeof(uchar) * data.getSize());
+MFEvent::MFEvent(MFEvent& mfevent)
+  : time(mfevent.time)
+  , track(mfevent.track)
+  , data()
+  { data.setSize(mfevent.data.getSize());
+    memcpy(data.getBase(), mfevent.data.getBase(),
+       sizeof(uchar) * data.getSize());
 }
 
 
@@ -453,36 +461,42 @@ int MFEvent::isTimbre(void) {
 // MidiFile::MidiFile --
 //
 
-MidiFile::MidiFile(void) { 
-   ticksPerQuarterNote = 48;             // time base of file
-   trackCount = 1;                       // # of tracks in file
-   theTrackState = TRACK_STATE_SPLIT;    // joined or split
-   theTimeState = TIME_STATE_DELTA;      // absolute or delta
-   events.setSize(1);
-   events[0] = new SigCollection<MFEvent>;
-   events[0]->setSize(0);
-   events[0]->allowGrowth(1);
-   readFileName.setSize(1);
-   readFileName[0] = '\0';
-   timemap.setSize(0);
-   timemapvalid = 0;
+MidiFile::MidiFile(void)
+  : events()
+  , ticksPerQuarterNote(48)
+  , trackCount(1)
+  , theTrackState(TRACK_STATE_SPLIT)
+  , theTimeState(TIME_STATE_DELTA)
+  , readFileName()
+  , timemapvalid(0)
+  , timemap()
+  { events.setSize(1);
+    events[0] = new SigCollection<MFEvent>;
+    events[0]->setSize(0);
+    events[0]->allowGrowth(1);
+    readFileName.setSize(1);
+    readFileName[0] = '\0';
+    timemap.setSize(0);
 }
 
 
-MidiFile::MidiFile(const char* aFile) { 
-   ticksPerQuarterNote = 48;             // time base of file
-   trackCount = 1;                       // # of tracks in file
-   theTrackState = TRACK_STATE_SPLIT;    // joined or split
-   theTimeState = TIME_STATE_DELTA;      // absolute or delta
-   events.setSize(1);
-   events[0] = new SigCollection<MFEvent>;
-   events[0]->setSize(0);
-   events[0]->allowGrowth(1);
-   readFileName.setSize(1);
-   readFileName[0] = '\0';
-   read(aFile);
-   timemap.setSize(0);
-   timemapvalid = 0;
+MidiFile::MidiFile(const char* aFile)
+  : events()
+  , ticksPerQuarterNote(48)
+  , trackCount(1)
+  , theTrackState(TRACK_STATE_SPLIT)
+  , theTimeState(TIME_STATE_DELTA)
+  , readFileName()
+  , timemapvalid(0)
+  , timemap()
+  { events.setSize(1);
+    events[0] = new SigCollection<MFEvent>;
+    events[0]->setSize(0);
+    events[0]->allowGrowth(1);
+    readFileName.setSize(1);
+    readFileName[0] = '\0';
+    read(aFile);
+    timemap.setSize(0);
 }
 
 
@@ -1524,13 +1538,13 @@ int MidiFile::write(ostream& outputfile) {
    ch = (char)( shortdata        & 0xff); outputfile << ch;
 
    // 4. write out the number of tracks.
-   shortdata = getNumTracks();
+   shortdata = ushort(getNumTracks());
    // outputfile.writeBigEndian(shortdata);
    ch = (char)((shortdata >>  8) & 0xff); outputfile << ch;
    ch = (char)( shortdata        & 0xff); outputfile << ch;
 
    // 5. write out the number of ticks per quarternote. (avoiding SMTPE for now)
-   shortdata = getTicksPerQuarterNote();
+   shortdata = ushort(getTicksPerQuarterNote());
    // outputfile.writeBigEndian(shortdata);
    ch = (char)((shortdata >>  8) & 0xff); outputfile << ch;
    ch = (char)( shortdata        & 0xff); outputfile << ch;
@@ -2017,8 +2031,8 @@ void MidiFile::writeVLValue(long aValue, Array<uchar>& outdata) {
 //
 
 int eventcompare(const void* a, const void* b) {
-   MFEvent& aevent = *((MFEvent*)a);
-   MFEvent& bevent = *((MFEvent*)b);
+   MFEvent& aevent = const_cast<MFEvent&>(*((const MFEvent*)a));
+   MFEvent& bevent = const_cast<MFEvent&>(*((const MFEvent*)b));
 
    if (aevent.time > bevent.time) {
       return 1;
@@ -2142,8 +2156,8 @@ ostream& operator<<(ostream& out, MidiFile& aMidiFile) {
 //
 
 int MidiFile::ticksearch(const void* A, const void* B) {
-   _TickTime& a = *((_TickTime*)A);
-   _TickTime& b = *((_TickTime*)B);
+   _TickTime& a = const_cast<_TickTime&>(*((const _TickTime*)A));
+   _TickTime& b = const_cast<_TickTime&>(*((const _TickTime*)B));
 
    if (a.tick < b.tick) {
       return -1;
@@ -2161,8 +2175,8 @@ int MidiFile::ticksearch(const void* A, const void* B) {
 //
 
 int MidiFile::secondsearch(const void* A, const void* B) {
-   _TickTime& a = *((_TickTime*)A);
-   _TickTime& b = *((_TickTime*)B);
+   _TickTime& a = const_cast<_TickTime&>(*((const _TickTime*)A));
+   _TickTime& b = const_cast<_TickTime&>(*((const _TickTime*)B));
 
    if (a.seconds < b.seconds) {
       return -1;

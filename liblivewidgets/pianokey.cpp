@@ -16,9 +16,13 @@
 int live_widgets::PianoKey::s_shiftTwinID = -1;
 live_widgets::PianoKey* live_widgets::PianoKey::s_universe[300] = {0};
 
-live_widgets::PianoKey::PianoKey( qreal x, qreal y, qreal width, qreal height, int id, QGraphicsItem * parent ) :
-    live::Object("Virtual Piano Key (transient)",false,false), QGraphicsRectItem(x, y, width, height, parent), s_virtual(0), s_id(id), s_enabled(0) {
-    setData(-999,"PianoKey");
+live_widgets::PianoKey::PianoKey( qreal x, qreal y, qreal width, qreal height, qint16 id, QGraphicsItem * parent )
+  : live::Object("Virtual Piano Key (transient)",false,false)
+  , QGraphicsRectItem(x, y, width, height, parent)
+  , s_virtual(0)
+  , s_id(id)
+  , s_enabled(0)
+  { setData(-999,"PianoKey");
     s_universe[id]=this;
 }
 
@@ -81,7 +85,7 @@ void live_widgets::PianoKey::mouseReleaseEvent( QGraphicsSceneMouseEvent* ) {
     }
 }
 
-void live_widgets::PianoKey::setID( int id ) {
+void live_widgets::PianoKey::setID( qint16 id ) {
     s_id = id;
 }
 

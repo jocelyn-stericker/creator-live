@@ -13,6 +13,7 @@
 #ifndef _OPTIONS_PRIVATE_H_INCLUDED
 #define _OPTIONS_PRIVATE_H_INCLUDED
 
+#include <QObject>
 
 class option_register {
    public:
@@ -39,7 +40,8 @@ class option_register {
       char*       defaultOption;
       char*       modifiedOption;
       char        type;
-
+private:
+      Q_DISABLE_COPY(option_register)
 };
 
 
@@ -54,7 +56,7 @@ class option_list {
                     ~option_list       ();
 
       int            getIndex          (void);
-      const char*    getName           (void);
+      const char*    getName           (void) const;
       void           setName           (const char* aString);
       void           setIndex          (int anIndex);
 
@@ -62,6 +64,7 @@ class option_list {
       char*          name;
       int            index;
 
+      Q_DISABLE_COPY(option_list)
 };
 
 

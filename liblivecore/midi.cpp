@@ -210,6 +210,7 @@ void SecretMidi::refresh() {
 }
 
 void SecretMidi::run() { // [MIDI THREAD]
+
     live::lthread::midiInit();
 
     forever {
@@ -387,12 +388,12 @@ Physical Ports
 ///////////////////////////////////////////////////////////////////////////////////////
 /*/////////////////////////////////////////////////////////////////////////////////////
 
-MidiIn::MidiIn(QString ccname,int devId) :
-    live::Object(ccname,true,false),
-    valid(1),
-    deviceId(devId) {
-
-    setTemporary(0);
+MidiIn::MidiIn(QString ccname,int devId)
+  : live::Object(ccname,true,false)
+  , valid(1)
+  , deviceId(devId)
+  , s_null(live::audio::null(2))
+  { setTemporary(0);
 
     live::ObjectPtr*x=new live::ObjectPtr[200];
     for (int i=0;i<200;i++) {
@@ -400,8 +401,7 @@ MidiIn::MidiIn(QString ccname,int devId) :
     }
     live::MidiBinding::customKey->insert(this,x);
 
-    s_null=live::audio::null(2);
-    live::audio::null(2)->hybridConnect(this);
+    s_null->hybridConnect(this);
 }
 
 MidiNull::MidiNull() :

@@ -44,7 +44,7 @@ public slots:
         if (!commands.size()) return;
         if (!commands.first().startsWith("MSG ")) return;
         commands.first().remove(0,4);
-        ev.message=commands.first().toInt(&ok);
+        ev.message=commands.first().toShort(&ok);
         if (!ok) return;
         commands.pop_front();
 
@@ -54,7 +54,7 @@ public slots:
         if (!commands.size()) return;
         if (!commands.first().startsWith("DATA1 ")) return;
         commands.first().remove(0,6);
-        ev.data1=commands.first().toInt(&ok);
+        ev.data1=commands.first().toShort(&ok);
         if (!ok) return;
         commands.pop_front();
 
@@ -62,7 +62,7 @@ public slots:
         if (!commands.size()) return;
         if (!commands.first().startsWith("DATA2 ")) return;
         commands.first().remove(0,6);
-        ev.data2=commands.first().toInt(&ok);
+        ev.data2=commands.first().toShort(&ok);
         if (!ok) return;
         commands.pop_front();
 
@@ -108,6 +108,8 @@ public:
         s_sock->write(data);
         qDebug() << "Written!"<<live::midi::getTime_msec()-ev->time.toTime_ms();
     }
+private:
+    Q_DISABLE_COPY(BridgeMidiOut)
 };
 
 class BridgeClient : public QObject {
@@ -116,7 +118,12 @@ class BridgeClient : public QObject {
     QList<BridgeMidiIn*> s_ins;
     QList<BridgeMidiOut*> s_outs;
 public:
-    BridgeClient() : s_sock() {}
+    BridgeClient()
+      : s_sock()
+      , s_ins()
+      , s_outs()
+      {
+    }
 public slots:
     void tryIp(QString code) {
         if (code.size()!=8) {
@@ -207,6 +214,9 @@ public slots:
         QByteArray data=s_sock->readAll();
         for (int i=0;i<s_ins.size();i++) s_ins[i]->readData(data);
     }
+
+private:
+    Q_DISABLE_COPY(BridgeClient)
 };
 
 }

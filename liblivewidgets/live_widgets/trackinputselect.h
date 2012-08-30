@@ -56,21 +56,7 @@ signals:
     void newOutputRequested();
 
 private:
-    TrackInputSelect(const TrackInputSelect&)
-      : QFrame()
-      , s_ui(0)
-      , s_allowMidi(0)
-      , s_allowAudio(0)
-      , all()
-      , b_trackName("")
-      , b_audio(0)
-      { TCRASH();
-    }
-
-    TrackInputSelect& operator=(const TrackInputSelect&) {
-        TCRASH();
-        return *this;
-    }
+    Q_DISABLE_COPY(TrackInputSelect)
 };
 
 }

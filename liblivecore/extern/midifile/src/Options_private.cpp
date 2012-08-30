@@ -28,21 +28,22 @@
 // option_register::option_register --
 //
 
-option_register::option_register(void) {
-   definition = NULL;
-   defaultOption = NULL;
-   modifiedOption = NULL;
-   type = 's';
+option_register::option_register(void)
+  : definition(NULL)
+  , defaultOption(NULL)
+  , modifiedOption(NULL)
+  , type('s')
+  {
 }
 
 
 option_register::option_register(const char* aDefinition, char aType,
-      const char* aDefaultOption, const char* aModifiedOption) {
-   definition = NULL;
-   defaultOption = NULL;
-   modifiedOption = NULL;
-
-   setType(aType);
+      const char* aDefaultOption, const char* aModifiedOption)
+  : definition(NULL)
+  , defaultOption(NULL)
+  , modifiedOption(NULL)
+  , type('s')
+  { setType(aType);
    setDefinition(aDefinition);
    setDefault(aDefaultOption);
    setModified(aModifiedOption);
@@ -280,9 +281,10 @@ void option_register::setType(char aType) {
 // option_list::option_list --
 //
 
-option_list::option_list(void) {
-   name = NULL;
-   index = -1;
+option_list::option_list(void)
+  : name(NULL)
+  , index(-1)
+  {
 }
 
 
@@ -292,10 +294,11 @@ option_list::option_list(void) {
 // option_list::option_list --
 //
 
-option_list::option_list(const char* optionName, int anIndex) {
-   name = NULL;
-   setIndex(anIndex);
-   setName(optionName);
+option_list::option_list(const char* optionName, int anIndex)
+  : name(NULL)
+  , index(-1)
+  { setIndex(anIndex);
+    setName(optionName);
 }
 
 
@@ -330,7 +333,7 @@ int option_list::getIndex(void) {
 // option_list::getName --
 //
 
-const char* option_list::getName(void) {
+const char* option_list::getName(void) const {
    return name;
 }
 

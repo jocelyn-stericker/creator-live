@@ -23,10 +23,14 @@ class LIBLIVECORESHARED_EXPORT ASyncConnection : public QObject
     QObject* s_dest;
     QString s_dSlot;
 public:
-    ASyncConnection(QObject *obj, const char *aSignal,QObject* dest, QString dSlot) :
-        s_obj(obj), s_aSignal(aSignal), s_dest(dest), s_dSlot(dSlot)
-    {
-        if(s_dSlot.size()) s_dSlot.remove(0,1);
+    ASyncConnection(QObject *obj, const char *aSignal,QObject* dest, QString dSlot)
+      : s_obj(obj)
+      , s_aSignal(aSignal)
+      , s_dest(dest)
+      , s_dSlot(dSlot)
+      , sig()
+      , args()
+      { if(s_dSlot.size()) s_dSlot.remove(0,1);
         if(s_dSlot.contains('(')) s_dSlot.truncate(s_dSlot.indexOf('('));
 #ifdef Q_CC_BOR
         const int memberOffset = QObject::staticMetaObject.methodCount();
@@ -117,6 +121,9 @@ private:
     QByteArray sig;
     // holds the QMetaType types for the argument list of the signal
     QList<int> args;
+
+private:
+    Q_DISABLE_COPY(ASyncConnection)
 };
 
 class LIBLIVECORESHARED_EXPORT ASyncConnectSys : public QObject {

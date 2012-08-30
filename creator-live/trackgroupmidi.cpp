@@ -260,7 +260,7 @@ void TrackGroupMidi::drawKeyboard()
         }
     }
 
-    int highest = 108,lowest = 21;
+    qint16 highest = 108, lowest = 21;
     /*s_instView->setSceneRect( 0, -( ( 1+( highest-lowest ) )*6 ),
                             60, vKeySize*(highest.whiteKeysTo(lowest))-( ( 1+( highest-lowest ) )*6 )+0.38*vKeySize );*/
     ui_instView->setMinimumHeight( whiteKeys(lowest,highest)*vKeySize - 65 );
@@ -273,15 +273,15 @@ void TrackGroupMidi::drawKeyboard()
     int counter = -1;
 
     PianoKey *a = 0, *b = 0;
-    for (int i = 0; i < 1+(highest-lowest); i++)
+    for (qint16 i = 0; i < 1+(highest-lowest); i++)
     {
         // i will be added to twice if a black key exists
         // and we're not at the end
 
         //White keys
 
-        a = new PianoKey( 0,  vKeySize*++counter-( ( 1+( highest-lowest ) )*6 ),
-                          60, 0.83*vKeySize, lowest+i, NULL);
+        a = new PianoKey( 0,  vKeySize * ++counter - (( 1 + highest - lowest ) * 6),
+                          60, 0.83*vKeySize, qint16(lowest + i), NULL);
 
         a->setBrush( QBrush(QColour("white")));
         a->setVirtual( isVirtual );
@@ -297,7 +297,7 @@ void TrackGroupMidi::drawKeyboard()
         {
 
             b = new PianoKey( 25, vKeySize*counter-( ( 1+( highest-lowest ) )*6 )+0.67*vKeySize,
-                              35, 0.5*vKeySize, lowest+i, 0);
+                              35, 0.5*vKeySize, qint16(lowest + i), 0);
 
             b->setBrush( QBrush(QColour("black")));
             b->setVirtual( isVirtual );

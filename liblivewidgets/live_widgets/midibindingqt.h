@@ -118,7 +118,7 @@ protected:
                 if(s_quantized) {
                     QAbstractSlider*as=static_cast<QAbstractSlider*>(guiObject);
                     new live::QuantizedAction(as,SLOT(setValue(int)),
-                                        as->value()+as->singleStep());    //best we can get easily
+                                        float(as->value()+as->singleStep()));    //best we can get easily
                 } else {
                     ( static_cast<QAbstractSlider *>(guiObject) )->triggerAction( QAbstractSlider:: SliderSingleStepAdd );
                 }
@@ -135,7 +135,7 @@ protected:
                 if(s_quantized) {
                     QAbstractSlider*as=static_cast<QAbstractSlider*>(guiObject);
                     new live::QuantizedAction(as,SLOT(setValue(int)),
-                                        as->value()-as->singleStep());    //best we can get easily
+                                        float(as->value() - as->singleStep()));    //best we can get easily
                 } else {
                     ( static_cast<QAbstractSlider *>(guiObject) )->triggerAction( QAbstractSlider:: SliderSingleStepSub );
                 }

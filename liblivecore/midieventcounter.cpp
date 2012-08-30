@@ -40,7 +40,7 @@ int MidiEventCounter::velocity(int note) {
 
 QList<Event> MidiEventCounter::flush() {
     QList<Event> ret;
-    for (int i = 0; i < 127; ++i) {
+    for (qint16 i = 0; i < 127; ++i) {
         if (on[i]) {
             Event evoff(0x90, i, 0);
             evoff.time = live::midi::getTime();

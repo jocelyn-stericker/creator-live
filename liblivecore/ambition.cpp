@@ -17,6 +17,7 @@ Ambition::Ambition(ObjectPtr cinput, ObjectChain chain, ObjectPtr coutput
   , s_chain(chain)
   , s_output(coutput)
   , s_loopbackOut(cloop)
+  , s_connections()
   , x_ambition(QMutex::Recursive)
   , b_output(s_output->name())
   { b_output = s_output->name();

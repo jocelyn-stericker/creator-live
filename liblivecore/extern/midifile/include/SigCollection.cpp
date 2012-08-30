@@ -29,24 +29,25 @@
 //
 
 template<class type>
-SigCollection<type>::SigCollection(void) {
-   this->allocSize = 0;
-   this->size = 0;
-   this->array = NULL;
-   this->allowGrowthQ = 0;
-   this->growthAmount = 8;
-   this->maxSize = 0;
+SigCollection<type>::SigCollection(void)
+  : size(0)
+  , allocSize(0)
+  , array(NULL)
+  , allowGrowthQ(0)
+  , growthAmount(8)
+  , maxSize(0)
+  {
 }
 
 template<class type>
-SigCollection<type>::SigCollection(int arraySize) {
-   this->array = new type[arraySize];
-   
-   this->size = arraySize;
-   this->allocSize = arraySize;
-   this->allowGrowthQ = 0;
-   this->growthAmount = arraySize;
-   this->maxSize = 0;
+SigCollection<type>::SigCollection(int arraySize)
+  : size(arraySize)
+  , allocSize(arraySize)
+  , array(new type[arraySize])
+  , allowGrowthQ(0)
+  , growthAmount(arraySize)
+  , maxSize(0)
+  {
 }
 
 

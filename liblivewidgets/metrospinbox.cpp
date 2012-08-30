@@ -14,9 +14,11 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QPaintEvent>
 #include <QTimer>
 
-live_widgets::MetroSpinbox::MetroSpinbox(QWidget *parent) :
-    live_widgets::SpinBox(parent), s_toggle(0) {
-    live::song::current()->metronome->registerSync(this);
+live_widgets::MetroSpinbox::MetroSpinbox(QWidget *parent)
+  : live_widgets::SpinBox(parent)
+  , s_toggle(0)
+  , s_lastBeat(-1)
+  { live::song::current()->metronome->registerSync(this);
 }
 
 live_widgets::MetroSpinbox::~MetroSpinbox() {
@@ -24,10 +26,9 @@ live_widgets::MetroSpinbox::~MetroSpinbox() {
 }
 
 void live_widgets::MetroSpinbox::sync(const live::SyncData &data) {
-    if (data.beat!=s_lastBeat) {
-//        qDebug() << "SYNC";
-        s_lastBeat=data.beat;
-        s_toggle=1;
+    if (data.beat != s_lastBeat) {
+        s_lastBeat = int(data.beat); //
+        s_toggle = 1;
         update();
     }
 }

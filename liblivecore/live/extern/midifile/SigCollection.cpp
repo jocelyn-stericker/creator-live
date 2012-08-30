@@ -39,14 +39,14 @@ SigCollection<type>::SigCollection(void) {
 }
 
 template<class type>
-SigCollection<type>::SigCollection(int arraySize) {
-   this->array = new type[arraySize];
-   
-   this->size = arraySize;
-   this->allocSize = arraySize;
-   this->allowGrowthQ = 0;
-   this->growthAmount = arraySize;
-   this->maxSize = 0;
+SigCollection<type>::SigCollection(int arraySize)
+    : size(arraySize)
+    , allocSize(arraySize)
+    , array(new type[arraySize])
+    , allowGrowthQ(0)
+    , growthAmount(arraySize)
+    , maxSize(0)
+    {
 }
 
 

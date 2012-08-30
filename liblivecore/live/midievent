@@ -68,7 +68,7 @@ public:
     void setVelocity(const qint16&);
     void setCC(const qint16&);
 
-    QByteArray save() const;
+    QByteArray save();
     static Event* load(const QByteArray&str);
     virtual void noOp() {}
 

@@ -88,11 +88,11 @@ public slots:
     void stopPlayback();
     void startMute();
     void stopMute();
-    void setPos(long pos);
+    void setPos(float pos);
     void aIn(const float *in, int chan, Object *p);
     void aThru(float*proc,int chan);
     void clearData();
-    void clearData(const float& a,const float& b);
+    void clearData(const quint32& a,const quint32& b);
     static int formatForString(QString s,bool verifyAvailable=0);
     static int rateForInt(int i);
     bool exportFile(QString filename,QString format="guess",int depth=24);

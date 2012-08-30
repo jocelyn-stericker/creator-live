@@ -466,7 +466,6 @@ border-bottom-right-radius: 4px;</string>
        </layout>
       </item>
      </layout>
-     <zorder></zorder>
     </widget>
    </item>
    <item row="0" column="0">

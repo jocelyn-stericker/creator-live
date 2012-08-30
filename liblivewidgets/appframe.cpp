@@ -18,14 +18,17 @@ using namespace live_widgets;
 AppFrame::AppFrame(AbstractTrack *parent)
   : QFrame(parent)
   , BindableParent(this)
+  , _tbBack(new ToolButton(this))
+  , _tbClose(new ToolButton(this))
+  , _tbNext(new ToolButton(this))
+  , _tbMini(new ToolButton(this))
   , s_minimized(0)
   , s_desiredWidth(200)
-  , b_resizing(false) {
-    setFrameStyle(QFrame::NoFrame);
+  , b_resizing(false)
+  { setFrameStyle(QFrame::NoFrame);
     setFrameShadow(QFrame::Plain);
     setLineWidth(0);
     setMidLineWidth(0);
-    _tbBack = new ToolButton(this);
     _tbBack->show();
     _tbBack->setGeometry(2,2,8,8);
     _tbBack->setText("");
@@ -34,7 +37,6 @@ AppFrame::AppFrame(AbstractTrack *parent)
     _tbBack->setAutoRaise(1);
     _tbBack->setObjectName("_tbBack");
     _tbBack->setStyleSheet("padding: 0px; border-radius: 0px; border-width: 0px; background-color:4d4c4d;");
-    _tbMini = new ToolButton(this);
     _tbMini->show();
     _tbMini->setGeometry(12,2,8,8);
     _tbMini->setText("");
@@ -44,7 +46,6 @@ AppFrame::AppFrame(AbstractTrack *parent)
     _tbMini->setObjectName("_tbMidi");
     _tbMini->setStyleSheet("padding: 0px; border-radius: 0px; border-width: 0px; background-color:4d4c4d;");
     connect(_tbMini,SIGNAL(clicked()),this,SLOT(toggleMinimized()));
-    _tbNext = new ToolButton(this);
     _tbNext->show();
     _tbNext->setGeometry(22,2,8,8);
     _tbNext->setText("");
@@ -54,7 +55,6 @@ AppFrame::AppFrame(AbstractTrack *parent)
     _tbNext->setObjectName("_tbNext");
     _tbNext->setStyleSheet("padding: 0px; border-radius: 0px; border-width: 0px; background-color:4d4c4d;");
 
-    _tbClose = new ToolButton(this);
     _tbClose->show();
     _tbClose->setGeometry(width()-2-_tbNext->width(),2,8,8);
     _tbClose->setText("");

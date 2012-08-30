@@ -10,7 +10,13 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live_widgets/chaintypewidget.h>
 #include <QPainter>
 
-live_widgets::ChainTypeWidget::ChainTypeWidget(QWidget* p) : QWidget(p) {}
+live_widgets::ChainTypeWidget::ChainTypeWidget(QWidget* p)
+  : QWidget(p)
+  , s_positions()
+  , s_midi()
+  , s_audio()
+  {
+}
 void live_widgets::ChainTypeWidget::reset() { s_positions.clear(); s_midi.clear(); s_audio.clear(); update(); }
 void live_widgets::ChainTypeWidget::setBack(int pos,bool midi,bool audio) { s_positions.push_back(pos); s_midi.push_back(midi); s_audio.push_back(audio); update();}
 void live_widgets::ChainTypeWidget::paintEvent(QPaintEvent *e) {

@@ -1,11 +1,11 @@
 #include <live/midievent>
 
 qint16 live::Event::simpleStatus() const {
-    return (message/0x10)*0x10;
+    return qint16((message/0x10)*0x10);
 }
 
 qint16 live::Event::chan() const {
-    return (message%0x10);
+    return qint16(message%0x10);
 }
 
 qint16 live::Event::note() const {
@@ -17,15 +17,15 @@ qint16  live::Event::velocity() const {
 }
 
 qint16  live::Event::cc() const {
-    return (message<175||message>190)?-1:data1;
+    return qint16((message<175||message>190)?-1:data1);
 }
 
 void live::Event::setSimpleStatus(const qint16 &a) {
-    message=a+chan();
+    message = qint16(a + chan());
 }
 
 void live::Event::setChan(const qint16 &a) {
-    message=simpleStatus()+a;
+    message = qint16(simpleStatus() + a);
 }
 
 void live::Event::setNote(const qint16 &a) {

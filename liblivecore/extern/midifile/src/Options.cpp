@@ -37,48 +37,59 @@ int optionListCompare(const void* a, const void* b);
 // Options::Options --
 //
 
-Options::Options(void) {
-   optionFlag = '-';
-   gargc = -1;
-   gargv = NULL;
-   argument.setSize(0);
-   argument.allowGrowth();
-   optionRegister.setSize(0);
-   optionRegister.allowGrowth();
-   optionList.setSize(0);
-   optionList.allowGrowth();
-   processedQ = 0;
-   sortedQ = 0;
-   commandString = NULL;
-   options_error_check = 1;
-   suppressQ = 0;
-   optionsArgument = 0;
+Options::Options(void)
+  : options_error_check(1)
+  , gargc(-1)
+  , gargv(NULL)
+  , commandString(NULL)
+  , optionFlag('-')
+  , argument()
+  , optionRegister()
+  , optionList()
+  , processedQ(0)
+  , sortedQ(0)
+  , suppressQ(0)
+  , optionsArgument(0)
+  , extraArgv()
+  , extraArgv_strings()
+  { argument.setSize(0);
+    argument.allowGrowth();
+    optionRegister.setSize(0);
+    optionRegister.allowGrowth();
+    optionList.setSize(0);
+    optionList.allowGrowth();
 
-   extraArgv.setSize(100);
-   extraArgv.setGrowth(100);
-   extraArgv.setSize(0);
-   extraArgv_strings.setSize(100);
-   extraArgv_strings.setGrowth(100);
-   extraArgv_strings.setSize(0);
+    extraArgv.setSize(100);
+    extraArgv.setGrowth(100);
+    extraArgv.setSize(0);
+    extraArgv_strings.setSize(100);
+    extraArgv_strings.setGrowth(100);
+    extraArgv_strings.setSize(0);
 }
 
 
-Options::Options(int argc, char** argv) {
-   optionFlag = '-';
-   gargc = -1;
-   gargv = NULL;
+Options::Options(int argc, char** argv)
+  : options_error_check(1)
+  , gargc(-1)
+  , gargv(NULL)
+  , commandString(NULL)
+  , optionFlag('-')
+  , argument()
+  , optionRegister()
+  , optionList()
+  , processedQ(0)
+  , sortedQ(0)
+  , suppressQ(0)
+  , optionsArgument(0)
+  , extraArgv()
+  , extraArgv_strings()
+{
    argument.setSize(0);
    argument.allowGrowth();
    optionRegister.setSize(0);
    optionRegister.allowGrowth();
    optionList.setSize(0);
    optionList.allowGrowth();
-   processedQ = 0;
-   sortedQ = 0;
-   commandString = NULL;
-   options_error_check = 1;
-   suppressQ = 0;
-   optionsArgument = 0;
 
    extraArgv.setSize(100);
    extraArgv.setGrowth(100);
@@ -1075,12 +1086,14 @@ int Options::storeOption(int gargp, int& position, int& running) {
 // optionListCompare -- for sorting the option list
 //
 
-int optionListCompare(const void* a, const void* b) {
+int optionListCompare(const void *a, const void *b) {
 //cerr << "       comparing: " << (*((option_list**)a))->getName() 
 //      << " i=" << (*((option_list**)a))->getIndex() 
 //      << " :to: "
 //      << (*((option_list**)b))->getName() 
 //      << " i=" << (*((option_list**)b))->getIndex() << endl;
-   return strcmp((*((option_list**)a))->getName(), 
-                 (*((option_list**)b))->getName());
+    void* al = const_cast<void*>(a);
+    void* bl = const_cast<void*>(b);
+   return strcmp((*((const option_list**)al))->getName(),
+                 (*((const option_list**)bl))->getName());
 }

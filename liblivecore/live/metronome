@@ -25,13 +25,13 @@ class LIBLIVECORESHARED_EXPORT SyncData
 {
 public:
     const TimeSignature& ts;
-    const int& bpm;
-    const int& ppb;
+    const float& bpm;
+    const float& ppb;
 
-    const int& beat;
-    const int& pulses;
+    const float& beat;
+    const float& pulses;
 
-    SyncData(const TimeSignature&cts,const int&cbpm,const int&cppb,const int&cbeat,const int&cpulses) :
+    SyncData(const TimeSignature&cts,const float&cbpm,const float&cppb,const float&cbeat,const float&cpulses) :
         ts(cts),
         bpm(cbpm),
         ppb(cppb),
@@ -98,32 +98,31 @@ private:
     QTime startTime;    //not saved
     TimeSignature s_ts;
 public:
-    Bound<int> b_bpm;
+    Bound<float> b_bpm;
 private:
-    int s_ppq;
-    long s_lastTime;    //not saved
-    long s_barStart;    //not saved
-    int s_lastPpq;
+    float s_ppq;
+    float s_lastTime;    //not saved
+    float s_barStart;    //not saved
+    float s_lastPpq;
     bool s_isActive;
 
 public:
     friend class SecretAudio;
-    Metronome(TimeSignature cts,int cbpm,int cppq=96)
+    Metronome(TimeSignature cts,float cbpm,float cppq=96.0f)
       : _as()
       , startTime(QTime::currentTime())
       , s_ts(cts)
-      , b_bpm((const int&)cbpm)
+      , b_bpm(cbpm)
       , s_ppq(cppq)
-      , s_lastTime(startTime.msecsTo(QTime::currentTime()))
-      , s_barStart(startTime.msecsTo(QTime::currentTime()))
+      , s_lastTime(float(startTime.msecsTo(QTime::currentTime())))
+      , s_barStart(float(startTime.msecsTo(QTime::currentTime())))
       , s_lastPpq(0)
       , s_isActive(1)
       { pause();
     }
 
-    ~Metronome()
+    virtual ~Metronome()
     {
-        qDebug() << "DELMETR";
     }
 
     const TimeSignature& ts()
@@ -132,19 +131,19 @@ public:
         return s_ts;
     }
 
-    const int& bpm()
+    float bpm() const
     {
         Q_ASSERT(this);
         return b_bpm;
     }
 
-    const int& ppq()
+    float ppq() const
     {
         Q_ASSERT(this);
         return s_ppq;
     }
 
-    const bool& active()
+    bool active() const
     {
         Q_ASSERT(this);
         return s_isActive;
@@ -165,13 +164,13 @@ public:
         kill_kitten s_ts=cts;
     }
 
-    void setBpm(const int& cbpm)
+    void setBpm(const float& cbpm)
     {
         Q_ASSERT(this);
         kill_kitten b_bpm=cbpm;
     }
 
-    void setPpq(const int& cppq)
+    void setPpq(const float& cppq)
     {
         Q_ASSERT(this);
         kill_kitten s_ppq=cppq;
@@ -183,7 +182,7 @@ public:
         Q_ASSERT(s_isActive);
 
         kill_kitten {
-            s_lastTime=( startTime.msecsTo(QTime::currentTime()) );
+            s_lastTime= float(startTime.msecsTo(QTime::currentTime()));
 
             s_barStart-=s_lastTime;
             s_isActive=0;
@@ -195,7 +194,7 @@ public:
         Q_ASSERT(this);
         kill_kitten {
             Q_ASSERT(!s_isActive);
-            s_lastTime=( startTime.msecsTo(QTime::currentTime()) );
+            s_lastTime= float(startTime.msecsTo(QTime::currentTime()));
             s_barStart+=s_lastTime;
             //DEBUG
             s_lastPpq=-1;
@@ -208,13 +207,13 @@ public:
 
     void pulse()
     {
-        long time( startTime.msecsTo(QTime::currentTime()) );
-        long  bpm( (s_ts.denomenator==4) ? b_bpm : b_bpm*2 );
+        float time( float(startTime.msecsTo(QTime::currentTime())) );
+        float bpm( (s_ts.denomenator==4) ? b_bpm : b_bpm*2.0f );
 //        int ppq( (s_ts.denomenator==4) ? s_ppq : s_ppq/2 );
-        double pbeat=60000.0/(double)bpm;
+        float pbeat=60000.0f/(float)bpm;
 
         double curBeat=qRound((double)(time-s_barStart)/pbeat);
-        s_barStart=time - static_cast<long>(curBeat * pbeat);
+        s_barStart=time - static_cast<float>(curBeat * pbeat);
     }
 
     template<class T> void registerSync(T* t)

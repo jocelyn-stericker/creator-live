@@ -29,11 +29,11 @@ IntroWizard::~IntroWizard() {
 }
 
 void IntroWizard::resizeEvent(QResizeEvent *e) {
-    int w=width()-ui->line_3->width();
-    ui->Alabel_create->setFixedWidth(w/2);
-    float phi=(1+sqrt(5.0))/2.0;
-    ui->Bframe->setFixedWidth(w/2.00/phi);
-    ui->CFrame->setFixedWidth(w/2.00/phi/phi);
+    float w=float(width())-float(ui->line_3->width());
+    ui->Alabel_create->setFixedWidth(int(w/2.0f));
+    float phi=(1.0f+float(sqrt(5.0f)))/2.0f;
+    ui->Bframe->setFixedWidth(int(w/2.00f/phi));
+    ui->CFrame->setFixedWidth(int(w/2.00f/phi/phi));
 
     if (e) QWidget::resizeEvent(e);
 }

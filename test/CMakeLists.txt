@@ -83,6 +83,6 @@ if (!WIN32)
     )
 endif (!WIN32)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
 add_custom_command(TARGET test POST_BUILD COMMAND test)

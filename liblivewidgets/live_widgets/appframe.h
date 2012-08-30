@@ -55,23 +55,7 @@ public slots:
     void setDesiredWidth(int);
 
 private:
-    AppFrame(const AppFrame&)
-      : QFrame()
-      , BindableParent(this)
-      , _tbBack(0)
-      , _tbClose(0)
-      , _tbNext(0)
-      , _tbMini(0)
-      , s_minimized(0)
-      , s_desiredWidth(0)
-      , b_resizing(0)
-      { TCRASH();
-    }
-
-    AppFrame& operator=(const AppFrame&) {
-        TCRASH();
-        return *this;
-    }
+    Q_DISABLE_COPY(AppFrame)
 };
 
 }

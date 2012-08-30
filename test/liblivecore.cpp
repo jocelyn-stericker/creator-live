@@ -60,8 +60,9 @@ TEST(AudioSanity, Mapping) {
 }
 
 TEST(AudioSanity, NFrames) {
-    EXPECT_GT(live::audio::nFrames(), 0);
-    EXPECT_LT(live::audio::nFrames(), 2049);
+    EXPECT_GT(live::audio::nFrames(), (unsigned)0);
+
+    EXPECT_LT(live::audio::nFrames(), (unsigned)2049);
 }
 
 class AudioListener : public live::Object{
@@ -74,7 +75,7 @@ public:
     LIVE_AUDIO
     AudioListener() : live::Object("AL", false, false), s_got(false), s_highest(-2.0f), s_lowest(2.0f) {}
     void aIn(const float *data, int, Object *) {
-        for (int i = 0; i < live::audio::nFrames(); ++i) {
+        for (unsigned i = 0; i < live::audio::nFrames(); ++i) {
             s_highest = qMax(data[i], s_highest);
             s_lowest = qMin(data[i], s_lowest);
         }

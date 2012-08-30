@@ -525,6 +525,11 @@ protected:
     friend class Ribbon;
     friend class ::LiveWindow;
 public:
+    object()
+      : s_objects()
+      {
+
+    }
     static object* singleton() { return me; }
     static QList<ObjectPtr> get(int flags); //i.e., Flags
     static void clear(int flags);   //i.e., Flags

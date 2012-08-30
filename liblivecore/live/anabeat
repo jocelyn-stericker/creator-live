@@ -108,14 +108,14 @@ private:
     void _updatePredictions();
 
     bool _sortBeats();
-    bool _makeLists( QList<double>* x_, QList<double>* y_, QList<double>* velocity );
+    bool _makeLists(QList<double>* x_, QList<double>* y_, QList<int> *velocity );
     double* _rotate( QList<double>* x_, QList<double>* y_ );
     int* _makeHistogram(int* bins_c, double* highest_c, double* lowest_c, QList<double> *y_c );
-    bool _correctRatios( int* noteID, QList<double>* last, int* bins, int* count, double *lowest, double *highest,
-                         QList<double>* y_, QList<double>* yuncorrected, QList<double>* velocity, QList<double>* y );
+    bool _correctRatios(int* noteID, QList<double>* last, int* bins, int* count, double *lowest, double *highest,
+                         QList<double>* y_, QList<double>* yuncorrected, QList<int> *velocity, QList<double>* y );
     QList<double> _findBeatCandidates( QList<double>* last, QList<double>* y_, QList<double>* newX );
     double _findTruePulse(QList<double>* beatCandidats, QList<double>* newX);
-    bool _findNum(double* oldFactor_c, double* factor_c, double* numLCD_c, QList<double>* newX_c, double* highestBC_c, QList<double>* velocity_c);
+    bool _findNum(double* oldFactor_c, double* factor_c, double* numLCD_c, QList<double>* newX_c, double* highestBC_c, QList<int> *velocity_c);
 public:
     static AnaBeat* load(const QByteArray&str);
     QByteArray save();

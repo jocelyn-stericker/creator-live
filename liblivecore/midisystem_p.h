@@ -93,11 +93,16 @@ public:
       , pmins()
       , pmqueue()
       , idqueue()
+      , fromqueue()
+      , withheld_ev()
+      , withheld_p()
+      , withheld_obj()
+      , withheld_reverse()
       { init();
     }
 
     void init();
-    void run();
+    void run() __attribute__ ((noreturn));
 
     void refresh();
     void queue(const live::Event* ev, int device, live::ObjectChain from);
@@ -105,6 +110,8 @@ public:
     void mWithhold(live::Event* x, live::ObjectChain p, live::ObjectPtr obj, bool reverse=0);
     void mRemoveWithheld(live::ObjectPtr obj);
     void mRemoveWithheld_object_dest(live::Object* obj);
+private:
+    Q_DISABLE_COPY(SecretMidi)
 };
 #else
 class LIBLIVECORESHARED_EXPORT SecretMidi : public QThread
@@ -144,6 +151,8 @@ public:
     void mWithhold(live::Event* x, live::ObjectChain p, live::ObjectPtr obj, bool reverse=0);
     void mRemoveWithheld(live::ObjectPtr obj);
     void mRemoveWithheld_object_dest(live::Object* obj);
+private:
+    Q_DISABLE_COPY(SecretMidi)
 };
 #endif
 

@@ -13,15 +13,15 @@ namespace live {
 class LIBLIVECORESHARED_EXPORT QuantizedAction : public QObject
 {
     Q_OBJECT
-    int s_cb;
-    int s_pulses;
-    int s_division;
+    float s_cb;
+    float s_pulses;
+    float s_division;
     QVariant s_data;
     bool s_ok;
 public:
-    QuantizedAction(QObject*reciever,const char*slot,int division=-1,QVariant data=QVariant())
-      : s_cb(-1)
-      , s_pulses(0)
+    QuantizedAction(QObject*reciever,const char*slot,float division=-1.0,QVariant data=QVariant())
+      : s_cb(-1.0f)
+      , s_pulses(0.0f)
       , s_division(division)
       , s_data(data)
       , s_ok(1)
@@ -73,7 +73,7 @@ public slots:
             s_cb=sd.beat;
             s_pulses=sd.pulses;
         }
-        else if(sd.beat!=s_cb||(s_division!=-1&&sd.pulses>=s_pulses+static_cast<int>((float)sd.ppb/(float)s_division)))
+        else if(sd.beat!=s_cb||(int(s_division)!=-1&&sd.pulses>=s_pulses + sd.ppb/s_division))
         {
             emit activated();
             emit activated(s_data.toBool());

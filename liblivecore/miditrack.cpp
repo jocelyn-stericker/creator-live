@@ -155,7 +155,6 @@ void live::MidiTrack::mIn(const Event *ev, ObjectChain*p) {
 live::MidiTrack::MidiTrack()
   : Object("MIDI Track",false,false)
   , x_mTrack(QMutex::Recursive)
-
   , b_curPos(0)
   , b_lastPos(0)
   , b_recStart(-1)
@@ -166,6 +165,7 @@ live::MidiTrack::MidiTrack()
   , b_mute(0)
   , s_data(new QList<Event*>)
   , mTrack_id(++lastId)
+  , s_cache()
   , s_thru(1)
   { setTemporary(0);
 }

@@ -26,19 +26,19 @@ private:
     static int s_shiftTwinID;
     static live_widgets::PianoKey* s_universe[300];
     bool s_virtual;
-    int s_id;
+    qint16 s_id;
     bool s_enabled;
 
 public:
     LIVE_MIDI
     LIVE_EFFECT //fixme==> hidden
     bool mOn() const{ return 0; } bool aOn() const { return 1; }
-    explicit PianoKey( qreal x, qreal y, qreal width, qreal height, int id, QGraphicsItem * parent );
+    explicit PianoKey( qreal x, qreal y, qreal width, qreal height, qint16 id, QGraphicsItem * parent );
 
     void enableKey(bool enabled);
     void mousePressEvent( QGraphicsSceneMouseEvent* event );
     void mouseReleaseEvent( QGraphicsSceneMouseEvent* event );
-    void setID( int id );
+    void setID(qint16 id );
     void setVirtual( bool isVirtual ) {
         s_virtual = isVirtual;
     }

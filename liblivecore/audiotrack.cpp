@@ -92,7 +92,8 @@ live::AudioTrack::AudioTrack(int cchans)
 }
 
 live::AudioTrack::AudioTrack(const live::AudioTrack&)
-  : live::Object("Audio Track",false,false)
+  : QObject()
+  , live::Object("Audio Track",false,false)
   , nframes(live::audio::nFrames())
   , s_container( new AudioContainer*[2] )
   , s_chans(2)
@@ -205,15 +206,14 @@ void live::AudioTrack::stopMute() {
     s_mute=0;
 }
 
-void live::AudioTrack::setPos(long pos) {
+void live::AudioTrack::setPos(float pos) {
     // TODO: evaluate threadsafety
-    pos=(long)(((float)live::audio::sampleRate())*((float)pos)/1000.0f);
-    s_curPos=pos;
+    s_curPos = long((float(live::audio::sampleRate()))*(float(pos)/1000.0f));
     for (int i = 0; i < 2; ++i)
         s_container[i]->pointGraph(s_curPos);
 }
 
-void live::AudioTrack::aIn(const float *in, int chan, Object*p) {
+void live::AudioTrack::aIn(const float *in, int chan, Object*) {
     if (!s_playback && !(s_record||s_overdub)) {
         aOut(in, chan, this);
     }
@@ -232,15 +232,15 @@ void live::AudioTrack::clearData() {
     emit dataUpdated(0,dataSize);
 }
 
-void live::AudioTrack::clearData(const float &a, const float &b) {
+void live::AudioTrack::clearData(const quint32 &a, const quint32 &b) {
     //FIXME: delete data in another thread (i.e., with Container::clear)
     for (int h=0;h<s_chans;h++) {
         float*dataPtr;
         int size;
-        int counter=size=s_container[h]->getRawPointer(a,dataPtr);
+        int counter=size=quint32(s_container[h]->getRawPointer(quint32(a),dataPtr));
         dataPtr-=dataPtr?1:0;
 
-        for (int i=a;i<b;i++) {
+        for (quint32 i=a;i<b;++i) {
             if ((dataPtr+=dataPtr?1:0),--counter==-1) {
                 s_container[h]->appendGraph(size);
                 counter=size=s_container[h]->getRawPointer(i,dataPtr)-1;

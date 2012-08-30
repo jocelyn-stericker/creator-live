@@ -93,7 +93,8 @@ class Options {
       void        sortOptionNames            (void);
       int         storeOption                (int gargp, int& position, 
                                                  int& running);
-
+private:
+      Q_DISABLE_COPY(Options)
 };
 
 #define OPTION_BOOLEAN_TYPE   'b'

@@ -28,9 +28,14 @@ void live_widgets::SpawnFrame::dropEvent(QDropEvent *e) {
     emit textDropped(e->mimeData()->text());
 }
 
-live_widgets::InputDragWidget::InputDragWidget(QWidget *parent) :
-    QFrame(parent), s_count(-1), s_ui(new Ui::InputDragWidget) {
-    s_ui->setupUi(this);
+live_widgets::InputDragWidget::InputDragWidget(QWidget *parent)
+  : QFrame(parent)
+  , s_count(-1)
+  , s_ui(new Ui::InputDragWidget)
+  , groupNames()
+  , dropFrameAs()
+  , dropFrameBs()
+  { s_ui->setupUi(this);
     connect(s_ui->newMapping_frame,SIGNAL(textDropped(QString)),this,SLOT(newGroup(QString)));
     s_ui->chans_frame_out->hide();
 
@@ -98,9 +103,14 @@ void live_widgets::InputDragWidget::destroyRow() {
 live_widgets::InputDragWidget::~InputDragWidget() {
 }
 
-live_widgets::OutputDragWidget::OutputDragWidget(QWidget *parent) :
-    QFrame(parent), s_count(-1), s_ui(new Ui::InputDragWidget) {
-    s_ui->setupUi(this);
+live_widgets::OutputDragWidget::OutputDragWidget(QWidget *parent)
+  : QFrame(parent)
+  , s_count(-1)
+  , s_ui(new Ui::InputDragWidget)
+  , groupNames()
+  , dropFrameAs()
+  , dropFrameBs()
+  { s_ui->setupUi(this);
     connect(s_ui->newMapping_frame,SIGNAL(textDropped(QString)),this,SLOT(newGroup(QString)));
     s_ui->chans_frame_in->hide();
     s_ui->label->setText(s_ui->label->text().replace("In","Out"));

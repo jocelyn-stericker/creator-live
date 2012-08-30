@@ -18,6 +18,8 @@
 #ifndef _SIGCOLLECTION_H_INCLUDED
 #define _SIGCOLLECTION_H_INCLUDED
 
+#include <QObject>
+
 // Name change to avoid namespace collision with an Apple typedef
 //#define SigCollection Collection
 
@@ -28,7 +30,7 @@ class SigCollection {
                 SigCollection     (int arraySize);
                 SigCollection     (int arraySize, type *aCollection);
                 SigCollection     (SigCollection<type>& aCollection);
-               ~SigCollection     ();
+       virtual ~SigCollection     ();
 
       void      allowGrowth       (int status = 1);
       void      append            (type& element);
@@ -60,6 +62,9 @@ class SigCollection {
                                   //    to grow to, if 0, then ignore max
   
       void      shrinkTo          (long aSize);
+
+private:
+      Q_DISABLE_COPY(SigCollection)
 };
 
 

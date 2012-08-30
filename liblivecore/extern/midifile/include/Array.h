@@ -60,6 +60,9 @@ class Array : public SigCollection<type> {
       Array<type>    operator*         (const Array<type>& aArray) const;
       Array<type>    operator*         (type aNumber) const;
       Array<type>    operator/         (const Array<type>& aArray) const;
+
+private:
+      Array<type> (const Array<type> &);
 };
 
 

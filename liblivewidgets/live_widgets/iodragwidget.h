@@ -56,8 +56,7 @@ signals:
     void modified();
 
 private:
-    InputDragWidget(const InputDragWidget&);
-    InputDragWidget& operator=(const InputDragWidget&);
+    Q_DISABLE_COPY(InputDragWidget)
 };
 
 class LIBLIVEWIDGETSSHARED_EXPORT OutputDragWidget : public QFrame {

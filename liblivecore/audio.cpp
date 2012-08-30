@@ -368,9 +368,24 @@ bool SecretAudio::makeClient() {
 }
 
 #ifndef __QNX__
-SecretAudio::SecretAudio() : s_paused(false), inputs(), outputs(), client(NULL) {
-    qDebug() << "NEWSECRETAUDIO";
-   connect(qApp,SIGNAL(destroyed()),this,SLOT(delClient()));
+SecretAudio::SecretAudio()
+  : s_error()
+  , s_availInPorts()
+  , s_availInPortIds()
+  , s_availOutPorts()
+  , s_availOutPortIds()
+  , s_paused(false)
+  , nframes(-1)
+  , inputs()
+  , outputs()
+  , nulls()
+  , inputMappings()
+  , inputMappingsName()
+  , outputMappings()
+  , outputMappingsName()
+  , client(NULL)
+  , asioDeviceTypes()
+  { connect(qApp,SIGNAL(destroyed()),this,SLOT(delClient()));
     singleton=this;
     makeClient();
 //        live::audio::registerInterface(this);

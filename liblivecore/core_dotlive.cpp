@@ -53,11 +53,11 @@ core_dotlive.cpp
 #endif
 
 #ifdef LOAD
-#define BEGIN QDataStream ret(str); QString xqstring; qint32 xint32; bool xbool; QByteArray xba
+#define BEGIN QDataStream ret(str); QString xqstring; qint32 xint32; qint16 xint16; quint8 xchar; bool xbool; QByteArray xba; Q_UNUSED(xint16); Q_UNUSED(xchar); Q_UNUSED(xint32)
 #define IS_LOAD 1
 #define IS_SAVE 0
 #define IO >>
-#define _THIS 0
+#define _THIS NULL
 #define RETURN return x;
 template<typename T> bool verify1(QDataStream&ret,T chk)
 {
@@ -74,7 +74,7 @@ template<typename T> bool verify1(QDataStream&ret,T chk)
 #define verify(x,y) verify1(x,y)
 #endif
 #ifdef SAVE
-#define BEGIN QByteArray str; QDataStream ret(&str,QIODevice::WriteOnly); QString xqstring; qint32 xint32; bool xbool; QByteArray xba
+#define BEGIN QByteArray str; QDataStream ret(&str,QIODevice::WriteOnly); QString xqstring; qint32 xint32; qint16 xint16; quint8 xchar; bool xbool; QByteArray xba; Q_UNUSED(xint16); Q_UNUSED(xchar); Q_UNUSED(xint32)
 #define IS_LOAD 0
 #define IS_SAVE 1
 #define IO <<
@@ -99,6 +99,18 @@ template<typename T> bool verify2(QDataStream&ret,T chk)
 
 #ifndef TYPES_
 #define TYPES_
+#define P_CHAR(var) \
+    do { \
+    xchar=var; \
+    ret IO xchar; \
+    var=xchar; \
+    } while (0)
+#define P_INT16(var) \
+    do { \
+    xint16=var; \
+    ret IO xint16; \
+    var=xint16; \
+    } while (0)
 #define P_INT32(var) \
     do { \
     xint32=var; \
@@ -137,6 +149,8 @@ QByteArray Time::save()
 #endif
 {
     BEGIN;
+    Q_UNUSED(xint16);
+    Q_UNUSED(xchar);
     Q_UNUSED(xbool);
 
     ret.setFloatingPointPrecision(QDataStream::SinglePrecision);
@@ -178,7 +192,7 @@ QByteArray Time::save()
 live::Event* live::Event::load(const QByteArray&str)
 #endif
 #ifdef SAVE
-QByteArray live::Event::save() const
+QByteArray live::Event::save()
 #endif
 {
     BEGIN;
@@ -194,18 +208,18 @@ QByteArray live::Event::save() const
 
     //////////////////////////////////////////////////////////////////
 
-    live::Event*x=IS_SAVE?const_cast<live::Event*>((live::Event*)_THIS):new live::Event;
+    live::Event*x=IS_SAVE?_THIS:new live::Event;
 
     //////////////////////////////////////////////////////////////////
 
     /*003*/
-    P_INT32(x->message);
+    P_INT16(x->message);
 
     /*004*/
-    P_INT32(x->data1);
+    P_INT16(x->data1);
 
     /*005*/
-    P_INT32(x->data2);
+    P_INT16(x->data2);
 
     //////////////////////////////////////////////////////////////////
 
@@ -223,7 +237,7 @@ QByteArray live::Event::save() const
     //////////////////////////////////////////////////////////////////
 
     /*007*/
-    P_INT32(x->flareId);
+    P_INT16(x->flareId);
 
     /*008*/ (verify(ret,(QString)"END live::Event"));
 
@@ -306,7 +320,7 @@ QByteArray Pitch::save()
     x=IS_SAVE?x:new Pitch;
 
     /*003*/
-    P_INT32(x->s_root);
+    P_CHAR(x->s_root);
 
     /*004*/
     int accidental=x->s_accidental;
@@ -357,7 +371,7 @@ QByteArray KeySignature::save()
     x=IS_SAVE?x:new KeySignature;
 
     /*003*/
-    P_INT32(x->s_root);
+    P_CHAR(x->s_root);
 
     /*004*/
     qint32 accidental=x->s_accidental;
@@ -750,10 +764,10 @@ QByteArray Metronome::save()
 
     Metronome*x=IS_SAVE?_THIS:0;
 
-    qint32 xbpm = IS_SAVE?x->b_bpm:0;
+    float xbpm = IS_SAVE?x->b_bpm:0.0f;
     /*003*/
     ret IO xbpm;
-    qint32 xppq = IS_SAVE?x->s_ppq:0;
+    float xppq = IS_SAVE?x->s_ppq:0.0f;
     /*004*/
     ret IO xppq;
 
@@ -1131,11 +1145,11 @@ QByteArray AudioTrack::save()
     //////////////////////////////////////////////////////////////////
 
     /*010*/
-    xint32=x->pos();
-    ret IO xint32;
+    float f =x->pos();
+    ret IO f;
     if (IS_LOAD)
     {
-        x->setPos(xint32);
+        x->setPos(f);
     }
 
 

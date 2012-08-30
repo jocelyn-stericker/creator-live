@@ -81,7 +81,13 @@ class live::AbEv {
  */
 class live::AbBeat {
   public:
-    AbBeat() : beat(0), barNo(0), emp(true) {}
+    AbBeat()
+      : beat(0)
+      , events()
+      , barNo(0)
+      , emp(true)
+      {
+    }
     int summativeVelocity() {
         int vel = 0;
         foreach(live::AbEv* ev, events) vel += ev->velocity;
@@ -131,7 +137,8 @@ void live::AnaBeat::_updatePredictions() {
         qDebug() << "_up";
         if (!_sortBeats()) return;
 
-        QList<double> x_, y_, velocity;   // time, length, summativeVelocities
+        QList<double> x_, y_;   // time, length
+        QList<int> velocity; // (summative)
         if (!_makeLists(&x_, &y_, &velocity)) return;
         qDebug() << "_up2";
 
@@ -187,13 +194,13 @@ void live::AnaBeat::_updatePredictions() {
         while (60.0/highestBC / oldFactor > 140) oldFactor *= 2;
 
         qCritical() << "Detected tempo at " << 60.0/highestBC / oldFactor
-                    << " @ " << numLCD << "/" << denForNum(numLCD)
+                    << " @ " << numLCD << "/" << denForNum(int(numLCD))
                     << " from pulse " << 60.0/highestBC;
 
         //  return;
 
         for (int i = 0; i < _giveHintTo; ++i) {
-            int cbpm = _giveHintTo[i]->bpm();
+            float cbpm = _giveHintTo[i]->bpm();
             int tries = 0;
             bool ok = 1;
             while (qAbs(60.0 / highestBC / oldFactor - cbpm) > 40) {
@@ -206,7 +213,7 @@ void live::AnaBeat::_updatePredictions() {
             if (!ok) {
                 continue;
             }
-            _giveHintTo[i]->setBpm((60.0/highestBC / oldFactor));
+            _giveHintTo[i]->setBpm(float(60.0/highestBC / oldFactor));
         }
 
         delete [] highAndLow;
@@ -254,10 +261,10 @@ bool live::AnaBeat::_sortBeats() {
 }
 
 bool live::AnaBeat::_makeLists(QList<double>* x__c, QList<double>* y__c
-                               , QList<double>* velocity_c) {
+                               , QList<int>* velocity_c) {
     QList<double>& x_ = *x__c;
     QList<double>& y_ = *y__c;
-    QList<double>& velocity = *velocity_c;
+    QList<int>& velocity = *velocity_c;
 
     double c = 0;
     foreach(AbBeat* beat, _unplacedBeats) {
@@ -346,7 +353,7 @@ int* live::AnaBeat::_makeHistogram(int* bins_c, double* highest_c
 
     qDebug() << (highest-lowest) << "*\n";
 
-    bins = rint((highest-lowest)*48.0384);
+    bins = int(rint((highest-lowest)*48.0384));
     // I forget where I got this number, but it's really smart! I promise!
 
     int bina = 0;
@@ -374,7 +381,7 @@ bool live::AnaBeat::_correctRatios(int* noteID_c, QList<double>* last_c
                                    , int* bins_c, int* count, double* lowest_c
                                    , double* highest_c, QList<double>* y__c
                                    , QList<double>* yuncorrected_c
-                                   , QList<double>* velocity_c
+                                   , QList<int>* velocity_c
                                    , QList<double>* y_c) {
     int &noteID = *noteID_c;
     QList<double> &last = *last_c;
@@ -383,7 +390,7 @@ bool live::AnaBeat::_correctRatios(int* noteID_c, QList<double>* last_c
     double &highest = *highest_c;
     QList<double> &y_ = *y__c;
     QList<double> &yuncorrected = *yuncorrected_c;
-    QList<double> &velocity = *velocity_c;
+    QList<int> &velocity = *velocity_c;
     QList<double>& y = *y_c;
 
     int goodCount = 0;
@@ -459,7 +466,7 @@ QList<double> live::AnaBeat::_findBeatCandidates(QList<double>* last_c
     // newX is there
     for (int i = 0; i < y_.size(); i++) {
         newX.append(tm);
-        tm += pow(2, last[y_[i] - 1]);  // really exp
+        tm += pow(2.0f, last[int(y_[i]) - 1]);  // really exp
     }
     return beatCandidats;
 }
@@ -519,13 +526,13 @@ double live::AnaBeat::_findTruePulse(QList<double>* beatCandidats_c
 
 bool live::AnaBeat::_findNum(double* oldFactor_c, double* factor_c
                            , double* numLCD_c, QList<double>* newX_c
-                           , double* highestBC_c, QList<double>* velocity_c) {
+                           , double* highestBC_c, QList<int>* velocity_c) {
     double &oldFactor = *oldFactor_c;
     double &factor = *factor_c;
     double &numLCD = *numLCD_c;
     QList<double> &newX = *newX_c;
     double &highestBC = *highestBC_c;
-    QList<double> &velocity = *velocity_c;
+    QList<int> &velocity = *velocity_c;
 
     bool done = 0;
     bool doneCLOOP = true;
