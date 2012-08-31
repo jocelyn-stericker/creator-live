@@ -320,7 +320,7 @@ void LiveWindow::setKey(int a)
 void LiveWindow::setBPM(int a)
 {
     ui->spinBox_bpm->setValue(a);
-    song::current()->metronome->setBpm(a);
+    song::current()->metronome->setBpm(float(a));
 }
 
 void LiveWindow::toggleMetro(bool m)

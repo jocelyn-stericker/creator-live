@@ -37,9 +37,8 @@ class TheMutex {
 public:
     static TheMutex* me;
     QMutex LOCK;
-    QMutex joinLock;
     int recurse;
-    TheMutex() : LOCK(QMutex::Recursive), joinLock(QMutex::Recursive), recurse(0) {}
+    TheMutex() : LOCK(QMutex::Recursive), recurse(0) {}
 };
 
 LIBLIVECORESHARED_EXPORT TheMutex* TheMutex::me=new TheMutex();
@@ -63,7 +62,6 @@ LIBLIVECORESHARED_EXPORT void live::Object::beginProc() {
 }
 
 LIBLIVECORESHARED_EXPORT void live::Object::beginAsyncAction() {
-    //    TheMutex::me->joinLock.lock();
     TheMutex::me->LOCK.lock();
 #if !defined(NDEBUG) && defined(__linux__)
     live_mutex(x_asyncTime) {
@@ -115,7 +113,6 @@ LIBLIVECORESHARED_EXPORT void live::Object::endAsyncAction() {
         qCritical() << "XRUN:: AsyncAction guilty?";
         ss_XRUN = false;
     }
-    //    TheMutex::me->joinLock.unlock();
 }
 
 LIBLIVECORESHARED_EXPORT void live::Object::XRUN() {
@@ -187,7 +184,7 @@ void live::Object::kill() {
         Q_ASSERT(!mInverseConnections.size());
     }
     if (!SecretMidi::me) new SecretMidi;
-    SecretMidi::me->mRemoveWithheld_object_dest(this);
+    SecretMidi::me->mClearEventsTo(this);
     for (QSet<ObjectPtr*>::iterator it = s_ptrList.begin(); it != s_ptrList.end(); ++it) {
         (*it)->obliviate();
         zombies->insertMulti(s_name,*it);
@@ -199,41 +196,106 @@ void live::Object::hybridConnect(const live::ObjectPtr &b) {
     midiConnect(b);
 }
 
-void live::Object::midiConnect(const live::ObjectPtr &b) {
-    doMidiConnect(b.data(),this);   //josh, you're fired! why is this backwards!?
+void live::Object::midiConnect(const live::ObjectPtr &bl) {
+    live::Object* a=const_cast<live::Object*>(this);
+    live::Object* b=const_cast<live::Object*>(bl.data());
+    a->mPanic();
+    live::Object::beginProc(); {
+        bool ok=1;
+        for (int i=0;i<a->mConnections.size();i++) if (a->mConnections[i].data()==b) ok=0;
+
+        kill_kitten {
+            if (ok) {
+                a->mConnections.push_back(b);
+                b->mInverseConnections.push_back(a);
+            } else {
+                for (int i=0;i<a->mConnections.size();i++) {
+                    if (a->mConnections[i].data()==b) {
+                        a->mConnections.removeAt(i);
+                        i--;
+                    }
+                }
+                for (int i=0;i<b->mInverseConnections.size();i++) {
+                    if (b->mInverseConnections[i].data()==a) {
+                        b->mInverseConnections.removeAt(i);
+                        i--;
+                    }
+                }
+            }
+        }
+    }
+    live::Object::endProc();
 }
 
-void live::Object::audioConnect(const live::ObjectPtr& b) {
-    doAudioConnect(b.data(),this);  //josh, you're fired! why is this backwards!?
+void live::Object::audioConnect(const live::ObjectPtr& bl) {
+    // We need both locks on al and bl.
+
+    live::Object* a=const_cast<live::Object*>(this);
+    live::Object* b=const_cast<live::Object*>(bl.data());
+
+    while(1) {
+        bool ok_a = b->x_ptr.tryLock();
+        if(!ok_a) continue;
+        bool ok_b = a->x_ptr.tryLock();
+        if(!ok_b) {
+            if(ok_a) b->x_ptr.unlock();
+            continue;
+        }
+        break;
+    }
+
+    {
+
+        bool ok=1;
+        for (int i=0;i<a->aConnections.size();i++) if (a->aConnections[i].data()==b) ok=0;
+
+        if (ok) {
+            b->newConnection();
+
+            kill_kitten {
+                a->aConnections.push_back(b);
+                b->aInverseConnections.push_back(a);
+                b->mixer_resetStatus();
+            }
+        } else {
+            kill_kitten {
+                for (int i=0;i<a->aConnections.size();i++) {
+                    if (a->aConnections[i].data()==b) {
+                        a->aConnections.removeAt(i);
+                        break;
+                    }
+                }
+                for (int i=0;i<b->aInverseConnections.size();i++) {
+                    if (b->aInverseConnections[i].data()==a) {
+                        b->aInverseConnections.removeAt(i);
+                        break;
+                    }
+                }
+            }
+            b->mixer_resetStatus();
+
+            b->deleteConnection();
+        }
+    }
+    b->x_ptr.unlock();
+    a->x_ptr.unlock();
 }
 
-void live::Object::mOut(const live::Event *data, live::ObjectChain* p) {
+void live::Object::mOut(const live::Event *data, live::ObjectChain* p, bool backwards) {
     if (!SecretMidi::me) SecretMidi::me=new SecretMidi;
     if (!live::lthread::isMidi() || (data->time.sec!=-1&&(data->time.toTime_ms()-5>live::midi::getTime_msec()))) {
         live::Event* x=new live::Event;
         *x=*data;
-        SecretMidi::me->mWithhold(x,*p,this);    //now owner.
+        SecretMidi::me->mWithhold(x,*p,this, backwards);    //now owner.
     } else for (int i=0;i<mConnections.size();i++) {
         if(s_ec) s_ec->mIn(data,p);
 
         live::Event*x=new live::Event(*data);
         x->buddy=0;
-        mConnections[i]->mIn(x,p);
-        delete x;
-    }
-}
-
-void live::Object::mOutverse(const live::Event *data, live::ObjectChain* p) {
-    if (!SecretMidi::me) SecretMidi::me=new SecretMidi;
-    if (!live::lthread::isMidi() || (data->time.sec!=-1&&(data->time.toTime_ms()-5>live::midi::getTime_msec()))) {
-        live::Event* x=new live::Event;
-        *x=*data;
-        SecretMidi::me->mWithhold(x,*p,this,1);    //now owner.
-    } else for (int i=0;i<mConnections.size();i++) {
-        live::Event*x=new live::Event;
-        *x=*data;
-        x->buddy=0;
-        mConnections[i]->mInverse(x,p);
+        if (backwards)
+            mConnections[i]->mInverse(x,p);
+        else
+            mConnections[i]->mIn(x,p);
         delete x;
     }
 }
@@ -247,94 +309,6 @@ void live::Object::mPanic() {
     me.push_back(this);
     for (int i = 0; i < ons.size(); ++i)
         mOut(&ons[i], &me);
-}
-
-
-void live::doAudioConnect(const live::Object* al,const live::Object* bl) {
-//    live_private::SecretAudio::singleton->pause();
-    // We need both locks on al and bl.
-
-    live::Object* a=const_cast<live::Object*>(al);
-    live::Object* b=const_cast<live::Object*>(bl);
-
-    while(1) {
-        bool ok_a = a->x_ptr.tryLock();
-        if(!ok_a) continue;
-        bool ok_b = b->x_ptr.tryLock();
-        if(!ok_b) {
-            if(ok_a) a->x_ptr.unlock();
-            continue;
-        }
-        break;
-    }
-
-    {
-
-        bool ok=1;
-        for (int i=0;i<b->aConnections.size();i++) if (b->aConnections[i].data()==a) ok=0;
-
-        if (ok) {
-            a->newConnection();
-
-            kill_kitten {
-                b->aConnections.push_back(a);
-                a->aInverseConnections.push_back(b);
-                a->mixer_resetStatus();
-            }
-        } else {
-            kill_kitten {
-                for (int i=0;i<b->aConnections.size();i++) {
-                    if (b->aConnections[i].data()==a) {
-                        b->aConnections.removeAt(i);
-                        break;
-                    }
-                }
-                for (int i=0;i<a->aInverseConnections.size();i++) {
-                    if (a->aInverseConnections[i].data()==b) {
-                        a->aInverseConnections.removeAt(i);
-                        break;
-                    }
-                }
-            }
-            a->mixer_resetStatus();
-
-            a->deleteConnection();
-        }
-    }
-    a->x_ptr.unlock();
-    b->x_ptr.unlock();
-//    live_private::SecretAudio::singleton->resume();
-}
-
-void live::doMidiConnect(const live::Object* al, const live::Object* bl) {
-    live::Object* a=const_cast<live::Object*>(al);
-    live::Object* b=const_cast<live::Object*>(bl);
-    b->mPanic();
-    live::Object::beginProc(); {
-        bool ok=1;
-        for (int i=0;i<b->mConnections.size();i++) if (b->mConnections[i].data()==a) ok=0;
-
-        kill_kitten {
-            if (ok) {
-                b->mConnections.push_back(a);
-                a->mInverseConnections.push_back(b);
-            } else {
-                for (int i=0;i<b->mConnections.size();i++) {
-                    if (b->mConnections[i].data()==a) {
-                        b->mConnections.removeAt(i);
-                        i--;
-                    }
-                }
-                for (int i=0;i<a->mInverseConnections.size();i++) {
-                    if (a->mInverseConnections[i].data()==b) {
-                        a->mInverseConnections.removeAt(i);
-                        i--;
-                    }
-                }
-            }
-        }
-    }
-    live::Object::endProc();
 }
 
 class MixerDataDestroyer {
@@ -400,15 +374,6 @@ bool live::ObjectPtr::restore(live::Object* a) {
         a->s_ptrList.insert(this);
     }
     return 1;
-}
-
-void audioConnect(live::Object&a,live::Object&b) {
-    doAudioConnect(&b,&a);
-
-}
-
-void midiConnect(live::Object&a,live::Object&b) {
-    doMidiConnect(&b,&a);
 }
 
 LIBLIVECORESHARED_EXPORT live::object* live::object::me=0;

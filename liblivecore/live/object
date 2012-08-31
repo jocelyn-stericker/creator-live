@@ -114,9 +114,9 @@ public:
     virtual void mIn(const Event*data,ObjectChain*p) { p->push_back(this); mOut(data,p); p->pop_back(); }
     /** In mIn(...) call mOut(...) when processing is finished. This may be called as many times (including 0) inside an mIn.
      * If you send an event which is sent early it will be withheld until it is time for it to be sent on. */
-    void mOut(const Event *data, ObjectChain* p);
+    void mOut(const Event *data, ObjectChain* p, bool backwards = false);
     /** For effects, reimplement this function to undo what would have been done in mIn. For example, if mIn would raise data by a semitone, mInverse would lower it by a semitone.
-     *  Then, output your result with 'mOutverse(data, p)'
+     *  Then, output your result with 'mOut(data, p, true)'
      *
      *  Do not reimplement this function for plugins/effects which react to certain events without modifying them (for example, a sampler should not reimplement this function).
      *
@@ -125,9 +125,7 @@ public:
      *
      *  Ambition-like classes should reimplement this function with 'mOut(data,p);'
      */
-    virtual void mInverse(const Event*data,ObjectChain*p) { Q_ASSERT(p->size()); p->pop_back(); mOutverse(data,p); p->push_back(this); }
-    /** See the note on mInverse. */
-    void mOutverse(const Event* data,ObjectChain* p);
+    virtual void mInverse(const Event*data,ObjectChain*p) { Q_ASSERT(p->size()); p->pop_back(); mOut(data,p, true); p->push_back(this); }
     /** Use the LIVE_HYBRID, LIVE_MIDI and LIVE_AUDIO macros. */
     virtual bool isMidiObject() const=0;
 

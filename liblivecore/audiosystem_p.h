@@ -178,8 +178,6 @@ public:
         return s_availOutPortIds.takeFirst();
     }
 
-    bool s_paused;
-
     quint32 nframes;
     QList< AudioIn* > inputs;
     QList< AudioOut* > outputs;
@@ -244,9 +242,6 @@ public slots:
     void jack_disconnect(QString readPort,QString writePort);
 
     void removeNull(QObject*);
-
-    void pause() { kill_kitten s_paused = true; }
-    void resume() { kill_kitten s_paused = false; }
 
 public:
     virtual QString name() { return "Jack Audio"; }

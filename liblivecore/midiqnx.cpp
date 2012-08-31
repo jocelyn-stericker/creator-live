@@ -42,21 +42,18 @@ void SecretMidi::run() { // [MIDI THREAD]
         msleep(12);
         live::Object::beginProc();
 
-        for(int i=0;i<withheld_ev.size();i++) {
-            if(withheld_ev[i]->time.toTime_ms()-live::midi::getTime_msec()<5) {
+        for(int i=0;i<withheld.size();i++) {
+            if(withheld[i].ev->time.toTime_ms()-live::midi::getTime_msec()<5) {
                 ///////////////////////////
                 live::Object::endProc(); ////////
                 lock.unlock(); ////////////
                 ///////////////////////////
 
-                live::ObjectChain p=withheld_p.takeAt(i);
-                if(!withheld_reverse.takeAt(i)) {
-                    withheld_obj.takeAt(i)->mOutverse(withheld_ev.at(i),p);
-                } else {
-                    withheld_obj.takeAt(i)->mOut(withheld_ev.at(i),p);
-                }
-                delete withheld_ev.takeAt(i);
-                --i;
+                Withheld w = withheld.takeAt(i--);
+
+                live::ObjectChain p=w.p;
+                w.obj->mOut(w.ev,p, w.reverse);
+                delete w.ev;
 
                 ///////////////////////////
                 live::Object::beginProc(); //////
@@ -88,17 +85,14 @@ void SecretMidi::cancel(live::ObjectPtr from) {
         }
     }
 
-    for(int i=0; i<withheld_ev.size(); i++) {
+    for(int i=0; i<withheld.size(); i++) {
         bool ok=0;
-        for(int j=0;j<withheld_p[i].size();j++) {
-            if(withheld_p[i][j].data()==from.data()) {ok=1;break;}
+        for(int j=0;j<withheld[i].p.size();j++) {
+            if(withheld[i].p[j].data()==from.data()) {ok=1;break;}
         }
         if(ok) {
-            withheld_ev.removeAt(i);
-            withheld_p.removeAt(i);
-            withheld_obj.removeAt(i);
-            withheld_reverse.removeAt(i);
-            i--;
+            Withheld w = withheld.takeAt(i--);
+            delete w.ev;
         }
     }
 }
@@ -106,34 +100,25 @@ void SecretMidi::cancel(live::ObjectPtr from) {
 void SecretMidi::mWithhold(live::Event* x,live::ObjectChain p,live::ObjectPtr obj, bool reverse) {
     live::lthread::midi();
     x->buddy=0;
-    withheld_ev.push_back(x);
-    withheld_p.push_back(p);
-    withheld_obj.push_back(obj);
-    withheld_reverse.push_back(reverse);
+    withheld.push_back(Withheld(x, p, obj, reverse));
 }
 
 void SecretMidi::mRemoveWithheld(live::ObjectPtr obj) {
     live::lthread::midi();
-    for(int i=0;i<withheld_ev.size();i++) {
-        if(withheld_obj[i]==obj) {
-            delete withheld_ev.takeAt(i);
-            withheld_p.removeAt(i);
-            withheld_obj.removeAt(i);
-            withheld_reverse.removeAt(i);
-            --i;
+    for(int i=0;i<withheld.size();i++) {
+        if(withheld[i].obj==obj) {
+            Withheld w = withheld.takeAt(i--);
+            delete w.ev;
         }
     }
 }
 
-void SecretMidi::mRemoveWithheld_object_dest(live::Object* obj) {
+void SecretMidi::mClearEventsTo(live::Object* obj) {
     live::lthread::midi();
-    for(int i=0;i<withheld_ev.size();i++) {
-        if(withheld_obj[i].data()==obj) {
-            delete withheld_ev.takeAt(i);
-            withheld_p.removeAt(i);
-            withheld_obj.removeAt(i);
-            withheld_reverse.removeAt(i);
-            --i;
+    for(int i=0;i<withheld.size();i++) {
+        if(withheld[i].obj.data()==obj) {
+            Withheld w = withheld.takeAt(i--);
+            delete w.ev;
         }
     }
 }

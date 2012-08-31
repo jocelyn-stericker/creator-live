@@ -59,45 +59,73 @@ public:
     virtual void mIn(const live::Event *, live::ObjectChain*);
 };
 
-#ifndef __QNX__
 class LIBLIVECORESHARED_EXPORT SecretMidi : public QThread
 {
     Q_OBJECT //Midi.cpp
 public:
     static SecretMidi* me;
-
-    QMutex x_midi; // Every function must use this.
-
     QList< MidiIn* > inputs;
     QList< MidiOut*> outputs;
     MidiNull* null;
+
+    QMutex x_midi; // Every function must use this.
+
+#ifndef __QNX__
     QList< PmStream* > pmouts;
     QList< PmStream* > pmins;
     QList< PmEvent*  > pmqueue;
+#endif
     QList< int       > idqueue;
     QList< live::ObjectChain > fromqueue;
 
-    QList<live::Event*> withheld_ev;
-    QList<live::ObjectChain> withheld_p;
-    QList<live::ObjectPtr> withheld_obj;
-    QList<bool> withheld_reverse;
+    struct Withheld {
+        live::Event* ev;
+        live::ObjectChain p;
+        live::ObjectPtr obj;
+        bool reverse;
+        Withheld(live::Event* cev, live::ObjectChain cp, live::ObjectPtr cobj, bool creverse)
+          : ev(cev)
+          , p(cp)
+          , obj(cobj)
+          , reverse(creverse)
+          {
+        }
+
+        Withheld(const Withheld& w)
+          : ev(w.ev)
+          , p(w.p)
+          , obj(w.obj)
+          , reverse(w.reverse)
+          { // Careful.
+        }
+
+        Withheld& operator=(const Withheld& w) {
+            ev = w.ev;
+            p = w.p;
+            obj = w.obj;
+            reverse = w.reverse;
+            // Careful.
+            return *this;
+        }
+    };
+
+    QList<Withheld> withheld;
 
 public:
     SecretMidi()
       : QThread()
-      , x_midi(QMutex::Recursive)
       , inputs()
       , outputs()
       , null(new MidiNull)
+      , x_midi(QMutex::Recursive)
+  #ifndef __QNX__
       , pmouts()
       , pmins()
       , pmqueue()
       , idqueue()
+  #endif
       , fromqueue()
-      , withheld_ev()
-      , withheld_p()
-      , withheld_obj()
-      , withheld_reverse()
+      , withheld()
       { init();
     }
 
@@ -109,52 +137,10 @@ public:
     void cancel(live::ObjectPtr from);
     void mWithhold(live::Event* x, live::ObjectChain p, live::ObjectPtr obj, bool reverse=0);
     void mRemoveWithheld(live::ObjectPtr obj);
-    void mRemoveWithheld_object_dest(live::Object* obj);
+    void mClearEventsTo(live::Object* obj);
 private:
     Q_DISABLE_COPY(SecretMidi)
 };
-#else
-class LIBLIVECORESHARED_EXPORT SecretMidi : public QThread
-{
-    Q_OBJECT //Midi.cpp
-public:
-    static SecretMidi* me;
-    QList< MidiIn* > inputs;
-    QList< MidiOut*> outputs;
-    MidiNull* null;
-
-    QList< int       > idqueue;
-    QList< live::ObjectChain > fromqueue;
-    QList<live::Event*> withheld_ev;
-    QList<live::ObjectChain> withheld_p;
-    QList<live::ObjectPtr> withheld_obj;
-    QList<bool> withheld_reverse;
-
-public:
-    SecretMidi()
-      : QThread()
-      , inputs()
-      , outputs()
-      , null(new MidiNull)
-    /*, pmouts()
-      , pmins()
-      , pmqueue()
-      , idqueue() */
-      { init();
-    }
-
-    void init();
-    void run();
-    void refresh();
-    void queue(const live::Event* ev, int device, live::ObjectChain from);
-    void cancel(live::ObjectPtr from);
-    void mWithhold(live::Event* x, live::ObjectChain p, live::ObjectPtr obj, bool reverse=0);
-    void mRemoveWithheld(live::ObjectPtr obj);
-    void mRemoveWithheld_object_dest(live::Object* obj);
-private:
-    Q_DISABLE_COPY(SecretMidi)
-};
-#endif
 
 }
 
