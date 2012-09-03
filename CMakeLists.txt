@@ -12,6 +12,9 @@ project (creator-live)
 
 ###################### SUBDIRECTORIES! ######################
 
+add_subdirectory (3rd-soundtouch) 
+#add_subdirectory (3rd-fluidsynth) 
+
 add_subdirectory (liblivecore) 
 add_subdirectory (liblivewidgets) 
 
@@ -23,16 +26,23 @@ add_subdirectory (app-sampler)
 add_subdirectory (app-pitch) 
 add_subdirectory (mode-dj)
 add_subdirectory (livemidi) 
-add_subdirectory (livesf2) 
+#add_subdirectory (livesf2) 
 add_subdirectory (livevst) 
 
 add_subdirectory (bridge) 
+if (!QNX)
 add_subdirectory (pluginTester) 
+endif (!QNX)
 add_subdirectory (creator-live) 
 
+if (!QNX)
 add_subdirectory (test) 
+endif (!QNX)
 
 ####################### DEPENDENCIES ########################
+
+add_dependencies (livecore 3rd-soundtouch)
+add_dependencies (livecore 3rd-fluidsynth)
 
 add_dependencies (app-calf liblivecore)
 add_dependencies (app-calf liblivewidgets)
@@ -55,8 +65,8 @@ add_dependencies (app-pitch liblivewidgets)
 add_dependencies (livemidi liblivecore)
 add_dependencies (livemidi liblivewidgets)
 
-add_dependencies (livesf2 liblivecore)
-add_dependencies (livesf2 liblivewidgets)
+#add_dependencies (livesf2 liblivecore)
+#add_dependencies (livesf2 liblivewidgets)
 
 add_dependencies (livevst liblivecore)
 add_dependencies (livevst liblivewidgets)
@@ -65,6 +75,7 @@ add_dependencies (bridge liblivecore)
 add_dependencies (bridge liblivewidgets)
 add_dependencies (bridge livemidi)
 
+if (!QNX)
 add_dependencies (pluginTester liblivecore)
 add_dependencies (pluginTester liblivewidgets)
 add_dependencies (pluginTester app-calf)
@@ -75,8 +86,9 @@ add_dependencies (pluginTester app-sequencer)
 add_dependencies (pluginTester app-sampler)
 add_dependencies (pluginTester app-pitch)
 add_dependencies (pluginTester livemidi)
-add_dependencies (pluginTester livesf2)
+#add_dependencies (pluginTester livesf2)
 add_dependencies (pluginTester livevst)
+endif (!QNX)
 
 add_dependencies (creator-live liblivecore)
 add_dependencies (creator-live liblivewidgets)
@@ -88,7 +100,9 @@ add_dependencies (creator-live app-sequencer)
 add_dependencies (creator-live app-sampler)
 add_dependencies (creator-live app-pitch)
 add_dependencies (creator-live livemidi)
-add_dependencies (creator-live livesf2)
+#add_dependencies (creator-live livesf2)
 add_dependencies (creator-live livevst)
 
+if (!QNX)
 add_dependencies (test creator-live)
+endif (!QNX)

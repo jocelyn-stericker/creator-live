@@ -146,7 +146,11 @@ struct bandlimiter
                 new_spec[SIZE - i] = 0.f;
         }
         // convert back to time domain (IFFT) and extract only real part
+#ifdef __QNX__
+        fft.calculate(&new_spec[0], &iffted[0], true); // FIXME: is this sane?
+#else
         fft.calculate(new_spec.data(), iffted.data(), true);
+#endif
         for (int i = 0; i < SIZE; i++)
             output[i] = iffted[i].real();
     }

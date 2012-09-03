@@ -15,7 +15,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #endif
 
 #include "pitchapp.h"
-#include <soundtouch/SoundTouch.h>
+#include <SoundTouch.h>
 #include <QObject>
 
 class PitchAppAudioR : public QObject, public live::Object {

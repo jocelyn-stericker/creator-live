@@ -10,7 +10,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live/anabeat>
 
 #include <cmath>
-#include <live/midievent>  // NOLINT
+#include <math.h>
+#include <live/midievent>
 
 /**
  * A denominator cannot be detected, but numerators have common

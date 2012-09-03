@@ -85,11 +85,13 @@ list (APPEND liblivecore_qobject
     midibridge.h
 )
 
-include_directories ( SYSTEM
-    /usr/include # Avoid ugly warnings.
-    /usr/include/QtGui # Avoid ugly warnings.
-    /usr/include/QtCore # Avoid ugly warnings.
-)
+if (!QNX)
+    include_directories ( SYSTEM
+        /usr/include # Avoid ugly warnings.
+        /usr/include/QtGui # Avoid ugly warnings.
+        /usr/include/QtCore # Avoid ugly warnings.
+    )
+endif (!QNX)
 
 ################## PLATFORM-SPECIFIC CODE ##################
 
@@ -99,9 +101,10 @@ if (QNX)
         midiqnx.cpp 
     )
     list (APPEND liblivecore
-        audiosystem_qnx_p.h 
     )
     list (APPEND liblivecore_qobject
+        audiosystem_qnx_p.h 
+        midisystem_p.h 
     )
 else (QNX)
     list (APPEND liblivecore_cpp
@@ -135,4 +138,6 @@ set_target_properties(livecore PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
 )
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Weffc++ -pedantic -pedantic-errors -Wextra  -Wall -Wcast-align -Wcast-qual  -Wchar-subscripts  -Wcomment -Wconversion -Wdisabled-optimization -Wformat -Wformat=2 -Wformat-nonliteral -Wformat-security  -Wformat-y2k -Wimport -Winit-self -Winline -Winvalid-pch -Wunsafe-loop-optimizations -Wlong-long -Wmissing-braces -Wmissing-field-initializers -Wmissing-format-attribute -Wmissing-include-dirs -Wmissing-noreturn -Wpacked -Wparentheses -Wpointer-arith -Wredundant-decls -Wreturn-type -Wsequence-point  -Wsign-compare  -Wstack-protector -Wstrict-aliasing -Wstrict-aliasing=2 -Wswitch -Wtrigraphs  -Wuninitialized -Wunknown-pragmas  -Wunreachable-code -Wunused -Wunused-function  -Wunused-label  -Wunused-parameter -Wunused-value  -Wunused-variable  -Wvariadic-macros -Wvolatile-register-var  -Wwrite-strings")
+if (!QNX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Weffc++ -pedantic -pedantic-errors -Wextra  -Wall -Wcast-align -Wcast-qual  -Wchar-subscripts  -Wcomment -Wconversion -Wdisabled-optimization -Wformat -Wformat=2 -Wformat-nonliteral -Wformat-security  -Wformat-y2k -Wimport -Winit-self -Winline -Winvalid-pch -Wunsafe-loop-optimizations -Wlong-long -Wmissing-braces -Wmissing-field-initializers -Wmissing-format-attribute -Wmissing-include-dirs -Wmissing-noreturn -Wpacked -Wparentheses -Wpointer-arith -Wredundant-decls -Wreturn-type -Wsequence-point  -Wsign-compare  -Wstack-protector -Wstrict-aliasing -Wstrict-aliasing=2 -Wswitch -Wtrigraphs  -Wuninitialized -Wunknown-pragmas  -Wunreachable-code -Wunused -Wunused-function  -Wunused-label  -Wunused-parameter -Wunused-value  -Wunused-variable  -Wvariadic-macros -Wvolatile-register-var  -Wwrite-strings")
+endif (!QNX)

@@ -191,7 +191,7 @@ void AudioOut::run() {
 
 
 
-    for(int i=0;i<bsize/sizeof(qint16);++i) {
+    for(unsigned i=0;i<bsize/sizeof(qint16);++i) {
         mSampleBfr2[i]=0;
     }
 
@@ -243,7 +243,7 @@ void AudioOut::run() {
             //            printf ("bytes written = %d \n", written);
         }
 
-        for(int i=0;i<bsize/sizeof(qint16);++i) {
+        for(unsigned i=0;i<bsize/sizeof(qint16);++i) {
             mSampleBfr2[i]=0;
         }
 
@@ -383,14 +383,11 @@ void AudioIn::run() {
                 lesi2f_array(mSampleBfr,3072/sizeof(qint16),bfrX2);
                 master->lock->lock();
 
-                live::ObjectChain p;
-                p->push_back(this);
                 master->dataRead->wait(master->lock);  // wait until bfrX2 is recorded.
                 live::Object::beginProc();
-                aOut(bfrX2, 0, p);
-                aOut(bfrX2 + 3072/sizeof(qint16)/2, 1, p);
+                aOut(bfrX2, 0, this);
+                aOut(bfrX2 + 3072/sizeof(qint16)/2, 1, this);
                 live::Object::endProc();
-                p->pop_back();
 
                 master->lock->unlock();
                 asyncCount-=3072;
@@ -400,7 +397,7 @@ void AudioIn::run() {
     }
 }
 
-void AudioOut::aIn(const float *data, int chan, live::ObjectChain* ) {
+void AudioOut::aIn(const float *data, int chan, live::Object* ) {
     fi2les_array_half(data,mSampleBfr2,3072/sizeof(qint16),chan);
 }
 
@@ -443,17 +440,16 @@ void SecretAudio::process() {
         if(!buffer) buffer = new float[ nframes ];
 
         for ( int j = 0; j < i->chans; j++ ) {
-            for(int k=0; k<nframes; k++) {
+            for(unsigned k=0; k<nframes; k++) {
                 buffer[k]=0.0;
             }
-            live::ObjectChain p;
-            i->aIn( buffer, j, p);
+            i->aIn( buffer, j, 0);
         }
     }
     delete[] buffer;
 
-    if(live::song::current&&live::song::current->metronome) {
-        live::song::current->metronome->clock();
+    if(live::song::current()&&live::song::current()->metronome) {
+        live::song::current()->metronome->clock();
     }
 
     live::Object::endProc();
@@ -482,7 +478,7 @@ QObject* live::audio::getCurrentInterface() {
 
 void live::audio::refresh() { s_audioInterface->refresh(); }
 
-LIBLIVECORESHARED_EXPORT const int& live::audio::nFrames() {
+LIBLIVECORESHARED_EXPORT const quint32& live::audio::nFrames() {
     return s_audioInterface->nFrames();
 }
 
@@ -503,6 +499,7 @@ void live_private::SecretAudio::jack_disconnect(QString readPort,QString writePo
 }
 
 bool live_private::SecretAudio::resetMappings() {
+    return false;
 }
 
 LIBLIVECORESHARED_EXPORT void live::audio::addMapping(QStringList mapping, bool input,QString name) {
@@ -511,14 +508,17 @@ LIBLIVECORESHARED_EXPORT void live::audio::addMapping(QStringList mapping, bool 
 
 bool live_private::SecretAudio::addMapping(QStringList, bool, QString) {
     Q_ASSERT(0);
+    return false;
 }
 
 LIBLIVECORESHARED_EXPORT int live::audio::mappingCount(bool) {
+    return 0;
     Q_ASSERT(0);
 }
 
 int live_private::SecretAudio::mappingCount(bool) {
     Q_ASSERT(0);
+    return 0;
 }
 
 LIBLIVECORESHARED_EXPORT QStringList live::audio::getInputChanStringList() {

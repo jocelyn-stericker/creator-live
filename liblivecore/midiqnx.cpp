@@ -14,7 +14,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "live/audio"
 #include "live/midievent"
 #include <QtConcurrentRun>
-#include <time>
+#include <live/time>
 
 using namespace live_private;
 
@@ -44,22 +44,11 @@ void SecretMidi::run() { // [MIDI THREAD]
 
         for(int i=0;i<withheld.size();i++) {
             if(withheld[i].ev->time.toTime_ms()-live::midi::getTime_msec()<5) {
-                ///////////////////////////
-                live::Object::endProc(); ////////
-                lock.unlock(); ////////////
-                ///////////////////////////
-
                 Withheld w = withheld.takeAt(i--);
 
                 live::ObjectChain p=w.p;
-                w.obj->mOut(w.ev,p, w.reverse);
+                w.obj->mOut(w.ev, &p, w.reverse);
                 delete w.ev;
-
-                ///////////////////////////
-                live::Object::beginProc(); //////
-                lock.relock(); ////////////
-                ///////////////////////////
-
             }
         }
 
@@ -162,7 +151,7 @@ void MidiOut::mIn(const live::Event *ev, live::ObjectChain*p) {
             if(p->size()) SecretMidi::me->cancel(p->first());
         }
     } else {
-        SecretMidi::me->queue(ev,device,p);
+        SecretMidi::me->queue(ev,device,*p);
     }
 }
 
@@ -171,7 +160,7 @@ void live::midi::refresh() {
     SecretMidi::me->refresh();
 }
 
-live::ObjectPtr live::midi::getNull() {
+live::ObjectPtr live::midi::null() {
     if(!SecretMidi::me) new SecretMidi;
 
     return new MidiNull;

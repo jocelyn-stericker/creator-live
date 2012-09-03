@@ -15,8 +15,6 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "live/audio"
 #include "live/audiointerface"
 
-#ifdef __QNX__
-
 #ifndef AUDIOSYSTEM_QNX_P_H
 #define AUDIOSYSTEM_QNX_P_H
 
@@ -47,7 +45,7 @@ public:
     void run(); // <== this function is all you care about.
 
     bool mOn() const{ return 0; } bool aOn() const { return 1; }
-    virtual void aIn (const float*,int, live::ObjectChain*) {}
+    virtual void aIn (const float*,int, live::Object*) {}
 };
 
 class LIBLIVECORESHARED_EXPORT AudioOut : public QThread, public live::Object
@@ -74,7 +72,7 @@ public:
     AudioOut(SecretAudio* cmaster) : live::Object("Speaker or Headphones",true,true), chans(2), mSampleBfr2(new qint16[3072/sizeof(qint16)]), lock(new QMutex), dataRead(new QWaitCondition), master(cmaster) { setTemporary(0); }
 
     void run(); // <== this function processes data
-    virtual void aIn(const float*data,int chan, live::ObjectChain*p); // <== that it got here.
+    virtual void aIn(const float*data,int chan, live::Object*p); // <== that it got here.
 };
 
 class LIBLIVECORESHARED_EXPORT AudioNull : public live::Object
@@ -87,11 +85,9 @@ public:
 
     AudioNull(int cchans) : live::Object("Null Audio Device",false,false), chans(cchans) {}
 
-    virtual void aIn(const float*data,int chan, live::ObjectChain*p)
+    virtual void aIn(const float*data,int chan, live::Object*p)
     {
-        p->push_back(this);
-        aOut(data,chan,p);
-        p->pop_back();
+        aOut(data,chan,this);
     }
 };
 
@@ -103,7 +99,7 @@ public:
     QString s_error;
     static SecretAudio* singleton;
 
-    int nframes;
+    quint32 nframes;
     QList< AudioIn* > inputs;
     QList< AudioOut* > outputs;
     QList< AudioNull* > nulls;
@@ -113,12 +109,13 @@ public:
     QStringList outputMappingsName;
 //    jack_client_t* client;
     QList< int > asioDeviceTypes;
+    bool valid() { return true; }
 
     QObject* qobject() { return this; }
 
     SecretAudio();
 
-    ~SecretAudio()
+    virtual ~SecretAudio()
     {
         while (inputs.size())
         {
@@ -144,7 +141,7 @@ public:
         return 0;
     }
 
-    const int& nFrames() { return nframes; }
+    const quint32& nFrames() { return nframes; }
     qint32 sampleRate();
 
 public slots:
@@ -186,5 +183,3 @@ public slots:
 }
 
 #endif // AUDIOSYSTEM_QNX_P_H
-
-#endif // __QNX__

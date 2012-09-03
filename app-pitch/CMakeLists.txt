@@ -35,7 +35,7 @@ list (APPEND app-pitch_qrc
 )
 
 list (APPEND app-pitch_libs
-    SoundTouch
+    livesoundtouch 
 )
 
 ################## PLATFORM-SPECIFIC CODE ##################
@@ -55,6 +55,7 @@ include_directories (${cmake_binary_dir}
     ${CMAKE_BINARY_DIR}/app-pitch
     ../liblivecore/
     ../liblivewidgets/
+    ../3rd-soundtouch/include
 )
 
 qt4_wrap_cpp (app-pitch_moc ${app-pitch_qobject})

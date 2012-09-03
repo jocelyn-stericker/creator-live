@@ -34,7 +34,7 @@ list (APPEND app-bpm_qrc
 )
 
 list (APPEND app-bpm_libs
-    SoundTouch
+    livesoundtouch 
 )
 
 ################## PLATFORM-SPECIFIC CODE ##################
@@ -54,6 +54,7 @@ include_directories (${cmake_binary_dir}
     ${CMAKE_BINARY_DIR}/app-bpm
     ../liblivecore/
     ../liblivewidgets/
+    ../3rd-soundtouch/include
 )
 
 qt4_wrap_cpp (app-bpm_moc ${app-bpm_h_qobject})

@@ -13,7 +13,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live/object>
 #include <live/variantbinding>
 #include <live/anabeat>
-#include <soundtouch/BPMDetect.h>
+#include <BPMDetect.h>
 #include <QList>
 
 class BPMApp : public QObject, public live::Object

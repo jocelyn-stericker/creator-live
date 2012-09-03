@@ -98,6 +98,7 @@ include_directories (${cmake_binary_dir}
     ../
     ../liblivecore/
     ../liblivewidgets/
+    ../3rd-soundtouch/include
 )
 
 qt4_wrap_cpp (app-calf_moc ${app-calf_h_qobject})

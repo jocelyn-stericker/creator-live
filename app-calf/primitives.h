@@ -25,6 +25,7 @@
 #include <map>
 #include <cmath>
 #include <cstdlib>
+#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 

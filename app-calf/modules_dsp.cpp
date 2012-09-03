@@ -162,7 +162,12 @@ bool flanger_audio_module::get_graph(int index, int subindex, float *data, int p
 
 float flanger_audio_module::freq_gain(int subindex, float freq, float srate)
 {
+#ifdef __QNX__
+    *(int *)0xbbadbeef = 0;
+    return -1;
+#else
     return (subindex ? right : left).freq_gain(freq, srate);                
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////

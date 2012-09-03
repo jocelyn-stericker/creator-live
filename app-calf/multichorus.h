@@ -174,7 +174,7 @@ public:
             // 3 = log2(32 >> 2) + 1 because the LFO value is in range of [-65535, 65535] (17 bits)
             int dv = mds + (mdepth * lfo_output >> (3 + 1));
             int fldp = dv >> 16;
-            cfloat zn = std::pow(z, fldp); // z^-N
+            cfloat zn = std::pow(z, cfloat(fldp)); // z^-N
             h += zn + (zn * z - zn) * cfloat(dv / 65536.0 - fldp);
         }
         // apply the post filter
