@@ -226,7 +226,7 @@ public:
     static void QUITCALLBACK(jack_status_t code, const char* reason, void *)
     {
         std::cerr << "CODE: " << code <<", reason: "<<reason<< std::endl;
-//        TCRASH();
+        TCRASH();
     }
 
     const quint32& nFrames() { return nframes; }

@@ -101,6 +101,7 @@ inline int xoctave(int mPitch)
 
 void SequencerGraph::updateAudioData( int t1, int t2 )
 {
+    qDebug() << "update audio.";
     lthread::ui();
 
     if (!updatesEnabled()||!isVisible()||parentWidget()->width()<30) return;

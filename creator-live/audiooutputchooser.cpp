@@ -71,7 +71,9 @@ void AudioOutputChooser::resizeEvent(QResizeEvent *e)
 
 void AudioOutputChooser::go()
 {
+    qDebug() << "Getting\n";
     b_trackName = object::get(OutputOnly|AudioOnly|NoRefresh)[s_ui->Bwidget->currentRow()]->name();
+    qDebug() << "Got\n";
     if (width() != 55) {
         minimize();
         QTimer::singleShot(200, this, SLOT(go()));

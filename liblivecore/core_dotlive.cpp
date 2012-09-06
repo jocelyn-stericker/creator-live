@@ -271,7 +271,7 @@ QByteArray TimeSignature::save()
 
     //////////////////////////////////////////////////////////////////
 
-    TimeSignature*x=IS_SAVE?_THIS:0;
+    TimeSignature*x=IS_SAVE?_THIS:NULL;
     x=IS_SAVE?x:new TimeSignature;
 
     /*003*/
@@ -316,7 +316,7 @@ QByteArray Pitch::save()
 
     //////////////////////////////////////////////////////////////////
 
-    Pitch*x=IS_SAVE?_THIS:0;
+    Pitch*x=IS_SAVE?_THIS:NULL;
     x=IS_SAVE?x:new Pitch;
 
     /*003*/
@@ -367,7 +367,7 @@ QByteArray KeySignature::save()
 
     //////////////////////////////////////////////////////////////////
 
-    KeySignature*x=IS_SAVE?_THIS:0;
+    KeySignature*x=IS_SAVE?_THIS:NULL;
     x=IS_SAVE?x:new KeySignature;
 
     /*003*/
@@ -762,7 +762,7 @@ QByteArray Metronome::save()
     //////////////////////////////////////////////////////////////////
 
 
-    Metronome*x=IS_SAVE?_THIS:0;
+    Metronome*x=IS_SAVE?_THIS:NULL;
 
     float xbpm = IS_SAVE?x->b_bpm:0.0f;
     /*003*/
@@ -838,7 +838,7 @@ QByteArray Ambition::save()
 
     //////////////////////////////////////////////////////////////////
 
-    Ambition* x=IS_SAVE?_THIS:0;
+    Ambition* x=IS_SAVE?_THIS:NULL;
 #ifdef LOAD
     QString cin_str,cout_str,cout_loopback_str;
     int cchain_size;
@@ -942,7 +942,7 @@ QByteArray AudioSecond::save()
 
 
     AudioSecond*x=0;
-    x = IS_SAVE?_THIS:0;
+    x = IS_SAVE?_THIS:NULL;
     /*003*/
     qint32 rate=audio::sampleRate();  //qint32
     ret IO rate;

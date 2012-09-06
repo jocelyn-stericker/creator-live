@@ -24,7 +24,7 @@ TrackInputSelect::TrackInputSelect(QWidget*parent, bool popout, bool allowMidi, 
   , s_allowMidi(allowMidi)
   , s_allowAudio(allowAudio)
   , all()
-  , b_trackName("NULL")
+  , b_trackName("No Input")
   , b_audio(allowAudio)
   { s_ui->setupUi(this);
 
@@ -45,6 +45,7 @@ TrackInputSelect::TrackInputSelect(QWidget*parent, bool popout, bool allowMidi, 
 
     connect(s_ui->inputType, SIGNAL(toggled(bool)), this, SLOT(minimize(bool)));
 
+    s_ui->inputName->setText(b_trackName);
     connect(&b_trackName, SIGNAL(changeObserved(QString,QString)), s_ui->inputName, SLOT(setText(QString)));
     connect(&b_audio, SIGNAL(changeObserved(bool,bool)), this, SLOT(onSetAudio(bool)));
     connect(&b_audio, SIGNAL(changeObserved(bool,bool)), s_ui->inputPaint, SLOT(setHidden(bool)));

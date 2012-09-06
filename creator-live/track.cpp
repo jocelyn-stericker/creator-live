@@ -446,7 +446,7 @@ void Track::setOutputChooser(OutputChooser* a) {
             return;
         }
 
-        ui_outputName->b_trackName = s_ambition.b_output.ref();
+        ui_outputName->b_trackName = s_ambition.b_output;
 
         connect(&s_ambition.b_output,
                 SIGNAL(changeObserved(QString,QString)),

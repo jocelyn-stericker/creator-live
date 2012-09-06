@@ -27,6 +27,7 @@ class LIBLIVECORESHARED_EXPORT BoundBase : public QObject
     Q_OBJECT
 public slots:
     virtual void set(const QVariant&) = 0;
+    virtual void set(const QString&) = 0;
     virtual void set(const int&) = 0;
     virtual void set(const bool&) = 0;
     virtual void setTrue() = 0;
@@ -84,9 +85,10 @@ public:
 
     Bound<U>& operator=(const U&that)    // slow
     {
-        QVariant a(s_t),b(that);
+        QVariant a(s_t), b(that);
         s_t=that;
-        if(a==that) return *this;
+        qDebug() << a << "changed in '=' to" << that;
+        if(s_t==that) return *this;
         emit changeObserved();
         emit changeObserved(b,a);
         emit changeObserved(b.toString(),a.toString());
@@ -97,16 +99,7 @@ public:
 
     Bound<U>& operator=(Bound<U>&that)    // slow
     {
-        QVariant a(s_t), b(that.ref());
-        s_t=that;
-
-        if(a==b) return *this;
-        emit changeObserved();
-        emit changeObserved(b,a);
-        emit changeObserved(b.toString(),a.toString());
-        emit changeObserved(b.toInt(),a.toInt());
-        emit changeObserved(b.toBool(),a.toBool());
-        return *this;
+        return operator=(that.ref());
     }
 
     void operator==(const U&that)   // fast
@@ -118,6 +111,8 @@ public:
     {
         QVariant a(s_t);
         s_t=qvariant_cast<U>(that);
+
+        qDebug() << a << "changed to" << that;
 
         if(a==that) return;
         emit changeObserved();

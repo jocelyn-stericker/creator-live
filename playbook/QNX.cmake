@@ -31,13 +31,13 @@ SET(CMAKE_OBJDUMP      "nto${CMAKE_SYSTEM_PROCESSOR}-objdump${HOST_EXECUTABLE_SU
 SET(CMAKE_LINKER       "nto${CMAKE_SYSTEM_PROCESSOR}-ld"     CACHE PATH "QNX Linker Program")
 SET(CMAKE_STRIP        "nto${CMAKE_SYSTEM_PROCESSOR}-strip${HOST_EXECUTABLE_SUFFIX}"   CACHE PATH "QNX Strip Program")
 
-SET(CMAKE_C_COMPILER qcc -Vgcc_ntoarmv7le)
+SET(CMAKE_C_COMPILER "nto${CMAKE_SYSTEM_PROCESSOR}-gcc")
 SET(CMAKE_C_FLAGS_DEBUG "-g -x c++ -fPIC -fstack-protector -fstack-protector-all")
 SET(CMAKE_C_FLAGS_MINSIZEREL "-Os -DNDEBUG -x c++ -fPIC -fstack-protector -fstack-protector-all")
 SET(CMAKE_C_FLAGS_RELEASE "-O3 -DNDEBUG -x c++ -fPIC -fstack-protector -fstack-protector-all")
 SET(CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g -x c++ -fPIC -fstack-protector -fstack-protector-all")
 
-SET(CMAKE_CXX_COMPILER QCC -Vgcc_ntoarmv7le)
+SET(CMAKE_CXX_COMPILER "nto${CMAKE_SYSTEM_PROCESSOR}-g++")
 SET(CMAKE_CXX_FLAGS_DEBUG "-g -x c++ -fPIC -fstack-protector -fstack-protector-all")
 SET(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -DNDEBUG -x c++ -fPIC -fstack-protector -fstack-protector-all")
 SET(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -x c++ -fPIC -fstack-protector -fstack-protector-all")
