@@ -88,7 +88,7 @@ public:
         QVariant a(s_t), b(that);
         s_t=that;
         qDebug() << a << "changed in '=' to" << that;
-        if(s_t==that) return *this;
+        if(a==that) return *this;
         emit changeObserved();
         emit changeObserved(b,a);
         emit changeObserved(b.toString(),a.toString());
