@@ -71,5 +71,5 @@ set_target_properties(livesf2 PROPERTIES
 )
 
 target_link_libraries (livesf2
-    livefluidsynth
+    fluidsynth
 )

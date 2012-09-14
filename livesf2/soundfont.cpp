@@ -15,7 +15,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 //"/home/joshua/Dropbox/Etc/mustheory2.sf2"
 
 Soundfont::Soundfont(QString url)
-  : live::Object("SOUNDFONT", false, true)
+  : live::Object("SOUNDFONT", false, true, 2)
   , s_settings(new_fluid_settings())
   , s_synth(0)
   , s_cache()

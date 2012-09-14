@@ -26,7 +26,7 @@ public:
     LIVE_EFFECT
 
     MidiPluginObject(live::ObjectPtr in, live::ObjectPtr out)
-      : live::Object(in.valid() ? "" : in->name(), false, false)
+      : live::Object(in.valid() ? "" : in->name(), false, false, 2)
       , s_in(in)
       , s_out(out)
       { out->audioConnect(this);

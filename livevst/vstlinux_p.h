@@ -40,7 +40,15 @@ public:
 
     bool aOn() const { return 1; } bool mOn() const{ return 1; }
 
-    VstR(Vst* cme,QString cvst) : live::Object("VST Internal",false,false), me(*cme), _vst(cvst), midiOut(0),audioFromVst(0),audioToVst(0), _id(++_lastId), _magic(new QProcess(this))
+    VstR(Vst* cme,QString cvst)
+      : live::Object("VST Internal",false,false,2)
+      , me(*cme)
+      , _vst(cvst)
+      , midiOut(0)
+      , audioFromVst(0)
+      , audioToVst(0)
+      , _id(++_lastId)
+      , _magic(new QProcess(this))
     {
         setTemporary(0);
         _ok=1;

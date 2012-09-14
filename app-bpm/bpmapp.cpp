@@ -22,7 +22,7 @@ using namespace live;
 int BPMApp::s_lastId=-1;
 
 BPMApp::BPMApp() :
-    Object("BPMDetect", 0, 0),
+    Object("BPMDetect", 0, 0,2),
     _bpmAudio(),
     _bpmMidi(new AnaBeat()),
     s_id(++s_lastId),

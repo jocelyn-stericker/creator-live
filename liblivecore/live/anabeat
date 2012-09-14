@@ -41,7 +41,7 @@ public:
     int _i;
 
     explicit AnaBeat() :
-        Object("MIDI Beat Analyzer",false,false),
+        Object("MIDI Beat Analyzer",false,false, 2),
         x_anabeat(QMutex::Recursive),
         _started(0),
         _bpm(-1),

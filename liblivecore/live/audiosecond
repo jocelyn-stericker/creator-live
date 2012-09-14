@@ -147,7 +147,7 @@ public:
     void pointGraph(long frame) {
         if (int(frame/sampleRate) < s_data.size()) {
             s_graphPointingTo = (int)(frame/sampleRate);
-            s_data[s_graphPointingTo]->pointGraph(frame%sampleRate);
+            if(s_data[s_graphPointingTo]) s_data[s_graphPointingTo]->pointGraph(frame%sampleRate);
         }
     }
 
@@ -176,7 +176,7 @@ public:
 
     void setData(const quint32&frame,const float&data)
     {
-        lthread::audio();
+        lthread::assertAudio();
         if(data == zero)
         {
             return;
@@ -218,7 +218,7 @@ public:
     int getRawPointer(const quint32&frame,float*& data,bool forceCreation=0, bool* warning = 0, bool enforceAudio = 1)
     {
         if (enforceAudio)
-            lthread::audio();
+            lthread::assertAudio();
         sampleRate=audio::sampleRate();
         if((s_dataSize<=frame/sampleRate||!s_data[(int)frame/sampleRate])&&!forceCreation)
         {

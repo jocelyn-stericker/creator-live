@@ -153,7 +153,7 @@ void live::MidiTrack::mIn(const Event *ev, ObjectChain*p) {
 }
 
 live::MidiTrack::MidiTrack()
-  : Object("MIDI Track",false,false)
+  : Object("MIDI Track",false,false, 2)
   , x_mTrack(QMutex::Recursive)
   , b_curPos(0)
   , b_lastPos(0)

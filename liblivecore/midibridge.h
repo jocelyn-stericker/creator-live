@@ -15,7 +15,7 @@ class BridgeMidiIn : public QObject, public live::Object {
     LIVE_INPUT
     QString s_name;
 public:
-    BridgeMidiIn(QString name) : live::Object(name,1,0), s_name(name) { }
+    BridgeMidiIn(QString name) : live::Object(name,1,0,2), s_name(name) { }
 
 public slots:
     void readData(QByteArray data) {
@@ -90,7 +90,7 @@ class BridgeMidiOut : public live::Object {
     QTcpSocket* s_sock;
     QString s_name;
 public:
-    BridgeMidiOut(QTcpSocket* sock, QString name) : live::Object(name,1,0), s_sock(sock), s_name(name) {
+    BridgeMidiOut(QTcpSocket* sock, QString name) : live::Object(name,1,0,2), s_sock(sock), s_name(name) {
     }
     void mIn(const live::Event *ev, live::ObjectChain* )
     {

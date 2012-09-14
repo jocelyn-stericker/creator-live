@@ -26,7 +26,7 @@ protected:
     app()
       : s_appNames()
       , s_apps()
-      { lthread::ui();
+      { lthread::assertUi();
     }
     ~app();
 

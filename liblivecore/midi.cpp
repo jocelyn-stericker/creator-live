@@ -373,7 +373,7 @@ Physical Ports
 /*/////////////////////////////////////////////////////////////////////////////////////
 
 MidiIn::MidiIn(QString ccname,int devId)
-  : live::Object(ccname,true,false)
+  : live::Object(ccname,true,false, 2)
   , valid(1)
   , deviceId(devId)
   , s_null(live::audio::null(2))
@@ -389,7 +389,7 @@ MidiIn::MidiIn(QString ccname,int devId)
 }
 
 MidiNull::MidiNull() :
-    live::Object("Null Midi Device",false,false) {
+    live::Object("Null Midi Device",false,false,2) {
 
 }
 

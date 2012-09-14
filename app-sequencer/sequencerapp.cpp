@@ -14,7 +14,7 @@ using namespace live;
 //using namespace live_widgets;
 
 SequencerApp::SequencerApp(QString name,MidiTrack*cmidiTrack,AudioTrack*caudioTrack,bool newId) :
-    Object(name,false,false),
+    Object(name,false,false,2),
     s_midiTrack(cmidiTrack),
     s_audioTrack(caudioTrack),
     s_cheat(0),

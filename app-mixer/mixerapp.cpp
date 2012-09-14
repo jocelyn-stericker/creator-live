@@ -16,7 +16,7 @@ using namespace live;
 
 QList<MixerApp*> MixerApp::_u;
 
-MixerApp::MixerApp() : Object("Mixer", 0, 0), b_vol(100), b_pan(50), b_mute(0), b_solo(0)
+MixerApp::MixerApp() : Object("Mixer", 0, 0, 2), b_vol(100), b_pan(50), b_mute(0), b_solo(0)
 {
     for (int i = 0; i < 2; ++i)
         s_period[i] = new float[audio::nFrames()];

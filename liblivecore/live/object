@@ -89,7 +89,7 @@ public:
      * Physical devices need to have unique names. Pointers to physical devices have a special feature.
      * Pointers to removed devices regain their identity when they are plugged in again.
      */
-    Object(QString cname, bool isPhysical, bool allowMixer);
+    Object(QString cname, bool isPhysical, bool allowMixer, int chans);
 
     /**
      * Destroys an object erasing all connections to and from the object.
@@ -222,13 +222,13 @@ protected:
     MidiEventCounter* s_ec;
 
     /***** MINI MIXER *****/
-        float* mixer_data[2];
+        float** mixer_data;
         quint32 mixer_nframes;
-        int mixer_at[2];
+        int* mixer_at;
     void mixer_resetStatus();
     inline void mixer_clear() {
         Q_ASSERT(mixer_data[0]&&mixer_data[1]);
-        for(int i=0;i<2;i++) std::fill(mixer_data[i],&mixer_data[i][mixer_nframes],0.0f);
+        for(int i=0;i<s_chans;i++) std::fill(mixer_data[i],&mixer_data[i][mixer_nframes],0.0f);
     }
 
     void mixer_process(const float* data, int chan);
@@ -236,6 +236,7 @@ protected:
     static bool ss_XRUN;
 
 private:
+    int s_chans;
     Object& operator=(const live::Object&);
     Object(const Object&);
 };
@@ -279,7 +280,7 @@ public:
 
 #ifndef NDEBUG
     static inline void assert_thread(const Qt::HANDLE& thread, const char* str) {
-#ifndef __QNX__ // doesn't have useful thread ids.
+#ifndef __QNX__ // qnx doesn't have useful thread ids.
         if (thread != QThread::currentThreadId()) {
             std::cerr << "### Thread assertion error ###\n";
             std::cerr << "expected: " << str << "(" << QString::number(thread).toUtf8().data() << ")\n";
@@ -300,19 +301,19 @@ public:
 #endif
     }
 
-    static inline void ui() {
+    static inline void assertUi() {
         assert_thread(uiThreadId, "user interface");
     }
 
-    static inline void metronome() {
+    static inline void assertMetronome() {
         assert_thread(metronomeThreadId, "metronome");
     }
 
-    static inline void audio() {
+    static inline void assertAudio() {
         assert_thread(audioThreadId, "audio");
     }
 
-    static inline void midi() {
+    static inline void assertMidi() {
         assert_thread(midiThreadId, "midi");
     }
     static void uiInit() {

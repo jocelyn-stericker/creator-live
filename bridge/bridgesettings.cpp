@@ -24,10 +24,10 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "live/../audiosystem_p.h"
 #include "live/../midisystem_p.h"
 
-BridgeSettings::BridgeSettings(QWidget *parent) :
-    QWidget(parent),
-    live::Object("Creator Live Bridge",0,0),
-    ui(new Ui::BridgeSettings)
+BridgeSettings::BridgeSettings(QWidget *parent)
+  : QWidget(parent)
+  , live::Object("Creator Live Bridge",0,0,2)
+  , ui(new Ui::BridgeSettings)
 {
 
     live::audio::registerInterface(new live_private::SecretAudio);

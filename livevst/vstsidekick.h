@@ -35,8 +35,13 @@ class VstSidekick : public live::Object
 public:
     LIVE_HYBRID
     LIVE_EFFECT
-    VstSidekick(VstR*rep,int cchan,live::ObjectPtr to,live::ObjectPtr from,int caudioanOffset=0) : live::Object(rep->me.s_name+"_"+QString::number(rep->me.vstId) +" Chan "+QString::number(cchan),false,false),
-        me(rep),midian(cchan),audioanOffset(caudioanOffset),audioToVst(to),audioFromVst(from)
+    VstSidekick(VstR*rep,int cchan,live::ObjectPtr to,live::ObjectPtr from,int caudioanOffset=0)
+      : live::Object(rep->me.s_name+"_"+QString::number(rep->me.vstId) +" Chan "+QString::number(cchan),false,false,2)
+      , me(rep)
+      , midian(cchan)
+      , audioanOffset(caudioanOffset)
+      , audioToVst(to)
+      , audioFromVst(from)
     {
         // FIXME: needs mixer ability
         setTemporary(0);

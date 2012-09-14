@@ -15,7 +15,7 @@ using namespace live;
 int SamplerApp::s_lastId=-1;
 
 SamplerApp::SamplerApp(MidiTrack**cmidiTracks,AudioTrack**caudioTracks,bool newId) :
-    live::Object("SAMPLER",0,0), s_bindingMode(-1), s_record(0), s_play(1), s_multi(1), s_id(newId?++s_lastId:-1)
+    live::Object("SAMPLER",0,0,2), s_bindingMode(-1), s_record(0), s_play(1), s_multi(1), s_id(newId?++s_lastId:-1)
 {
     kill_kitten for (int i=0;i<16;i++)
     {

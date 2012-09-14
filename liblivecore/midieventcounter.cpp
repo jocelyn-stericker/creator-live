@@ -11,7 +11,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 using namespace live;
 
-MidiEventCounter::MidiEventCounter() : Object("Midi Event Counter",false,false), shift(0) {
+MidiEventCounter::MidiEventCounter() : Object("Midi Event Counter",false,false,2), shift(0) {
     setTemporary(0);
     for (int i=0;i<200;i++)
         on[i]=0;

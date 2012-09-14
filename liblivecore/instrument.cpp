@@ -15,7 +15,7 @@ using namespace live;
 instrument* instrument::s_singleton=0;
 
 void instrument::registerInterface(InstrumentInterface* c) {
-    lthread::ui();
+    lthread::assertUi();
     s_singleton = s_singleton?s_singleton:new instrument;
     if (s_singleton->s_instrumentNames.contains(c->name())) {
         return;
@@ -25,7 +25,7 @@ void instrument::registerInterface(InstrumentInterface* c) {
 }
 
 instrument::~instrument() {
-    lthread::ui();
+    lthread::assertUi();
     while (s_instruments.size()) {
         delete s_instruments.takeLast();
     }
@@ -33,13 +33,13 @@ instrument::~instrument() {
 }
 
 QStringList instrument::names() {
-    lthread::ui();
+    lthread::assertUi();
     s_singleton = s_singleton?s_singleton:new instrument;
     return s_singleton->s_instrumentNames;
 }
 
 QList<InstrumentInterface*> instrument::interfaces() {
-    lthread::ui();
+    lthread::assertUi();
     s_singleton = s_singleton?s_singleton:new instrument;
     return s_singleton->s_instruments;
 }

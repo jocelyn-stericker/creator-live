@@ -17,7 +17,7 @@ int live_widgets::PianoKey::s_shiftTwinID = -1;
 live_widgets::PianoKey* live_widgets::PianoKey::s_universe[300] = {0};
 
 live_widgets::PianoKey::PianoKey( qreal x, qreal y, qreal width, qreal height, qint16 id, QGraphicsItem * parent )
-  : live::Object("Virtual Piano Key (transient)",false,false)
+  : live::Object("Virtual Piano Key (transient)",false,false,2)
   , QGraphicsRectItem(x, y, width, height, parent)
   , s_virtual(0)
   , s_id(id)

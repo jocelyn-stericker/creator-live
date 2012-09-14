@@ -38,7 +38,7 @@ public:
 
 public:
     bool mOn() const{ return 0; } bool aOn() const { return 1; }
-    AudioIn(QStringList cnames, QString cname, bool cmap) : live::Object(cname,true,false), chans(cnames.size()), s_port_(), s_realnames(cnames),s_map(cmap),s_suspend(0)
+    AudioIn(QStringList cnames, QString cname, bool cmap) : live::Object(cname,true,false,2), chans(cnames.size()), s_port_(), s_realnames(cnames),s_map(cmap),s_suspend(0)
     {
         setTemporary(0);
 
@@ -86,7 +86,7 @@ public:
     bool    s_tracked[16][32];  //16 ports and 32 chans max
 
 public:
-    AudioOut(QStringList cnames, QString name,bool cmap) : live::Object(name,true,true), chans(cnames.size()), s_counter(0), s_i(-1), s_realnames(cnames), s_map(cmap)
+    AudioOut(QStringList cnames, QString name,bool cmap) : live::Object(name,true,true,2), chans(cnames.size()), s_counter(0), s_i(-1), s_realnames(cnames), s_map(cmap)
     {
         setTemporary(0);
 
@@ -122,7 +122,7 @@ public:
     QMutex p;
 
     AudioNull(int cchans)
-      : live::Object("Null Audio Device",false,false)
+      : live::Object("Null Audio Device",false,false,cchans)
       , chans(cchans)
       , p(QMutex::NonRecursive)
       {

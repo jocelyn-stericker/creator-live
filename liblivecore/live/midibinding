@@ -141,7 +141,7 @@ public:
     bool controller;    //add this plz
 
     MidiBinding(void* cGuiObject,GuiType cparentType,BindingType ctype,QString cdata=QString(),int ckey=-1,ObjectPtr cobj=0,bool ccontroller=0)
-      : Object("MIDI Binding",false,false)
+      : Object("MIDI Binding",false,false,2)
       , guiObject(cGuiObject)
       , parentType(cparentType)
       , type(ctype)
@@ -165,7 +165,7 @@ public slots:
 public slots:
     void mIn(const Event *data, ObjectChain*p)
     {
-        lthread::midi();
+        lthread::assertMidi();
 
         if(midi::getTime_msec()-lastEventTime<100)
         {
@@ -196,7 +196,7 @@ public slots:
 private:
     MidiBinding(const live::MidiBinding&)
       : QObject()
-      , Object("TCRASH", 0, 0)
+      , Object("TCRASH", 0, 0, 2)
       , guiObject(0)
       , parentType(InvalidType)
       , type(InvalidBinding)
@@ -224,7 +224,7 @@ public:
     bool allowAudio;
     bool aOn() const { return 0; }
     bool mOn() const{ return 1; }
-    MidiBindingFilter() : Object("Midi Binding Filter",false,false), allowAudio(1)
+    MidiBindingFilter() : Object("Midi Binding Filter",false,false,2), allowAudio(1)
     {
 
     }

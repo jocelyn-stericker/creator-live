@@ -133,7 +133,7 @@ LIBLIVECORESHARED_EXPORT void live::Object::XRUN() {
 }
 
 void live::Object::aOut(const float *data, int chan, Object *prev) {
-    live::lthread::audio();
+    live::lthread::assertAudio();
     for (int i=0;i<aConnections.size();i++) {
         Q_ASSERT(aConnections[i]->aInverseConnections.size());
         if (aConnections[i]->aInverseConnections.size()<=1||!aConnections[i]->s_allowMixer) aConnections[i]->aIn(data,chan,prev);
@@ -143,7 +143,7 @@ void live::Object::aOut(const float *data, int chan, Object *prev) {
 
 LIBLIVECORESHARED_EXPORT QMap<QString, live::ObjectPtr*>* live::Object::zombies=new QMap<QString, live::ObjectPtr*>;
 
-live::Object::Object(QString cname, bool isPhysical, bool allowMixer)
+live::Object::Object(QString cname, bool isPhysical, bool allowMixer, int chans)
   : x_ptr(QMutex::Recursive)
   , s_name(cname)
   , s_aOn(1)
@@ -158,14 +158,22 @@ live::Object::Object(QString cname, bool isPhysical, bool allowMixer)
   , s_isDestroying(false)
   , s_ec((cname == "Midi Event Counter") ? new live::MidiEventCounter() : 0)
   , mixer_nframes(-1)
-  { if (isPhysical) {
+  , s_chans(chans)
+  {
+
+    mixer_data = new float*[s_chans];
+    mixer_at = new int[s_chans];
+
+    if (isPhysical) {
         for (int i=0;i<zombies->values(cname).size();i++) {
             zombies->values(cname)[i]->restore(this);
         }
     }
 
-    mixer_data[0]=mixer_data[1]=0;
-    mixer_at[0]=mixer_at[1]=0;
+    for (int i = 0; i < s_chans; ++i) {
+        mixer_data[i]=0;
+        mixer_at[i]=0;
+    }
 
     zombies->remove(cname);
 
@@ -175,7 +183,7 @@ live::Object::Object(QString cname, bool isPhysical, bool allowMixer)
 live::Object::~Object() {
     s_isDestroying = 1;
     kill();
-    for (int i=0;i<2;i++) delete[] mixer_data[i];
+    for (int i=0;i<s_chans;i++) delete[] mixer_data[i];
     QTimer::singleShot(0,live::object::singleton(),SLOT(notify()));
 }
 
@@ -335,16 +343,17 @@ void live::Object::mixer_resetStatus() {
     QList<float*> toDestroy;
     live_mutex(x_mixers) {
         mixer_nframes=live::audio::nFrames();
-        mixer_at[0]=mixer_at[1]=0;
+        for (int i = 0; i < s_chans; ++i)
+            mixer_at[i] = 0;
 
         if (aInverseConnections.size() <= 0) {
-            for (int i = 0; i < 2; ++i) {
+            for (int i = 0; i < s_chans; ++i) {
                 float* data = mixer_data[i];
                 mixer_data[i]=0;
                 if (data) toDestroy.push_back(data);
             }
         } else if (aInverseConnections.size() > 1 && !mixer_data[0]) {
-            for (int i = 0; i < 2; ++i) {
+            for (int i = 0; i < s_chans; ++i) {
                 mixer_data[i] = new float[mixer_nframes];
             }
         }

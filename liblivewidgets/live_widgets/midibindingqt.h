@@ -42,7 +42,7 @@ public:
 
 protected:
     virtual void doAction(int ccval=-1) {
-        live::lthread::ui();
+        live::lthread::assertUi();
         QComboBox *cb = NULL;
         QAbstractSlider *s = NULL;
         switch( type ) {

@@ -11,7 +11,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live/object>
 
 void live::AudioTrack::aThru(float*proc,int chan) {
-    live::lthread::audio();
+    live::lthread::assertAudio();
 
     bool ok=1;
 
@@ -70,7 +70,7 @@ void live::AudioTrack::aThru(float*proc,int chan) {
 }
 
 live::AudioTrack::AudioTrack(int cchans)
-  : live::Object("Audio Track",false,false)
+  : live::Object("Audio Track",false,false,cchans)
   , nframes(live::audio::nFrames())
   , s_container( new AudioContainer*[cchans] )
   , s_chans(cchans)
@@ -89,26 +89,6 @@ live::AudioTrack::AudioTrack(int cchans)
     for (int i=0; i<cchans; i++) {
         s_container[i]=new AudioContainer;
     }
-}
-
-live::AudioTrack::AudioTrack(const live::AudioTrack&)
-  : QObject()
-  , live::Object("Audio Track",false,false)
-  , nframes(live::audio::nFrames())
-  , s_container( new AudioContainer*[2] )
-  , s_chans(2)
-  , s_curPos(0)
-  , s_vol(100)
-  , s_pan(50)
-  , s_record(0)
-  , s_overdub(0)
-  , s_playback(0)
-  , s_mute(0)
-  , s_simpleCount(0)
-  , s_updateCounter(0)
-  , s_boringCounter(0)
-  , m_proc(new float[live::audio::nFrames()])
-  { TCRASH();
 }
 
 live::AudioTrack::~AudioTrack() {
@@ -148,7 +128,7 @@ float live::AudioTrack::pos() const {
 }
 
 float live::AudioTrack::length() const {
-    return qMax(s_container[0]->length(), s_container[1]->length());
+    return qMax(s_container[0]->length(), s_container[0]->length());
 }
 
 void live::AudioTrack::setVol(int vol) {
@@ -209,7 +189,7 @@ void live::AudioTrack::stopMute() {
 void live::AudioTrack::setPos(float pos) {
     // TODO: evaluate threadsafety
     s_curPos = long((float(live::audio::sampleRate()))*(float(pos)/1000.0f));
-    for (int i = 0; i < 2; ++i)
+    for (int i = 0; i < s_chans; ++i)
         s_container[i]->pointGraph(s_curPos);
 }
 
@@ -225,7 +205,7 @@ void live::AudioTrack::aIn(const float *in, int chan, Object*) {
 }
 
 void live::AudioTrack::clearData() {
-    int dataSize=qMax(s_container[0]->s_data.size(),s_container[1]->s_data.size())*live::audio::sampleRate();
+    int dataSize=qMax(s_container[0]->s_data.size(),s_container[0]->s_data.size())*live::audio::sampleRate();
     for (int h=0;h<s_chans;h++) {
         s_container[h]->clear();
     }
@@ -304,7 +284,7 @@ bool live::AudioTrack::exportFile(QString filename,QString format,int depth) {
                 filename.toStdString(),
                 SFM_WRITE,
                 formatForString(format) | (format.toLower().endsWith("ogg")?SF_FORMAT_VORBIS:rateForInt(depth)),
-                2,
+                s_chans,
                 live::audio::sampleRate() );
 
     if (!file) {
@@ -312,14 +292,14 @@ bool live::AudioTrack::exportFile(QString filename,QString format,int depth) {
         return 0;
     }
 
-    int frames=qMax(s_container[0]->s_data.size(),s_container[1]->s_data.size())*live::audio::sampleRate();
-    float*data=new float[frames*2];  //2==chans, no of items, data is interlaced
-    for (int i=0;i<2;i++) {
+    int frames=qMax(s_container[0]->s_data.size(),s_container[0]->s_data.size())*live::audio::sampleRate();
+    float*data=new float[frames*s_chans];  //s_chans==chans, no of items, data is interlaced
+    for (int i=0;i<s_chans;i++) {
         float*dataPtr;
         int counter=s_container[i]->getRawPointer(0,dataPtr);
         for (int j=0;j<s_container[i]->s_data.size()*live::audio::sampleRate();j++) {
-            data[j*2+i]=dataPtr?*dataPtr:0.0f;
-            if (j!=frames/2) {
+            data[j*s_chans+i]=dataPtr?*dataPtr:0.0f;
+            if (j!=frames/s_chans) {
                 if ((dataPtr?++dataPtr:0),--counter==-1) {
                     counter=s_container[i]->getRawPointer(j,dataPtr);
                 }
@@ -334,10 +314,10 @@ bool live::AudioTrack::exportFile(QString filename,QString format,int depth) {
 }
 
 bool live::AudioTrack::importFile(QString filename) {
-    lthread::ui();
+    lthread::assertUi();
 #if !defined(_WIN32) && !defined(__QNX__)
-    s_container[0]->clear();
-    s_container[1]->clear();
+    for (int i = 0; i < s_chans; ++i)
+        s_container[i]->clear();
 
     SndfileHandle file( filename.toStdString() );
 
@@ -353,25 +333,25 @@ bool live::AudioTrack::importFile(QString filename) {
 
     sf_count_t frames=file.frames();
 //        Q_ASSERT(frames%file.channels()==0);
-    float*data=new float[frames*2];  //2==chans, no of items, data is interlaced
+    float*data=new float[frames*s_chans];  //2==s_chans, no of items, data is interlaced
     file.readf(data,frames);
-    for (int i=0;i<2;i++) {
+    for (int i=0;i<s_chans;i++) {
         float*dataPtr;
         int size;
         int counter=size=frames?(s_container[i]->getRawPointer(0,dataPtr,1)):0;
         dataPtr--;
-        for (int j = 0; j < frames/2; ++j) kill_kitten {
-            if (j!=frames/2) {
+        for (int j = 0; j < frames/s_chans; ++j) kill_kitten {
+            if (j!=frames/s_chans) {
                 if ((dataPtr?++dataPtr:0),--counter==-1) {
                     s_container[i]->appendGraph(size);
                     counter=size=s_container[i]->getRawPointer(j,dataPtr,1)-1;
                 }
-                (*dataPtr)=data[j*2+i];
+                (*dataPtr)=data[j*s_chans+i];
             }
         }
     }
 
-    int dataSize=qMax(s_container[0]->s_data.size(),s_container[1]->s_data.size())*live::audio::sampleRate();
+    int dataSize=qMax(s_container[0]->s_data.size(),s_container[0]->s_data.size())*live::audio::sampleRate();
     emit dataUpdated(0,dataSize);
 #endif
     return 1;
@@ -381,6 +361,6 @@ void live::AudioTrack::async() {
     // this function prevents data allocation in the real-time thread.
     // FIXME: possible memory loss
     float*a;
-    s_container[0]->getRawPointer((unsigned)s_curPos + live::audio::sampleRate(),a,1,0,0);
-    s_container[1]->getRawPointer((unsigned)s_curPos + live::audio::sampleRate(),a,1,0,0);
+    for (int i = 0; i < s_chans; ++i)
+        s_container[i]->getRawPointer((unsigned)s_curPos + live::audio::sampleRate(),a,1,0,0);
 }

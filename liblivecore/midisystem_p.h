@@ -46,7 +46,7 @@ public:
     int device;
 
 public:
-    MidiOut(QString ccname,int cdevice) : live::Object(ccname,true,true), valid(1), device(cdevice) { setTemporary(0); }
+    MidiOut(QString ccname,int cdevice) : live::Object(ccname,true,true,2), valid(1), device(cdevice) { setTemporary(0); }
     virtual void mIn(const live::Event *data, live::ObjectChain*p);   //Midi.cpp
 };
 

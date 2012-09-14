@@ -41,12 +41,12 @@ public:
     QString filename, instname;   /*CONSTRUCT*/
 
     // Path is a valid path, and points to a valid win32 vst
-    Vst( QString path, QString instance ) :
-        live::Object("VST("+path+')',false,false),
-        vstId(++lastVstId),
-        rep(0),
-        filename(path),
-        instname(instance)
+    Vst( QString path, QString instance )
+      : live::Object("VST("+path+')',false,false,2)
+      , vstId(++lastVstId)
+      , rep(0)
+      , filename(path)
+      , instname(instance)
     {
         setTemporary(0);
         init();

@@ -16,7 +16,7 @@ using namespace live;
 int PitchApp::s_lastId=-1;
 
 PitchApp::PitchApp() :
-    Object("PITCH", 0, 0),
+    Object("PITCH", 0, 0, 2),
     s_audioR(new PitchAppAudioR),
     s_stShift(0),
     s_id(++s_lastId)
@@ -88,7 +88,7 @@ void PitchApp::mIn(const Event *data, ObjectChain*p)
     delete nd;
 }
 
-PitchAppAudioR::PitchAppAudioR() : Object("Soundtouch PitchApp implementation", 0, 0), s_soundTouch(new soundtouch::SoundTouch),
+PitchAppAudioR::PitchAppAudioR() : Object("SoundTouch PitchApp implementation", 0, 0, 2), s_soundTouch(new soundtouch::SoundTouch),
     s_latency(0), s_inCache(new float[audio::nFrames()*2]), s_outCache(new float[audio::nFrames()*2])
 {
     for (quint32 i=0;i<audio::nFrames()*2;i++) {

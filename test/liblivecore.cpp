@@ -1,6 +1,7 @@
 #include <live/object>
 #include <live/audio>
 #include <live/midi>
+#include <live/audiotrack>
 #include "gtest/gtest.h"
 #include "live/../audiosystem_p.h"
 
@@ -73,7 +74,7 @@ public:
 
     LIVE_INPUT
     LIVE_AUDIO
-    AudioListener() : live::Object("AL", false, false), s_got(false), s_highest(-2.0f), s_lowest(2.0f) {}
+    AudioListener() : live::Object("AL", false, false,1), s_got(false), s_highest(-2.0f), s_lowest(2.0f) {}
     void aIn(const float *data, int, Object *) {
         for (unsigned i = 0; i < live::audio::nFrames(); ++i) {
             s_highest = qMax(data[i], s_highest);
@@ -174,7 +175,7 @@ public:
     LIVE_EFFECT
     LIVE_HYBRID
     TemporaryObject()
-      : live::Object("TMP", false, true)
+      : live::Object("TMP", false, true, 2)
     {
         ++count;
     }
@@ -191,6 +192,114 @@ TEST(ObjectSanity, TemporarysAreTemporary) {
         live::ObjectPtr a = new TemporaryObject;
     }
     EXPECT_EQ(TemporaryObject::count, 0);
+}
+
+class AudioTestGenerator : public live::Object {
+public:
+    LIVE_EFFECT
+    LIVE_HYBRID
+    int state;
+    float* buffer;
+    AudioTestGenerator() : Object("TEST_GENERATOR", 1, 0, 1), state(0), buffer(new float[live::audio::nFrames()]) {}
+    void aIn(const float*, int chan, Object *) {
+        if (chan) return;
+        for (int i = 0; i < live::audio::nFrames(); ++i) {
+            state = (state+1) % 3;
+            switch (state) {
+            case 0:
+                buffer[i] = -1.0f;
+                break;
+            case 1:
+                buffer[i] = 0.0f;
+                break;
+            case 2:
+                buffer[i] = 1.0f;
+                break;
+            }
+        }
+        aOut(buffer, chan, this);
+    }
+};
+
+class AudioTestListener : public live::Object {
+public:
+    LIVE_OUTPUT
+    LIVE_HYBRID
+    int state;
+    bool gotData;
+    int failFrame;
+    int frame;
+    AudioTestListener() : Object("TEST_LISTENER", 1, 0, 1), state(0), gotData(false), failFrame(-1), frame(-1) {}
+    void aIn(const float *data, int chan, Object *) {
+
+        if (frame < 1) {
+            if (++frame < 1) return;
+            if (data[0] == -1.0f) state = -1;
+            if (data[0] == 0.0f) state = 0;
+            if (data[0] == 1.0f) state = 1;
+        }
+        gotData = true;
+        ASSERT_EQ(chan, 0);
+
+        for (int i = 0; i < live::audio::nFrames(); ++i) {
+            if (failFrame != -1) return;
+            ++frame;
+            state = (state+1) % 3;
+            switch (state) {
+            case 0:
+                if (data[i] != -1.0f) failFrame=frame;
+                break;
+            case 1:
+                if (data[i] != 0.0f) failFrame=frame;
+                break;
+            case 2:
+                if (data[i] != 1.0f) failFrame=frame;
+                break;
+            }
+        }
+    }
+};
+
+TEST(AudioTrack, TestFrameworkSanity) {
+    AudioTestGenerator* g = new AudioTestGenerator;
+    AudioTestListener* l = new AudioTestListener;
+    live::audio::null(1)->audioConnect(g);
+    g->audioConnect(l);
+    usleep(100000);
+    EXPECT_TRUE(l->gotData);
+    EXPECT_EQ(l->failFrame, -1);
+    delete l;
+    delete g;
+}
+
+TEST(AudioTrack, Sanity) {
+    live::ObjectPtr p = new live::AudioTrack(1);
+    live::AudioTrack* t = live::cast<live::AudioTrack*>(p);
+    t->startRecord();
+
+    AudioTestGenerator* g = new AudioTestGenerator;
+    live::audio::null(1)->audioConnect(g);
+    g->audioConnect(t);
+    t->startPlayback();
+
+    usleep(100000);
+
+    t->stopPlayback();
+    t->stopRecord();
+    t->setPos(0);
+
+    delete g;
+    live::audio::null(1)->audioConnect(t);
+    AudioTestListener* l = new AudioTestListener;
+    t->startPlayback();
+    t->audioConnect(l);
+
+    usleep(50000);
+
+    EXPECT_TRUE(l->gotData);
+    EXPECT_EQ(l->failFrame, -1);
+
+    delete l;
 }
 
 TEST(Shutdown, Audio) {

@@ -101,8 +101,7 @@ inline int xoctave(int mPitch)
 
 void SequencerGraph::updateAudioData( int t1, int t2 )
 {
-    qDebug() << "update audio.";
-    lthread::ui();
+    lthread::assertUi();
 
     if (!updatesEnabled()||!isVisible()||parentWidget()->width()<30) return;
 
@@ -250,7 +249,7 @@ void SequencerGraph::updateAudioData( int t1, int t2 )
 
 void SequencerGraph::updateMidiData(float t1, float t2)
 {
-    lthread::ui();
+    lthread::assertUi();
 
     if (!updatesEnabled()||!isVisible()||parentWidget()->width()<30) return;
 
@@ -386,7 +385,7 @@ QList<Event> SequencerGraph::getEvents(int evx, int evy)
 
 void SequencerGraph::paintEvent( QPaintEvent* ev )
 {
-    lthread::ui();
+    lthread::assertUi();
 
     if (!isVisible()||parentWidget()->width()<30)
     if (!midiOriginal) updateMidiData();
@@ -465,7 +464,7 @@ void SequencerGraph::paintEvent( QPaintEvent* ev )
 
 void SequencerGraph::mousePressEvent( QMouseEvent* ev )
 {
-    lthread::ui();
+    lthread::assertUi();
 
     if (ev->button()==Qt::LeftButton) {
         if (s_bindMode) {
@@ -500,7 +499,7 @@ void SequencerGraph::mousePressEvent( QMouseEvent* ev )
 
 void SequencerGraph::mouseMoveEvent(QMouseEvent *ev)
 {
-    lthread::ui();
+    lthread::assertUi();
 
     setFocus();
     if (!app||!(ev->buttons()&Qt::LeftButton))
@@ -622,7 +621,7 @@ void SequencerGraph::wheelEvent(QWheelEvent *ev)
 
 void SequencerGraph::keyPressEvent(QKeyEvent *ev)
 {
-    lthread::ui();
+    lthread::assertUi();
 
     kill_kitten if (ev->key()==Qt::Key_Delete&&selection!=-1)
     {
@@ -675,7 +674,7 @@ void SequencerGraph::updatePos(quint32 a)
 
 void SequencerGraph::setScale(int a)
 {
-    lthread::ui();
+    lthread::assertUi();
 
     s_scale=a;
     updateAudioData();

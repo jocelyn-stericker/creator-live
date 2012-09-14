@@ -48,7 +48,7 @@ public:
     LIVE_HYBRID
     LIVE_EFFECT
     FJApp(QString name)
-        : live::Object(name, 0, 0)
+        : live::Object(name, 0, 0, 2)
         , r_nFrames(live::audio::nFrames())
     {
         for (int i = 0; i < param_count; ++i)
