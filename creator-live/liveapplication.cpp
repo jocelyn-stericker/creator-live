@@ -32,10 +32,10 @@ using namespace live_widgets;
 
 LiveApplication* liveApp=0;
 
-LiveApplication::LiveApplication(int& argc,char** argv) :
+LiveApplication::LiveApplication(int& argc, char **argv) :
     QApplication(argc,argv), _mainWindow(0)
 {
-    lthread::uiInit(); // this thread is temporarily the ui thread. will be overriden in init().
+    lthread::uiInit(false); // this thread is temporarily the ui thread. will be overriden in init().
     liveApp=this;
     audio::registerInterface(new live_private::SecretAudio);
 
@@ -135,5 +135,5 @@ LiveApplication::LiveApplication(int& argc,char** argv) :
 //}
 
 void LiveApplication::init() {
-    lthread::uiInit();
+    lthread::uiInit(true);
 }

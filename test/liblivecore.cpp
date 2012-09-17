@@ -8,7 +8,7 @@
 #include <QApplication>
 
 TEST(AudioSanity, Init) {
-    live::lthread::uiInit(); // the testing thread is the UI thread.
+    live::lthread::uiInit(false); // the testing thread is the UI thread.
 
     { // live expects a QApplication. It doesn't need to actually run.
         int* argc = new int(1);
@@ -29,6 +29,8 @@ TEST(AudioSanity, Init) {
     EXPECT_GT(live::audio::sampleRate(), 0);
     EXPECT_GT(live::audio::sampleRate(), 22049);
     EXPECT_LT(live::audio::sampleRate(), 352801);
+
+    live::lthread::uiInit(true); // the testing thread is the UI thread.
 }
 
 TEST(AudioSanity, Mapping) {
@@ -136,7 +138,7 @@ class AudioPoker : public QThread {
     int id;
 private:
     void run() {
-        for (int i = 0; i < 3000; ++i) {
+        for (int i = 0; i < 300; ++i) {
              connectAllTheThings();
         }
     }
@@ -145,6 +147,8 @@ public:
 };
 
 TEST(ObjectSanity, ThreadSafety) {
+    live::audio::strictInnocentXruns = true; // this test must not cause xruns
+
     QList<live::ObjectPtr> ins = live::object::get(live::AudioOnly | live::InputOnly | live::NoRefresh);
     QList<live::ObjectPtr> outs = live::object::get(live::AudioOnly | live::OutputOnly | live::NoRefresh);
 
@@ -162,11 +166,14 @@ TEST(ObjectSanity, ThreadSafety) {
     for (int i = 0; i < 3; ++i)
         EXPECT_TRUE(a[i].wait());
 
+
     for (int h = 0; h < 2; ++h)
         for (int i = 0; i < (h ? outs : ins).size(); ++i) {
             EXPECT_EQ((h ? outs : ins)[i]->aInverseConnectionCount(), 0 );
             EXPECT_EQ((h ? outs : ins)[i]->aConnectionCount(), 0 );
         }
+
+    live::audio::strictInnocentXruns = false; // this test must not cause xruns
 }
 
 class TemporaryObject : public live::Object {
@@ -203,7 +210,7 @@ public:
     AudioTestGenerator() : Object("TEST_GENERATOR", 1, 0, 1), state(0), buffer(new float[live::audio::nFrames()]) {}
     void aIn(const float*, int chan, Object *) {
         if (chan) return;
-        for (int i = 0; i < live::audio::nFrames(); ++i) {
+        for (uint i = 0; i < live::audio::nFrames(); ++i) {
             state = (state+1) % 3;
             switch (state) {
             case 0:
@@ -241,7 +248,7 @@ public:
         gotData = true;
         ASSERT_EQ(chan, 0);
 
-        for (int i = 0; i < live::audio::nFrames(); ++i) {
+        for (uint i = 0; i < live::audio::nFrames(); ++i) {
             if (failFrame != -1) return;
             ++frame;
             state = (state+1) % 3;
@@ -282,7 +289,9 @@ TEST(AudioTrack, Sanity) {
     g->audioConnect(t);
     t->startPlayback();
 
+    live::audio::strictInnocentXruns = true; // recording to a track must not cause xruns.
     usleep(100000);
+    live::audio::strictInnocentXruns = false;
 
     t->stopPlayback();
     t->stopRecord();

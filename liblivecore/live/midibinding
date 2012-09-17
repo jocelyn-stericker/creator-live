@@ -229,7 +229,7 @@ public:
 
     }
 public slots:
-    void aIn(const float *data, int chan, ObjectChain*)
+    void aIn(const float *data, int chan, Object*)
     {
         if(allowAudio)
         {

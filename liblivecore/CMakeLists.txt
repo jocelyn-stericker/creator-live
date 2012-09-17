@@ -61,7 +61,6 @@ list (APPEND liblivecore
     live/chord 
     live/time 
     live/core 
-    live/audiosecond 
     live/audiointerface 
     live/appinterface 
     live/instrumentinterface 
@@ -74,6 +73,7 @@ list (APPEND liblivecore
 
 list (APPEND liblivecore_qobject
     live/anabeat 
+    live/audiosecond
     live/ambition
     live/metronome 
     live/variantbinding 

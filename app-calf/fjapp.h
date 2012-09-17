@@ -41,15 +41,13 @@ template<class Module> class FJApp : public live::Object, public calf_plugins::p
     bool s_changed;
     float s_param[param_count];
 
-    const unsigned long& r_nFrames;
     float* s_out[2];
 
 public:
-    LIVE_HYBRID
+    LIVE_AUDIO
     LIVE_EFFECT
     FJApp(QString name)
         : live::Object(name, 0, 0, 2)
-        , r_nFrames(live::audio::nFrames())
     {
         for (int i = 0; i < param_count; ++i)
             Module::params[i] = &s_param[i];
@@ -60,10 +58,11 @@ public:
         init_module();
 
         for (int i = 0; i < 2; ++i)
-            Module::outs[i] = s_out[i] = new float[r_nFrames];
+            Module::outs[i] = s_out[i] = new float[live::audio::nFrames()];
     }
 
-    ~FJApp() {
+    virtual ~FJApp() {
+        qDebug() << "~FJAPP";
         for (int i = 0; i < 2; ++i)
             delete[] s_out[i];
     }
@@ -98,7 +97,7 @@ public:
 
     virtual calf_plugins::parameter_properties* get_param_props(int param_no) { return Module::param_props + param_no; }
 
-    void aIn(const float *data, int chan, live::ObjectChain* p)
+    void aIn(const float *data, int chan, live::Object* p)
     {
         Module::ins[chan] = const_cast<float*>(data); // FIXME: Module::ins should be const.
         if (!chan) return;
@@ -108,21 +107,19 @@ public:
             s_changed = 0;
         }
 
-        unsigned mask = Module::process(0, r_nFrames, -1, -1); // returns mask
+        unsigned mask = Module::process(0, live::audio::nFrames(), -1, -1); // returns mask
 
         for (int i = 0; i < 2; ++i) {
             if (!(mask & (1 << i))) {
-                dsp::zero(Module::outs[i], r_nFrames);
+                dsp::zero(Module::outs[i], live::audio::nFrames());
             }
         }
 
         Module::params_reset();
 
-        p->push_back(this);
         for (int i = 0; i < 2; ++i) {
-            aOut(Module::outs[i], i, p);
+            aOut(Module::outs[i], i, this);
         }
-        p->pop_back();
     }
 
     virtual float *get_params() { return s_param; }

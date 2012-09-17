@@ -20,6 +20,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include <algorithm>
 #include <iostream>
+#include <set>
 
 #include <live/liblivecore_global>
 
@@ -34,6 +35,8 @@ class Event;
 class MidiEventCounter;
 class ObjectPtr;
 class Object;
+
+uint qHash(const live::ObjectPtr &p);
 
 class LIBLIVECORESHARED_EXPORT ObjectChain
 {
@@ -86,8 +89,8 @@ public:
     /**
      * Create a Object with no connections and a descriptive name (like "Sequencer"), cname.
      *
-     * Physical devices need to have unique names. Pointers to physical devices have a special feature.
-     * Pointers to removed devices regain their identity when they are plugged in again.
+     * Physical devices need to have unique names. Pointers to physical devices have a special feature:
+     * Pointers to removed devices regain their identity when they become available again.
      */
     Object(QString cname, bool isPhysical, bool allowMixer, int chans);
 
@@ -149,7 +152,7 @@ protected:
       */
     static void beginAsyncAction();
     /** Call this function when done doing things which cannot be done concurrently with audio/midi processing. */
-    static void endAsyncAction();
+    static void endAsyncAction(const char* file, int line);
 
     QMutex x_ptr;
 
@@ -211,11 +214,11 @@ protected:
     QSet<ObjectPtr*> s_ptrList;
     static QMap<QString, ObjectPtr*>* zombies;
 
-    QList<ObjectPtr> aConnections;
-    QList<ObjectPtr> mConnections;
+    std::set<ObjectPtr> aConnections;
+    std::set<ObjectPtr> mConnections;
 
-    QList<ObjectPtr> aInverseConnections;
-    QList<ObjectPtr> mInverseConnections;
+    std::set<ObjectPtr> aInverseConnections;
+    std::set<ObjectPtr> mInverseConnections;
 
     bool s_isDestroying;
 
@@ -255,7 +258,7 @@ void doMidiConnect(const Object* a, const Object* b);
 #ifndef TCRASH
 #define TCRASH() do { \
     *(int *)(unsigned*)0xdeadbeef = 0; \
-    ((void(*)())0)(); \
+    ((void(*)())0)(); /* in case the above didn't work.*/ \
 } while(false)
 #endif // TCRASH
 
@@ -279,27 +282,7 @@ public:
     }
 
 #ifndef NDEBUG
-    static inline void assert_thread(const Qt::HANDLE& thread, const char* str) {
-#ifndef __QNX__ // qnx doesn't have useful thread ids.
-        if (thread != QThread::currentThreadId()) {
-            std::cerr << "### Thread assertion error ###\n";
-            std::cerr << "expected: " << str << "(" << QString::number(thread).toUtf8().data() << ")\n";
-            QString is;
-            if (QThread::currentThreadId() == uiThreadId)
-                is = "user interface";
-            if (QThread::currentThreadId() == metronomeThreadId)
-                is = "metronome";
-            if (QThread::currentThreadId() == audioThreadId)
-                is = "audio";
-            if (QThread::currentThreadId() == midiThreadId)
-                is = "midi";
-
-            std::cerr << "got: " << is.toUtf8().data() << "(" << QString::number(QThread::currentThreadId()).toUtf8().data() << ")\n";
-            std::flush(std::cerr);
-            TCRASH();
-        }
-#endif
-    }
+    static void assert_thread(const Qt::HANDLE& thread, const char* str);
 
     static inline void assertUi() {
         assert_thread(uiThreadId, "user interface");
@@ -316,9 +299,7 @@ public:
     static inline void assertMidi() {
         assert_thread(midiThreadId, "midi");
     }
-    static void uiInit() {
-        uiThreadId = QThread::currentThreadId();
-    }
+    static void uiInit(bool really);
 
     static void midiInit() {
         midiThreadId = QThread::currentThreadId();
@@ -339,13 +320,17 @@ public:
 
 struct ScopedLock {
     unsigned decr : 1;
-    ScopedLock()
+    const char* file;
+    int line;
+    ScopedLock(const char* cfile, int cline)
       : decr(true)
+      , file(cfile)
+      , line(cline)
       {
         Object::beginAsyncAction();
     }
     virtual ~ScopedLock() {
-        Object::endAsyncAction();
+        Object::endAsyncAction(file, line);
     }
 };
 
@@ -364,7 +349,7 @@ struct ScopedMutexLock {
 };
 
 #define kill_kitten \
-    for (live::ScopedLock farmerJohnEatsCows; farmerJohnEatsCows.decr; farmerJohnEatsCows.decr = false)
+    for (live::ScopedLock farmerJohnEatsCows(__FILE__,__LINE__); farmerJohnEatsCows.decr; farmerJohnEatsCows.decr = false)
 // use like kill_kitten { }
 
 #define live_mutex(MUTEX) \
@@ -460,11 +445,13 @@ public:
     bool valid() const;
 
     Object* data() { return s_obj; }
-    const Object* data() const { return s_obj; }
-    const Object& operator*() const  { Q_ASSERT(s_obj); return *s_obj; }
+    Object* data() const { return s_obj; }
+    Object& operator*() const        { Q_ASSERT(s_obj); return *s_obj; }
     Object& operator*()              { Q_ASSERT(s_obj); return *s_obj; }
-    const Object* operator->() const { Q_ASSERT(s_obj); return s_obj; }
+    Object* operator->() const       { Q_ASSERT(s_obj); return s_obj; }
     Object* operator->()             { Q_ASSERT(s_obj); return s_obj; }
+
+    friend uint qHash(const live::ObjectPtr &p);
 };
 
 enum StoreFlags {

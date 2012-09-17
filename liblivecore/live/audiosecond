@@ -13,8 +13,10 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live/audio>
 #include <live/audiograph>
 #include <live/object>
+#include <QApplication>
 #include <QReadWriteLock>
 #include <QtConcurrentRun>
+#include <QTimer>
 
 namespace live {
 
@@ -92,6 +94,10 @@ public:
     static AudioSecond* load(const QByteArray&);
     QByteArray save();
 
+    void setSampleOffset(int offset) {
+        s_sampleOffset = offset;
+    }
+
 private:
     AudioSecond(const AudioSecond&)
       : s_sampleOffset(0)
@@ -102,6 +108,54 @@ private:
     AudioSecond& operator=(const AudioSecond&) {
         TCRASH();
         return *this;
+    }
+};
+
+class AudioSecondBank : public QObject
+{
+    Q_OBJECT
+    QList<AudioSecond*> m_identity;
+    QTimer t;
+    QMutex x;
+
+    AudioSecond* buySecond(int offset) {
+        AudioSecond* ret;
+        x.lock();
+        Q_ASSERT(m_identity.size());
+        if (!m_identity.size()) {
+            qCritical("No seconds to buy!");
+            m_identity.push_back(new AudioSecond(offset));
+        }
+        ret = m_identity.takeFirst();
+        x.unlock();
+        ret->setSampleOffset(offset);
+        t.start(0);
+        return ret;
+    }
+
+    friend class AudioContainer;
+
+public:
+    static AudioSecondBank* singleton;
+
+    AudioSecondBank()
+      : m_identity()
+      , t(0)
+    {
+        t.setSingleShot(false);
+        connect(&t, SIGNAL(timeout()), this, SLOT(allocSecond()));
+        for (int i = 0; i < 10; ++i)
+            allocSecond();
+    }
+public slots:
+    void allocSecond() {
+        t.stop();
+        while (m_identity.size() < 10) {
+            AudioSecond* s = new AudioSecond(-1);
+            x.lock();
+            m_identity.push_back(s);
+            x.unlock();
+        }
     }
 };
 
@@ -152,7 +206,7 @@ public:
     }
 
     void appendGraph(long frames) {
-        while (s_graphPointingTo != -1) {
+        while (s_graphPointingTo != -1 && s_graphPointingTo < s_data.size() && s_data[s_graphPointingTo]) {
             s_data[s_graphPointingTo]->appendGraph(qMin(frames, s_data[s_graphPointingTo]->framesRemainingInGraph()));
             frames -= s_data[s_graphPointingTo]->framesRemainingInGraph();
             if (frames >= 0) {
@@ -190,7 +244,7 @@ public:
 
         if(!s_data[(int)(frame/sampleRate)])
         {
-            s_data[(int)(frame/sampleRate)]=new AudioSecond((frame/sampleRate)*sampleRate);
+            s_data[(int)(frame/sampleRate)]=AudioSecondBank::singleton->buySecond((frame/sampleRate)*sampleRate);
             regSecond(s_data[(int)(frame/sampleRate)]);
         }
 
@@ -235,7 +289,7 @@ public:
         }
 
         if(!s_data[(int)frame/sampleRate]) {
-            s_data[(int)(frame/sampleRate)]=new AudioSecond((frame/sampleRate)*sampleRate);
+            s_data[(int)(frame/sampleRate)]=AudioSecondBank::singleton->buySecond((frame/sampleRate)*sampleRate);
             regSecond(s_data[(int)(frame/sampleRate)]);
         }
 

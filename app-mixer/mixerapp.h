@@ -28,7 +28,7 @@ public:
     RELOADABLE(MixerApp)
     MixerApp();
     ~MixerApp();
-    void aIn(const float *data, int chan, live::ObjectChain* p);
+    void aIn(const float *data, int chan, Object *p);
     void mIn(const live::Event *data, live::ObjectChain* p);
 };
 

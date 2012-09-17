@@ -30,7 +30,7 @@ MixerApp::~MixerApp()
     _u.removeOne(this);
 }
 
-void MixerApp::aIn(const float *data, int chan, ObjectChain* p)
+void MixerApp::aIn(const float *data, int chan, Object* p)
 {
     bool zero=0;
     if (!b_solo)

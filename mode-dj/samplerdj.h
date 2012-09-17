@@ -55,7 +55,7 @@ public slots:
 
     void setBindingMode(int);
 
-    virtual void aIn(const float *data, int chan, live::ObjectChain*p);
+    virtual void aIn(const float *data, int chan, Object *p);
     virtual void mIn(const live::Event *data, live::ObjectChain*p);
 
 signals:

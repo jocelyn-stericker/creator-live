@@ -197,7 +197,7 @@ void Vst::hide()
     rep->vstEditor->hide();
 }
 
-void Vst::aIn(const float* x, int chan, ObjectChain*s)
+void Vst::aIn(const float* x, int chan, Object*s)
 {
     Q_UNUSED(lock);
     Q_UNUSED(s);

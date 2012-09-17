@@ -19,7 +19,9 @@ class AudioInterface;
 class LIBLIVECORESHARED_EXPORT audio
 {
     static AudioInterface* s_audioInterface;
+    static QString s_serverKey;
 public:
+    static bool strictInnocentXruns;
     static void registerInterface(AudioInterface*);
     static bool valid();
     static void shutdown();
@@ -62,6 +64,9 @@ public:
     // Returns: a null port called every period with chans channels
 
     static void stop();
+
+    static QString getKey();
+    static void resetKey();
 
     QByteArray save();
     static void loadVerify(const QByteArray&str);

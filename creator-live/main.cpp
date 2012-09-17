@@ -23,7 +23,6 @@ int main(int argc,char** argv)
     LiveApplication* liveApp=new LiveApplication(argc,argv);
 
     int ret = liveApp->exec();
-    Object::beginProc();
     audio::stop();
     return ret;
 }

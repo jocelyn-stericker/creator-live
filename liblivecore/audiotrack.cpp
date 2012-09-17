@@ -10,6 +10,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live/audiotrack>
 #include <live/object>
 
+live::AudioSecondBank* live::AudioSecondBank::singleton = 0;
+
 void live::AudioTrack::aThru(float*proc,int chan) {
     live::lthread::assertAudio();
 
@@ -18,11 +20,12 @@ void live::AudioTrack::aThru(float*proc,int chan) {
     float* RAW;
     bool warning = false;
     int size;
-    int count=size=s_container[chan]->getRawPointer(s_curPos,RAW,s_playback&&(s_record||s_overdub), &warning);
+    int count;
+    count=size=s_container[chan]->getRawPointer(s_curPos,RAW,s_playback&&(s_record||s_overdub), &warning);
     if (warning) {
         // as we get xruns if we alloc a second of audio data in this thread,
         // do it async.
-        QtConcurrent::run(this,&live::AudioTrack::async);
+//        kill_kitten QtConcurrent::run(this,&live::AudioTrack::async);
     }
     RAW-=RAW?1:0;
     unsigned i;
@@ -54,9 +57,9 @@ void live::AudioTrack::aThru(float*proc,int chan) {
         }
     }
 
-    if ((ok)||s_updateCounter==8) {
+    if ((ok)||s_updateCounter==28) {
         if (s_updateCounter) emit dataUpdated((int)(s_curPos-nframes*s_updateCounter),(int)(s_curPos));
-        else if (++s_boringCounter==4) {
+        else if (++s_boringCounter==24) {
             s_boringCounter=0;
             emit locationChanged(s_curPos);
         }
@@ -89,6 +92,8 @@ live::AudioTrack::AudioTrack(int cchans)
     for (int i=0; i<cchans; i++) {
         s_container[i]=new AudioContainer;
     }
+    QtConcurrent::run(this,&live::AudioTrack::async);
+    async();
 }
 
 live::AudioTrack::~AudioTrack() {
@@ -191,6 +196,7 @@ void live::AudioTrack::setPos(float pos) {
     s_curPos = long((float(live::audio::sampleRate()))*(float(pos)/1000.0f));
     for (int i = 0; i < s_chans; ++i)
         s_container[i]->pointGraph(s_curPos);
+    async();
 }
 
 void live::AudioTrack::aIn(const float *in, int chan, Object*) {
@@ -198,9 +204,7 @@ void live::AudioTrack::aIn(const float *in, int chan, Object*) {
         aOut(in, chan, this);
     }
     memcpy(m_proc,in,sizeof(float)*nframes);
-
     aThru(m_proc,chan);
-
     aOut(m_proc,chan,this);
 }
 
@@ -333,7 +337,7 @@ bool live::AudioTrack::importFile(QString filename) {
 
     sf_count_t frames=file.frames();
 //        Q_ASSERT(frames%file.channels()==0);
-    float*data=new float[frames*s_chans];  //2==s_chans, no of items, data is interlaced
+    float*data=new float[frames*s_chans];  //chans==s_chans, no of items, data is interlaced
     file.readf(data,frames);
     for (int i=0;i<s_chans;i++) {
         float*dataPtr;
@@ -359,8 +363,10 @@ bool live::AudioTrack::importFile(QString filename) {
 
 void live::AudioTrack::async() {
     // this function prevents data allocation in the real-time thread.
-    // FIXME: possible memory loss
+    // FIXME: possible memory leak
     float*a;
-    for (int i = 0; i < s_chans; ++i)
+    for (int i = 0; i < s_chans; ++i) {
+        s_container[i]->getRawPointer((unsigned)s_curPos,a,1,0,0);
         s_container[i]->getRawPointer((unsigned)s_curPos + live::audio::sampleRate(),a,1,0,0);
+    }
 }

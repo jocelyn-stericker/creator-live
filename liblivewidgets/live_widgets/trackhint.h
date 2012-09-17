@@ -13,6 +13,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QWidget>
 #include "liblivewidgets_global.h"
 
+#include <live/audio>
 #include <live/object>
 
 namespace Ui {

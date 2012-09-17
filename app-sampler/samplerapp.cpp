@@ -193,7 +193,7 @@ void SamplerApp::setBindingMode(int b)
     }
 }
 
-void SamplerApp::aIn(const float *in, int chan, ObjectChain*p)
+void SamplerApp::aIn(const float *in, int chan, Object*p)
 {
     const quint32& nframes=audio::nFrames();
 

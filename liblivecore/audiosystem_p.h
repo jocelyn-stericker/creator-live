@@ -66,7 +66,7 @@ public:
 
     virtual void suspend() { s_suspend=1; }
     virtual void resume() { s_suspend=0; }
-    virtual void aIn (const float*,int, live::ObjectChain*) {}
+    virtual void aIn (const float*,int, live::Object*) {}
 };
 
 // ONLY CALL AUDIO FUNCTIONS FROM THE AUDIO THREAD!
@@ -79,14 +79,13 @@ public:
     int     chans;
     QList<jack_port_t*> s_port_[32];    //No more than 32 ports
 
-    int     s_counter;
     int     s_i;
     QStringList s_realnames;
     bool    s_map;
     bool    s_tracked[16][32];  //16 ports and 32 chans max
 
 public:
-    AudioOut(QStringList cnames, QString name,bool cmap) : live::Object(name,true,true,2), chans(cnames.size()), s_counter(0), s_i(-1), s_realnames(cnames), s_map(cmap)
+    AudioOut(QStringList cnames, QString name,bool cmap) : live::Object(name,true,true,2), chans(cnames.size()), s_i(-1), s_realnames(cnames), s_map(cmap)
     {
         setTemporary(0);
 
@@ -99,16 +98,14 @@ public:
             }
         }
 
-        initConnection();
+        init();
     }
     virtual ~AudioOut() {
-        destroyConnection();
     }
 
-    virtual void aIn(const float*data,int chan, live::ObjectChain*p); //Audio.cpp
+    virtual void aIn(const float*data,int chan, live::Object*p); //Audio.cpp
 
-    void initConnection();
-    void destroyConnection();
+    void init();
 };
 
 class LIBLIVECORESHARED_EXPORT AudioNull : public QObject, public live::Object
@@ -128,8 +125,7 @@ public:
       {
     }
 
-    virtual void aIn(const float*data,int chan, live::Object*
-                    )
+    virtual void aIn(const float*data,int chan, live::Object*)
     {
         aOut(data,chan,this);
     }

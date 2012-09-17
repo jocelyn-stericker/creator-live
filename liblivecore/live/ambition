@@ -10,6 +10,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef AMBITION_H
 #define AMBITION_H
 
+#include <live/audio>
 #include <live/object>
 #include <live/variantbinding>
 #include <live/midieventcounter>
@@ -33,12 +34,12 @@ public:
       , b(cb)
       , t(ct)
       { connect();
-        qDebug() << "[CONNECT]"<<a->name() << "->"<<b->name() << "| type:"<<(int)t;
+        qDebug() << "[CONNECT]"<<a->name() << "->"<<b->name() << "| type:"<<((t==0)?"Audio":(t==1?"Midi":"Hybrid"));
     }
 
     ~Connection()
     {
-        qDebug() << "[DISCONNECT]"<<a->name() << "->"<<b->name() << "| type:"<<(int)t;
+        qDebug() << "[DISCONNECT]"<<a->name() << "->"<<b->name() << "| type:"<<((t==0)?"Audio":(t==1?"Midi":"Hybrid"));
         connect();
     }
 private:

@@ -11,8 +11,6 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define VARIANTBINDING_H
 
 #include <QVariant>
-#include <QDebug>
-
 #include "liblivecore_global"
 
 namespace live {
@@ -85,10 +83,9 @@ public:
 
     Bound<U>& operator=(const U&that)    // slow
     {
+        if(s_t==that) return *this;
         QVariant a(s_t), b(that);
         s_t=that;
-        qDebug() << a << "changed in '=' to" << that;
-        if(a==that) return *this;
         emit changeObserved();
         emit changeObserved(b,a);
         emit changeObserved(b.toString(),a.toString());
@@ -109,12 +106,10 @@ public:
 
     void set(const QVariant& that)
     {
+        if(s_t==that) return;
         QVariant a(s_t);
         s_t=qvariant_cast<U>(that);
 
-        qDebug() << a << "changed to" << that;
-
-        if(a==that) return;
         emit changeObserved();
         emit changeObserved(that,a);
         emit changeObserved(that.toString(),a.toString());
@@ -131,7 +126,7 @@ public:
     }
     void set(const QString& that)
     {
-        set((QString)that);
+        set((QVariant)that);
     }
     void set_(void* x)
     {

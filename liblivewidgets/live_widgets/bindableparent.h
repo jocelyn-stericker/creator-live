@@ -10,10 +10,13 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef BINDABLEPARENT_H
 #define BINDABLEPARENT_H
 
-#include <QVariant>
+#include <live/audio>
+#include <live/object>
+
 #include "liblivewidgets_global.h"
 
-#include <live/object>
+#include <QVariant>
+
 
 namespace live_widgets {
 

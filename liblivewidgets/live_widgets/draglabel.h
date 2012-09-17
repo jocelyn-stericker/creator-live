@@ -11,6 +11,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define DRAGBUTTON_H
 
 #include "liblivewidgets_global.h"
+#include <live/audio>
 #include <live/object>
 
 #include <QLabel>

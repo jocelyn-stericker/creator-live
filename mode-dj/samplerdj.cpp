@@ -191,7 +191,7 @@ void SamplerDJ::setBindingMode(int b)
     }
 }
 
-void SamplerDJ::aIn(const float *in, int chan, ObjectChain*p)
+void SamplerDJ::aIn(const float *in, int chan, Object*p)
 {
     const quint32& nframes=audio::nFrames();
 

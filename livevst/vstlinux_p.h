@@ -191,7 +191,7 @@ public:
                     break;
                 }
             }
-            live::Object::endAsyncAction();
+            live::Object::endAsyncAction(__FILE__, __LINE__);
             qApp->processEvents();
             QTimer timer;
             timer.setSingleShot(1);
@@ -210,7 +210,7 @@ public:
         kill();
 //        while (s_sidekicks.size()) delete s_sidekicks.takeFirst().data();
         _magic->kill();
-        live::Object::endAsyncAction();
+        live::Object::endAsyncAction(__FILE__,__LINE__);
     }
 
     void addSidekicks(QStringList to, QStringList from);

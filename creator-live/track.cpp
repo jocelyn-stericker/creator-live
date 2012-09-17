@@ -142,7 +142,6 @@ void Track::makeUiPipeline() {
         }
         setGeometry(geometry());
         remakeChainWidget();
-        QCoreApplication::processEvents();
         s_busy = 0;
     }
 }

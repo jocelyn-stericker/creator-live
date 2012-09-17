@@ -29,7 +29,7 @@ class LiveApplication : public QApplication
 //    Ribbon* _ribbon;
 //    QList<Vst*> _vsts;
 public:
-    explicit LiveApplication(int& argc,char**argv);
+    explicit LiveApplication(int& argc, char **argv);
     QWidget* mainWindow() { return _mainWindow; }
 //    const Ribbon* constRibbon() { return _ribbon; }
 //    Ribbon* ribbon() { return _ribbon; }

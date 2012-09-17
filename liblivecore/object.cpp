@@ -10,6 +10,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "midisystem_p.h"
 
 #include <live/audio>
+#include <live/audiosecond>
 #include <live/../audiosystem_p.h>
 #include <live/liblivecore_global>
 #include <live/mapping>
@@ -40,6 +41,38 @@ LIBLIVECORESHARED_EXPORT Qt::HANDLE live::lthread::audioThreadId = 0;
 LIBLIVECORESHARED_EXPORT Qt::HANDLE live::lthread::midiThreadId = 0;
 #endif
 
+void live::lthread::assert_thread(const Qt::HANDLE& thread, const char* str) {
+#ifndef __QNX__ // qnx doesn't have useful thread ids.
+        if (thread != QThread::currentThreadId()) {
+            std::cerr << "### Thread assertion error ###\n";
+            std::cerr << "expected: " << str << "(" << QString::number(thread).toUtf8().data() << ")\n";
+            QString is;
+            if (QThread::currentThreadId() == uiThreadId)
+                is = "user interface";
+            if (QThread::currentThreadId() == metronomeThreadId)
+                is = "metronome";
+            if (QThread::currentThreadId() == audioThreadId)
+                is = "audio";
+            if (QThread::currentThreadId() == midiThreadId)
+                is = "midi";
+
+            std::cerr << "got: " << is.toUtf8().data() << "(" << QString::number(QThread::currentThreadId()).toUtf8().data() << ")\n";
+            std::flush(std::cerr);
+            TCRASH();
+        }
+#endif
+}
+
+void live::lthread::uiInit(bool really) {
+    if (really) {
+        if(live::AudioSecondBank::singleton) kill_kitten {
+            delete live::AudioSecondBank::singleton;
+            live::AudioSecondBank::singleton = new live::AudioSecondBank();
+        } else live::AudioSecondBank::singleton = new live::AudioSecondBank();
+    }
+    uiThreadId = QThread::currentThreadId();
+}
+
 class TheMutex {
 public:
     static TheMutex* me;
@@ -60,26 +93,26 @@ static QMutex x_mixers(QMutex::Recursive);
 LIBLIVECORESHARED_EXPORT void live::Object::beginProc() {
     TheMutex::me->LOCK.lock();
 #if !defined(NDEBUG) && defined(__linux__)
-    live_mutex(x_asyncTime) {
+//    live_mutex(x_asyncTime) {
         timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
         s_asyncTime.push_back(ts.tv_sec * 1000000000 + ts.tv_nsec);
-    }
+//    }
 #endif
 }
 
 LIBLIVECORESHARED_EXPORT void live::Object::beginAsyncAction() {
     TheMutex::me->LOCK.lock();
 #if !defined(NDEBUG) && defined(__linux__)
-    live_mutex(x_asyncTime) {
+//    live_mutex(x_asyncTime) {
         timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
         s_asyncTime.push_back(ts.tv_sec * 1000000000 + ts.tv_nsec);
-    }
+//    }
 #endif
 }
 
-LIBLIVECORESHARED_EXPORT void live::Object::endProc(bool/* oversized*/) {
+LIBLIVECORESHARED_EXPORT void live::Object::endProc(bool /*oversized*/) {
     TheMutex::me->LOCK.unlock();
 
     if (ss_XRUN) {
@@ -87,33 +120,34 @@ LIBLIVECORESHARED_EXPORT void live::Object::endProc(bool/* oversized*/) {
         ss_XRUN = false;
     }
 #if !defined(NDEBUG) && defined(__linux__)
-    live_mutex(x_asyncTime) {
+//    live_mutex(x_asyncTime) {
         timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
         quint32 l = ts.tv_sec * 1000000000 + ts.tv_nsec;
-        if (l - s_asyncTime.back() > 10000000) {
-            qCritical() << "My threading skills are bad, and I feel bad.\n";
-//            if (!oversized) TCRASH();
+        if (l - s_asyncTime.back() > 1000000) {
+            qCritical() << "THREADING ERROR: Audio thread killed" << (l - s_asyncTime.back()) << "kittens. The culprit has yet to be caught.\n";
+//            if (live::audio::strictInnocentXruns) TCRASH();
         }
         s_asyncTime.pop_back();
-    }
+//    }
 #endif
 }
 
-LIBLIVECORESHARED_EXPORT void live::Object::endAsyncAction() {
+LIBLIVECORESHARED_EXPORT void live::Object::endAsyncAction(const char* file, int line) {
     TheMutex::me->LOCK.unlock();
 
 #if !defined(NDEBUG) && defined(__linux__)
-    live_mutex(x_asyncTime) {
+//    live_mutex(x_asyncTime) {
         timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
         quint32 l = ts.tv_sec * 1000000000 + ts.tv_nsec;
-        if (l - s_asyncTime.back() > 10000000) {
-            qCritical() << "My threading skills are bad, and I feel bad.\n";
-            TCRASH();
+        if (l - s_asyncTime.back() > 1000000) {
+            qCritical() << "THREADING ERROR: Lock at" << file << "line" << line << "killed" << (l - s_asyncTime.back() ) << "kittens.";
+            if (live::audio::strictInnocentXruns)
+                TCRASH();
         }
         s_asyncTime.pop_back();
-    }
+//    }
 #endif
 
     if (ss_XRUN) {
@@ -128,16 +162,20 @@ LIBLIVECORESHARED_EXPORT void live::Object::XRUN() {
     } else {
         TheMutex::me->LOCK.unlock();
         qDebug() << "XRUN:: Mutex innocent.";
+        if (live::audio::strictInnocentXruns) {
+            TCRASH();
+        }
         ss_XRUN = false;
     }
 }
 
 void live::Object::aOut(const float *data, int chan, Object *prev) {
     live::lthread::assertAudio();
-    for (int i=0;i<aConnections.size();i++) {
-        Q_ASSERT(aConnections[i]->aInverseConnections.size());
-        if (aConnections[i]->aInverseConnections.size()<=1||!aConnections[i]->s_allowMixer) aConnections[i]->aIn(data,chan,prev);
-        else aConnections[i]->mixer_process(data,chan);
+    for (std::set<live::ObjectPtr>::iterator it = aConnections.begin(); it != aConnections.end(); ++it) {
+//    for (int i=0;i<aConnections.size();i++) {
+        Q_ASSERT((*it)->aInverseConnections.size());
+        if ((*it)->aInverseConnections.size()<=1||!(*it)->s_allowMixer) (*it)->aIn(data,chan,prev);
+        else (*it)->mixer_process(data,chan);
     }
 }
 
@@ -164,6 +202,8 @@ live::Object::Object(QString cname, bool isPhysical, bool allowMixer, int chans)
     mixer_data = new float*[s_chans];
     mixer_at = new int[s_chans];
 
+    mixer_nframes = live::audio::nFrames();
+
     if (isPhysical) {
         for (int i=0;i<zombies->values(cname).size();i++) {
             zombies->values(cname)[i]->restore(this);
@@ -171,7 +211,7 @@ live::Object::Object(QString cname, bool isPhysical, bool allowMixer, int chans)
     }
 
     for (int i = 0; i < s_chans; ++i) {
-        mixer_data[i]=0;
+        mixer_data[i] = new float[mixer_nframes];
         mixer_at[i]=0;
     }
 
@@ -189,10 +229,10 @@ live::Object::~Object() {
 
 void live::Object::kill() {
     kill_kitten {
-        while (aConnections.size()) this->audioConnect(aConnections[0]);
-        while (mConnections.size()) this->midiConnect(mConnections[0]);
-        while (aInverseConnections.size()) aInverseConnections[0]->audioConnect(this);
-        while (mInverseConnections.size()) mInverseConnections[0]->midiConnect(this);
+        while (aConnections.size()) this->audioConnect(*aConnections.begin());
+        while (mConnections.size()) this->midiConnect(*mConnections.begin());
+        while (aInverseConnections.size()) (*aInverseConnections.begin())->audioConnect(this);
+        while (mInverseConnections.size()) (*mInverseConnections.begin())->midiConnect(this);
         Q_ASSERT(!aConnections.size());
         Q_ASSERT(!mConnections.size());
         Q_ASSERT(!aInverseConnections.size());
@@ -217,23 +257,21 @@ void live::Object::midiConnect(const live::ObjectPtr &bl) {
     a->mPanic();
     live::Object::beginProc(); {
         bool ok=1;
-        for (int i=0;i<a->mConnections.size();i++) if (a->mConnections[i].data()==b) ok=0;
+        for (std::set<live::ObjectPtr>::iterator it = a->mConnections.begin(); it != a->mConnections.end(); ++it)
+            if ((*it).data()==b) ok=0;
 
         kill_kitten {
             if (ok) {
-                a->mConnections.push_back(b);
-                b->mInverseConnections.push_back(a);
+                a->mConnections.insert(b);
+                b->mInverseConnections.insert(a);
             } else {
-                for (int i=0;i<a->mConnections.size();i++) {
-                    if (a->mConnections[i].data()==b) {
-                        a->mConnections.removeAt(i);
-                        i--;
-                    }
+                for (std::set<live::ObjectPtr>::iterator it = a->mConnections.begin(); it != a->mConnections.end(); ++it) {
+                    if((*it).data() == b)
+                        a->mConnections.erase(it);
                 }
-                for (int i=0;i<b->mInverseConnections.size();i++) {
-                    if (b->mInverseConnections[i].data()==a) {
-                        b->mInverseConnections.removeAt(i);
-                        i--;
+                for (std::set<live::ObjectPtr>::iterator it = b->mInverseConnections.begin(); it != b->mInverseConnections.end(); ++it) {
+                    if ((*it).data()==a) {
+                        b->mInverseConnections.erase(it);
                     }
                 }
             }
@@ -262,27 +300,28 @@ void live::Object::audioConnect(const live::ObjectPtr& bl) {
     {
 
         bool ok=1;
-        for (int i=0;i<a->aConnections.size();i++) if (a->aConnections[i].data()==b) ok=0;
+        for (std::set<live::ObjectPtr>::iterator it = a->aConnections.begin(); it != a->aConnections.end(); ++it)
+            if ((*it).data()==b) ok=0;
 
         if (ok) {
             b->newConnection();
 
             kill_kitten {
-                a->aConnections.push_back(b);
-                b->aInverseConnections.push_back(a);
+                a->aConnections.insert(b);
+                b->aInverseConnections.insert(a);
                 b->mixer_resetStatus();
             }
         } else {
             kill_kitten {
-                for (int i=0;i<a->aConnections.size();i++) {
-                    if (a->aConnections[i].data()==b) {
-                        a->aConnections.removeAt(i);
+                for (std::set<live::ObjectPtr>::iterator it = a->aConnections.begin(); it != a->aConnections.end(); ++it) {
+                    if ((*it).data()==b) {
+                        a->aConnections.erase(it);
                         break;
                     }
                 }
-                for (int i=0;i<b->aInverseConnections.size();i++) {
-                    if (b->aInverseConnections[i].data()==a) {
-                        b->aInverseConnections.removeAt(i);
+                for (std::set<live::ObjectPtr>::iterator it = b->aInverseConnections.begin(); it != b->aInverseConnections.end(); ++it) {
+                    if ((*it).data()==a) {
+                        b->aInverseConnections.erase(it);
                         break;
                     }
                 }
@@ -302,16 +341,18 @@ void live::Object::mOut(const live::Event *data, live::ObjectChain* p, bool back
         live::Event* x=new live::Event;
         *x=*data;
         SecretMidi::me->mWithhold(x,*p,this, backwards);    //now owner.
-    } else for (int i=0;i<mConnections.size();i++) {
+    } else {
         if(s_ec) s_ec->mIn(data,p);
 
-        live::Event*x=new live::Event(*data);
-        x->buddy=0;
-        if (backwards)
-            mConnections[i]->mInverse(x,p);
-        else
-            mConnections[i]->mIn(x,p);
-        delete x;
+        for(std::set<live::ObjectPtr>::iterator it = mConnections.begin(); it != mConnections.end(); ++it) {
+            live::Event*x=new live::Event(*data);
+            x->buddy=0;
+            if (backwards)
+                (*it)->mInverse(x,p);
+            else
+                (*it)->mIn(x,p);
+            delete x;
+        }
     }
 }
 
@@ -340,26 +381,10 @@ public:
 };
 
 void live::Object::mixer_resetStatus() {
-    QList<float*> toDestroy;
     live_mutex(x_mixers) {
-        mixer_nframes=live::audio::nFrames();
         for (int i = 0; i < s_chans; ++i)
             mixer_at[i] = 0;
-
-        if (aInverseConnections.size() <= 0) {
-            for (int i = 0; i < s_chans; ++i) {
-                float* data = mixer_data[i];
-                mixer_data[i]=0;
-                if (data) toDestroy.push_back(data);
-            }
-        } else if (aInverseConnections.size() > 1 && !mixer_data[0]) {
-            for (int i = 0; i < s_chans; ++i) {
-                mixer_data[i] = new float[mixer_nframes];
-            }
-        }
     }
-    for (int i = 0; i < toDestroy.size(); ++i)
-        QtConcurrent::run(new MixerDataDestroyer(toDestroy[i]), &MixerDataDestroyer::go);
 }
 
 void live::Object::mixer_process(const float* data, int chan) {
@@ -373,6 +398,10 @@ void live::Object::mixer_process(const float* data, int chan) {
             mixer_at[chan]=0;
         }
     }
+}
+
+uint live::qHash(const live::ObjectPtr &p) {
+    return ::qHash((quintptr)p.data());
 }
 
 void live::ObjectPtr::obliviate() {

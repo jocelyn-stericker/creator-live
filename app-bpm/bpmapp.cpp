@@ -120,7 +120,7 @@ float BPMApp::getBPM()
     return qRound(ret);
 }
 
-void BPMApp::aIn(const float *data, int chan, ObjectChain*p)
+void BPMApp::aIn(const float *data, int chan, Object*p)
 {
     const quint32& nframes=audio::nFrames();
     if (s_lastBPM>20.0f) {

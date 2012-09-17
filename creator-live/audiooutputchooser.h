@@ -12,6 +12,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define AUDIOOUTPUTCHOOSER_H
 
 #include <QWidget>
+#include <live/audio>
 #include <live/object>
 #include <live/variantbinding>
 
