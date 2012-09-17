@@ -1,0 +1,3 @@
+libfluidsynth_la-fluid_midishare.lo: fluid_midishare.c config.h
+
+config.h:

@@ -1,0 +1,209 @@
+libfluidsynth_la-fluid_list.lo: fluid_list.c fluid_list.h \
+ fluidsynth_priv.h config.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/string.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/platform.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/srcversion.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/compiler_gnu.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/cdefs.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/arm/platform.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/_pack64.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/target_nto.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/_packpop.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/strings.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/stdlib.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/malloc.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/alloca.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/wait.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/signal.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/siginfo.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/stdio.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/math.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/xtgmath.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/yvals.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/ymath.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/errno.h \
+ /hddhome/joshua/bbndk-2.0.1/host/linux/x86/usr/lib/gcc/arm-unknown-nto-qnx6.5.0eabi/4.4.2/include/stdarg.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/stdarg.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/unistd.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/confname.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/process.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/fcntl.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/stat.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/mman.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/types.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/time.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/select.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/limits.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/socket.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/uio.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/netinet/in.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/inttypes.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/stdint.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/net/netbyte.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/gulliver.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/cpuinline.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/arm/cpuinline.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/netinet6/in6.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/netinet/tcp.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/arpa/inet.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/pthread.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/time.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sched.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/storage.h \
+ /hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/arm/smpxchg.h \
+ ../include/fluidsynth.h ../include/fluidsynth/types.h \
+ ../include/fluidsynth/settings.h ../include/fluidsynth/synth.h \
+ ../include/fluidsynth/shell.h ../include/fluidsynth/sfont.h \
+ ../include/fluidsynth/ramsfont.h ../include/fluidsynth/audio.h \
+ ../include/fluidsynth/event.h ../include/fluidsynth/midi.h \
+ ../include/fluidsynth/seq.h ../include/fluidsynth/seqbind.h \
+ ../include/fluidsynth/seq.h ../include/fluidsynth/log.h \
+ ../include/fluidsynth/misc.h ../include/fluidsynth/mod.h \
+ ../include/fluidsynth/gen.h ../include/fluidsynth/voice.h \
+ ../include/fluidsynth/version.h
+
+fluid_list.h:
+
+fluidsynth_priv.h:
+
+config.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/string.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/platform.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/srcversion.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/compiler_gnu.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/cdefs.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/arm/platform.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/_pack64.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/target_nto.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/_packpop.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/strings.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/stdlib.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/malloc.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/alloca.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/wait.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/signal.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/siginfo.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/stdio.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/math.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/xtgmath.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/yvals.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/ymath.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/errno.h:
+
+/hddhome/joshua/bbndk-2.0.1/host/linux/x86/usr/lib/gcc/arm-unknown-nto-qnx6.5.0eabi/4.4.2/include/stdarg.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/stdarg.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/unistd.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/confname.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/process.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/fcntl.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/stat.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/mman.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/types.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/time.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/select.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/limits.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/socket.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/uio.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/netinet/in.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/inttypes.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/stdint.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/net/netbyte.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/gulliver.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/cpuinline.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/arm/cpuinline.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/netinet6/in6.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/netinet/tcp.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/arpa/inet.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/pthread.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/time.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sched.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/sys/storage.h:
+
+/hddhome/joshua/bbndk-2.0.1/target/qnx6//usr/include/arm/smpxchg.h:
+
+../include/fluidsynth.h:
+
+../include/fluidsynth/types.h:
+
+../include/fluidsynth/settings.h:
+
+../include/fluidsynth/synth.h:
+
+../include/fluidsynth/shell.h:
+
+../include/fluidsynth/sfont.h:
+
+../include/fluidsynth/ramsfont.h:
+
+../include/fluidsynth/audio.h:
+
+../include/fluidsynth/event.h:
+
+../include/fluidsynth/midi.h:
+
+../include/fluidsynth/seq.h:
+
+../include/fluidsynth/seqbind.h:
+
+../include/fluidsynth/seq.h:
+
+../include/fluidsynth/log.h:
+
+../include/fluidsynth/misc.h:
+
+../include/fluidsynth/mod.h:
+
+../include/fluidsynth/gen.h:
+
+../include/fluidsynth/voice.h:
+
+../include/fluidsynth/version.h:
