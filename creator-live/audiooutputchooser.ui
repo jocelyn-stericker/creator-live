@@ -514,7 +514,7 @@ background: #1c1c1c;
         <property name="styleSheet">
          <string notr="true">* {
 spacing: 0px;
-font-color: black;
+color: black;
 }
 
 QListWidget {

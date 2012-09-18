@@ -239,10 +239,10 @@ void SecretMidi::run() { // [MIDI THREAD]
 
                     if (inverse!=-1) {
                         Q_ASSERT(live::MidiBinding::customKey->value(inputs[inverse],0));
-                        if ((live::MidiBinding::customKey->value(inputs[inverse],0)&&live::MidiBinding::customKey->value(inputs[inverse])[e->note()].valid())||(*live::MidiBinding::customNow).valid()) {
+                        if ((live::MidiBinding::customKey->value(inputs[inverse],0)&&live::MidiBinding::customKey->value(inputs[inverse])[e->note()].valid())||(live::MidiBinding::customNow&&live::MidiBinding::customNow->valid())) {
                             live::ObjectChain p;
                             p.push_back(inputs[inverse]);
-                            ((*live::MidiBinding::customNow).valid()?*live::MidiBinding::customNow:live::MidiBinding::customKey->value(inputs[inverse])[e->note()])->mIn(e, &p);
+                            ((live::MidiBinding::customNow&&live::MidiBinding::customNow->valid())?*live::MidiBinding::customNow:live::MidiBinding::customKey->value(inputs[inverse])[e->note()])->mIn(e, &p);
                         }
 
                         live::ObjectChain p;  // FIXME?

@@ -63,12 +63,12 @@ include_directories (${cmake_binary_dir}
 
 qt4_wrap_cpp (app-sequencer_moc ${app-sequencer_h_qobject})
 qt4_wrap_ui (app-sequencer_moc ${app-sequencer_ui}) 
-qt4_add_resources (livevst_rcc ${livevst_qrc})
+qt4_add_resources (app-sequencer_rcc ${app-sequencer_qrc})
 
 add_library (app-sequencer SHARED
     ${app-sequencer_cpp}
     ${app-sequencer_moc}
-    ${livevst_qrc}
+    ${app-sequencer_rcc}
 )
 
 set_target_properties(app-sequencer PROPERTIES

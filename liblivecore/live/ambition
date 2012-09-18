@@ -262,7 +262,7 @@ public:
                 }
 
             }
-            else
+            else if (s_input.valid() && s_output.valid())
             {
                 qCritical() << "No solution to audio train...";
                 return 0;

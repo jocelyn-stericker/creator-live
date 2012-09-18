@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/icons">
-        <file>Icons/app_seq.png</file>
-        <file>Icons/app_loop.png</file>
+        <file alias="app_seq.png">Icons/app_seq.png</file>
+        <file alias="app_loop.png">Icons/app_loop.png</file>
         <file alias="play.png">Icons/play.png</file>
         <file alias="playClipped.png">Icons/playClipped.png</file>
         <file alias="record.png">Icons/record.png</file>

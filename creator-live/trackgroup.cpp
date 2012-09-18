@@ -26,7 +26,6 @@ void TrackGroup::clearSelect() {
 
 void TrackGroup::setLastOutput(live::ObjectPtr obj, live::ObjectPtr loop)
 {
-    qDebug() << "SLO\n";
     s_hathorView->show();
     bool ok=0;
     for (int i=s_hathorView->count()-1;(i!=-1)&&!ok;--i) {

@@ -82,21 +82,14 @@ public:
     int     s_i;
     QStringList s_realnames;
     bool    s_map;
-    bool    s_tracked[16][32];  //16 ports and 32 chans max
+    bool    s_processed;
 
 public:
-    AudioOut(QStringList cnames, QString name,bool cmap) : live::Object(name,true,true,2), chans(cnames.size()), s_i(-1), s_realnames(cnames), s_map(cmap)
+    AudioOut(QStringList cnames, QString name,bool cmap) : live::Object(name,true,true,2), chans(cnames.size()), s_i(-1), s_realnames(cnames), s_map(cmap), s_processed(0)
     {
         setTemporary(0);
 
         name.replace(":", "_");
-        for(int i=0;i<16;i++)
-        {
-            for(int j=0;j<32;j++)
-            {
-                s_tracked[i][j]=0;
-            }
-        }
 
         init();
     }
