@@ -92,7 +92,6 @@ live::AudioTrack::AudioTrack(int cchans)
     for (int i=0; i<cchans; i++) {
         s_container[i]=new AudioContainer;
     }
-    QtConcurrent::run(this,&live::AudioTrack::async);
     async();
 }
 

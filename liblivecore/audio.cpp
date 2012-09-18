@@ -312,15 +312,15 @@ jack_client_t* live_private::getJackClient() {
 #endif
 
 bool SecretAudio::makeClient() {
-#ifndef __QNX__
     if (client) return 1;
     Q_ASSERT(qApp);
+    live::audio::resetKey();
     live::Object::beginProc();
     {
         qDebug() << "Trying to connect to jackd... (you can start the JACK server with qjackctl, for example...)";
         QObject::connect(qApp,SIGNAL(aboutToQuit()),SecretAudioShutdownHandler::singleton,SLOT(byeBye()));
         SecretAudioShutdownHandler::singleton->byeBye();
-        client = jack_client_open("Hathor", (jack_options_t) (JackNoStartServer | JackUseExactName), 0);
+        client = jack_client_open(live::audio::getKey().toAscii(), (jack_options_t) (JackNoStartServer | JackUseExactName), 0);
         if (!client) {
 #ifdef _WIN32
             QMessageBox::critical(0,"Error","Please ensure that Live is installed correctly.");
@@ -345,17 +345,15 @@ bool SecretAudio::makeClient() {
 
     for (int i = 0; i < 64; ++i) {
         s_availInPorts.push_back( jack_port_register(getJackClient(),QString("clIn"+QString::number(i)).toAscii(),JACK_DEFAULT_AUDIO_TYPE,JackPortIsInput,0) );
-        s_availInPortIds.push_back(QString("Hathor:clIn"+QString::number(i)));
+        s_availInPortIds.push_back(QString(live::audio::getKey()+":clIn"+QString::number(i)));
         s_availOutPorts.push_back( jack_port_register(getJackClient(),QString("clOut"+QString::number(i)).toAscii(),JACK_DEFAULT_AUDIO_TYPE,JackPortIsOutput,0));
-        s_availOutPortIds.push_back(QString("Hathor:clOut"+QString::number(i)));
+        s_availOutPortIds.push_back(QString(live::audio::getKey()+":clOut"+QString::number(i)));
     }
 
     refresh();
     jack_activate( client );    // before refresh
-//    jack_cycle_wait(client);
     kill_kitten;
 
-#endif
     return 1;
 }
 
@@ -458,7 +456,7 @@ bool SecretAudio::refresh() {
         }
         QStringList outputStrs = jackGetInputPorts();
         for (int i=0;i<outputStrs;i++) {
-            if (outputStrs[i].contains("Hathor",Qt::CaseInsensitive)) {
+            if (outputStrs[i].contains(live::audio::getKey(),Qt::CaseInsensitive)) {
                 continue;
             }
             bool ok=1;
@@ -501,7 +499,7 @@ bool SecretAudio::refresh() {
         }
         QStringList inputStrs = jackGetOutputPorts();
         for (int i=0;i<inputStrs;i++) {
-            if (inputStrs[i].contains("Hathor",Qt::CaseInsensitive)) {
+            if (inputStrs[i].contains(live::audio::getKey(),Qt::CaseInsensitive)) {
                 continue;
             }
             bool ok=1;
@@ -663,7 +661,7 @@ int live_private::SecretAudio::mappingCount(bool input) {
 LIBLIVECORESHARED_EXPORT QStringList live::audio::getInputChanStringList() {
     QStringList ret = s_audioInterface->getInputChanStringList();
     for (int i = 0; i < ret.size(); ++i) {
-        if (ret[i].contains("Hathor"))
+        if (ret[i].contains(live::audio::getKey()))
             ret.removeAt(i--);
     }
     return ret;
@@ -689,7 +687,7 @@ QStringList live_private::SecretAudio::getInputChanStringList() {
 LIBLIVECORESHARED_EXPORT QStringList live::audio::getOutputChanStringList() {
     QStringList ret = s_audioInterface->getOutputChanStringList();
     for (int i = 0; i < ret.size(); ++i) {
-        if (ret[i].contains("Hathor")) {
+        if (ret[i].contains(live::audio::getKey())) {
             ret.removeAt(i--);
         }
     }
@@ -742,7 +740,8 @@ LIBLIVECORESHARED_EXPORT QString live::audio::getKey() {
 }
 
 LIBLIVECORESHARED_EXPORT void live::audio::resetKey() {
-    s_serverKey = "live" + QString(QCryptographicHash::hash(QByteArray::number(QDateTime::currentDateTime().toMSecsSinceEpoch()), QCryptographicHash::Md5)).toAscii();
+    s_serverKey = "live" + QString(QCryptographicHash::hash(QByteArray::number(QDateTime::currentDateTime().toMSecsSinceEpoch()), QCryptographicHash::Md5).toHex());
+    s_serverKey.truncate(10);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////

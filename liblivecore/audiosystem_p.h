@@ -49,7 +49,7 @@ public:
             {
                 if(a.indexOf('\"')!=-1)
                 {
-                    qDebug() << "Hathor does not support audio clients with quotes.";
+                    qDebug() << "Live does not support audio clients with quotes.";
                     Q_ASSERT(a.indexOf('\"')==-1);
                 }
                 Q_ASSERT(a.indexOf('_')!=-1);

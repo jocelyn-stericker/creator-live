@@ -17,7 +17,7 @@ int SamplerApp::s_lastId=-1;
 SamplerApp::SamplerApp(MidiTrack**cmidiTracks,AudioTrack**caudioTracks,bool newId) :
     live::Object("SAMPLER",0,0,2), s_bindingMode(-1), s_record(0), s_play(1), s_multi(1), s_id(newId?++s_lastId:-1)
 {
-    kill_kitten for (int i=0;i<16;i++)
+    for (int i=0;i<16;i++)
     {
         s_midiTracks[i]=(cmidiTracks&&cmidiTracks[i])?cmidiTracks[i]:new MidiTrack;
         if (s_midiTracks[i]->isPlay())
@@ -155,7 +155,7 @@ void SamplerApp::hit(int button)
 {
     Q_ASSERT(button>=0&&button<=15);
 
-    kill_kitten {
+    {
         if (s_midiTracks[button]->isPlay())
         {
             s_midiTracks[button]->stopPlayback(); // is this okay in an async?

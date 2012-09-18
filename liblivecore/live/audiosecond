@@ -121,7 +121,6 @@ class AudioSecondBank : public QObject
     AudioSecond* buySecond(int offset) {
         AudioSecond* ret;
         x.lock();
-        Q_ASSERT(m_identity.size());
         if (!m_identity.size()) {
             qCritical("No seconds to buy!");
             m_identity.push_back(new AudioSecond(offset));
