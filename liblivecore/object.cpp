@@ -206,7 +206,7 @@ live::Object::Object(QString cname, bool isPhysical, bool allowMixer, int chans)
 
     if (isPhysical) {
         for (int i=0;i<zombies->values(cname).size();i++) {
-            zombies->values(cname)[i]->restore(this);
+//            zombies->values(cname)[i]->restore(this); // FIXME
         }
     }
 
@@ -229,10 +229,10 @@ live::Object::~Object() {
 
 void live::Object::kill() {
     kill_kitten {
-        while (aConnections.size()) this->audioConnect(*aConnections.begin());
-        while (mConnections.size()) this->midiConnect(*mConnections.begin());
-        while (aInverseConnections.size()) (*aInverseConnections.begin())->audioConnect(this);
-        while (mInverseConnections.size()) (*mInverseConnections.begin())->midiConnect(this);
+        while (aConnections.size()) this->audioDisconnect(*aConnections.begin());
+        while (mConnections.size()) this->midiDisconnect(*mConnections.begin());
+        while (aInverseConnections.size()) (*aInverseConnections.begin())->audioDisconnect(this);
+        while (mInverseConnections.size()) (*mInverseConnections.begin())->midiDisconnect(this);
         Q_ASSERT(!aConnections.size());
         Q_ASSERT(!mConnections.size());
         Q_ASSERT(!aInverseConnections.size());
@@ -251,33 +251,39 @@ void live::Object::hybridConnect(const live::ObjectPtr &b) {
     midiConnect(b);
 }
 
+void live::Object::hybridDisconnect(const live::ObjectPtr &b) {
+    audioDisconnect(b);
+    midiDisconnect(b);
+}
+
 void live::Object::midiConnect(const live::ObjectPtr &bl) {
     live::Object* a=const_cast<live::Object*>(this);
     live::Object* b=const_cast<live::Object*>(bl.data());
     a->mPanic();
-    live::Object::beginProc(); {
-        bool ok=1;
-        for (std::set<live::ObjectPtr>::iterator it = a->mConnections.begin(); it != a->mConnections.end(); ++it)
-            if ((*it).data()==b) ok=0;
+    kill_kitten {
+        a->mConnections.insert(b);
+        b->mInverseConnections.insert(a);
+    }
+}
 
-        kill_kitten {
-            if (ok) {
-                a->mConnections.insert(b);
-                b->mInverseConnections.insert(a);
-            } else {
-                for (std::set<live::ObjectPtr>::iterator it = a->mConnections.begin(); it != a->mConnections.end(); ++it) {
-                    if((*it).data() == b)
-                        a->mConnections.erase(it);
-                }
-                for (std::set<live::ObjectPtr>::iterator it = b->mInverseConnections.begin(); it != b->mInverseConnections.end(); ++it) {
-                    if ((*it).data()==a) {
-                        b->mInverseConnections.erase(it);
-                    }
-                }
+void live::Object::midiDisconnect(const live::ObjectPtr &bl) {
+    live::Object* a=const_cast<live::Object*>(this);
+    live::Object* b=const_cast<live::Object*>(bl.data());
+    a->mPanic();
+    kill_kitten {
+        for (std::set<live::ObjectPtr>::iterator it = a->mConnections.begin(); it != a->mConnections.end(); ++it) {
+            if((*it).data() == b) {
+                a->mConnections.erase(it);
+                break;
+            }
+        }
+        for (std::set<live::ObjectPtr>::iterator it = b->mInverseConnections.begin(); it != b->mInverseConnections.end(); ++it) {
+            if ((*it).data()==a) {
+                b->mInverseConnections.erase(it);
+                break;
             }
         }
     }
-    live::Object::endProc();
 }
 
 void live::Object::audioConnect(const live::ObjectPtr& bl) {
@@ -297,40 +303,53 @@ void live::Object::audioConnect(const live::ObjectPtr& bl) {
         break;
     }
 
-    {
+    b->newConnection();
 
-        bool ok=1;
-        for (std::set<live::ObjectPtr>::iterator it = a->aConnections.begin(); it != a->aConnections.end(); ++it)
-            if ((*it).data()==b) ok=0;
+    kill_kitten {
+        a->aConnections.insert(b);
+        b->aInverseConnections.insert(a);
+        b->mixer_resetStatus();
+    }
 
-        if (ok) {
-            b->newConnection();
+    b->x_ptr.unlock();
+    a->x_ptr.unlock();
+}
 
-            kill_kitten {
-                a->aConnections.insert(b);
-                b->aInverseConnections.insert(a);
-                b->mixer_resetStatus();
+void live::Object::audioDisconnect(const live::ObjectPtr& bl) {
+    // We need both locks on al and bl.
+
+    live::Object* a=const_cast<live::Object*>(this);
+    live::Object* b=const_cast<live::Object*>(bl.data());
+
+    while(1) {
+        bool ok_a = b->x_ptr.tryLock();
+        if(!ok_a) continue;
+        bool ok_b = a->x_ptr.tryLock();
+        if(!ok_b) {
+            if(ok_a) b->x_ptr.unlock();
+            continue;
+        }
+        break;
+    }
+
+    kill_kitten {
+        for (std::set<live::ObjectPtr>::iterator it = a->aConnections.begin(); it != a->aConnections.end(); ++it) {
+            if ((*it).data()==b) {
+                a->aConnections.erase(it);
+                break;
             }
-        } else {
-            kill_kitten {
-                for (std::set<live::ObjectPtr>::iterator it = a->aConnections.begin(); it != a->aConnections.end(); ++it) {
-                    if ((*it).data()==b) {
-                        a->aConnections.erase(it);
-                        break;
-                    }
-                }
-                for (std::set<live::ObjectPtr>::iterator it = b->aInverseConnections.begin(); it != b->aInverseConnections.end(); ++it) {
-                    if ((*it).data()==a) {
-                        b->aInverseConnections.erase(it);
-                        break;
-                    }
-                }
+        }
+        for (std::set<live::ObjectPtr>::iterator it = b->aInverseConnections.begin(); it != b->aInverseConnections.end(); ++it) {
+            if ((*it).data()==a) {
+                b->aInverseConnections.erase(it);
+                break;
             }
-            b->mixer_resetStatus();
-
-            b->deleteConnection();
         }
     }
+    b->mixer_resetStatus();
+
+    b->deleteConnection();
+
     b->x_ptr.unlock();
     a->x_ptr.unlock();
 }
@@ -567,8 +586,12 @@ live::Connection::Connection(live::ObjectPtr ca, live::ObjectPtr cb, const Conne
 
 live::Connection::~Connection()
 {
+    if (!a||!b) {
+        qDebug() << "[DISCONNECT] Invalid connection. This is okay. Ignoring.";
+        return;
+    }
     qDebug() << "[DISCONNECT]"<<a->name() << "at" << a.data() << "->"<<b->name() << "at" << b.data() << "| type:"<<((t==0)?"Audio":(t==1?"Midi":"Hybrid"));
-    connect();
+    disconnect();
 }
 
 void live::Connection::connect()
@@ -587,5 +610,24 @@ void live::Connection::connect()
     else if(t==HybridConnection)
     {
         a->hybridConnect(b);
+    }
+}
+
+void live::Connection::disconnect()
+{
+    if (!a || !b)
+        return;
+
+    if(t==AudioConnection)
+    {
+        a->audioDisconnect(b);
+    }
+    else if(t==MidiConnection)
+    {
+        a->midiDisconnect(b);
+    }
+    else if(t==HybridConnection)
+    {
+        a->hybridDisconnect(b);
     }
 }

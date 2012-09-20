@@ -97,14 +97,13 @@ TEST(AudioSanity, NullWorks) {
     delete b;
 }
 
-
-static void connectAllTheThings() {
+static void connectAllTheThings(QList<live::Connection>&connectAllTheThingsList) {
     QList<live::ObjectPtr> ins = live::object::get(live::AudioOnly | live::InputOnly | live::NoRefresh);
     QList<live::ObjectPtr> outs = live::object::get(live::AudioOnly | live::OutputOnly | live::NoRefresh);
 
     for (int i = 0; i < ins.size(); ++i)
         for (int j = 0; j < outs.size(); ++j)
-            live::Connection(ins[i], outs[j], live::AudioConnection);
+            connectAllTheThingsList.push_back(live::Connection(ins[i], outs[j], live::AudioConnection));
 }
 
 TEST(ObjectSanity, Connect) {
@@ -117,7 +116,9 @@ TEST(ObjectSanity, Connect) {
             EXPECT_EQ((h ? outs : ins)[i]->aConnectionCount(), 0 );
         }
 
-    connectAllTheThings();
+    QList<live::Connection> l;
+
+    connectAllTheThings(l);
 
     for (int h = 0; h < 2; ++h)
         for (int i = 0; i < (h ? outs : ins).size(); ++i) {
@@ -125,7 +126,7 @@ TEST(ObjectSanity, Connect) {
             EXPECT_EQ((h ? outs : ins)[i]->aConnectionCount(), (h ? 0 : outs.count()) );
         }
 
-    connectAllTheThings();
+    l.clear();
 
     for (int h = 0; h < 2; ++h)
         for (int i = 0; i < (h ? outs : ins).size(); ++i) {
@@ -138,8 +139,10 @@ class AudioPoker : public QThread {
     int id;
 private:
     void run() {
-        for (int i = 0; i < 300; ++i) {
-             connectAllTheThings();
+        for (int i = 0; i < 150; ++i) {
+            QList<live::Connection> l;
+            connectAllTheThings(l);
+            l.clear();
         }
     }
 public:

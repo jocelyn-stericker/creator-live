@@ -169,12 +169,15 @@ public:
 private:
     /** Connect both audio and midi, creating a pipeline (Note: except for real audio outputs, objects may usually only recieve one audio connection. they must recieve this one connection to function correctly. */
     void hybridConnect(const ObjectPtr &b);
+    void hybridDisconnect(const ObjectPtr &b);
 
     /** Connect just audio, creating a pipeline (Note: except for real audio outputs, objects may usually only recieve one audio connection. they must recieve this one connection to function correctly. )*/
     void audioConnect(const ObjectPtr& b);
+    void audioDisconnect(const ObjectPtr &b);
 
     /** Connect just midi, creating a pipeline. (Note: some objects require audio for sync. midi inputs will all give ) */
     void midiConnect(const ObjectPtr &b);
+    void midiDisconnect(const ObjectPtr &b);
 
 public:
 
@@ -509,6 +512,7 @@ private:
     }
 
     void connect();
+    void disconnect();
 };
 
 enum StoreFlags {
