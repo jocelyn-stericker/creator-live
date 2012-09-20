@@ -112,7 +112,7 @@ LIBLIVECORESHARED_EXPORT void live::Object::beginAsyncAction() {
 #endif
 }
 
-LIBLIVECORESHARED_EXPORT void live::Object::endProc(bool /*oversized*/) {
+LIBLIVECORESHARED_EXPORT void live::Object::endProc(bool starting) {
     TheMutex::me->LOCK.unlock();
 
     if (ss_XRUN) {
@@ -124,7 +124,7 @@ LIBLIVECORESHARED_EXPORT void live::Object::endProc(bool /*oversized*/) {
         timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
         quint32 l = ts.tv_sec * 1000000000 + ts.tv_nsec;
-        if (l - s_asyncTime.back() > 1000000) {
+        if (l - s_asyncTime.back() > 1000000 && !starting) {
             qCritical() << "THREADING ERROR: Audio thread killed" << (l - s_asyncTime.back()) << "kittens. The culprit has yet to be caught.\n";
 //            if (live::audio::strictInnocentXruns) TCRASH();
         }
@@ -581,16 +581,12 @@ live::Connection::Connection(live::ObjectPtr ca, live::ObjectPtr cb, const Conne
   , b(cb)
   , t(ct)
   { connect();
-    qDebug() << "[CONNECT]"<<a->name() << "at" << a.data()<< "->"<<b->name() << "at" << b.data() << "| type:"<<((t==0)?"Audio":(t==1?"Midi":"Hybrid"));
 }
 
 live::Connection::~Connection()
 {
-    if (!a||!b) {
-        qDebug() << "[DISCONNECT] Invalid connection. This is okay. Ignoring.";
+    if (!a||!b)
         return;
-    }
-    qDebug() << "[DISCONNECT]"<<a->name() << "at" << a.data() << "->"<<b->name() << "at" << b.data() << "| type:"<<((t==0)?"Audio":(t==1?"Midi":"Hybrid"));
     disconnect();
 }
 

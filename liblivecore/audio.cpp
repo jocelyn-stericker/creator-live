@@ -121,7 +121,6 @@ void AudioIn::init() {
             QString name=this->name();
             name.replace(' ','_');
             ++lastDeviceInternalID;
-            qDebug() << s_name << "is connected to" << s_realnames[i];
             s_port_.push_back(SecretAudio::singleton->getInputPort());
             jackConnectPorts( s_realnames[i],SecretAudio::singleton->getInputPortId(), 0 );
         }
@@ -146,8 +145,6 @@ void AudioOut::init() {
             s_port_[i].push_back(SecretAudio::singleton->getOutputPort());
 
             QString id = SecretAudio::singleton->getOutputPortId();
-            qDebug() << "I am" << s_name;
-            qDebug() << id << "is" << s_realnames[i];
             jackConnectPorts(id , s_realnames[i], 0 );
         }
     }
@@ -391,8 +388,8 @@ void SecretAudio::process() {
 
 #endif
 
-    live::Object::beginProc();
     float* buffer = new float[ nframes ]; //{
+    live::Object::beginProc();
     foreach( AudioNull* i, nulls ) {
         for ( int j = 0; j < i->chans; j++ ) {
             for (unsigned k=0; k<nframes; k++) {
@@ -411,8 +408,8 @@ void SecretAudio::process() {
             }
         }
     }
-    delete[] buffer;                      //}
     live::Object::endProc();
+    delete[] buffer;                      //}
 
     if (live::song::current()&&live::song::current()->metronome) {
 //#ifdef __linux
