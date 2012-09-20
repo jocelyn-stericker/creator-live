@@ -13,20 +13,19 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 using namespace live;
 //using namespace live_widgets;
 
-SequencerApp::SequencerApp(QString name,MidiTrack*cmidiTrack,AudioTrack*caudioTrack,bool newId) :
-    Object(name,false,false,2),
-    s_midiTrack(cmidiTrack),
-    s_audioTrack(caudioTrack),
-    s_cheat(0),
-    b_clipped(0),
-    s_id(newId?SequencerSys::newIdForTrack():-1),
-    s_audioOverdubForced(0),
-    s_scale(2646000)
+SequencerApp::SequencerApp(QString name,MidiTrack*cmidiTrack,AudioTrack*caudioTrack,bool newId)
+  : Object(name,false,false,2)
+  , s_midiTrack(cmidiTrack)
+  , s_midiTrackConnection(cmidiTrack,this, live::HybridConnection)
+  , s_audioTrack(caudioTrack)
+  , s_audioTrackConnection(caudioTrack,this, live::HybridConnection)
+  , s_cheat(0)
+  , b_clipped(0)
+  , s_id(newId?SequencerSys::newIdForTrack():-1)
+  , s_audioOverdubForced(0)
+  , s_scale(2646000)
 {
     Q_ASSERT(name=="SEQUENCER"||name=="LOOPER");    //awkward inheritance
-    s_midiTrack->hybridConnect(this);
-
-    s_audioTrack->hybridConnect(this);
 }
 
 

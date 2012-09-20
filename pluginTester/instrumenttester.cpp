@@ -58,10 +58,14 @@ void InstrumentTester::setupAction(bool a)
 void InstrumentTester::changeInst(ObjectPtr inst, ObjectPtr loop)
 {
     qDebug() << "CHANGE_INST";
-    if(s_in.valid()&&s_instObj.valid()) s_in->midiConnect(s_instObj);
-    if(s_instObj.valid()&&s_out.valid()) s_instObj->hybridConnect(s_out);
+    for (int i = 0; i < s_connections.size(); ++i) {
+        if (s_connections[i].a==s_in && s_connections[i].b == s_instObj)
+            s_connections.removeAt(i--);
+        if (s_connections[i].a==s_instObj && s_connections[i].b == s_out)
+            s_connections.removeAt(i--);
+    }
     s_instObj=inst;
     s_out=loop;
-    if(s_in.valid()&&s_instObj.valid()) s_in->midiConnect(s_instObj);
-    if(s_instObj.valid()&&s_out.valid()) s_instObj->hybridConnect(s_out);
+    if(s_in.valid()&&s_instObj.valid()) s_connections.push_back(Connection(s_in,s_instObj,live::MidiConnection));
+    if(s_instObj.valid()&&s_out.valid()) s_connections.push_back(Connection(s_instObj, s_out,live::HybridConnection));
 }

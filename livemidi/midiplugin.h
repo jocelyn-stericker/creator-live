@@ -21,6 +21,7 @@ class MidiPluginObject : public live::Object
 {
     live::ObjectPtr s_in;
     live::ObjectPtr s_out;
+    live::Connection s_connection;
 public:
     LIVE_HYBRID
     LIVE_EFFECT
@@ -29,7 +30,8 @@ public:
       : live::Object(in.valid() ? "" : in->name(), false, false, 2)
       , s_in(in)
       , s_out(out)
-      { out->audioConnect(this);
+      , s_connection(out, this, live::AudioConnection)
+      {
     }
 
     void aIn(const float* data, int chan, live::ObjectChain* p) {

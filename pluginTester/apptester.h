@@ -23,6 +23,7 @@ class AppTester : public QWidget
     Q_OBJECT
     
     live::ObjectPtr s_app, s_in, s_out;
+    QList<live::Connection> s_connections;
     live_widgets::AppFrame* s_frame;
 public:
     explicit AppTester(live::AppInterface*a,QWidget *parent = 0);

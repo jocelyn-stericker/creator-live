@@ -19,47 +19,6 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 namespace live {
 
-class Connection
-{
-    live::ObjectPtr a, b;
-public:
-    enum Type {
-        Audio=0,
-        Midi=1,
-        Hybrid=2
-    } t;
-
-    Connection(live::ObjectPtr ca,live::ObjectPtr cb,const Connection::Type& ct)
-      : a(ca)
-      , b(cb)
-      , t(ct)
-      { connect();
-        qDebug() << "[CONNECT]"<<a->name() << "->"<<b->name() << "| type:"<<((t==0)?"Audio":(t==1?"Midi":"Hybrid"));
-    }
-
-    ~Connection()
-    {
-        qDebug() << "[DISCONNECT]"<<a->name() << "->"<<b->name() << "| type:"<<((t==0)?"Audio":(t==1?"Midi":"Hybrid"));
-        connect();
-    }
-private:
-    void connect()
-    {
-        if(t==Audio)
-        {
-            a->audioConnect(b);
-        }
-        else if(t==Midi)
-        {
-            a->midiConnect(b);
-        }
-        else if(t==Hybrid)
-        {
-            a->hybridConnect(b);
-        }
-    }
-};
-
 class Ambition
 {
     live::ObjectPtr s_input;          /*003*/
@@ -159,12 +118,12 @@ public:
                     for(int i=0;i<s_chain.size();i++) {
                         if(stage==0&&!s_chain[i]->isMidiObject()) {
                             qDebug() << "Stage 0";
-                            s_connections.push_back(new Connection(prev,s_output,Connection::Midi));
-                            s_connections.push_back(new Connection(s_output,s_chain[i],Connection::Audio));
+                            s_connections.push_back(new Connection(prev,s_output,MidiConnection));
+                            s_connections.push_back(new Connection(s_output,s_chain[i],AudioConnection));
 
                             s_chain[i]->s_aOn=1;
                             if(s_chain[i]->isMidiObject()) {
-                                s_connections.push_back(new Connection(prev,s_chain[i],Connection::Midi));
+                                s_connections.push_back(new Connection(prev,s_chain[i],MidiConnection));
                                 s_chain[i]->s_mOn=1;
                                 stage=1;
                             } else {
@@ -173,7 +132,7 @@ public:
                             }
                         } else if(stage==1&&!s_chain[i]->isMidiObject()) {
                             qDebug() << "Stage 1";
-                            s_connections.push_back(new Connection(prev,s_chain[i],Connection::Audio));
+                            s_connections.push_back(new Connection(prev,s_chain[i],AudioConnection));
                             s_chain[i]->s_aOn=1;
                             s_chain[i]->s_mOn=0;
 
@@ -191,11 +150,11 @@ public:
                             if(stage==0||stage==1) {
                                 s_chain[i]->s_aOn=0;
                                 s_chain[i]->s_mOn=1;
-                                s_connections.push_back(new Connection(prev,s_chain[i],Connection::Midi));
+                                s_connections.push_back(new Connection(prev,s_chain[i],MidiConnection));
                             } else s_chain[i]->s_mOn=0;
 
                             if(stage==1||stage==2) {
-                                s_connections.push_back(new Connection(prev,s_chain[i],Connection::Audio));
+                                s_connections.push_back(new Connection(prev,s_chain[i],AudioConnection));
                                 s_chain[i]->s_mOn=0;
                                 s_chain[i]->s_aOn=1;
                             } else s_chain[i]->s_aOn=0;
@@ -203,10 +162,10 @@ public:
                         prev=s_chain[i];
                     }
                     if(stage==0) {
-                        s_connections.push_back(new Connection(prev,s_output,Connection::Midi));
-                        s_connections.push_back(new Connection(s_output,s_loopbackOut,Connection::Audio));
+                        s_connections.push_back(new Connection(prev,s_output,MidiConnection));
+                        s_connections.push_back(new Connection(s_output,s_loopbackOut,AudioConnection));
                     } else {
-                        s_connections.push_back(new Connection(prev,s_loopbackOut,Connection::Audio));
+                        s_connections.push_back(new Connection(prev,s_loopbackOut,AudioConnection));
                     }
 
                     Q_ASSERT(ok);
@@ -224,14 +183,14 @@ public:
                     live::ObjectPtr mprev=s_input;
                     for(int i=0;i<s_chain.size();i++)
                     {
-                        s_connections.push_back(new Connection(mprev,s_chain[i],Connection::Hybrid));
+                        s_connections.push_back(new Connection(mprev,s_chain[i],HybridConnection));
                         mprev=s_chain[i];
                     }
                     if(!s_loopbackOut.valid()) {
-                        s_connections.push_back(new Connection(mprev,s_output,Connection::Hybrid));
+                        s_connections.push_back(new Connection(mprev,s_output,HybridConnection));
                     } else {
-                        s_connections.push_back(new Connection(mprev,s_output,Connection::Midi));
-                        s_connections.push_back(new Connection(s_output,s_loopbackOut,Connection::Audio));
+                        s_connections.push_back(new Connection(mprev,s_output,MidiConnection));
+                        s_connections.push_back(new Connection(s_output,s_loopbackOut,AudioConnection));
                     }
                     return 1;
                 }
@@ -245,18 +204,18 @@ public:
                 if(ok) {
                     live::ObjectPtr aprev=s_input;
                     if(s_loopbackOut.valid()&&s_loopbackOut->isAudioObject()) {
-                        s_connections.push_back(new Connection(aprev,s_output,Connection::Audio));
+                        s_connections.push_back(new Connection(aprev,s_output,AudioConnection));
                         aprev=s_output;
                     }
                     for(int i=0;i<s_chain.size();i++)
                     {
-                        s_connections.push_back(new Connection(aprev,s_chain[i],Connection::Audio));
+                        s_connections.push_back(new Connection(aprev,s_chain[i],AudioConnection));
                         aprev=s_chain[i];
                     }
                     if(!s_loopbackOut.valid()) {
-                        s_connections.push_back(new Connection(aprev,s_output,Connection::Hybrid));
+                        s_connections.push_back(new Connection(aprev,s_output,HybridConnection));
                     } else {
-                        s_connections.push_back(new Connection(aprev,s_loopbackOut,Connection::Audio));
+                        s_connections.push_back(new Connection(aprev,s_loopbackOut,AudioConnection));
                     }
                     return 1;
                 }

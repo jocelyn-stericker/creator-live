@@ -21,6 +21,7 @@ class Soundfont : public QObject, public live::Object
     fluid_settings_t* s_settings;
     fluid_synth_t* s_synth;
     float* s_cache[2];
+    live::Connection s_connection;
 public:
     LIVE_HYBRID
     LIVE_EFFECT

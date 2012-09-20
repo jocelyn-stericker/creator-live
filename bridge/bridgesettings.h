@@ -30,6 +30,7 @@ class BridgeSettings : public QWidget, public live::Object
     QList<live::ObjectPtr> s_in;
     QList<live::ObjectPtr> s_out;
     QList<QTcpSocket*> s_sockets;
+    QList<live::Connection> s_connections;
 
 public:
     explicit BridgeSettings(QWidget *parent = 0);

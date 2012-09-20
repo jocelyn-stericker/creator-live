@@ -377,6 +377,7 @@ MidiIn::MidiIn(QString ccname,int devId)
   , valid(1)
   , deviceId(devId)
   , s_null(live::audio::null(2))
+  , s_connection(s_null, this, live::HybridConnection)
   { setTemporary(0);
 
     live::ObjectPtr*x=new live::ObjectPtr[200];
@@ -384,8 +385,6 @@ MidiIn::MidiIn(QString ccname,int devId)
         x[i]=0;
     }
     live::MidiBinding::customKey->insert(this,x);
-
-    s_null->hybridConnect(this);
 }
 
 MidiNull::MidiNull() :

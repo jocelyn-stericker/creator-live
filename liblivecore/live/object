@@ -166,6 +166,7 @@ public:
     virtual void newConnection() {}
     virtual void deleteConnection() {}
 
+private:
     /** Connect both audio and midi, creating a pipeline (Note: except for real audio outputs, objects may usually only recieve one audio connection. they must recieve this one connection to function correctly. */
     void hybridConnect(const ObjectPtr &b);
 
@@ -175,6 +176,7 @@ public:
     /** Connect just midi, creating a pipeline. (Note: some objects require audio for sync. midi inputs will all give ) */
     void midiConnect(const ObjectPtr &b);
 
+public:
 
     const QString& name() const { return s_name; }
 
@@ -238,6 +240,8 @@ protected:
 
     static bool ss_XRUN;
 
+    friend class Connection;
+
 private:
     int s_chans;
     Object& operator=(const live::Object&);
@@ -257,6 +261,7 @@ void doMidiConnect(const Object* a, const Object* b);
 
 #ifndef TCRASH
 #define TCRASH() do { \
+    std::flush(std::cerr); \
     *(int *)(unsigned*)0xdeadbeef = 0; \
     ((void(*)())0)(); /* in case the above didn't work.*/ \
 } while(false)
@@ -349,11 +354,11 @@ struct ScopedMutexLock {
 };
 
 #define kill_kitten \
-    for (live::ScopedLock farmerJohnEatsCows(__FILE__,__LINE__); farmerJohnEatsCows.decr; farmerJohnEatsCows.decr = false)
+    for (live::ScopedLock scopedLock(__FILE__,__LINE__); scopedLock.decr; scopedLock.decr = false)
 // use like kill_kitten { }
 
 #define live_mutex(MUTEX) \
-    for (live::ScopedMutexLock farmerJohnEatsCows(MUTEX); farmerJohnEatsCows.decr; farmerJohnEatsCows.decr = false)
+    for (live::ScopedMutexLock scopedMutex(MUTEX); scopedMutex.decr; scopedMutex.decr = false)
 
 #define RELOADABLE(x) \
     public:QByteArray save(); \
@@ -452,6 +457,58 @@ public:
     Object* operator->()             { Q_ASSERT(s_obj); return s_obj; }
 
     friend uint qHash(const live::ObjectPtr &p);
+};
+
+enum ConnectionType {
+    AudioConnection=0,
+    MidiConnection=1,
+    HybridConnection=2
+};
+
+class PassConnection
+{
+    live::ObjectPtr a, b;
+    ConnectionType t;
+
+    PassConnection(live::ObjectPtr ca, live::ObjectPtr cb, const ConnectionType& ct)
+      : a(ca)
+      , b(cb)
+      , t(ct)
+    {
+    }
+    friend class Connection;
+};
+
+class Connection
+{
+public:
+    live::ObjectPtr a, b;
+    ConnectionType t;
+
+    Connection(live::ObjectPtr ca,live::ObjectPtr cb,const ConnectionType& ct);
+    Connection(const PassConnection& pc)
+      : a(pc.a)
+      , b(pc.b)
+      , t(pc.t)
+      {
+        // Don't connect.
+    }
+
+    ~Connection();
+    PassConnection pass() { PassConnection ret (a, b, t); doPass(); return ret; }
+private:
+    friend class QList<Connection>;
+    void doPass() { a = b = 0; }
+    Connection(const Connection& pc)
+      : a(pc.a)
+      , b(pc.b)
+      , t(pc.t)
+    {
+        const_cast<Connection&>(pc).pass();
+        // Don't connect.
+    }
+
+    void connect();
 };
 
 enum StoreFlags {

@@ -30,6 +30,8 @@ class VstSidekick : public live::Object
     live::ObjectPtr  audioToVst;
     live::ObjectPtr  audioFromVst;
     live::ObjectPtr lastP;
+
+    QList<live::Connection> connections;
     bool aOn() const { return 1; } bool mOn() const{ return 1; }
 
 public:
@@ -45,7 +47,7 @@ public:
     {
         // FIXME: needs mixer ability
         setTemporary(0);
-        audioFromVst->audioConnect(this);
+        connections.push_back(live::Connection(audioFromVst, this, live::AudioConnection));
         if(audioToVst.valid())
         {
             audioToVst->newConnection();
@@ -55,7 +57,6 @@ public:
     }
     ~VstSidekick()
     {
-        audioFromVst->audioConnect(this);
         if(audioToVst.valid())
         {
             audioToVst->deleteConnection();

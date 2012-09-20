@@ -139,6 +139,7 @@ public:
     bool pending;
     int lastEventTime;
     bool controller;    //add this plz
+    QList<live::Connection> s_connections;
 
     MidiBinding(void* cGuiObject,GuiType cparentType,BindingType ctype,QString cdata=QString(),int ckey=-1,ObjectPtr cobj=0,bool ccontroller=0)
       : Object("MIDI Binding",false,false,2)
@@ -151,11 +152,12 @@ public:
       , pending(false)
       , lastEventTime(-1)
       , controller(ccontroller)
+      , s_connections()
       { pending = (ckey == -1);
         QList<ObjectPtr> midiIn=object::get(live::MidiOnly|live::InputOnly|live::NoRefresh);
         for(int i=0;i<midiIn;i++)
         {
-            midiIn[i]->hybridConnect(this);
+            s_connections.push_back(live::Connection(midiIn[i], this, live::HybridConnection).pass());
         }
     }
 

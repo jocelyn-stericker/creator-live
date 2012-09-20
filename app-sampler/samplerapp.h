@@ -19,6 +19,7 @@ class SamplerApp : public QObject, public live::Object
     static int s_lastId;
     live::MidiTrack* s_midiTracks[16];            /*003*/
     live::AudioTrack* s_audioTracks[16];          /*004*/
+    QList<live::Connection> s_connections;
     QMap<live::ObjectPtr,int*> s_customBindings;  /*008*/
     int s_bindingMode;
     bool s_record;                          /*006*/

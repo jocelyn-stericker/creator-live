@@ -29,6 +29,7 @@ public:
     LIVE_HYBRID
     LIVE_EFFECT
     Vst& me;
+    QList<live::Connection> connections;
     QString _vst;
     live::ObjectPtr midiOut;
     live::ObjectPtr audioFromVst;
@@ -185,7 +186,7 @@ public:
                             return;
                         }
                     }
-                    this->hybridConnect(&me);
+                    connections.push_back(live::Connection(this,&me,live::HybridConnection));
                     addSidekicks(sidekicks_to, sidekicks_from);
                     _ok=1;
                     break;

@@ -32,6 +32,7 @@ protected:
     int vstId;         /*003*/
     float* buffer[32];  /*N/A*/
     float* incache[2];  /*N/A*/
+    QList<live::Connection> connections;
 public:
     VstR* rep;          /*N/A*/
     bool mOn() const{ return 1; }

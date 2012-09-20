@@ -25,6 +25,7 @@ class SamplerDJ : public QObject, public live::Object
     bool s_play;                            /*^^^*/
     bool s_multi;                           /*007*/
     int s_id;                               /*005*/
+    QList<live::Connection> s_connections;
 public:
     LIVE_HYBRID
     LIVE_EFFECT

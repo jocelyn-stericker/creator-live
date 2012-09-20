@@ -19,6 +19,7 @@ Soundfont::Soundfont(QString url)
   , s_settings(new_fluid_settings())
   , s_synth(0)
   , s_cache()
+  , s_connection(live::audio::null(2), this, live::AudioConnection)
   { qDebug() << "Hi..." << url;
 
     for(int i=0;i<2;i++)
@@ -27,8 +28,6 @@ Soundfont::Soundfont(QString url)
     fluid_settings_setnum(s_settings,"synth.gain",3.0);
     s_synth = new_fluid_synth(s_settings);
     fluid_synth_sfload(s_synth,url.toAscii(),1);
-
-    live::audio::null(2)->audioConnect(this);
 }
 
 void Soundfont::mIn(const live::Event* data, live::ObjectChain *p) {

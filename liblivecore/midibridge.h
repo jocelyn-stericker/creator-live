@@ -117,6 +117,7 @@ class BridgeClient : public QObject {
     QTcpSocket* s_sock;
     QList<BridgeMidiIn*> s_ins;
     QList<BridgeMidiOut*> s_outs;
+    QList<live::Connection> s_connections;
 public:
     BridgeClient()
       : s_sock()
@@ -202,8 +203,7 @@ public slots:
             for (int j=0;j<s_outs.size();j++)
             {
                 if (i!=1||j!=1) continue;
-                qDebug() << "Connect"<<s_ins[i]->name() << "to"<<s_outs[j]->name();
-                s_ins[i]->midiConnect(s_outs[j]);
+                s_connections.push_back(live::Connection(s_ins[i], s_outs[i], live::MidiConnection));
             }
         }
 

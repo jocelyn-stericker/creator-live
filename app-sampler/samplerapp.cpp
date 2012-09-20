@@ -37,7 +37,7 @@ SamplerApp::SamplerApp(MidiTrack**cmidiTracks,AudioTrack**caudioTracks,bool newI
             s_midiTracks[i]->stopMute();
         }
         s_midiTracks[i]->_setThru(0);
-        s_midiTracks[i]->hybridConnect(this);
+        s_connections.push_back(Connection(s_midiTracks[i],this,HybridConnection));
 
         s_audioTracks[i]=(caudioTracks&&caudioTracks[i])?caudioTracks[i]:new AudioTrack(2);
         if (s_audioTracks[i]->isPlay())

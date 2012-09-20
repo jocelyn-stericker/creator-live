@@ -7,7 +7,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#include "live/object"
+#include <live/object>
 
 #ifndef MAPPING_H
 #define MAPPING_H
@@ -15,11 +15,12 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 namespace live {
 
 /**
- * A mapping is an interface to an object, just with a different name.
+ * A mapping is another name for the same object
  */
 class LIBLIVECORESHARED_EXPORT Mapping : public live::Object
 {
     ObjectPtr s_other;
+    live::Connection s_connection;
 public:
     /**
      * Create a Object which is just another name for a different object.

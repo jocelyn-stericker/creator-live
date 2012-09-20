@@ -23,6 +23,7 @@ class InstrumentTester : public QWidget
     live::InstrumentInterface* s_inst;
     live::ObjectPtr s_in, s_instObj, s_out;
     QWidget* s_sett;
+    QList<live::Connection> s_connections;
 
 public:
     explicit InstrumentTester(live::ObjectPtr in,live::InstrumentInterface* inst,QWidget *parent = 0);

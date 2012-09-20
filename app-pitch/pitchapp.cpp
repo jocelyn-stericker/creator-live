@@ -15,18 +15,17 @@ using namespace live;
 
 int PitchApp::s_lastId=-1;
 
-PitchApp::PitchApp() :
-    Object("PITCH", 0, 0, 2),
-    s_audioR(new PitchAppAudioR),
-    s_stShift(0),
-    s_id(++s_lastId)
+PitchApp::PitchApp()
+  : Object("PITCH", 0, 0, 2)
+  , s_audioR(new PitchAppAudioR)
+  , s_connections(s_audioR, this, live::HybridConnection)
+  , s_stShift(0)
+  , s_id(++s_lastId)
 {
-    s_audioR->hybridConnect(this);
 }
 
 PitchApp::~PitchApp()
 {
-    s_audioR->hybridConnect(this);
     delete s_audioR;
 }
 

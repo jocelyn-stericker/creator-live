@@ -30,7 +30,7 @@ QStringList Vst::getVstPaths()
 void Vst::init()
 {
     rep = new VstR(this,this->filename);
-    rep->audioFromVst->hybridConnect(rep);   //subtle
+    connections.push_back(live::Connection(rep->audioFromVst,rep,live::HybridConnection));
     if (!rep->audioFromVst)
     {
         return;

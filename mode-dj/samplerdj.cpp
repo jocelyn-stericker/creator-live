@@ -37,7 +37,7 @@ SamplerDJ::SamplerDJ(MidiTrack**cmidiTracks,AudioTrack**caudioTracks,bool newId)
             s_midiTracks[i]->stopMute();
         }
         s_midiTracks[i]->_setThru(0);
-        s_midiTracks[i]->hybridConnect(this);
+        s_connections.push_back(live::Connection(s_midiTracks[i],this,live::HybridConnection));
 
         s_audioTracks[i]=(caudioTracks&&caudioTracks[i])?caudioTracks[i]:new AudioTrack(2);
         if (s_audioTracks[i]->isPlay())

@@ -8,7 +8,12 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 *******************************************************/
 
 #include <live/mapping>
-live::Mapping::Mapping(QString cname,live::ObjectPtr other) : live::Object(cname,false,false, 2),s_other(other) { other->hybridConnect(this); }
+live::Mapping::Mapping(QString cname,live::ObjectPtr other)
+  : live::Object(cname,false,false, 2)
+  , s_other(other)
+  , s_connection(other, this, live::HybridConnection)
+  {
+}
 
 void live::Mapping::aIn (const float*data,int chan,live::Object*p) { if (p==s_other.data()) aOut(data,chan,p); else s_other->aIn(data,chan, p); }
 bool live::Mapping::isAudioObject() const { return s_other->isAudioObject(); }

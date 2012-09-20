@@ -48,10 +48,16 @@ AppTester::AppTester(live::AppInterface *a, QWidget *parent) :
 
 void AppTester::settingsChangedEvent()
 {
-    if(s_in.valid()&&s_out.valid()) { s_in->hybridConnect(s_app); s_app->hybridConnect(s_out); }
+    for (int i = 0; i < s_connections.size(); ++i) {
+        if (s_connections[i].a == s_in && s_connections[i].b == s_app)
+            s_connections.removeAt(i--);
+        if (s_connections[i].a == s_app && s_connections[i].b == s_out)
+            s_connections.removeAt(i--);
+    }
     s_in=object::request(ui->comboBox_input->currentText(),InputOnly|NoRefresh);
     s_out=object::request(ui->comboBox_output->currentText(),OutputOnly|NoRefresh);
-    s_in->hybridConnect(s_app); s_app->hybridConnect(s_out);
+    s_connections.push_back(Connection(s_in, s_app, live::HybridConnection));
+    s_connections.push_back(Connection(s_app, s_out, live::HybridConnection));
 }
 
 AppTester::~AppTester()

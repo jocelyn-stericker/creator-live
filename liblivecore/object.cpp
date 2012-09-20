@@ -93,22 +93,22 @@ static QMutex x_mixers(QMutex::Recursive);
 LIBLIVECORESHARED_EXPORT void live::Object::beginProc() {
     TheMutex::me->LOCK.lock();
 #if !defined(NDEBUG) && defined(__linux__)
-//    live_mutex(x_asyncTime) {
+    live_mutex(x_asyncTime) {
         timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
         s_asyncTime.push_back(ts.tv_sec * 1000000000 + ts.tv_nsec);
-//    }
+    }
 #endif
 }
 
 LIBLIVECORESHARED_EXPORT void live::Object::beginAsyncAction() {
     TheMutex::me->LOCK.lock();
 #if !defined(NDEBUG) && defined(__linux__)
-//    live_mutex(x_asyncTime) {
+    live_mutex(x_asyncTime) {
         timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
         s_asyncTime.push_back(ts.tv_sec * 1000000000 + ts.tv_nsec);
-//    }
+    }
 #endif
 }
 
@@ -120,7 +120,7 @@ LIBLIVECORESHARED_EXPORT void live::Object::endProc(bool /*oversized*/) {
         ss_XRUN = false;
     }
 #if !defined(NDEBUG) && defined(__linux__)
-//    live_mutex(x_asyncTime) {
+    live_mutex(x_asyncTime) {
         timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
         quint32 l = ts.tv_sec * 1000000000 + ts.tv_nsec;
@@ -129,7 +129,7 @@ LIBLIVECORESHARED_EXPORT void live::Object::endProc(bool /*oversized*/) {
 //            if (live::audio::strictInnocentXruns) TCRASH();
         }
         s_asyncTime.pop_back();
-//    }
+    }
 #endif
 }
 
@@ -137,7 +137,7 @@ LIBLIVECORESHARED_EXPORT void live::Object::endAsyncAction(const char* file, int
     TheMutex::me->LOCK.unlock();
 
 #if !defined(NDEBUG) && defined(__linux__)
-//    live_mutex(x_asyncTime) {
+    live_mutex(x_asyncTime) {
         timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
         quint32 l = ts.tv_sec * 1000000000 + ts.tv_nsec;
@@ -147,7 +147,7 @@ LIBLIVECORESHARED_EXPORT void live::Object::endAsyncAction(const char* file, int
                 TCRASH();
         }
         s_asyncTime.pop_back();
-//    }
+    }
 #endif
 
     if (ss_XRUN) {
@@ -381,10 +381,10 @@ public:
 };
 
 void live::Object::mixer_resetStatus() {
-    live_mutex(x_mixers) {
+//    live_mutex(x_mixers) {
         for (int i = 0; i < s_chans; ++i)
             mixer_at[i] = 0;
-    }
+//    }
 }
 
 void live::Object::mixer_process(const float* data, int chan) {
@@ -555,4 +555,37 @@ void live::ObjectPtr::detach() {
 
 bool live::ObjectPtr::valid() const {
     return s_obj?(!dynamic_cast<live_private::MidiNull*>(s_obj)):((bool)s_obj);
+}
+
+live::Connection::Connection(live::ObjectPtr ca, live::ObjectPtr cb, const ConnectionType &ct)
+  : a(ca)
+  , b(cb)
+  , t(ct)
+  { connect();
+    qDebug() << "[CONNECT]"<<a->name() << "at" << a.data()<< "->"<<b->name() << "at" << b.data() << "| type:"<<((t==0)?"Audio":(t==1?"Midi":"Hybrid"));
+}
+
+live::Connection::~Connection()
+{
+    qDebug() << "[DISCONNECT]"<<a->name() << "at" << a.data() << "->"<<b->name() << "at" << b.data() << "| type:"<<((t==0)?"Audio":(t==1?"Midi":"Hybrid"));
+    connect();
+}
+
+void live::Connection::connect()
+{
+    if (!a || !b)
+        return;
+
+    if(t==AudioConnection)
+    {
+        a->audioConnect(b);
+    }
+    else if(t==MidiConnection)
+    {
+        a->midiConnect(b);
+    }
+    else if(t==HybridConnection)
+    {
+        a->hybridConnect(b);
+    }
 }

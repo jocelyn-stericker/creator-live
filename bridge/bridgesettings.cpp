@@ -111,7 +111,7 @@ void BridgeSettings::startTalking()
         s_in=live::object::get(live::MidiOnly|live::InputOnly);
         for (int i=0;i<s_in.size();i++) {
             if (!s_in[i]) continue;
-            s_in[i]->midiConnect(this);
+            s_connections.push_back(live::Connection(s_in[i], this, live::MidiConnection));
         }
     }
     QByteArray data;

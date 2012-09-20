@@ -18,6 +18,7 @@ class PitchApp : public QObject, public live::Object
 {
     Q_OBJECT
     PitchAppAudioR* s_audioR;
+    live::Connection s_connections;
 public:
     LIVE_HYBRID
     LIVE_EFFECT

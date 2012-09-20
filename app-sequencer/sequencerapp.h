@@ -22,7 +22,9 @@ public:
     LIVE_HYBRID
     LIVE_EFFECT
     live::MidiTrack* s_midiTrack;                 /*003*/
+    live::Connection s_midiTrackConnection;
     live::AudioTrack* s_audioTrack;               /*004*/
+    live::Connection s_audioTrackConnection;
     LooperApp* s_cheat;                     /*N/A*/
     live::Bound<bool> b_clipped;                  /*005*/
     int s_id;                               /*006*/ /*007 in looper*/
