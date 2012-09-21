@@ -72,6 +72,30 @@ public:
     float pos() const;
     float length() const;
 
+    void newGraph(long size) {
+        for (int i = 0; i < s_chans; ++i) {
+            s_container[i]->newGraph(size);
+            s_container[i]->pointGraph(s_curPos);
+        }
+    }
+
+    void deleteGraph(long size) {
+        for (int i = 0; i < s_chans; ++i)
+            s_container[i]->deleteGraph(size);
+    }
+
+    AudioGraph* currentGraph(long frames, int chan) {
+        if (chan < s_chans && chan > -1)
+            return s_container[chan]->currentGraph(frames);
+        return 0;
+    }
+
+    AudioGraph* graphForPos(long frames, int chan, long pos) {
+        if (chan < s_chans && chan > -1)
+            return s_container[chan]->graphForPos(frames, pos);
+        return 0;
+    }
+
 private:
     class AudioDataDestroyer {
 

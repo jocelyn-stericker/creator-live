@@ -33,6 +33,7 @@ public slots:
     void mouseMoveEvent( QMouseEvent* );
     void wheelEvent(QWheelEvent *);
     void keyPressEvent(QKeyEvent *);
+    void resizeEvent(QResizeEvent *);
     void setScroll(const int& scroll) { s_initial=scroll; updateAudioData(); }
     const int& getScroll() const { return s_initial; }
     void incrScroll();
@@ -50,6 +51,7 @@ private:
     int s_scale;
 //Audio
     live::AudioTrack* audioTrack;
+    int oldBoxWidth;
     QPixmap* audioOriginal[2];
     int audioEstart;
     int simpleCounter;

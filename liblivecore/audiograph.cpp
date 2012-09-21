@@ -17,14 +17,16 @@ namespace live {
 AudioGraph::AudioGraph(live::AudioSecond* second, long boxSize)
   : m_second(second)
   , m_boxSize(boxSize)
-  , m_boxCount(live::audio::sampleRate() / boxSize)
+  , m_boxCount(live::audio::sampleRate() / boxSize + ((live::audio::sampleRate() % boxSize) ? 1 : 0))
+  , m_dropout(live::audio::sampleRate() % boxSize)
   , m_mins(new float[m_boxCount])
   , m_maxs(new float[m_boxCount])
   , m_box(0)
   , m_pos(0)
   , m_refCount(1)
-  { for (int i = 0; i < m_boxCount; ++i)
-        m_mins[i] = m_maxs[i] = 0.0f;
+  { for (int i = 0; i < m_boxCount; ++i) {
+        m_mins[i] = 0.0f; m_maxs[i] = -0.0f;
+  }
 }
 
 void AudioGraph::setPos(long pos) {
@@ -34,26 +36,34 @@ void AudioGraph::setPos(long pos) {
         return;
     }
     m_box = pos / m_boxSize;
-    m_pos = 0;
     resetBox(m_box);
     append(pos % m_boxSize);
-    m_pos = pos % m_boxSize;
+//    Q_ASSERT(m_pos == pos % m_boxSize);
 }
 
 void AudioGraph::append(int length) {
-    float* data = &(*m_second)[m_box*m_boxSize + m_pos];
+    Q_ASSERT(m_pos >= 0);
+    if (!length) return;
+    float* data = &m_second->s_data[m_box*m_boxSize + m_pos];
     float* MIN = &m_mins[m_box];
     float* MAX = &m_maxs[m_box];
     while(1) {
-        for (int i = m_pos; i < m_boxSize; ++i) {
-            *m_mins = qMin(*data, *m_mins);
-            *m_maxs = qMax(*data, *m_maxs);
-            if (!--length) return;
+        for (; m_pos < m_boxSize && --length; ++m_pos) {
+            if (m_pos + 1 == m_boxSize && (m_pos % m_boxSize) > m_dropout)
+                break;
+            *MIN = qMin(*data, *MIN);
+            *MAX = qMax(*data, *MAX);
             ++data;
+        }
+        if (!length) {
+            if(m_pos) ++m_pos;
+            return;
         }
         ++MIN;
         ++MAX;
+        Q_ASSERT(m_pos >= 0);
         m_pos = 0;
+        Q_ASSERT(m_box+1 < m_boxCount);
         resetBox(++m_box);
     }
 }

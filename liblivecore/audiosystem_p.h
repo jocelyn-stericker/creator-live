@@ -208,7 +208,6 @@ public:
     static int xrunCallback( void * )
     {
         ++XRUNS;
-        std::cerr << "xrun\n";
         live::Object::XRUN();
         return 0;
     }

@@ -19,25 +19,26 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 using namespace live;
 using namespace live_widgets;
 
-SequencerGraph::SequencerGraph( QWidget* parent,SequencerApp* capp ) :
-    QWidget(parent),
-    app(capp),
-    s_bindMode(0),
-    selection(-1),
-    s_initial(0),
-    s_redrawpos_st(-1),
-    s_redrawpos_nd(-1),
-    s_scale(2646000),
-    audioTrack(0),
-    audioEstart(0),
-    simpleCounter(0),
-    audioLTime(0),
-    lastA(0),
-    lastB(0),
-    midiTrack(0),
-    midiOriginal(0),
-    midiEstart(0),
-    midiLTime(0)
+SequencerGraph::SequencerGraph( QWidget* parent,SequencerApp* capp )
+  : QWidget(parent)
+  , app(capp)
+  , s_bindMode(0)
+  , selection(-1)
+  , s_initial(0)
+  , s_redrawpos_st(-1)
+  , s_redrawpos_nd(-1)
+  , s_scale(2646000)
+  , audioTrack(0)
+  , oldBoxWidth(-1)
+  , audioEstart(0)
+  , simpleCounter(0)
+  , audioLTime(0)
+  , lastA(0)
+  , lastB(0)
+  , midiTrack(0)
+  , midiOriginal(0)
+  , midiEstart(0)
+  , midiLTime(0)
 {
     setAutoFillBackground(0);
     connect(bindings::me(),SIGNAL(showBindingsChanged(bool)),this,SLOT(setShowBindingsChanged(bool)));
@@ -52,6 +53,7 @@ SequencerGraph::SequencerGraph( QWidget* parent,SequencerApp* capp ) :
     audioLTime = -1;
 
     audioTrack = app->s_audioTrack;
+    audioTrack->newGraph(oldBoxWidth = live::audio::sampleRate()*60/width());
 
     updateAudioData(0,1);
 
@@ -117,17 +119,11 @@ void SequencerGraph::updateAudioData( int t1, int t2 )
     float hscale = (float) this->height() / 2000.0f;
     int wscale_inv = (float) width / (float) this->width();
 
-    AudioContainer** DATA=audioTrack->acquireData();
-
     QColor red(255,0,0);
     QColor white(255,255,255);
 
-    for ( int i = 0; DATA&& i < 2; i++ )
+    for ( int i = 0; i < 2; i++ ) // chans
     {
-        if ( !DATA[i] )
-        {
-            continue;
-        }
         if ( t1 == -1 || t2 == -1 || !audioOriginal[i] || this->size()!=audioOriginal[i]->size())
         {
             if ( audioOriginal[i] )
@@ -140,41 +136,19 @@ void SequencerGraph::updateAudioData( int t1, int t2 )
             painter.begin( audioOriginal[i] );
             painter.setCompositionMode(QPainter::CompositionMode_Source);
             painter.setRenderHint(QPainter::Antialiasing,1);
-            const float*dataPtr;
 
             int START=qMax(0,(s_initial/wscale_inv)*wscale_inv);
 
-            int counter=DATA[i]->getConstPointer(START,dataPtr);
-            dataPtr-=dataPtr?1:0;
-            int c=0;
             for ( int j = START; j < s_initial+width+wscale_inv;j+= wscale_inv ) //hack
             {
-                float minx=1.1,maxx=-1.1;
-                for (int k=0;k<wscale_inv;k++)
-                {
-                    if (dataPtr) ++dataPtr;
-                    if (--counter==-1)
-                    {
-                        counter=DATA[i]->getConstPointer(j+k,dataPtr);
-                        counter--;
-                    }
-                    if (dataPtr) {
-                        ++c;
-                        if (*dataPtr<minx) minx=*dataPtr;
-                        if (*dataPtr>maxx) maxx=*dataPtr;
-                    }
-                    else
-                    {
-                        minx=qMin(minx,0.0f);
-                        maxx=qMax(minx,0.0f);
-                    }
-                }
+                AudioGraph* g = audioTrack->graphForPos(oldBoxWidth, 0, j);
+                float minx = g ? g->getMinimums()[(j%live::audio::sampleRate())/oldBoxWidth] : 0.0f;
+                float maxx = g ? g->getMaximums()[(j%live::audio::sampleRate())/oldBoxWidth] : 0.0f;
                 painter.fillRect( (j-s_initial)*wscale, 1000*hscale,
                                   1, minx*1000*hscale,(qMax(qAbs(minx),maxx)>=1.0?red:white) );
                 painter.fillRect( (j-s_initial)*wscale, 1000*hscale,
                                   1, maxx*1000*hscale,(qMax(qAbs(minx),maxx)>=1.0?red:white) );
             }
-            qDebug() << "PROC:"<<c;
             painter.end();
             update();
         }
@@ -183,60 +157,36 @@ void SequencerGraph::updateAudioData( int t1, int t2 )
             QPainter painter;
 
             painter.begin( audioOriginal[i] );
-            const float*dataPtr;
 
             int START=qMax(0,(t1/wscale_inv)*wscale_inv-wscale_inv);
 
-            int counter=DATA[i]->getConstPointer(START,dataPtr);
-            dataPtr-=dataPtr?1:0;
-//            const quint32& nFrames=audio::nFrames();
-            int c=0;
             for ( int j = START; j < t2; j+=wscale_inv  )
             {
                 painter.setCompositionMode(QPainter::CompositionMode_Source);
                 painter.fillRect((j-s_initial)*wscale, 0,1,2000*hscale,QColor(255,0,0,0));
                 painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
-                float minx=1,maxx=-1;
-                for (int k=0;k<wscale_inv;k++)
-                {
-                    if (dataPtr) ++dataPtr;
-                    if (--counter==-1)
-                    {
-                        counter=DATA[i]->getConstPointer(j+k,dataPtr);
-                        counter--;
-                    }
+//                AudioGraph* g = audioTrack->currentGraph(oldBoxWidth, 0);
+                AudioGraph* g = audioTrack->graphForPos(oldBoxWidth, 0, j);
+                float minx = g ? g->getMinimums()[(j%live::audio::sampleRate())/oldBoxWidth] : 0.0f;
+                float maxx = g ? g->getMaximums()[(j%live::audio::sampleRate())/oldBoxWidth] : 0.0f;
 
-                    if (dataPtr) {
-                        ++c;
-                        if (*dataPtr<minx) minx=*dataPtr;
-                        if (*dataPtr>maxx) maxx=*dataPtr;
-                    }
-                    else
-                    {
-                        minx=qMin(minx,0.0f);
-                        maxx=qMax(minx,0.0f);
-                    }
-                }
                 painter.fillRect( (j-s_initial)*wscale, 1000*hscale,
                                   1, minx*1000*hscale,(qMax(qAbs(minx),maxx)>=1.0?red:white) );
                 painter.fillRect( (j-s_initial)*wscale, 1000*hscale,
                                   1, maxx*1000*hscale,(qMax(qAbs(minx),maxx)>=1.0?red:white) );
             }
-//            qDebug() << "PROC2"<<c;
             painter.end();
             update(QRect((lastA-s_initial)*wscale,0,lastB*wscale,2000*hscale));
             lastA=t1;
             lastB=t2;
-//            update(QRect((t1-s_initial)*wscale,0,t2*wscale,2000*hscale));
             if (s_redrawpos_st!=-1&&s_redrawpos_nd!=-1&&s_redrawpos_nd!=s_redrawpos_st)
             {
                 int st=s_redrawpos_st;
                 int nd=s_redrawpos_nd;
                 s_redrawpos_st=s_redrawpos_nd=-1;
-                qDebug()<<st<<":"<<nd<<":"<<s_initial;
+//                qDebug()<<st<<":"<<nd<<":"<<s_initial;
                 update((st-s_initial)*wscale,0,(nd-s_initial)*wscale,2000*hscale);
             }
-            audioTrack->releaseData();
             return;
         }
     }
@@ -244,7 +194,6 @@ void SequencerGraph::updateAudioData( int t1, int t2 )
     {
         simpleCounter=0;
     }
-    audioTrack->releaseData();
 }
 
 void SequencerGraph::updateMidiData(float t1, float t2)
@@ -639,6 +588,12 @@ void SequencerGraph::keyPressEvent(QKeyEvent *ev)
         midiTrack->remove(a,b);
 
     }
+}
+
+void SequencerGraph::resizeEvent(QResizeEvent *)
+{
+    kill_kitten audioTrack->deleteGraph(oldBoxWidth);
+    audioTrack->newGraph(oldBoxWidth = live::audio::sampleRate()*60/width());
 }
 
 void SequencerGraph::incrScroll()

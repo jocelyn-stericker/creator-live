@@ -8,6 +8,8 @@
 #include <QApplication>
 
 TEST(AudioSanity, Init) {
+    live::audio::strictInnocentXruns = true; // initialization must not cause xruns
+
     live::lthread::uiInit(false); // the testing thread is the UI thread.
 
     { // live expects a QApplication. It doesn't need to actually run.
@@ -31,6 +33,8 @@ TEST(AudioSanity, Init) {
     EXPECT_LT(live::audio::sampleRate(), 352801);
 
     live::lthread::uiInit(true); // the testing thread is the UI thread.
+
+    live::audio::strictInnocentXruns = false; // initialization must not cause xruns
 }
 
 TEST(AudioSanity, Mapping) {
@@ -48,7 +52,6 @@ TEST(AudioSanity, Mapping) {
             QStringList l( (h ? out : in)[i]);
             l.push_back( (h ? out : in)[i+1]);
             live::audio::addMapping(l, !h, (QString("TML") + QString(h ? "out" : "in") + QString::number(i)));
-            std::cerr << "[ INFO     ] Creating mapped " << (h ? "out" : "in") << "put with " << l[0].toAscii().data() << " and " << l[1].toAscii().data() << std::endl;
         }
     }
 
@@ -64,8 +67,14 @@ TEST(AudioSanity, Mapping) {
 
 TEST(AudioSanity, NFrames) {
     EXPECT_GT(live::audio::nFrames(), (unsigned)0);
-
     EXPECT_LT(live::audio::nFrames(), (unsigned)2049);
+
+    if (live::audio::nFrames() > 257) {
+        qCritical("###########################################################");
+        qCritical("Creator Live unit tests assume you have nFrames <= 256!");
+        qCritical("nFrames = %d!", live::audio::nFrames());
+        qCritical("###########################################################");
+    }
 }
 
 class AudioListener : public live::Object{
@@ -150,7 +159,7 @@ public:
 };
 
 TEST(ObjectSanity, ThreadSafety) {
-//    live::audio::strictInnocentXruns = true; // this test must not cause xruns
+    live::audio::strictInnocentXruns = true; // this test must not cause xruns
 
     QList<live::ObjectPtr> ins = live::object::get(live::AudioOnly | live::InputOnly | live::NoRefresh);
     QList<live::ObjectPtr> outs = live::object::get(live::AudioOnly | live::OutputOnly | live::NoRefresh);
@@ -176,7 +185,7 @@ TEST(ObjectSanity, ThreadSafety) {
             EXPECT_EQ((h ? outs : ins)[i]->aConnectionCount(), 0 );
         }
 
-//    live::audio::strictInnocentXruns = false; // this test must not cause xruns
+    live::audio::strictInnocentXruns = false; // this test must not cause xruns
 }
 
 class TemporaryObject : public live::Object {
@@ -313,6 +322,58 @@ TEST(AudioTrack, Sanity) {
     EXPECT_EQ(l->failFrame, -1);
 
     delete l;
+}
+
+TEST(AudioTrack, GraphCreated) {
+    live::ObjectPtr p = new live::AudioTrack(1);
+    live::AudioTrack* t = live::cast<live::AudioTrack*>(p);
+    t->startRecord();
+
+    AudioTestGenerator* g = new AudioTestGenerator;
+    live::Connection c1(live::audio::null(1),g,live::AudioConnection);
+    live::Connection c2(g,t,live::AudioConnection);
+    t->newGraph(250);
+    t->startPlayback();
+
+    live::audio::strictInnocentXruns = true; // recording to a track must not cause xruns.
+    usleep(100000);
+    live::audio::strictInnocentXruns = false;
+
+    t->stopPlayback();
+    t->stopRecord();
+    t->setPos(0);
+
+    delete g;
+    t->setPos(0);
+    EXPECT_TRUE(t->currentGraph(250, 0));
+}
+
+TEST(AudioTrack, GraphSanity) {
+    live::ObjectPtr p = new live::AudioTrack(1);
+    live::AudioTrack* t = live::cast<live::AudioTrack*>(p);
+    t->startRecord();
+
+    AudioTestGenerator* g = new AudioTestGenerator;
+    live::Connection c1(live::audio::null(1),g,live::AudioConnection);
+    live::Connection c2(g,t,live::AudioConnection);
+    t->newGraph(250);
+    t->setPos(0);
+    t->startPlayback();
+
+    live::audio::strictInnocentXruns = true; // recording to a track must not cause xruns.
+    usleep(100000);
+    live::audio::strictInnocentXruns = false;
+
+    t->stopPlayback();
+    t->stopRecord();
+    t->setPos(0);
+
+    delete g;
+    t->setPos(0);
+    for (int i = 1; i < 10; ++i) {  // we start at 1 to allow for a ~3ms delay for starting recording.
+        EXPECT_FLOAT_EQ(t->currentGraph(250, 0)->getMaximums()[i],1.0f);
+        EXPECT_FLOAT_EQ(t->currentGraph(250, 0)->getMinimums()[i],-1.0f);
+    }
 }
 
 TEST(Shutdown, Audio) {

@@ -11,6 +11,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define AUDIOGRAPH_H
 
 #include <QObject>
+#include <QDebug>
 
 namespace live {
 
@@ -21,6 +22,7 @@ class AudioGraph
     live::AudioSecond* m_second;
     long m_boxSize;
     long m_boxCount;
+    long m_dropout;
     float* m_mins;
     float* m_maxs;
 
@@ -32,7 +34,7 @@ public:
     AudioGraph(live::AudioSecond* second, long boxSize);
     long size() const { return m_boxSize; }
 
-    inline void resetBox(long box) { m_mins[box] = m_maxs[box] = 0.0f; }
+    inline void resetBox(long box) { m_mins[box] = 0.0f; m_maxs[box] = 0.0f; m_pos = 0; }
     void setPos(long pos); // updates data.
     int pos() const { return m_box * m_boxSize + m_pos; }
     void append(int length);

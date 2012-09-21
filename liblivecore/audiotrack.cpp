@@ -13,6 +13,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 live::AudioSecondBank* live::AudioSecondBank::singleton = 0;
 
 void live::AudioTrack::aThru(float*proc,int chan) {
+    kill_kitten {
     live::lthread::assertAudio();
 
     bool ok=1;
@@ -29,9 +30,12 @@ void live::AudioTrack::aThru(float*proc,int chan) {
     }
     RAW-=RAW?1:0;
     unsigned i;
+    int cont = nframes;
+
     for (i=0; i<nframes; i++) {
         if ((RAW=RAW?RAW+1:0),--count==-1) {
-            s_container[chan]->appendGraph(size);
+            cont -= size;
+            if (s_playback) s_container[chan]->appendGraph(size);
             count=size=s_container[chan]->getRawPointer(s_curPos+i,RAW,s_playback&&(s_record||s_overdub));
         }
 
@@ -57,19 +61,26 @@ void live::AudioTrack::aThru(float*proc,int chan) {
         }
     }
 
-    if ((ok)||s_updateCounter==28) {
+    if (s_playback) {
+        s_container[chan]->appendGraph(cont);
+        s_curPos += (chan==s_chans-1) ? nframes : 0;
+    }
+//    return;
+
+
+    if (s_updateCounter==38) {
         if (s_updateCounter) emit dataUpdated((int)(s_curPos-nframes*s_updateCounter),(int)(s_curPos));
-        else if (++s_boringCounter==24) {
-            s_boringCounter=0;
-            emit locationChanged(s_curPos);
-        }
+//                if (s_updateCounter) emit dataUpdated();
+//        else if (++s_boringCounter==24) {
+//            s_boringCounter=0;
+//            emit locationChanged(s_curPos);
+//        }
         s_updateCounter=0;
     } else {
         s_boringCounter=0;
         ++s_updateCounter;
     }
-
-    s_curPos += s_playback&&(chan==s_chans-1) ? nframes : 0;
+    }
 }
 
 live::AudioTrack::AudioTrack(int cchans)
@@ -93,6 +104,7 @@ live::AudioTrack::AudioTrack(int cchans)
         s_container[i]=new AudioContainer;
     }
     async();
+    setPos(0.0f);
 }
 
 live::AudioTrack::~AudioTrack() {
@@ -193,9 +205,9 @@ void live::AudioTrack::stopMute() {
 void live::AudioTrack::setPos(float pos) {
     // TODO: evaluate threadsafety
     s_curPos = long((float(live::audio::sampleRate()))*(float(pos)/1000.0f));
+    async();
     for (int i = 0; i < s_chans; ++i)
         s_container[i]->pointGraph(s_curPos);
-    async();
 }
 
 void live::AudioTrack::aIn(const float *in, int chan, Object*) {

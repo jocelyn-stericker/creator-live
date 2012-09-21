@@ -28,6 +28,8 @@ class LIBLIVECORESHARED_EXPORT AudioSecond
     QMap<long, AudioGraph*> s_graphs; /*???*/
 public:
     friend class AudioContainer;
+    friend class AudioGraph;
+
     AudioSecond(quint32 cbegin)
       : s_sampleOffset(cbegin)
       , s_data(new float[live::audio::sampleRate()])
@@ -53,7 +55,12 @@ public:
             }
         }
         AudioGraph* g = new AudioGraph(this, boxSize);
-        s_graphs.insert(boxSize,g);
+        if (!live::lthread::isAudio()) {
+            g->setPos(0);
+            g->append(live::audio::sampleRate()-1);
+        }
+
+        kill_kitten s_graphs.insert(boxSize,g);
     }
 
     inline void deleteGraph(const long& boxSize)
@@ -86,9 +93,14 @@ public:
     }
 
     void appendGraph(const long& frames) {
+        if (frames <= 0 ) return;
         for (QMap<long, AudioGraph*>::iterator it = s_graphs.begin(); it != s_graphs.end(); ++it) {
             it.value()->append(frames);
         }
+    }
+
+    AudioGraph* graphForFrames(const long& frames) {
+        return s_graphs.value(frames, 0);
     }
 
     static AudioSecond* load(const QByteArray&);
@@ -184,7 +196,15 @@ public:
     void newGraph(long size) {
         if (++s_graphs[size] == 1) {
             for (int i = 0; i < s_data.size(); ++i) {
-                s_data[i]->newGraph(size);
+                if(s_data[i]) s_data[i]->newGraph(size);
+            }
+        }
+    }
+
+    void deleteGraph(long size) {
+        if (--s_graphs[size] == 0) {
+            for (int i = 0; i < s_data.size(); ++i) {
+                if(s_data[i]) s_data[i]->deleteGraph(size);
             }
         }
     }
@@ -206,19 +226,32 @@ public:
 
     void appendGraph(long frames) {
         while (s_graphPointingTo != -1 && s_graphPointingTo < s_data.size() && s_data[s_graphPointingTo]) {
+            int fb = frames - s_data[s_graphPointingTo]->framesRemainingInGraph();
             s_data[s_graphPointingTo]->appendGraph(qMin(frames, s_data[s_graphPointingTo]->framesRemainingInGraph()));
-            frames -= s_data[s_graphPointingTo]->framesRemainingInGraph();
-            if (frames >= 0) {
-                if (s_graphPointingTo + 1 < s_data.size())
-                    ++s_graphPointingTo;
+            if (fb > 0) {
+                frames = fb;
+                if (s_graphPointingTo + 1 < s_data.size() && s_data[s_graphPointingTo + 1])
+                    s_data[++s_graphPointingTo]->pointGraph(0);
                 else {
-                    s_graphPointingTo = -1;
+                    s_graphPointingTo = -1; // this is usually transiant.
                     return;
                 }
             } else {
                 return;
             }
         }
+    }
+
+    AudioGraph* currentGraph(long frames) {
+        if (s_graphPointingTo != -1 && s_graphPointingTo < s_data.size() && s_data[s_graphPointingTo])
+            return s_data[s_graphPointingTo]->graphForFrames(frames);
+        return 0;
+    }
+
+    AudioGraph* graphForPos(long frames, long pos) {
+        if (pos/live::audio::sampleRate() >= 0 && pos/live::audio::sampleRate() < s_data.size() && s_data[pos/live::audio::sampleRate()])
+            return s_data[pos/live::audio::sampleRate()]->graphForFrames(frames);
+        return 0;
     }
 
     ~AudioContainer()
