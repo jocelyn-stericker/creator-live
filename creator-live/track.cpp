@@ -118,7 +118,7 @@ void Track::makeUiPipeline() {
             ui->show();
         }
         if (remCount) {
-            int widthForRemaining = (width() - sum) / remCount - 3 - (ui_outputName ? ui_outputName->width() : 0);
+            int widthForRemaining = (width() - sum - (ui_outputName ? ui_outputName->width() : 0) - 3) / remCount;
             for (int i = 0; i < s_appUi_.size(); ++i) {
                 if (sizes[i] == -1)
                     sizes[i] = widthForRemaining;
@@ -136,9 +136,7 @@ void Track::makeUiPipeline() {
         delete[] sizes;
 
         if (ui_outputName) {
-            qDebug() << ui_outputName->width();
             ui_outputName->setGeometry(width() - ui_outputName->width(), 0, ui_outputName->width(), height());
-            qDebug() << ui_outputName->geometry();
         }
         setGeometry(geometry());
         remakeChainWidget();
@@ -192,10 +190,10 @@ void Track::dropEvent(QDropEvent *e) {
             QString file=e->mimeData()->data("application/x-qt-windows-mime;value=\"FileName\"");
             if(QFile::exists(file)&&(file.endsWith("flac",Qt::CaseInsensitive)||file.endsWith("ogg",Qt::CaseInsensitive)||file.endsWith("wav",Qt::CaseInsensitive))) {
                 QMessageBox::warning(0,"Error","This functionality has not yet been reimplemented.","Complain to Josh!");
-                //            dynamic_cast<SequencerApp*>(backend.data())->s_audioTrack->importFile(file);
+                QMetaObject::invokeMethod(backend->qoThis(), "importAudio", Q_ARG(QString, file));
             } else if(QFile::exists(file)&&(file.endsWith("midi")||file.endsWith("MIDI")||file.endsWith("mid")||file.endsWith("MID"))) {
                 QMessageBox::warning(0,"Error","This functionality has not yet been reimplemented.","Complain to Josh!");
-                //            dynamic_cast<SequencerApp*>(backend.data())->s_midiTrack->importFile(file);
+                QMetaObject::invokeMethod(backend->qoThis(), "importMidi", Q_ARG(QString, file));
             } else {
                 QMessageBox::critical(this,"Not supported","flac,ogg,wav,midi,MIDI,mid,and MID files are the only types of files currently supported.");
             }

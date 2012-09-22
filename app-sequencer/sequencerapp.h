@@ -70,6 +70,15 @@ public slots:
 
     void setScale(int);
     virtual void mIn(const live::Event *data, live::ObjectChain*p);
+
+    void importAudio(QString file) {
+        s_audioTrack->importFile(file);
+    }
+
+    void importMidi(QString file) {
+        s_midiTrack->importFile(file);
+    }
+
 signals:
     void posSet(quint32 pos);
     void playbackStarted();

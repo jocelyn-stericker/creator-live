@@ -301,7 +301,7 @@ public:
     //By default, if no data exists(i.e., it is all null), data will be returned as
     //a null pointer. If instead, data should be created, forceCreation should be true.
     //Remember to set the graph position, and to append graph after use.
-    int getRawPointer(const quint32&frame,float*& data,bool forceCreation=0, bool* warning = 0, bool enforceAudio = 1)
+    int getRawPointer(const quint32&frame,float*& data,bool forceCreation=0, bool enforceAudio = 1)
     {
         if (enforceAudio)
             lthread::assertAudio();
@@ -325,11 +325,6 @@ public:
             regSecond(s_data[(int)(frame/sampleRate)]);
         }
 
-        if (warning) {
-            *warning = (static_cast<unsigned>(s_data.size()) <= static_cast<unsigned>(frame/sampleRate + 1) || !s_data[(int) frame/sampleRate + 1]);
-            // the goal of warning is to force creation of next frame in a non-RT thread.
-        }
-
         int id=(int)(frame/sampleRate);
         data=&s_data[id]->s_data[frame-s_data[id]->s_sampleOffset];
         return (int)(s_data[id]->s_sampleOffset+sampleRate-frame);
@@ -337,7 +332,7 @@ public:
 
     int getConstPointer(const quint32&frame,const float*& data) const
     {
-        return const_cast<AudioContainer*>(this)->getRawPointer(frame, const_cast<float*&>(data), false, 0, false);
+        return const_cast<AudioContainer*>(this)->getRawPointer(frame, const_cast<float*&>(data), false, false);
     }
 
     class AudioDataDestroyer {

@@ -41,7 +41,9 @@ LIBLIVECORESHARED_EXPORT Qt::HANDLE live::lthread::audioThreadId = 0;
 LIBLIVECORESHARED_EXPORT Qt::HANDLE live::lthread::midiThreadId = 0;
 #endif
 
+#ifndef NDEBUG
 void live::lthread::assert_thread(const Qt::HANDLE& thread, const char* str) {
+    return;
 #ifndef __QNX__ // qnx doesn't have useful thread ids.
         if (thread != QThread::currentThreadId()) {
             std::cerr << "### Thread assertion error ###\n";
@@ -62,6 +64,7 @@ void live::lthread::assert_thread(const Qt::HANDLE& thread, const char* str) {
         }
 #endif
 }
+#endif
 
 void live::lthread::uiInit(bool really) {
     if (really) {

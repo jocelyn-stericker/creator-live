@@ -56,7 +56,6 @@ private:
     bool s_mute;
     int s_simpleCount;
     int s_updateCounter;
-    int s_boringCounter;
 
     float* m_proc;
 
@@ -121,7 +120,6 @@ public slots:
     static int rateForInt(int i);
     bool exportFile(QString filename,QString format="guess",int depth=24);
     bool importFile(QString filename);
-    void async();
     QByteArray save();
     static AudioTrack* load(const QByteArray&str);
 

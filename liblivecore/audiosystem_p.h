@@ -255,6 +255,73 @@ private:
     SecretAudio& operator=(const SecretAudio&);
 };
 
+
+class LIBLIVECORESHARED_EXPORT NullAudio : public QObject, public live::AudioInterface
+{
+    Q_OBJECT
+    Q_INTERFACES(live::AudioInterface)
+public:
+    static int XRUNS;
+    QString s_error;
+    static NullAudio* singleton;
+    static QMutex x_sa;
+
+    quint32 nframes;
+    QList< AudioNull* > inputs;
+    QList< AudioNull* > outputs;
+    QList< AudioNull* > nulls;
+
+    QObject* qobject() { return this; }
+
+    NullAudio();
+
+    ~NullAudio()
+    {
+        while (inputs.size())
+        {
+            delete inputs.takeFirst();
+        }
+        while (outputs.size())
+        {
+            delete outputs.takeFirst();
+        }
+        delClient();
+    }
+
+    const quint32& nFrames() { return nframes = 256; }
+    qint32 sampleRate() { return 44100; }
+
+    bool valid() { return 1; }
+
+public slots:
+    bool delClient() {return 0;}
+    bool makeClient() {return 0;}
+    bool refresh() {return 0;}
+
+public:
+    virtual QString name() { return "Null Audio"; }
+    virtual QString description() { return "For testing."; }
+
+    virtual QObject* settingsWidget() { return 0; }
+
+    virtual bool shouldDisplaySettingsWidget() { return 0; }
+
+    virtual QString errorString() { QString l=s_error; s_error=""; return l; }
+
+    virtual live::ObjectPtr getNull(int chans) { AudioNull* p = new AudioNull(chans); nulls.push_back(p); return p; }
+
+    virtual bool resetMappings() {return 0;}
+    virtual bool addMapping(QStringList mapping, bool input,QString name) {return 0;}
+    virtual int mappingCount(bool input) {return 0;}
+
+    virtual QStringList getInputChanStringList() { return QStringList("");}
+    virtual QStringList getOutputChanStringList() { return QStringList("");}
+
+private:
+    NullAudio(const SecretAudio&);
+    NullAudio& operator=(const SecretAudio&);
+};
+
 class LIBLIVECORESHARED_EXPORT SecretAudioShutdownHandler : public QObject
 {
     Q_OBJECT

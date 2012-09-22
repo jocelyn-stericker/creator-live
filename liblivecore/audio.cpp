@@ -324,7 +324,7 @@ bool SecretAudio::makeClient() {
 
     live::Object::endProc(true);
 
-    for (int i = 0; i < 64; ++i) {
+    for (int i = 0; i < 32; ++i) {
         s_availInPorts.push_back( jack_port_register(getJackClient(),QString("clIn"+QString::number(i)).toAscii(),JACK_DEFAULT_AUDIO_TYPE,JackPortIsInput,0) );
         s_availInPortIds.push_back(QString(live::audio::getKey()+":clIn"+QString::number(i)));
         s_availOutPorts.push_back( jack_port_register(getJackClient(),QString("clOut"+QString::number(i)).toAscii(),JACK_DEFAULT_AUDIO_TYPE,JackPortIsOutput,0));

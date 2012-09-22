@@ -219,11 +219,11 @@ protected:
     QSet<ObjectPtr*> s_ptrList;
     static QMap<QString, ObjectPtr*>* zombies;
 
-    std::set<ObjectPtr> aConnections;
-    std::set<ObjectPtr> mConnections;
+    std::multiset<ObjectPtr> aConnections;
+    std::multiset<ObjectPtr> mConnections;
 
-    std::set<ObjectPtr> aInverseConnections;
-    std::set<ObjectPtr> mInverseConnections;
+    std::multiset<ObjectPtr> aInverseConnections;
+    std::multiset<ObjectPtr> mInverseConnections;
 
     bool s_isDestroying;
 
@@ -289,6 +289,7 @@ public:
         return uiThreadId == QThread::currentThreadId();
     }
 
+#define NDEBUG
 #ifndef NDEBUG
     static void assert_thread(const Qt::HANDLE& thread, const char* str);
 
@@ -307,6 +308,22 @@ public:
     static inline void assertMidi() {
         assert_thread(midiThreadId, "midi");
     }
+
+#else
+    static inline void assert_thread(const Qt::HANDLE&, const char*) {}
+
+    static inline void assertUi() {
+    }
+
+    static inline void assertMetronome() {
+    }
+
+    static inline void assertAudio() {
+    }
+
+    static inline void assertMidi() {
+    }
+#endif
     static void uiInit(bool really);
 
     static void midiInit() {
@@ -320,10 +337,6 @@ public:
     static void audioInit() {
         audioThreadId = QThread::currentThreadId();
     }
-
-#else
-#error FIXME
-#endif
 };
 
 struct ScopedLock {

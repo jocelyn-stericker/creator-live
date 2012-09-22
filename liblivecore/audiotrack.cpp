@@ -13,21 +13,12 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 live::AudioSecondBank* live::AudioSecondBank::singleton = 0;
 
 void live::AudioTrack::aThru(float*proc,int chan) {
-    kill_kitten {
     live::lthread::assertAudio();
 
-    bool ok=1;
-
     float* RAW;
-    bool warning = false;
     int size;
     int count;
-    count=size=s_container[chan]->getRawPointer(s_curPos,RAW,s_playback&&(s_record||s_overdub), &warning);
-    if (warning) {
-        // as we get xruns if we alloc a second of audio data in this thread,
-        // do it async.
-//        kill_kitten QtConcurrent::run(this,&live::AudioTrack::async);
-    }
+    count=size=s_container[chan]->getRawPointer(s_curPos,RAW,s_playback&&(s_record||s_overdub));
     RAW-=RAW?1:0;
     unsigned i;
     int cont = nframes;
@@ -44,7 +35,6 @@ void live::AudioTrack::aThru(float*proc,int chan) {
         float swap = RAW?*RAW:0;
 
         if (RAW&&s_playback&&(s_record||s_overdub)) {
-            if (*RAW!=*b + ((float)s_overdub)* (*RAW)) ok=0;
             *RAW = *b + ((float)s_overdub)* (*RAW);
             *RAW = (*RAW)> 1.0f ?  1.0f : (*RAW);
             *RAW = (*RAW)<-1.0f ? -1.0f : (*RAW);
@@ -70,16 +60,9 @@ void live::AudioTrack::aThru(float*proc,int chan) {
 
     if (s_updateCounter==38) {
         if (s_updateCounter) emit dataUpdated((int)(s_curPos-nframes*s_updateCounter),(int)(s_curPos));
-//                if (s_updateCounter) emit dataUpdated();
-//        else if (++s_boringCounter==24) {
-//            s_boringCounter=0;
-//            emit locationChanged(s_curPos);
-//        }
         s_updateCounter=0;
     } else {
-        s_boringCounter=0;
         ++s_updateCounter;
-    }
     }
 }
 
@@ -97,13 +80,11 @@ live::AudioTrack::AudioTrack(int cchans)
   , s_mute(0)
   , s_simpleCount(0)
   , s_updateCounter(0)
-  , s_boringCounter(0)
   , m_proc(new float[live::audio::nFrames()])
   { setTemporary(0);
     for (int i=0; i<cchans; i++) {
         s_container[i]=new AudioContainer;
     }
-    async();
     setPos(0.0f);
 }
 
@@ -205,9 +186,11 @@ void live::AudioTrack::stopMute() {
 void live::AudioTrack::setPos(float pos) {
     // TODO: evaluate threadsafety
     s_curPos = long((float(live::audio::sampleRate()))*(float(pos)/1000.0f));
-    async();
-    for (int i = 0; i < s_chans; ++i)
+    float* a;
+    for (int i = 0; i < s_chans; ++i) {
+        s_container[i]->getRawPointer((unsigned)s_curPos,a,1,0);
         s_container[i]->pointGraph(s_curPos);
+    }
 }
 
 void live::AudioTrack::aIn(const float *in, int chan, Object*) {
@@ -370,14 +353,4 @@ bool live::AudioTrack::importFile(QString filename) {
     emit dataUpdated(0,dataSize);
 #endif
     return 1;
-}
-
-void live::AudioTrack::async() {
-    // this function prevents data allocation in the real-time thread.
-    // FIXME: possible memory leak
-    float*a;
-    for (int i = 0; i < s_chans; ++i) {
-        s_container[i]->getRawPointer((unsigned)s_curPos,a,1,0,0);
-        s_container[i]->getRawPointer((unsigned)s_curPos + live::audio::sampleRate(),a,1,0,0);
-    }
 }
