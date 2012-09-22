@@ -49,8 +49,10 @@ void AudioGraph::append(int length) {
     float* MAX = &m_maxs[m_box];
     while(1) {
         for (; m_pos < m_boxSize && --length; ++m_pos) {
-            if (m_pos + 1 == m_boxSize && (m_pos % m_boxSize) > m_dropout)
-                break;
+            if ((m_pos + 1 == m_boxSize) && (m_pos + m_box*m_boxSize > live::audio::sampleRate())) {
+                m_pos = m_boxSize - 1;
+                return;
+            }
             *MIN = qMin(*data, *MIN);
             *MAX = qMax(*data, *MAX);
             ++data;
