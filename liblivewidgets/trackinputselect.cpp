@@ -19,7 +19,7 @@ using namespace live_widgets;
 using namespace live;
 
 TrackInputSelect::TrackInputSelect(QWidget*parent, bool popout, bool allowMidi, bool allowAudio)
-  : QFrame(parent)
+  : live_widgets::ObjectChooser(parent)
   , s_ui(new Ui_Frame)
   , s_allowMidi(allowMidi)
   , s_allowAudio(allowAudio)
@@ -28,22 +28,23 @@ TrackInputSelect::TrackInputSelect(QWidget*parent, bool popout, bool allowMidi, 
   , b_audio(allowAudio)
   { s_ui->setupUi(this);
 
+    setMinimizedButton(s_ui->inputType);
+    setTopFrame(s_ui->inputType);
+    setBottomFrame(s_ui->missile);
+    setAlignedLeft(true);
+
     connect(s_ui->input_combo,SIGNAL(clicked(QModelIndex)),s_ui->input_combo,SLOT(setCurrentIndex(QModelIndex)));
-    connect(s_ui->input_combo,SIGNAL(clicked(QModelIndex)),this,SLOT(go()));
-    connect(s_ui->input_combo,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(go()));
-    connect(s_ui->input_combo,SIGNAL(currentRowChanged(int)),this,SLOT(rowChangedEvent()));
+    connect(s_ui->input_combo,SIGNAL(clicked(QModelIndex)),this,SLOT(activateSelected()));
+    connect(s_ui->input_combo,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(activateSelected()));
 
     connect(s_ui->inputNew, SIGNAL(clicked()), this, SIGNAL(newOutputRequested()));
 
     all.push_back("0");
-    internalStockChangedEvent();
+    updateObjects();
 
     MidiBindingQtSys::addWidget(this);
 
-    connect(object::singleton(),SIGNAL(stockChanged()),this,SLOT(internalStockChangedEvent()));
-    rowChangedEvent();
-
-    connect(s_ui->inputType, SIGNAL(toggled(bool)), this, SLOT(minimize(bool)));
+    connect(s_ui->inputType, SIGNAL(toggled(bool)), this, SLOT(setMaximized(bool)));
 
     s_ui->inputName->setText(b_trackName);
     connect(&b_trackName, SIGNAL(changeObserved(QString,QString)), s_ui->inputName, SLOT(setText(QString)));
@@ -55,13 +56,13 @@ TrackInputSelect::TrackInputSelect(QWidget*parent, bool popout, bool allowMidi, 
     if (popout) {
         s_ui->inputPaint->hide();
         s_ui->inputNew->hide();
-        maximize();
+        setMaximized();
     } else {
-        minimize();
+        setMinimized();
     }
 }
 
-void TrackInputSelect::internalStockChangedEvent() {
+void TrackInputSelect::updateObjects() {
     int flags = InputOnly|NoRefresh;
 
     if (s_allowAudio && !s_allowMidi)
@@ -78,67 +79,16 @@ void TrackInputSelect::internalStockChangedEvent() {
         s_ui->input_combo->clear();
         s_ui->input_combo->insertItems(0,all);
     }
-//    s_ui->input_combo->setFixedHeight(v.size()*38+(v.size()-1)*8);
 }
 
-void TrackInputSelect::go() {
-    if (width() != 53) {
-        minimize();
-        QTimer::singleShot(200, this, SLOT(go()));
+void TrackInputSelect::activateSelected() {
+    b_trackName = object::get(InputOnly|NoRefresh)[s_ui->input_combo->currentRow()]->name();
+    if (width() != 55) {
+        setMinimized();
+        QTimer::singleShot(205, this, SLOT(activateSelected()));
     } else {
-        emit created(object::get(InputOnly|NoRefresh)[s_ui->input_combo->currentRow()]);
+        emit objectChosen(object::get(InputOnly|NoRefresh)[s_ui->input_combo->currentRow()]);
     }
-}
-
-void TrackInputSelect::refresh() {
-    midi::refresh();
-    audio::refresh();
-    internalStockChangedEvent();
-}
-
-void TrackInputSelect::rowChangedEvent() {
-//    s_ui->pushButton_create->setEnabled(s_ui->input_combo->currentRow()!=-1);
-}
-
-void TrackInputSelect::resizeEvent(QResizeEvent *e) {
-//     int w=width()-s_ui->line_4->width();
-//     s_ui->Awidget->setFixedWidth(w/2);
-//     float phi=(1+sqrt(5.0))/2.0;
-//     s_ui->Bwidget->setFixedWidth(w/2.00/phi);
-//     s_ui->Cwidget->setFixedWidth(w/2.00/phi/phi);
-
-     if (e)
-         QFrame::resizeEvent(e);
-}
-
-void TrackInputSelect::minimize(bool reverse) {
-    if (s_ui->inputType->isChecked() != reverse) {
-        s_ui->inputType->setChecked(reverse);
-        return;
-    }
-
-    if (width() == (reverse ? 400 : 53)) {
-        if (!reverse)
-            roundCorners();
-        else
-            squareCorners();
-        return;
-    }
-
-    QPropertyAnimation* qaa[2];
-    qaa[0] = new QPropertyAnimation(this, "minimumWidth");
-    qaa[1] = new QPropertyAnimation(this, "maximumWidth");
-    for (int i = 0; i < 2; ++i) {
-        qaa[i]->setStartValue(width());
-        qaa[i]->setEndValue(reverse ? 400 : 53);
-        qaa[i]->setDuration(200);
-        qaa[i]->setEasingCurve(QEasingCurve::InQuad);
-        qaa[i]->start(QAbstractAnimation::DeleteWhenStopped);
-    }
-    if(!reverse)
-        connect(qaa[1], SIGNAL(destroyed()), this, SLOT(roundCorners()));
-    else
-        squareCorners();
 }
 
 void TrackInputSelect::onSetAudio(bool b) {
@@ -147,26 +97,6 @@ void TrackInputSelect::onSetAudio(bool b) {
     } else {
         s_ui->inputType->setIcon(QIcon(":/icons/midi.png"));
     }
-}
-
-void TrackInputSelect::roundCorners() {
-    QString ss = s_ui->inputType->styleSheet();
-    ss.replace("border-top-right-radius: 0px;", "border-top-right-radius: 4px;");
-    s_ui->inputType->setStyleSheet(ss);
-
-    ss = s_ui->missile->styleSheet();
-    ss.replace("border-bottom-right-radius: 0px;", "border-bottom-right-radius: 4px;");
-    s_ui->missile->setStyleSheet(ss);
-}
-
-void TrackInputSelect::squareCorners() {
-    QString ss = s_ui->inputType->styleSheet();
-    ss.replace("border-top-right-radius: 4px;", "border-top-right-radius: 0px;");
-    s_ui->inputType->setStyleSheet(ss);
-
-    ss = s_ui->missile->styleSheet();
-    ss.replace("border-bottom-right-radius: 4px;", "border-bottom-right-radius: 0px;");
-    s_ui->missile->setStyleSheet(ss);
 }
 
 void TrackInputSelect::enableAddTrackButton() {

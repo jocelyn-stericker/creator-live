@@ -7,7 +7,6 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-
 #ifndef AUDIOOUTPUTCHOOSER_H
 #define AUDIOOUTPUTCHOOSER_H
 
@@ -15,25 +14,13 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live/audio>
 #include <live/object>
 #include <live/variantbinding>
+#include <live_widgets/objectchooser.h>
 
 namespace Ui {
 class AudioOutputChooser;
 }
 
-class OutputChooser : public QWidget
-{
-    Q_OBJECT
-public:
-    OutputChooser(QWidget* parent)
-      : QWidget(parent)
-      , b_trackName(0)
-      {
-    }
-
-    live::Bound<QString> b_trackName;
-};
-
-class AudioOutputChooser : public OutputChooser
+class AudioOutputChooser : public live_widgets::ObjectChooser
 {
     Q_OBJECT
     QStringList all;
@@ -43,32 +30,14 @@ public:
     ~AudioOutputChooser();
     
 public slots:
-    void go();
-    void refresh();
-    void rowChangedEvent();
-    void internalStockChangedEvent();
-
-    void maximize(bool reverse = false) { minimize(!reverse); }
-    void minimize(bool reverse = false);
-
-    void roundCorners();
-    void squareCorners();
+    void activateSelected();
+    void updateObjects();
 
 private:
-    void resizeEvent(QResizeEvent *);
     Ui::AudioOutputChooser *s_ui;
 
-signals:
-    void resized();
-    void doneResizing();
-    void outputChosen(live::ObjectPtr);
-
 private:
-    AudioOutputChooser(const AudioOutputChooser&);
-    AudioOutputChooser& operator=(const AudioOutputChooser&) {
-        TCRASH();
-        return *this;
-    }
+    Q_DISABLE_COPY(AudioOutputChooser)
 };
 
 #endif // AUDIOOUTPUTCHOOSER_H

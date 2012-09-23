@@ -11,7 +11,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define MIDIOUTPUTCHOOSER_H
 
 #include <live/object>
-#include "audiooutputchooser.h"
+#include <live_widgets/objectchooser.h>
 
 #include <QWidget>
 
@@ -19,7 +19,7 @@ namespace Ui {
 class MidiOutputChooser;
 }
 
-class MidiOutputChooser : public OutputChooser
+class MidiOutputChooser : public live_widgets::ObjectChooser
 {
     Q_OBJECT
     
@@ -30,17 +30,14 @@ public:
     ~MidiOutputChooser();
 
 public slots:
-    void resizeEvent(QResizeEvent *e);
     void step1();
     void step2();
-    void maximize(bool reverse = false) { minimize(!reverse, sender()); }
-    void minimize(bool reverse = false, QObject* sender = 0);
-
-signals:
-    void outputChosen(live::ObjectPtr, live::ObjectPtr);
-    void resized();
+    virtual void setMinimized(bool minimized = true);
     
 private:
+    virtual void activateSelected() { Q_ASSERT(0); /* see step2() */ }
+    virtual void updateObjects();
+
     Ui::MidiOutputChooser *s_ui;
     MidiOutputChooser(const MidiOutputChooser&);
     MidiOutputChooser& operator=(const MidiOutputChooser&);

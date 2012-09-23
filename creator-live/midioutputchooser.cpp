@@ -22,7 +22,7 @@ using namespace live;
 using namespace live_widgets;
 
 MidiOutputChooser::MidiOutputChooser(QWidget *parent)
-  : OutputChooser(parent)
+  : live_widgets::ObjectChooser(parent)
   , s_busy(false)
   , s_ui(new Ui::MidiOutputChooser)
 {
@@ -41,10 +41,10 @@ MidiOutputChooser::MidiOutputChooser(QWidget *parent)
     MidiBindingQtSys::addWidget(this);
 
     setFixedWidth(55);
-    maximize();
+    setMaximized();
 
-    connect(s_ui->inputType, SIGNAL(toggled(bool)), this, SLOT(minimize(bool)));
-    connect(s_ui->toolButton_settings, SIGNAL(toggled(bool)), this, SLOT(minimize(bool)));
+    connect(s_ui->inputType, SIGNAL(toggled(bool)), this, SLOT(setMaximized(bool)));
+    connect(s_ui->toolButton_settings, SIGNAL(toggled(bool)), this, SLOT(setMaximized(bool)));
     s_ui->toolButton_settings->hide();
 
     QButtonGroup* bg = new QButtonGroup(this);
@@ -58,20 +58,15 @@ MidiOutputChooser::~MidiOutputChooser()
     delete s_ui;
 }
 
-void MidiOutputChooser::resizeEvent(QResizeEvent *e) {
-    emit resized();
-    if (e) QWidget::resizeEvent(e);
-}
-
 void MidiOutputChooser::step1()
 {
     s_busy = true;
     if (width() != 55) {
-        minimize();
+        setMinimized();
         QTimer::singleShot(200, this, SLOT(step1()));
     } else {
         s_ui->stackedWidget->setCurrentIndex(0);
-        maximize();
+        setMaximized();
         s_ui->inputType->setChecked(true);
         s_busy = false;
     }
@@ -84,11 +79,11 @@ void MidiOutputChooser::step2()
 
     s_busy = true;
     if (width() != 55) {
-        minimize();
+        setMinimized();
         QTimer::singleShot(200, this, SLOT(step2()));
     } else {
         s_ui->stackedWidget->setCurrentIndex(1);
-        maximize();
+        setMaximized();
         s_ui->inputType->setChecked(false);
         s_ui->toolButton_settings->show();
         s_ui->toolButton_settings->setChecked(true);
@@ -106,38 +101,40 @@ void MidiOutputChooser::step2()
         QWidget* w;
         s_ui->customPage->layout()->addWidget(w = instrument::interfaces()[s_ui->Bwidget->currentRow()]->selectionWidget(ObjectPtr(), ObjectPtr()));
         w->setParent(s_ui->customPage);
-        connect(w, SIGNAL(instrumentUpdated(live::ObjectPtr, live::ObjectPtr)), this, SIGNAL(outputChosen(live::ObjectPtr, live::ObjectPtr)));
+        connect(w, SIGNAL(instrumentUpdated(live::ObjectPtr, live::ObjectPtr)), this, SIGNAL(objectChosen(live::ObjectPtr, live::ObjectPtr)));
         connect(w, SIGNAL(instrumentUpdated(live::ObjectPtr, live::ObjectPtr)), this, SLOT(deleteLater()));
 
         s_busy = false;
     }
 }
 
-void MidiOutputChooser::minimize(bool reverse, QObject *senderObject) {
-    if (!senderObject && !s_busy)
+void MidiOutputChooser::setMinimized(bool minimized) {
+    QObject *senderObject = 0;
+    if (!s_busy)
         senderObject = sender();
 
     if (senderObject == s_ui->inputType || senderObject == s_ui->toolButton_settings) {
-        if ((senderObject == s_ui->inputType && !reverse)
-         || (senderObject == s_ui->toolButton_settings && reverse))
+        if ((senderObject == s_ui->inputType && minimized)
+         || (senderObject == s_ui->toolButton_settings && !minimized))
             step2();
 
-        if ((senderObject == s_ui->inputType && reverse)
-         || (senderObject == s_ui->toolButton_settings && !reverse))
+        if ((senderObject == s_ui->inputType && !minimized)
+         || (senderObject == s_ui->toolButton_settings && minimized))
             step1();
 
         return;
     }
 
-    QPropertyAnimation* qaa[2];
-    qaa[0] = new QPropertyAnimation(this, "minimumWidth");
-    qaa[1] = new QPropertyAnimation(this, "maximumWidth");
-    for (int i = 0; i < 2; ++i) {
-        qaa[i]->setStartValue(width());
-        qaa[i]->setEndValue(reverse ? (s_ui->stackedWidget->currentIndex() ? 750 : 400) : 55);
-        qaa[i]->setDuration(200);
-        qaa[i]->setEasingCurve(QEasingCurve::InQuad);
-        qaa[i]->start(QAbstractAnimation::DeleteWhenStopped);
-    }
+    QPropertyAnimation* qaa;
+    qaa = new QPropertyAnimation(this, "fixedWidth");
+    qaa->setStartValue(width());
+    qaa->setEndValue(minimized ? 55 : (s_ui->stackedWidget->currentIndex() ? 750 : 400));
+    qaa->setDuration(200);
+    qaa->setEasingCurve(QEasingCurve::InQuad);
+    qaa->start(QAbstractAnimation::DeleteWhenStopped);
+}
+
+void MidiOutputChooser::updateObjects() {
+    // interfaces don't change... yet...
 }
 

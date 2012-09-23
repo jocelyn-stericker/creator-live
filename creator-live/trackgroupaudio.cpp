@@ -32,7 +32,7 @@ TrackGroupAudio::TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent, bo
     instLabel->b_audio = true;
     instLabel->setMinimumHeight(350);
     instLabel->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Expanding);
-    connect(instLabel,SIGNAL(created(live::ObjectPtr )),this,SLOT(setInput(live::ObjectPtr)));
+    connect(instLabel,SIGNAL(objectChosen(live::ObjectPtr)),this,SLOT(setInput(live::ObjectPtr)));
     connect(instLabel,SIGNAL(newOutputRequested()),this,SLOT(newHathorAuto()));
     mainLayout->addWidget(instLabel,0, Qt::AlignTop | Qt::AlignLeft);
     instLabel->setObjectName("instLabel");
@@ -62,8 +62,8 @@ TrackGroupAudio::TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent, bo
     aoo->setGeometry(width() - aoo->width(), 0, aoo->width(), aoo->height());
 
     connect(aoo, SIGNAL(resized()), this, SLOT(resizeEvent()));
-    connect(aoo, SIGNAL(outputChosen(live::ObjectPtr)), this, SLOT(setLastOutput(live::ObjectPtr)));
-    connect(aoo, SIGNAL(outputChosen(live::ObjectPtr)), this, SLOT(clearSelect()));
+    connect(aoo, SIGNAL(objectChosen(live::ObjectPtr)), this, SLOT(setLastOutput(live::ObjectPtr)));
+    connect(aoo, SIGNAL(objectChosen(live::ObjectPtr)), this, SLOT(clearSelect()));
 }
 
 TrackGroupAudio::TrackGroupAudio(const TrackGroupAudio&)

@@ -431,7 +431,7 @@ int Track::getMaximumWidthFor(QWidget* w) {
     return -1;
 }
 
-void Track::setOutputChooser(OutputChooser* a) {
+void Track::setOutputChooser(live_widgets::ObjectChooser* a) {
     live_mutex(x_me) {
         if (ui_outputName)
             ui_outputName->deleteLater();
@@ -454,7 +454,7 @@ void Track::setOutputChooser(OutputChooser* a) {
         ui_outputName->setObjectName("ui_outputName");
         ui_outputName->show();
         connect(ui_outputName, SIGNAL(resized()), this, SLOT(updateGeometriesIfNeeded()));
-        connect(ui_outputName, SIGNAL(outputChosen(live::ObjectPtr)), this, SLOT(setOutput(live::ObjectPtr)));
+        connect(ui_outputName, SIGNAL(objectChosen(live::ObjectPtr)), this, SLOT(setOutput(live::ObjectPtr)));
         connect(ui_outputName, SIGNAL(doneResizing()), this, SLOT(updateGeometriesOrDie()));
         updateGeometriesOrDie();
     }

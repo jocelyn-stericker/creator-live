@@ -10,19 +10,21 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef CL_TRACK_H
 #define CL_TRACK_H
 
-#include <live_widgets/track.h>
-
-#include "live_widgets/appframe.h"
 #include "live/ambition"
 
-#include "live_widgets/rotatedlabel.h"
+#include <live_widgets/track.h>
+#include <live_widgets/appframe.h>
+
+#include <live_widgets/rotatedlabel.h>
+#include <live_widgets/midibindingqt.h>
+#include <live_widgets/chaintypewidget.h>
+#include <live_widgets/objectchooser.h>
+
 #include <QPushButton>
 #include <QBoxLayout>
 #include <QToolButton>
 #include <QInputDialog>
 #include <QMessageBox>
-#include "live_widgets/midibindingqt.h"
-#include "live_widgets/chaintypewidget.h"
 
 #include "audiooutputchooser.h"
 
@@ -46,7 +48,7 @@ public:
 
     bool s_busy;
 
-    OutputChooser* ui_outputName;
+    live_widgets::ObjectChooser* ui_outputName;
     live_widgets::ChainTypeWidget* ui_chainWidget;
 
     Track(live::ObjectPtr cinput, live::ObjectPtr coutput);
@@ -62,7 +64,7 @@ public slots:
     void resizeEvent(QResizeEvent *e = 0);
     void remakeChainWidget();
 
-    void setOutputChooser(OutputChooser *);
+    void setOutputChooser(live_widgets::ObjectChooser *);
 
 private:
     void clearUiPipeline();

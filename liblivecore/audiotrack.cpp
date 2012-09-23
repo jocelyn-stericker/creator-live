@@ -55,10 +55,8 @@ void live::AudioTrack::aThru(float*proc,int chan) {
         s_container[chan]->appendGraph(cont);
         s_curPos += (chan==s_chans-1) ? nframes : 0;
     }
-//    return;
 
-
-    if (s_updateCounter==38) {
+    if (s_updateCounter==38.0/float(live::audio::nFrames())*128.0) {
         if (s_updateCounter) emit dataUpdated((int)(s_curPos-nframes*s_updateCounter),(int)(s_curPos));
         s_updateCounter=0;
     } else {

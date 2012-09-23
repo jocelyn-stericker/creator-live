@@ -23,6 +23,7 @@ list (APPEND liblivewidgets_cpp
     slider.cpp 
     spinbox.cpp 
     toolbutton.cpp 
+    objectchooser.cpp
     pianokey.cpp 
     rotatedlabel.cpp 
     appframe.cpp 
@@ -55,6 +56,7 @@ list (APPEND liblivewidgets_h_qobject
     live_widgets/rotatedlabel.h 
     live_widgets/appframe.h 
     live_widgets/midibindingqt.h 
+    live_widgets/objectchooser.h
     live_widgets/vscrollcontainer.h 
     live_widgets/trackinputselect.h 
     live_widgets/trackhint.h 

@@ -166,7 +166,7 @@ void LiveWindow::newInput()
         s_iw=0;
     }
     TrackInputSelect* ni=new TrackInputSelect(ui->sac_contents, true, true, true);
-    connect(ni,SIGNAL(created(live::ObjectPtr )),this,SLOT(reactOnCreation(live::ObjectPtr )));
+    connect(ni,SIGNAL(objectChosen(live::ObjectPtr)),this,SLOT(reactOnCreation(live::ObjectPtr )));
     ui->sac_contents->push_back(ni);
     ui->sac_contents->updateItems();
     curPatch()->widgets.push_back(ni);

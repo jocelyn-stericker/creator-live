@@ -13,14 +13,15 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QDesktopWidget>
 #include <QSettings>
 #include <QMainWindow>
-#include "live_widgets/midibindingqt.h"
+#include <live_widgets/midibindingqt.h>
+#include <live_widgets/objectchooser.h>
 #include "liblivewidgets_global.h"
 
 class Ui_Frame;
 
 namespace live_widgets {
 
-class LIBLIVEWIDGETSSHARED_EXPORT TrackInputSelect : public QFrame {
+class LIBLIVEWIDGETSSHARED_EXPORT TrackInputSelect : public live_widgets::ObjectChooser {
     Q_OBJECT
 private:
     Ui_Frame* s_ui;
@@ -30,29 +31,18 @@ public:
     QStringList all;
     TrackInputSelect(QWidget*parent, bool popout, bool allowMidi, bool allowAudio);
 
-    void resizeEvent(QResizeEvent *);
-
     live::Bound<QString> b_trackName;
     live::Bound<bool> b_audio;  // else midi
 
 public slots:
-    void internalStockChangedEvent();
-    void go();
-    void refresh();
-    void rowChangedEvent();
-
-    void maximize(bool reverse = false) { minimize(!reverse); }
-    void minimize(bool reverse = false);
+    void updateObjects();
+    void activateSelected();
 
     void onSetAudio(bool);
-
-    void squareCorners();
-    void roundCorners();
 
     void enableAddTrackButton();
 
 signals:
-    void created(live::ObjectPtr device);
     void newOutputRequested();
 
 private:

@@ -38,7 +38,7 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
     instLabel->b_audio = true;
     instLabel->setMinimumHeight(350);
     instLabel->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Expanding);
-    connect(instLabel,SIGNAL(created(live::ObjectPtr )),this,SLOT(setInput(live::ObjectPtr)));
+    connect(instLabel,SIGNAL(objectChosen(live::ObjectPtr)),this,SLOT(setInput(live::ObjectPtr)));
     connect(instLabel,SIGNAL(newOutputRequested()),this,SLOT(newHathorAuto()));
     ui_mainLayout->addWidget(instLabel,0, Qt::AlignTop | Qt::AlignLeft);
     instLabel->setObjectName("instLabel");
@@ -131,7 +131,7 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
     ui_instView->hide();
     ui_selectWidget = moc;
     moc->setGeometry(width() - moc->width(), 0, moc->width(), moc->height());
-    connect(moc,SIGNAL(outputChosen(live::ObjectPtr, live::ObjectPtr)),this,SLOT(setLastOutput(live::ObjectPtr, live::ObjectPtr)));
+    connect(moc,SIGNAL(objectChosen(live::ObjectPtr, live::ObjectPtr)),this,SLOT(setLastOutput(live::ObjectPtr, live::ObjectPtr)));
     connect(moc, SIGNAL(destroyed()), this, SLOT(clearSelect()));
 }
 
@@ -319,7 +319,6 @@ void TrackGroupMidi::drawKeyboard()
 
 void TrackGroupMidi::changeActiveFilter(bool really)
 {
-    qDebug() << "CHANGE_ACTIVE_FILTER"<<really;
     if (!really)
     {
         return;
