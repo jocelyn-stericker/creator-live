@@ -62,6 +62,7 @@ void LiveSF2Wizard::next() {
         if (ui->listWidget_out->currentRow() == -1)
             return;
 
+        qDebug() << "...";
         emit instrumentUpdated(s_out, s_loopback =
                 s_loopbacks[ui->listWidget_loop->currentRow()]);
         return;

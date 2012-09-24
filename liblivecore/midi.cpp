@@ -226,7 +226,7 @@ void SecretMidi::run() { // [MIDI THREAD]
                     e->message=Pm_MessageStatus(evnp.message);
                     e->data1=Pm_MessageData1(evnp.message);
                     e->data2=Pm_MessageData2(evnp.message);
-                    e->time=live::Time(evnp.timestamp);
+                    e->time=live::Time(TIME_PROC(TIME_INFO));
 
                     //make less inefficient
                     int inverse=-1;
@@ -396,7 +396,6 @@ void MidiNull::mIn(const live::Event *, live::ObjectChain*) {
 }
 
 void MidiOut::mIn(const live::Event *ev, live::ObjectChain*p) {
-    qDebug() << "OUT _ IN"<<ev->message<<" "<<ev->data1<<" "<<ev->data2;
     setTemporary(0);
 
     if (!ev) return;

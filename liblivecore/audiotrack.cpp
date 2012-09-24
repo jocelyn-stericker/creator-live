@@ -315,7 +315,7 @@ bool live::AudioTrack::importFile(QString filename) {
     for (int i = 0; i < s_chans; ++i)
         s_container[i]->clear();
 
-    SndfileHandle file( filename.toStdString() );
+    SndfileHandle file( filename.toStdString(), SFM_READ, 0, 0, live::audio::sampleRate() );
 
     if (!file) {
         qDebug() << "sndfile refuses to open "<<filename<<"...";
@@ -328,7 +328,6 @@ bool live::AudioTrack::importFile(QString filename) {
     }
 
     sf_count_t frames=file.frames();
-//        Q_ASSERT(frames%file.channels()==0);
     float*data=new float[frames*s_chans];  //chans==s_chans, no of items, data is interlaced
     file.readf(data,frames);
     for (int i=0;i<s_chans;i++) {

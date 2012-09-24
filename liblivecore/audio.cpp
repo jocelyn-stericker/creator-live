@@ -94,10 +94,8 @@ void jackConnectPorts( QString readPort, QString writePort, bool disconnect ) {
         else client = SecretAudio::singleton->client;
         if (disconnect) {
             jack_disconnect( client, readPort.toAscii(), writePort.toAscii() );
-//            system( QString( QString("jack_disconnect \"") + readPort + QString("\" \"") + writePort + QString("\" >/dev/null 2>/dev/null") ).toAscii() );
         } else {
             jack_connect( client, readPort.toAscii(), writePort.toAscii() );
-//            system( QString( QString("jack_connect \"") + readPort + QString("\" \"") + writePort + QString("\" >/dev/null 2>/dev/null") ).toAscii() );
         }
         if ( !SecretAudio::singleton ) {
             jack_client_close( client );
@@ -148,14 +146,11 @@ void AudioOut::init() {
             jackConnectPorts(id , s_realnames[i], 0 );
         }
     }
-//    jack_cycle_wait(getJackClient()); (FIXME)
 }
 
 void AudioOut::aIn(const float*data, int chan, live::Object*) {
     s_processed = 1;
     Q_ASSERT(chan<chans);
-
-    // TODO: DEPRICATE out. Replaced with mixer.
 
     live_mutex(SecretAudio::x_sa) {
         jack_default_audio_sample_t* out0 = (float*) jack_port_get_buffer( s_port_[chan][0], SecretAudio::singleton->nframes );
@@ -217,17 +212,17 @@ QString exec(QString cmd) { // port to QProcess?
         }
         delete proc;
     }
-//    if (!cmd.contains("-p"))  // hack, but works
-//    {
-//        while ( !feof(pipe) )
-//        {
-//
-//    qApp->processlive::Events();
-//            if (fgets(buffer, 128, pipe) != NULL) result += buffer;
-//            if ( result.indexOf("End of list") != -1 ) break;
-//        }
-//    }
-//    pclose(pipe);
+    if (!cmd.contains("-p"))  // hack, but works
+    {
+        while ( !feof(pipe) )
+        {
+
+    qApp->processlive::Events();
+            if (fgets(buffer, 128, pipe) != NULL) result += buffer;
+            if ( result.indexOf("End of list") != -1 ) break;
+        }
+    }
+    pclose(pipe);
     return result;
 }
 
@@ -299,8 +294,6 @@ bool SecretAudio::makeClient() {
     live::Object::beginProc();
     {
         qDebug() << "Trying to connect to jackd... (you can start the JACK server with qjackctl, for example...)";
-        QObject::connect(qApp,SIGNAL(aboutToQuit()),SecretAudioShutdownHandler::singleton,SLOT(byeBye()));
-        SecretAudioShutdownHandler::singleton->byeBye();
         client = jack_client_open(live::audio::getKey().toAscii(), (jack_options_t) (JackNoStartServer | JackUseExactName), 0);
         if (!client) {
 #ifdef _WIN32
@@ -412,18 +405,13 @@ void SecretAudio::process() {
     delete[] buffer;                      //}
 
     if (live::song::current()&&live::song::current()->metronome) {
-//#ifdef __linux
-//        QtConcurrent::run(SongSys::current->metronome,&Metronome::clock);
-//#else
         live::song::current()->metronome->clock();
-//#endif
     }
 }
 
 QMutex SecretAudio::x_sa(QMutex::Recursive);
 
 bool SecretAudio::refresh() {
-//    live::Object::beginProc();
     live_mutex(SecretAudio::x_sa) {
         for (int i=0;i<outputMappings;i++) {
             bool ok=1;
@@ -434,37 +422,6 @@ bool SecretAudio::refresh() {
             }
             if (ok) {
                 outputs.append( new AudioOut(outputMappings[i], outputMappingsName[i],1) );
-            }
-        }
-        QStringList outputStrs = jackGetInputPorts();
-        for (int i=0;i<outputStrs;i++) {
-            if (outputStrs[i].contains(live::audio::getKey(),Qt::CaseInsensitive)) {
-                continue;
-            }
-            bool ok=1;
-            for (int j=0;j<outputs;j++) {
-                if (outputs[j]->name()==outputStrs[i]) {
-                    ok=0;
-                    break;
-                }
-            }
-            if (ok) {
-                for (int j=0;j<outputMappings;j++) {
-                    if (outputMappings[j].contains(outputStrs[i])) {
-                        ok=0;
-                        break;
-                    }
-                }
-            }
-            if (ok) {
-                if (i+1<outputStrs.size()) {
-                    //                QStringList adhocMapping;
-                    //                adhocMapping.push_back(outputStrs[i]);
-                    //                adhocMapping.push_back(outputStrs[i+1]);
-                    //                outputMappings.push_back(adhocMapping);
-                    //                outputMappingsName.push_back("Adhoc "+outputStrs[i]);
-                    //                outputs.append( new AudioOut(adhocMapping, "Adhoc "+outputStrs[i],1) );
-                }
             }
         }
 
@@ -479,42 +436,6 @@ bool SecretAudio::refresh() {
                 inputs.append( new AudioIn(inputMappings[i], inputMappingsName[i],1) );
             }
         }
-        QStringList inputStrs = jackGetOutputPorts();
-        for (int i=0;i<inputStrs;i++) {
-            if (inputStrs[i].contains(live::audio::getKey(),Qt::CaseInsensitive)) {
-                continue;
-            }
-            bool ok=1;
-            QString inputStrx=inputStrs[i];
-            inputStrx.replace(':',"_");
-            for (int j=0;j<inputs;j++) {
-                if (inputs[j]->name()==inputStrx) {
-                    ok=0;
-                    break;
-                }
-            }
-            if (ok) {
-                for (int j=0;j<inputMappings;j++) {
-                    if (inputMappings[j].contains(inputStrx)) {
-                        ok=0;
-                        break;
-                    }
-                }
-            }
-            if (ok) {
-                if (i+1<inputStrs.size()) {
-                    //                QStringList adhocMapping;
-                    //                adhocMapping.push_back(inputStrx);
-                    //                QString inputName=inputStrx;
-                    //                inputStrx=inputStrs[i+1];
-                    //                inputStrx.replace(':','_');
-                    //                adhocMapping.push_back(inputStrx);
-                    //                inputMappings.push_back(adhocMapping);
-                    //                inputMappingsName.push_back("Adhoc "+inputName);
-                    //                inputs.append( new AudioIn(adhocMapping, "Adhoc "+inputName,1) );
-                }
-            }
-        }
 
         //store.
         live::object::clear(live::AudioOnly|live::InputOnly|live::NoRefresh);
@@ -526,7 +447,6 @@ bool SecretAudio::refresh() {
             live::object::set(outputs[i]);
         }
     }
-//    live::Object::endProc(true);
     return 1;
 }
 
@@ -619,20 +539,6 @@ int live_private::SecretAudio::mappingCount(bool input) {
     return (input ? inputMappings : outputMappings ).size();
 }
 
-//QList<Object*> AudioSys::getInputPorts()
-//{
-//    if (!SecretAudio::singleton) new SecretAudio;
-
-//    SecretAudio::singleton->refresh();
-
-//    QList<Object*> list_;
-//    for (int i=0; i<SecretAudio::singleton->inputs; i++)
-//    {
-//        list_.push_back(SecretAudio::singleton->inputs[i]);
-//    }
-//    return list_;
-//}
-
 LIBLIVECORESHARED_EXPORT QStringList live::audio::getInputChanStringList() {
     QStringList ret = s_audioInterface->getInputChanStringList();
     for (int i = 0; i < ret.size(); ++i) {
@@ -645,19 +551,6 @@ LIBLIVECORESHARED_EXPORT QStringList live::audio::getInputChanStringList() {
 QStringList live_private::SecretAudio::getInputChanStringList() {
     return jackGetOutputPorts();
 }
-
-//QList<Object*> AudioSys::getOutputPorts()
-//{
-//    if (!SecretAudio::singleton) new SecretAudio;
-
-//    SecretAudio::singleton->refresh();
-//    QList<Object*> list_;
-//    for (int i=0; i<SecretAudio::singleton->outputs; i++)
-//    {
-//        list_.push_back(SecretAudio::singleton->outputs[i]);
-//    }
-//    return list_;
-//}
 
 LIBLIVECORESHARED_EXPORT QStringList live::audio::getOutputChanStringList() {
     QStringList ret = s_audioInterface->getOutputChanStringList();
@@ -694,15 +587,6 @@ void live_private::SecretAudio::removeNull(QObject* o) {
     live::Object::endAsyncAction(__FILE__,__LINE__);
 }
 
-//LIBLIVECORESHARED_EXPORT void live::audio::reset()
-//{
-//    Store::clear(live::AudioOnly|live::InputOnly|live::NoRefresh);
-//    Store::clear(live::AudioOnly|live::OutputOnly|live::NoRefresh);
-//    s_audioInterface->delClient();
-//    delete s_audioInterface;
-//    new SecretAudio;
-//}
-
 LIBLIVECORESHARED_EXPORT void live::audio::stop() {
     delete s_audioInterface;
     s_audioInterface=0;
@@ -717,16 +601,4 @@ LIBLIVECORESHARED_EXPORT QString live::audio::getKey() {
 LIBLIVECORESHARED_EXPORT void live::audio::resetKey() {
     s_serverKey = "live" + QString(QCryptographicHash::hash(QByteArray::number(QDateTime::currentDateTime().toMSecsSinceEpoch()), QCryptographicHash::Md5).toHex());
     s_serverKey.truncate(10);
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-// Shutdown
-///////////////////////////////////////////////////////////////////////////////////////
-
-LIBLIVECORESHARED_EXPORT SecretAudioShutdownHandler* SecretAudioShutdownHandler::singleton = new SecretAudioShutdownHandler ;
-
-void SecretAudioShutdownHandler::byeBye() {
-    //uncomment this line:
-    //exec( "start /MIN taskkill /F /IM jackd.exe" );
-    //exec( "start /MIN taskkill /F /IM sooperlooper.exe" );
 }

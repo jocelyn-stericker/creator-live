@@ -356,16 +356,17 @@ struct ScopedLock {
 };
 
 struct ScopedMutexLock {
-    unsigned decr : 1;
     QMutex& m_m;
+    unsigned decr : 1;
+    unsigned valid : 1;
     ScopedMutexLock(QMutex& m)
-      : decr(true)
-      , m_m(m)
+      : m_m(m)
+      , decr(m_m.tryLock(5))
+      , valid(decr)
       {
-        m_m.lock();
     }
     virtual ~ScopedMutexLock() {
-        m_m.unlock();
+        if (valid) m_m.unlock();
     }
 };
 

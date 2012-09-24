@@ -322,15 +322,6 @@ private:
     NullAudio& operator=(const SecretAudio&);
 };
 
-class LIBLIVECORESHARED_EXPORT SecretAudioShutdownHandler : public QObject
-{
-    Q_OBJECT
-public:
-    static SecretAudioShutdownHandler *singleton;
-public slots:
-    void byeBye();
-};
-
 }
 #else  // not __QNX__
 #include "audiosystem_qnx_p.h"

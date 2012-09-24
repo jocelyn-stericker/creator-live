@@ -110,25 +110,29 @@ void live::MidiTrack::mIn(const Event *ev, ObjectChain*p) {
             data->time.sec=t.sec;
 
             int i = 0;
-            for ( i = s_data->size()-1; i>=0; i-- ) {
-                if ( (*s_data)[i]->time > t ) break;
-                if ( (*s_data)[i]->time.toTime_ms() <= t.toTime_ms() ) {
-                    if ( !b_overdub && (b_recStart<(*s_data)[i]->time)) {
-                        delete s_data->takeAt( i );
-                        emit dataUpdated();
-                        if ( i+1 < *s_data ) {
-                            i++;
-                        }
-                    }
-                    continue;
-                }
-                Q_ASSERT(1);
-            }
+//            for ( i = s_data->size()-1; i>=0; i-- ) {
+//                if ( (*s_data)[i]->time > t ) break;
+//                if ( (*s_data)[i]->time.toTime_ms() <= t.toTime_ms() ) {
+//                    if ( !b_overdub && (b_recStart<(*s_data)[i]->time)) {
+//                        delete s_data->takeAt( i );
+//                        emit dataUpdated();
+//                        if ( i+1 < *s_data ) {
+//                            i++;
+//                        }
+//                    }
+//                    continue;
+//                }
+//                Q_ASSERT(1);
+//            }
             if ((data->simpleStatus()==Event::NOTE_ON||data->simpleStatus()==Event::NOTE_OFF)&&!data->velocity()) {
                 bool ok=0;
+                qDebug() << "Off out"<<s_data->size();
+
                 for (int j=0;j<s_data->size();j++)   /*Where it would go*/ {
+                    qDebug() << "Considering buddy giving";
                     if ((*s_data)[j]->velocity()&&(*s_data)[j]->simpleStatus()==Event::NOTE_ON&&(*s_data)[j]->note()==data->note()&&!(*s_data)[j]->buddy) {
                         ok=1;
+                        qDebug() << "Giving a buddy";
                         (*s_data)[j]->buddy=data;
                         data->buddy=(*s_data)[j];
                         (*s_data)[j]->buddy=data;
@@ -140,6 +144,7 @@ void live::MidiTrack::mIn(const Event *ev, ObjectChain*p) {
                 }
                 //else there _might_ be a bug...
             } else {
+                qDebug() << "Adding to track";
                 s_data->insert( i+1, data );
             }
         } else {

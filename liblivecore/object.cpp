@@ -595,6 +595,8 @@ live::Connection::~Connection()
 
 void live::Connection::connect()
 {
+    qDebug() << "Connect" << (a.valid() ? a->name() : "NULL") << "to" << (b.valid() ? b->name() : "NULL") << (t ? (t==1) ? "midi" : "hybrid" : "audio");
+
     if (!a || !b)
         return;
 
@@ -614,6 +616,8 @@ void live::Connection::connect()
 
 void live::Connection::disconnect()
 {
+    qDebug() << "Disconnect" << (a.valid() ? a->name() : "NULL") << "to" << (b.valid() ? b->name() : "NULL");
+
     if (!a || !b)
         return;
 

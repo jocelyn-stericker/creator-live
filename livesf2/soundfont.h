@@ -20,6 +20,7 @@ class Soundfont : public QObject, public live::Object
     Q_OBJECT
     fluid_settings_t* s_settings;
     fluid_synth_t* s_synth;
+    QMutex x_synth;
     float* s_cache[2];
     live::Connection s_connection;
 public:
@@ -27,7 +28,7 @@ public:
     LIVE_EFFECT
     Soundfont(QString url);
 
-    void mIn(const live::Event* data, live::ObjectChain* p);
+    void mIn(const live::Event* data, live::ObjectChain *p);
     void aIn(const float* data, int chan, Object *p);
 
     bool aOn() const { return false; }

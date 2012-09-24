@@ -75,7 +75,7 @@ LiveApplication::LiveApplication(int& argc, char **argv) :
     std::cerr << "Plugin directory:" << pluginsDir.absolutePath().toAscii().data() << std::endl;
     foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
         if (!fileName.endsWith(".so")&&!fileName.endsWith(".dll",Qt::CaseInsensitive)) continue;
-        std::cerr << "Info for plugin " << qPrintable(qApp->applicationDirPath()+"/../plugins/"+fileName) << ": ";
+        std::cerr << "Loaded plugin " << qPrintable(qApp->applicationDirPath()+"/../plugins/"+fileName) << ": ";
         QPluginLoader loader(qApp->applicationDirPath()+"/../plugins/"+fileName);
         QObject *plugin = loader.instance();
         if (plugin) {

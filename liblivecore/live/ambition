@@ -83,6 +83,7 @@ public:
 
             if(s_input.valid()&&s_output.valid()&&s_loopbackOut.valid()&&s_output->isMidiObject()&&s_output->isAudioObject()&&s_input->isMidiObject()&&s_loopbackOut->isAudioObject())
             {
+                qDebug() << "Establishing Hybrid Connection";
                 // Prefered type of connection for hybrid situations.
 
                 // Process MIDI only until first hybrid. (0)
@@ -112,12 +113,13 @@ public:
                 }
 
                 if(ok) {
+                    qDebug() << "(Done)";
                     stage=0;
                     live::ObjectPtr prev=s_input;
                     for(int i=0;i<s_chain.size();i++) {
-                        if(stage==0&&!s_chain[i]->isMidiObject()) {
+                        if(stage==0&&s_chain[i]->isAudioObject()) {
                             qDebug() << "Stage 0";
-                            s_connections.push_back(new Connection(prev,s_output,MidiConnection));
+                            s_connections.push_back(new Connection(prev,s_output,HybridConnection));
                             s_connections.push_back(new Connection(s_output,s_chain[i],AudioConnection));
 
                             s_chain[i]->s_aOn=1;
@@ -149,7 +151,7 @@ public:
                             if(stage==0||stage==1) {
                                 s_chain[i]->s_aOn=0;
                                 s_chain[i]->s_mOn=1;
-                                s_connections.push_back(new Connection(prev,s_chain[i],MidiConnection));
+                                s_connections.push_back(new Connection(prev,s_chain[i],HybridConnection));
                             } else s_chain[i]->s_mOn=0;
 
                             if(stage==1||stage==2) {
@@ -161,7 +163,7 @@ public:
                         prev=s_chain[i];
                     }
                     if(stage==0) {
-                        s_connections.push_back(new Connection(prev,s_output,MidiConnection));
+                        s_connections.push_back(new Connection(prev,s_output,HybridConnection));
                         s_connections.push_back(new Connection(s_output,s_loopbackOut,AudioConnection));
                     } else {
                         s_connections.push_back(new Connection(prev,s_loopbackOut,AudioConnection));
@@ -175,9 +177,11 @@ public:
 
             if(s_input.valid()&&s_output.valid()&&s_input->isMidiObject()&&s_output->isMidiObject())
             {
+                qDebug() << "Establishing Midi or SIMPLE Hybrid Connection";
                 bool ok=1;
                 for(int i=0;i<s_chain.size();i++) if(!s_chain[i]->isMidiObject()) ok=0;
                 if(ok) {
+                    qDebug() << "(Done)";
                     live::ObjectPtr mprev=s_input;
                     for(int i=0;i<s_chain.size();i++)
                     {
@@ -196,9 +200,11 @@ public:
 
             if(s_input.valid()&&s_output.valid()&&(s_input->isAudioObject()||(s_loopbackOut.valid()&&s_loopbackOut->isAudioObject()))&&s_output->isAudioObject())
             {
+                qDebug() << "Establishing Audio Connection";
                 bool ok=1;
                 for(int i=0;i<s_chain.size();i++) if(!s_chain[i]->isAudioObject()) ok=0;
                 if(ok) {
+                    qDebug() << "(Done)";
                     live::ObjectPtr aprev=s_input;
                     if(s_loopbackOut.valid()&&s_loopbackOut->isAudioObject()) {
                         s_connections.push_back(new Connection(aprev,s_output,AudioConnection));
