@@ -38,7 +38,6 @@ void AudioGraph::setPos(long pos) {
     m_box = pos / m_boxSize;
     resetBox(m_box);
     append(pos % m_boxSize);
-//    Q_ASSERT(m_pos == pos % m_boxSize);
 }
 
 void AudioGraph::append(int length) {

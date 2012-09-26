@@ -31,7 +31,6 @@ SequencerGraph::SequencerGraph( QWidget* parent,SequencerApp* capp )
   , audioTrack(0)
   , oldBoxWidth(-1)
   , audioEstart(0)
-  , simpleCounter(0)
   , audioLTime(0)
   , lastA(0)
   , lastB(0)
@@ -144,6 +143,7 @@ void SequencerGraph::updateAudioData( int t1, int t2 )
                 AudioGraph* g = audioTrack->graphForPos(oldBoxWidth, 0, j);
                 float minx = g ? g->getMinimums()[(j%live::audio::sampleRate())/oldBoxWidth] : 0.0f;
                 float maxx = g ? g->getMaximums()[(j%live::audio::sampleRate())/oldBoxWidth] : 0.0f;
+
                 painter.fillRect( (j-s_initial)*wscale, 1000*hscale,
                                   1, minx*1000*hscale,(qMax(qAbs(minx),maxx)>=1.0?red:white) );
                 painter.fillRect( (j-s_initial)*wscale, 1000*hscale,
@@ -188,10 +188,6 @@ void SequencerGraph::updateAudioData( int t1, int t2 )
             }
             return;
         }
-    }
-//    if (++simpleCounter==10)
-    {
-        simpleCounter=0;
     }
 }
 
@@ -485,6 +481,7 @@ void SequencerGraph::wheelEvent(QWheelEvent *ev)
 {
     s_initial-=ev->delta()/8.0/15.0/10.0*live::audio::sampleRate()*5.0;
     if (s_initial < 0) s_initial = 0;
+    s_initial = qMin(s_initial, (int)audioTrack->pos()*live::audio::sampleRate()/1000);
     updateAudioData();
     updateMidiData();
 }
@@ -493,7 +490,7 @@ void SequencerGraph::keyPressEvent(QKeyEvent *ev)
 {
     lthread::assertUi();
 
-    kill_kitten if (ev->key()==Qt::Key_Delete&&selection!=-1)
+    if (ev->key()==Qt::Key_Delete&&selection!=-1)
     {
         {
             float a=qMin(selection/1000.0f*audio::sampleRate(),(float)app->pos()/1000.0f*audio::sampleRate());
@@ -504,7 +501,6 @@ void SequencerGraph::keyPressEvent(QKeyEvent *ev)
 
         int a = qMin(selection,(float)app->pos());
         int b = qMax(selection,(float)app->pos());
-        qDebug() << "$"<<selection<<app->pos();
 
         midiTrack->remove(a,b);
 

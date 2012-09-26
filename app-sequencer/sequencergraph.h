@@ -54,7 +54,6 @@ private:
     int oldBoxWidth;
     QPixmap* audioOriginal[2];
     int audioEstart;
-    int simpleCounter;
     double audioLTime;
     double lastA;
     double lastB;

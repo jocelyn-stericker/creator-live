@@ -204,6 +204,9 @@ void live::AudioTrack::clearData() {
     int dataSize=qMax(s_container[0]->s_data.size(),s_container[0]->s_data.size())*live::audio::sampleRate();
     for (int h=0;h<s_chans;h++) {
         s_container[h]->clear();
+        s_container[h]->pointGraph(0);
+        s_container[h]->appendGraph(dataSize);
+        s_container[h]->pointGraph(s_curPos);
     }
     emit dataUpdated(0,dataSize);
 }
@@ -338,7 +341,9 @@ bool live::AudioTrack::importFile(QString filename) {
         for (int j = 0; j < frames/s_chans; ++j) kill_kitten {
             if (j!=frames/s_chans) {
                 if ((dataPtr?++dataPtr:0),--counter==-1) {
+                    s_container[i]->pointGraph(j);
                     s_container[i]->appendGraph(size);
+                    s_container[i]->pointGraph(s_curPos);
                     counter=size=s_container[i]->getRawPointer(j,dataPtr,1)-1;
                 }
                 (*dataPtr)=data[j*s_chans+i];
