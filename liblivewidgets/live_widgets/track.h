@@ -27,7 +27,7 @@ class TrackHint;
 class AppFrame;
 }
 
-class AbstractTrack : public QWidget {
+class LIBLIVEWIDGETSSHARED_EXPORT AbstractTrack : public QWidget {
     Q_OBJECT
 protected:
     AbstractTrack(QWidget* parent = 0);

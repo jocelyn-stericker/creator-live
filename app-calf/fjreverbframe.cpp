@@ -20,7 +20,7 @@
  */
 
 #include "fjreverbframe.h"
-#include "./build/app-calf/ui_fjreverbframe.h"
+#include "ui_fjreverbframe.h"
 #include <QtPlugin>
 #include <QPropertyAnimation>
 #include <QTimer>

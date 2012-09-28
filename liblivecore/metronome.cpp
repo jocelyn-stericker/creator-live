@@ -32,7 +32,7 @@ void live::Metronome::clock() {
                 curBeat-=(float)s_ts.numerator;
             }
 
-            float ppb = ((float)ppq*float(fmod(curBeat,1.0)));
+            float ppb = ((float)ppq*float(fmod(curBeat,1.0f)));
 
             if (s_lastPpq != ppb) {
                 s_lastPpq=ppb;

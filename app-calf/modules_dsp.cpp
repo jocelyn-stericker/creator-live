@@ -85,7 +85,7 @@ static bool get_freq_gridline(int subindex, float &pos, bool &vertical, std::str
                 freq = 1000 * (subindex - 18 + 1);
             else
                 freq = 10000 * (subindex - 27 + 1);
-            pos = log(freq / 20.0) / log(1000);
+            pos = log(freq / 20.0) / log(1000.0);
             if (!legend.empty())
                 context->set_source_rgba(0.25, 0.25, 0.25, 0.75);
             else

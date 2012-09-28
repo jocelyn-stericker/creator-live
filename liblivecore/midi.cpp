@@ -419,12 +419,12 @@ void MidiOut::mIn(const live::Event *ev, live::ObjectChain*p) {
 //}
 
 void live::midi::refresh() {
-    if (!SecretMidi::me) new SecretMidi;
-    SecretMidi::me->refresh();
+    if (!live_private::SecretMidi::me) new live_private::SecretMidi;
+    live_private::SecretMidi::me->refresh();
 }
 
 live::ObjectPtr live::midi::null() {
-    if (!SecretMidi::me) new SecretMidi;
+    if (!live_private::SecretMidi::me) new live_private::SecretMidi;
 
     return new MidiNull;
 }

@@ -19,7 +19,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 namespace live_widgets {
 
-class ObjectChooser : public QFrame
+class LIBLIVEWIDGETSSHARED_EXPORT ObjectChooser : public QFrame
 {
     Q_OBJECT
     Q_PROPERTY(int fixedWidth READ width WRITE setFixedWidth)

@@ -11,17 +11,25 @@
 
 cmake_minimum_required(VERSION 2.8)
 
+if (!WIN32)
 list (APPEND test_cpp
     liblivecore.cpp
-
+)
+endif (!WIN32)
+list (APPEND test_cpp
     gtest-src/gtest-all.cc
     gtest-src/gtest_main.cc
 )
 
 list (APPEND test_libs
     livecore
+)
+
+if (!WIN32)
+list (APPEND test_lib
     pthread
 )
+endif (!WIN32)
 
 ################## PLATFORM-SPECIFIC CODE ##################
 
@@ -30,11 +38,13 @@ if (QNX)
         asound
     )
 else (QNX)
+if (!WIN32)
     list (APPEND test_libs
         portmidi
         jack
         sndfile
     )
+endif (!WIN32)
 endif (QNX)
 
 ########################## BUILD! ##########################

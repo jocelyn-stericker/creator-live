@@ -232,7 +232,7 @@ void live::AudioTrack::clearData(const quint32 &a, const quint32 &b) {
 }
 
 int live::AudioTrack::formatForString(QString s,bool verifyAvailable) {
-#ifndef __QNX__
+#if !defined(__QNX__) && !defined(_WIN32)
     Q_UNUSED(verifyAvailable);
     s=s.toLower();
     if (s.endsWith("wav")) return SF_FORMAT_WAV;
@@ -246,7 +246,7 @@ int live::AudioTrack::formatForString(QString s,bool verifyAvailable) {
 }
 
 int live::AudioTrack::rateForInt(int i) {
-#ifndef __QNX__
+#if !defined(__QNX__) && !defined(_WIN32)
     switch (i) {
     case 16:
         return SF_FORMAT_PCM_16;

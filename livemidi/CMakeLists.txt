@@ -58,3 +58,11 @@ add_library (livemidi SHARED
 set_target_properties(livemidi PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins
 )
+
+if (WIN32)
+target_link_libraries (livemidi
+    livecore
+    livewidgets
+    ${QT_LIBRARIES}
+)
+endif (WIN32)

@@ -29,7 +29,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 using namespace live_private;
 
-#ifndef __QNX__
+#if !defined(__QNX__) && !defined(_WIN32)
 LIBLIVECORESHARED_EXPORT Qt::HANDLE live::lthread::uiThreadId = -1;
 LIBLIVECORESHARED_EXPORT Qt::HANDLE live::lthread::metronomeThreadId = -1;
 LIBLIVECORESHARED_EXPORT Qt::HANDLE live::lthread::audioThreadId = -1;
@@ -44,7 +44,7 @@ LIBLIVECORESHARED_EXPORT Qt::HANDLE live::lthread::midiThreadId = 0;
 #ifndef NDEBUG
 void live::lthread::assert_thread(const Qt::HANDLE& thread, const char* str) {
     return;
-#ifndef __QNX__ // qnx doesn't have useful thread ids.
+#if !defined(__QNX__) && !defined(_WIN32)
         if (thread != QThread::currentThreadId()) {
             std::cerr << "### Thread assertion error ###\n";
             std::cerr << "expected: " << str << "(" << QString::number(thread).toUtf8().data() << ")\n";
@@ -76,7 +76,7 @@ void live::lthread::uiInit(bool really) {
     uiThreadId = QThread::currentThreadId();
 }
 
-class TheMutex {
+class LIBLIVECORESHARED_EXPORT TheMutex {
 public:
     static TheMutex* me;
     QMutex LOCK;
@@ -174,7 +174,7 @@ LIBLIVECORESHARED_EXPORT void live::Object::XRUN() {
 
 void live::Object::aOut(const float *data, int chan, Object *prev) {
     live::lthread::assertAudio();
-    for (std::set<live::ObjectPtr>::iterator it = aConnections.begin(); it != aConnections.end(); ++it) {
+    for (std::multiset<live::ObjectPtr>::iterator it = aConnections.begin(); it != aConnections.end(); ++it) {
 //    for (int i=0;i<aConnections.size();i++) {
         Q_ASSERT((*it)->aInverseConnections.size());
         if ((*it)->aInverseConnections.size()<=1||!(*it)->s_allowMixer) (*it)->aIn(data,chan,prev);
@@ -241,8 +241,8 @@ void live::Object::kill() {
         Q_ASSERT(!aInverseConnections.size());
         Q_ASSERT(!mInverseConnections.size());
     }
-    if (!SecretMidi::me) new SecretMidi;
-    SecretMidi::me->mClearEventsTo(this);
+    if (!live_private::SecretMidi::me) new live_private::SecretMidi;
+    live_private::SecretMidi::me->mClearEventsTo(this);
     for (QSet<ObjectPtr*>::iterator it = s_ptrList.begin(); it != s_ptrList.end(); ++it) {
         (*it)->obliviate();
         zombies->insertMulti(s_name,*it);
@@ -274,13 +274,13 @@ void live::Object::midiDisconnect(const live::ObjectPtr &bl) {
     live::Object* b=const_cast<live::Object*>(bl.data());
     a->mPanic();
     kill_kitten {
-        for (std::set<live::ObjectPtr>::iterator it = a->mConnections.begin(); it != a->mConnections.end(); ++it) {
+        for (std::multiset<live::ObjectPtr>::iterator it = a->mConnections.begin(); it != a->mConnections.end(); ++it) {
             if((*it).data() == b) {
                 a->mConnections.erase(it);
                 break;
             }
         }
-        for (std::set<live::ObjectPtr>::iterator it = b->mInverseConnections.begin(); it != b->mInverseConnections.end(); ++it) {
+        for (std::multiset<live::ObjectPtr>::iterator it = b->mInverseConnections.begin(); it != b->mInverseConnections.end(); ++it) {
             if ((*it).data()==a) {
                 b->mInverseConnections.erase(it);
                 break;
@@ -336,13 +336,13 @@ void live::Object::audioDisconnect(const live::ObjectPtr& bl) {
     }
 
     kill_kitten {
-        for (std::set<live::ObjectPtr>::iterator it = a->aConnections.begin(); it != a->aConnections.end(); ++it) {
+        for (std::multiset<live::ObjectPtr>::iterator it = a->aConnections.begin(); it != a->aConnections.end(); ++it) {
             if ((*it).data()==b) {
                 a->aConnections.erase(it);
                 break;
             }
         }
-        for (std::set<live::ObjectPtr>::iterator it = b->aInverseConnections.begin(); it != b->aInverseConnections.end(); ++it) {
+        for (std::multiset<live::ObjectPtr>::iterator it = b->aInverseConnections.begin(); it != b->aInverseConnections.end(); ++it) {
             if ((*it).data()==a) {
                 b->aInverseConnections.erase(it);
                 break;
@@ -358,15 +358,15 @@ void live::Object::audioDisconnect(const live::ObjectPtr& bl) {
 }
 
 void live::Object::mOut(const live::Event *data, live::ObjectChain* p, bool backwards) {
-    if (!SecretMidi::me) SecretMidi::me=new SecretMidi;
+    if (!live_private::SecretMidi::me) live_private::SecretMidi::me=new live_private::SecretMidi;
     if (!live::lthread::isMidi() || (data->time.sec!=-1&&(data->time.toTime_ms()-5>live::midi::getTime_msec()))) {
         live::Event* x=new live::Event;
         *x=*data;
-        SecretMidi::me->mWithhold(x,*p,this, backwards);    //now owner.
+        live_private::SecretMidi::me->mWithhold(x,*p,this, backwards);    //now owner.
     } else {
         if(s_ec) s_ec->mIn(data,p);
 
-        for(std::set<live::ObjectPtr>::iterator it = mConnections.begin(); it != mConnections.end(); ++it) {
+        for(std::multiset<live::ObjectPtr>::iterator it = mConnections.begin(); it != mConnections.end(); ++it) {
             live::Event*x=new live::Event(*data);
             x->buddy=0;
             if (backwards)

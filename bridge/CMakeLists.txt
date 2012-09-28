@@ -43,11 +43,13 @@ if (QNX)
         asound
     )
 else (QNX)
+if (!WIN32)
     list (APPEND bridge_libs
         portmidi
         jack
         sndfile
     )
+endif (!WIN32)
 endif (QNX)
 
 ########################## BUILD! ##########################
@@ -90,3 +92,12 @@ if (!WIN32)
         LINK_FLAGS "-Wl,-rpath=\'\$\$ORIGIN\'/../lib"
     )
 endif (!WIN32)
+
+
+if (WIN32)
+target_link_libraries (bridge
+    livecore
+    livewidgets
+    ${QT_LIBRARIES}
+)
+endif (WIN32)

@@ -46,11 +46,13 @@ if (QNX)
         asound
     )
 else (QNX)
+if (!WIN32)
     list (APPEND pluginTester_libs
         portmidi
         jack
         sndfile
     )
+endif (!WIN32)
 endif (QNX)
 
 ########################## BUILD! ##########################
@@ -92,3 +94,12 @@ if (!WIN32)
         LINK_FLAGS "-Wl,-rpath=\'\$\$ORIGIN\'/../lib"
     )
 endif (!WIN32)
+
+if (WIN32)
+target_link_libraries (pluginTester
+    livecore
+    livewidgets
+    ${QT_LIBRARIES}
+    C:/QtSDK/Desktop/Qt/4.8.1/msvc2010/bin/portmidi.lib
+)
+endif (WIN32)

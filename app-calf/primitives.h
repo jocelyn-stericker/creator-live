@@ -29,6 +29,10 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 namespace dsp {
 
 /// Set a float to zero
@@ -454,6 +458,10 @@ bool sine_table<T,N,Multiplier>::initialized = false;
 
 template<class T, int N, int Multiplier>
 T sine_table<T,N,Multiplier>::data[N+1];
+
+#ifdef _WIN32
+float nearbyintf(float value);
+#endif
 
 /// fast float to int conversion using default rounding mode
 inline int fastf2i_drm(float f)

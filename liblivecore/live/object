@@ -339,7 +339,8 @@ public:
     }
 };
 
-struct ScopedLock {
+class ScopedLock {
+public:
     unsigned decr : 1;
     const char* file;
     int line;
@@ -482,7 +483,7 @@ enum ConnectionType {
     HybridConnection=2
 };
 
-class PassConnection
+class LIBLIVECORESHARED_EXPORT PassConnection
 {
     live::ObjectPtr a, b;
     ConnectionType t;
@@ -496,7 +497,7 @@ class PassConnection
     friend class Connection;
 };
 
-class Connection
+class LIBLIVECORESHARED_EXPORT Connection
 {
 public:
     live::ObjectPtr a, b;

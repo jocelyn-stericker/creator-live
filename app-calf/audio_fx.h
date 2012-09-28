@@ -632,13 +632,13 @@ public:
     {
         if (mode <= mode_36db_lp) {
             order = mode + 1;
-            left[0].set_lp_rbj(freq, pow(q, 1.0 / order), srate, gain);
+            left[0].set_lp_rbj(freq, pow(q, 1.0f / float(order)), srate, gain);
         } else if ( mode_12db_hp <= mode && mode <= mode_36db_hp ) {
             order = mode - mode_12db_hp + 1;
-            left[0].set_hp_rbj(freq, pow(q, 1.0 / order), srate, gain);
+            left[0].set_hp_rbj(freq, pow(q, 1.0f / float(order)), srate, gain);
         } else if ( mode_6db_bp <= mode && mode <= mode_18db_bp ) {
             order = mode - mode_6db_bp + 1;
-            left[0].set_bp_rbj(freq, pow(q, 1.0 / order), srate, gain);
+            left[0].set_bp_rbj(freq, pow(q, 1.0f / float(order)), srate, gain);
         } else { // mode_6db_br <= mode <= mode_18db_br
             order = mode - mode_6db_br + 1;
             left[0].set_br_rbj(freq, order * 0.1 * q, srate, gain);

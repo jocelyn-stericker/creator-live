@@ -65,7 +65,7 @@ private:
     }
 };
 
-template<class T> class LIBLIVECORESHARED_EXPORT ConcreteSync : public AbstractSync
+template<class T> class /*LIBLIVECORESHARED_EXPORT*/ ConcreteSync : public AbstractSync
 {
 public:
     ConcreteSync(T* at)

@@ -22,48 +22,98 @@
 #define __CALF_UTILS_H
 
 #include <errno.h>
-#include <pthread.h>
 #include <map>
 #include <string>
 
+#ifndef _WIN32
+#include <pthread.h>
+#else
+#include <QMutex>
+#endif
+
 namespace calf_utils
 {
+
+#ifdef _WIN32
+/* Mutex types.  */
+enum
+{
+  PTHREAD_MUTEX_TIMED_NP,
+  PTHREAD_MUTEX_RECURSIVE_NP,
+  PTHREAD_MUTEX_ERRORCHECK_NP,
+  PTHREAD_MUTEX_ADAPTIVE_NP
+  ,
+  PTHREAD_MUTEX_NORMAL = PTHREAD_MUTEX_TIMED_NP,
+  PTHREAD_MUTEX_RECURSIVE = PTHREAD_MUTEX_RECURSIVE_NP,
+  PTHREAD_MUTEX_ERRORCHECK = PTHREAD_MUTEX_ERRORCHECK_NP,
+  PTHREAD_MUTEX_DEFAULT = PTHREAD_MUTEX_NORMAL
+#ifdef __USE_GNU
+  /* For compatibility.  */
+  , PTHREAD_MUTEX_FAST_NP = PTHREAD_MUTEX_TIMED_NP
+#endif
+};
+#endif
 
 /// Pthreads based mutex class
 class ptmutex
 {
 public:
+#ifndef _WIN32
     pthread_mutex_t pm;
+#else
+    QMutex qm;
+#endif
     
     ptmutex(int type = PTHREAD_MUTEX_RECURSIVE)
+#ifdef _WIN32
+        : qm ((type == PTHREAD_MUTEX_RECURSIVE) ? QMutex::Recursive : QMutex::NonRecursive)
+#endif
     {
+#ifndef _WIN32
         pthread_mutexattr_t attr;
         pthread_mutexattr_init(&attr);
         pthread_mutexattr_settype(&attr, type);
         pthread_mutex_init(&pm, &attr);
         pthread_mutexattr_destroy(&attr);
+#endif
     }
     
     bool lock()
     {
+#ifdef _WIN32
+        qm.lock();
+        return true;
+#else
         return pthread_mutex_lock(&pm) == 0;
+#endif
     }
     
     bool trylock()
     {
+#ifdef _WIN32
+        return qm.tryLock();
+#else
         return pthread_mutex_trylock(&pm) == 0;
+#endif
     }
     
     void unlock()
     {
+#ifdef _WIN32
+        qm.unlock();
+#else
         pthread_mutex_unlock(&pm);
+#endif
     }
 
     ~ptmutex()
     {
+#ifndef _WIN32
         pthread_mutex_destroy(&pm);
+#endif
     }
 };
+
 
 /// Exception-safe mutex lock
 class ptlock

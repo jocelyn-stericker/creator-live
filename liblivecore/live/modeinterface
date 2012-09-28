@@ -23,7 +23,7 @@ public:
     virtual QString description() = 0;
     virtual QWidget* create() = 0;
     virtual QWidget* load(const QByteArray&) = 0;
-    virtual QWidget* livebarExtFor(QWidget* interface) = 0;
+    virtual QWidget* livebarExtFor(QWidget*) = 0;
     virtual QIcon icon() = 0;
     virtual ModeInterface* next() = 0; // for including multiple interfaces in one plugin
 };

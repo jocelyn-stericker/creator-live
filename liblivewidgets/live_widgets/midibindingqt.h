@@ -31,7 +31,7 @@ public:
     LIVE_MIDI
     LIVE_OUTPUT
     bool mOn() const{ return 1; } bool aOn() const { return 0; }
-    friend class MidiBinding;
+    friend class live::MidiBinding;
     friend class BindableParent;
 
     MidiBindingQt(QObject* cGuiObject,GuiType cparentType,BindingType ctype,bool quantized,QString cdata="",int ckey=-1,live::ObjectPtr parent=0, bool controller=0) :

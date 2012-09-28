@@ -9,6 +9,10 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include <live/songsystem>
 
+#if !defined(LIBLIVECORE_LIBRARY)
+#error LIBLIVCORE_LIBRARY NOT DEFINED
+#endif
+
 QList<live::song*> live::song::universe;
 live::song* live::song::s_current=NULL;
 

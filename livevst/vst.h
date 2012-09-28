@@ -72,7 +72,7 @@ public:
 #ifdef _WIN32
     float** channelData;
     float** outData;
-    ObjectChain* chains;
+    live::ObjectChain* chains;
     void PROC_VST();
 #endif
 public:

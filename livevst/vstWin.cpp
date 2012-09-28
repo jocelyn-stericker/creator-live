@@ -9,16 +9,16 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #ifdef _WIN32
 
-#include "src/Pipeline/Vst_p.h"
-#include "src/Framework/System.h"
+#include "Vst_p.h"
+#include "live/object"
 #include "VstSidekick.h"
 //#undef UNICODE
 
 //#include "windows.h"
 
-#include "extern/aeffect.h"
-#include "extern/aeffectx.h"
-#include "extern/vstfxstore.h"
+#include "vst2.x/aeffect.h"
+#include "vst2.x/aeffectx.h"
+#include "vst2.x/vstfxstore.h"
 
 QStringList Vst::s_vstpaths_linux;
 QStringList* Vst::s_vstCache=0;

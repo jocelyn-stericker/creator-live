@@ -40,8 +40,8 @@ namespace calf_plugins {
 class monosynth_audio_module: public audio_module<monosynth_metadata>, public line_graph_iface
 {
 public:
-    float *ins[in_count]; 
-    float *outs[out_count];
+    float *ins[in_count+1];
+    float *outs[out_count+1];
     float *params[param_count];
     uint32_t srate, crate;
     static dsp::waveform_family<MONOSYNTH_WAVE_BITS> *waves;
@@ -175,8 +175,8 @@ public:
     using drawbar_organ::note_off;
     using drawbar_organ::control_change;
     enum { param_count = drawbar_organ::param_count};
-    float *ins[in_count]; 
-    float *outs[out_count];
+    float *ins[in_count+1];
+    float *outs[out_count+1];
     float *params[param_count];
     dsp::organ_parameters par_values;
     uint32_t srate;

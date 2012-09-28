@@ -354,7 +354,7 @@ int* live::AnaBeat::_makeHistogram(int* bins_c, double* highest_c
 
     qDebug() << (highest-lowest) << "*\n";
 
-    bins = int(rint((highest-lowest)*48.0384));
+    bins = int(int((highest-lowest)*48.0384+0.5));
     // I forget where I got this number, but it's really smart! I promise!
 
     int bina = 0;
@@ -467,7 +467,7 @@ QList<double> live::AnaBeat::_findBeatCandidates(QList<double>* last_c
     // newX is there
     for (int i = 0; i < y_.size(); i++) {
         newX.append(tm);
-        tm += pow(2.0f, last[int(y_[i]) - 1]);  // really exp
+        tm += pow(2.0f, (float)last[int(y_[i]) - 1]);  // really exp
     }
     return beatCandidats;
 }

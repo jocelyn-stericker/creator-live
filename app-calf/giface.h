@@ -23,7 +23,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
-#include <pthread.h>
+//#include <pthread.h>
 #include <exception>
 #include <string>
 #include "primitives.h"

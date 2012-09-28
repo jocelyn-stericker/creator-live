@@ -65,3 +65,11 @@ add_library (app-sampler SHARED
 set_target_properties(app-sampler PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins
 )
+
+if (WIN32)
+target_link_libraries (app-sampler
+    livecore
+    livewidgets
+    ${QT_LIBRARIES}
+)
+endif (WIN32)

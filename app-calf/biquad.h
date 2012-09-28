@@ -22,6 +22,7 @@
  */
 #ifndef __CALF_BIQUAD_H
 #define __CALF_BIQUAD_H
+#define _USE_MATH_DEFINES
 
 #include <complex>
 #include "primitives.h"

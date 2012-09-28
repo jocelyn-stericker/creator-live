@@ -131,7 +131,11 @@ public:
     }
 
     void init();
+#ifdef __linux__
     void run() __attribute__ ((noreturn));
+#else
+    void run();
+#endif
 
     void refresh();
     void queue(const live::Event* ev, int device, live::ObjectChain from);

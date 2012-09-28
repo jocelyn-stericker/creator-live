@@ -23,38 +23,17 @@
 #include <app-calf/utils.h>
 #include <sstream>
 
+#if _WIN32
+#include <Windows.h>
+typedef unsigned char     uint8_t;
+typedef unsigned short    uint16_t;
+typedef unsigned int      uint32_t;
+typedef unsigned long int uint64_t;
+#endif
+
 using namespace std;
-using namespace osctl;
 
 namespace calf_utils {
-
-string encode_map(const dictionary &data)
-{
-    osctl::string_buffer sb;
-    osc_stream<osctl::string_buffer> str(sb);
-    str << (uint32_t)data.size();
-    for (dictionary::const_iterator i = data.begin(); i != data.end(); i++)
-    {
-        str << i->first << i->second;
-    }
-    return sb.data;
-}
-
-void decode_map(dictionary &data, const string &src)
-{
-    osctl::string_buffer sb(src);
-    osc_stream<osctl::string_buffer> str(sb);
-    uint32_t count = 0;
-    str >> count;
-    string tmp, tmp2;
-    data.clear();
-    for (uint32_t i = 0; i < count; i++)
-    {
-        str >> tmp;
-        str >> tmp2;
-        data[tmp] = tmp2;
-    }
-}
 
 std::string xml_escape(const std::string &src)
 {

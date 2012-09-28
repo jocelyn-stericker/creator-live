@@ -114,3 +114,11 @@ add_library (app-calf SHARED
 set_target_properties(app-calf PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins
 )
+
+if (WIN32)
+target_link_libraries (app-calf
+    livecore
+    livewidgets
+    ${QT_LIBRARIES}
+)
+endif (WIN32)

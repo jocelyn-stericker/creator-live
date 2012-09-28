@@ -125,9 +125,9 @@ int parameter_properties::get_char_count() const
     if ((flags & PF_SCALEMASK) == PF_SCALE_GAIN) {
         char buf[256];
         size_t len = 0;
-        sprintf(buf, "%0.0f dB", 6.0 * log(min) / log(2));
+        sprintf(buf, "%0.0f dB", 6.0 * log(min) / log(2.0f));
         len = strlen(buf);
-        sprintf(buf, "%0.0f dB", 6.0 * log(max) / log(2));
+        sprintf(buf, "%0.0f dB", 6.0 * log(max) / log(2.0f));
         len = std::max(len, strlen(buf)) + 2;
         return (int)len;
     }
@@ -144,7 +144,7 @@ std::string parameter_properties::to_string(float value) const
     if ((flags & PF_SCALEMASK) == PF_SCALE_GAIN) {
         if (value < 1.0 / 1024.0) // new bottom limit - 60 dB
             return "-inf dB"; // XXXKF change to utf-8 infinity
-        sprintf(buf, "%0.1f dB", 6.0 * log(value) / log(2));
+        sprintf(buf, "%0.1f dB", 6.0 * log(value) / log(2.0f));
         return string(buf);
     }
     switch (flags & PF_TYPEMASK)
@@ -320,5 +320,36 @@ calf_plugins::dssi_feedback_sender::~dssi_feedback_sender()
     // this would not be received by GUI's main loop because it's already been terminated
     // client->send("/iQuit");
     delete client;
+}
+#endif
+
+#ifdef _WIN32
+namespace dsp {
+float nearbyintf(float value)
+{
+        float result = 0.0f;
+
+        if(0.5f == (value - std::floor(value)))
+        {
+                // Round up if odd, down if even
+                result = (uint64_t(std::floor(value)) & 1) ?     /* if odd */
+                           (std::floor(value) + 1.0f) : /* rount to next val */
+                           std::floor(value);           /* round to num */
+        }
+        else if(-0.5 == (value + std::ceil(value)))
+        {
+                // Round down if odd, up if even
+                result = (uint64_t(std::ceil(value)) & 1) ?    /* if odd */
+                           (std::ceil(value) - 1.0f) : /* rount to next val */
+                           std::ceil(value);           /* round to num */
+        }
+        else
+        {
+                // Round to nearest
+                result = std::floor(value + 0.5);
+        }
+
+        return result;
+}
 }
 #endif

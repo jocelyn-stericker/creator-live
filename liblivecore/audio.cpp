@@ -17,6 +17,12 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include <QCryptographicHash>
 
+#if defined(_WIN32)
+#include <QDir>
+#include <QProcess>
+#include <QMessageBox>
+#endif
+
 using namespace live_private;
 
 #ifdef __QNX__
@@ -212,17 +218,6 @@ QString exec(QString cmd) { // port to QProcess?
         }
         delete proc;
     }
-    if (!cmd.contains("-p"))  // hack, but works
-    {
-        while ( !feof(pipe) )
-        {
-
-    qApp->processlive::Events();
-            if (fgets(buffer, 128, pipe) != NULL) result += buffer;
-            if ( result.indexOf("End of list") != -1 ) break;
-        }
-    }
-    pclose(pipe);
     return result;
 }
 
@@ -298,7 +293,8 @@ bool SecretAudio::makeClient() {
         if (!client) {
 #ifdef _WIN32
             QMessageBox::critical(0,"Error","Please ensure that Live is installed correctly.");
-            exit(0); return;
+            exit(0);
+            return 0;
 #else
             //        QMessageBox::critical(0,"Error","Couldn't connect to JACK. Is it running?");
             //Unimplemented functionality
@@ -372,14 +368,13 @@ void SecretAudio::process() {
         }
     }
     live::Object::endProc();
-#ifdef _WIN32
-    live::Object::beginProc();
-    foreach(Vst* v, Vst::s_vst) {
-        v->PROC_VST();
-    }
-    live::Object::endProc();
-
-#endif
+//#ifdef _WIN32 FIXME : -> null
+//    live::Object::beginProc();
+//    foreach(Vst* v, Vst::s_vst) {
+//        v->PROC_VST();
+//    }
+//    live::Object::endProc();
+//#endif
 
     float* buffer = new float[ nframes ]; //{
     live::Object::beginProc();

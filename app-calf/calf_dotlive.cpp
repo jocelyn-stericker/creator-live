@@ -140,7 +140,7 @@ QByteArray FJReverbApp::save()
 
     float xf=IS_SAVE?x->getRoomSize():0;
     ret IO xf;  /*003*/
-    if (IS_LOAD) x->setRoomSize((RoomSize)xf);
+    if (IS_LOAD) x->setRoomSize((RoomSize)(int)xf);
 
     xf=IS_SAVE?x->getDiffusion():0;
     ret IO xf;  /*004*/

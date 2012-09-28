@@ -39,7 +39,7 @@ signals:
     void changeObserved(bool now,bool before);
 };
 
-template<class U> class LIBLIVECORESHARED_EXPORT Bound : public BoundBase
+template<class U> class /*LIBLIVECORESHARED_EXPORT*/ Bound : public BoundBase
 {
 private:
     U&  s_t;

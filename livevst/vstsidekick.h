@@ -15,8 +15,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #endif
 #ifdef _WIN32
 #include <live/audio>
-#include "vst_p.h"
 #endif
+#include "vst_p.h"
 
 #ifndef VSTSIDEKICK_H
 #define VSTSIDEKICK_H

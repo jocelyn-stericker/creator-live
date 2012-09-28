@@ -7,8 +7,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#ifndef VST_RH
-#define VST_RH
+#ifndef VST_WIN_RH
+#define VST_WIN_RH
 
 #ifdef _WIN32
 
@@ -111,4 +111,4 @@ private:
 
 #endif
 
-#endif //VST_RH
+#endif //VST_WIN_RH

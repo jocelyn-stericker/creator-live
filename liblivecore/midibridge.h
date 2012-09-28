@@ -9,7 +9,7 @@
 namespace live_private {
 
 // FIXME: needs to be own thread.
-class BridgeMidiIn : public QObject, public live::Object {
+class LIBLIVECORESHARED_EXPORT BridgeMidiIn : public QObject, public live::Object {
     Q_OBJECT
     LIVE_MIDI
     LIVE_INPUT
@@ -84,7 +84,7 @@ public slots:
     }
 };
 
-class BridgeMidiOut : public live::Object {
+class LIBLIVECORESHARED_EXPORT BridgeMidiOut : public live::Object {
     LIVE_MIDI
     LIVE_OUTPUT
     QTcpSocket* s_sock;
@@ -112,7 +112,7 @@ private:
     Q_DISABLE_COPY(BridgeMidiOut)
 };
 
-class BridgeClient : public QObject {
+class LIBLIVECORESHARED_EXPORT BridgeClient : public QObject {
     Q_OBJECT
     QTcpSocket* s_sock;
     QList<BridgeMidiIn*> s_ins;

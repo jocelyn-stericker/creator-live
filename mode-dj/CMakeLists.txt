@@ -78,3 +78,11 @@ add_library (mode-dj SHARED
 set_target_properties(mode-dj PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins
 )
+
+if (WIN32)
+target_link_libraries (mode-dj
+    livecore
+    livewidgets
+    ${QT_LIBRARIES}
+)
+endif (WIN32)

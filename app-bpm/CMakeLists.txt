@@ -80,3 +80,11 @@ if (!WIN32)
         LINK_FLAGS "-Wl,-rpath=\'\$\$ORIGIN\'/../lib"
     )
 endif (!WIN32)
+
+if (WIN32)
+target_link_libraries (app-bpm
+    livecore
+    livewidgets
+    ${QT_LIBRARIES}
+)
+endif (WIN32)
