@@ -147,6 +147,7 @@ TrackInputSelect::TrackInputSelect(QWidget*parent, bool popout, bool allowMidi, 
         ui_colourSelect[i]->show();
     }
 
+    ui_topLayout->addSpacerItem(new QSpacerItem(0,0,QSizePolicy::Fixed,QSizePolicy::Expanding));
     bg=new QButtonGroup;
 
     for (int i=0;i<5;i++)
@@ -418,4 +419,12 @@ void TrackInputSelect::changeActiveMode_2(int mode)
         }
     }
     s_selectedFilter=filterHold;
+}
+
+void TrackInputSelect::incrHeight(int z) {
+    if (s_oldHeight) {
+        s_oldHeight += z;
+        setMaximized(false);
+    }
+    else setFixedHeight(height() + z);
 }

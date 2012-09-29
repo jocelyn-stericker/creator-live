@@ -29,8 +29,8 @@ class LIBLIVEWIDGETSSHARED_EXPORT ObjectChooser : public QFrame
     QWidget* ui_topFrame;
     QWidget* ui_bottomFrame;
     bool s_alignedLeft;
-    int s_oldHeight;
 protected:
+    int s_oldHeight;
     int s_maximizedWidth;
     int s_maximizedHeight;
 

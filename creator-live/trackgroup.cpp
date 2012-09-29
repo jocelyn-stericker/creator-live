@@ -42,8 +42,9 @@ void TrackGroup::setLastOutput(live::ObjectPtr obj, live::ObjectPtr loop)
 
 void TrackGroup::newHathor(live::ObjectPtr coutput)
 {
-    if (instLabel)
-        instLabel->setFixedHeight(instLabel->height() + 360);
+    if (instLabel) {
+        instLabel->incrHeight(356);
+    }
 
     Track* t = 0;
     s_hathorView->insert(s_hathorView->count(),t = new Track(s_input,coutput));

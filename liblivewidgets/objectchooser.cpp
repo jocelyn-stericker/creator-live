@@ -48,6 +48,7 @@ void live_widgets::ObjectChooser::setMinimized(bool minimized) {
         qaa->setDuration(100);
         qaa->setEasingCurve(QEasingCurve::InQuad);
         qaa->start(QAbstractAnimation::DeleteWhenStopped);
+        if (minimized) s_oldHeight = 0;
     }
 }
 

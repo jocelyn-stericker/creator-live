@@ -57,8 +57,8 @@ public slots:
     void changeActiveFilter(bool really);
     void changeActiveMode(bool really);
     void changeActiveMode_2(int mode);
+    void incrHeight(int);
 
-public slots:
     void updateObjects();
     void activateSelected();
 
