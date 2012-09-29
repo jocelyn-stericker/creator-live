@@ -11,11 +11,11 @@
 
 cmake_minimum_required(VERSION 2.8)
 
-if (!WIN32)
+if (NOT WIN32)
 list (APPEND test_cpp
     liblivecore.cpp
 )
-endif (!WIN32)
+endif (NOT WIN32)
 list (APPEND test_cpp
     gtest-src/gtest-all.cc
     gtest-src/gtest_main.cc
@@ -25,12 +25,6 @@ list (APPEND test_libs
     livecore
 )
 
-if (!WIN32)
-list (APPEND test_lib
-    pthread
-)
-endif (!WIN32)
-
 ################## PLATFORM-SPECIFIC CODE ##################
 
 if (QNX)
@@ -38,13 +32,15 @@ if (QNX)
         asound
     )
 else (QNX)
-if (!WIN32)
+if (NOT WIN32)
     list (APPEND test_libs
         portmidi
         jack
+        pthread
+        m
         sndfile
     )
-endif (!WIN32)
+endif (NOT WIN32)
 endif (QNX)
 
 ########################## BUILD! ##########################
@@ -86,12 +82,6 @@ target_link_libraries (test
     ${test_libs}
     ${QT_LIBRARIES}
 )
-
-if (!WIN32)
-    set_target_properties(test PROPERTIES
-        LINK_FLAGS "-Wl,-rpath=\'\$\$ORIGIN\'/../lib"
-    )
-endif (!WIN32)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 

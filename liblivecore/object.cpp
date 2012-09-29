@@ -175,7 +175,6 @@ LIBLIVECORESHARED_EXPORT void live::Object::XRUN() {
 void live::Object::aOut(const float *data, int chan, Object *prev) {
     live::lthread::assertAudio();
     for (std::multiset<live::ObjectPtr>::iterator it = aConnections.begin(); it != aConnections.end(); ++it) {
-//    for (int i=0;i<aConnections.size();i++) {
         Q_ASSERT((*it)->aInverseConnections.size());
         if ((*it)->aInverseConnections.size()<=1||!(*it)->s_allowMixer) (*it)->aIn(data,chan,prev);
         else (*it)->mixer_process(data,chan);
@@ -183,6 +182,8 @@ void live::Object::aOut(const float *data, int chan, Object *prev) {
 }
 
 LIBLIVECORESHARED_EXPORT QMap<QString, live::ObjectPtr*>* live::Object::zombies=new QMap<QString, live::ObjectPtr*>;
+
+std::set<live::Object*> live::Object::universe;
 
 live::Object::Object(QString cname, bool isPhysical, bool allowMixer, int chans)
   : x_ptr(QMutex::Recursive)
@@ -201,6 +202,7 @@ live::Object::Object(QString cname, bool isPhysical, bool allowMixer, int chans)
   , mixer_nframes(-1)
   , s_chans(chans)
   {
+    kill_kitten universe.insert(this);
 
     mixer_data = new float*[s_chans];
     mixer_at = new int[s_chans];
@@ -224,6 +226,7 @@ live::Object::Object(QString cname, bool isPhysical, bool allowMixer, int chans)
 }
 
 live::Object::~Object() {
+    kill_kitten universe.erase(this);
     s_isDestroying = 1;
     kill();
     for (int i=0;i<s_chans;i++) delete[] mixer_data[i];
@@ -416,7 +419,7 @@ void live::Object::mixer_process(const float* data, int chan) {
             mixer_data[chan][i]+=data[i];
         if(++mixer_at[chan]==aInverseConnections.size()) {
             aIn(mixer_data[chan],chan, 0);
-            mixer_clear();
+            mixer_clear(chan);
             mixer_at[chan]=0;
         }
     }
@@ -595,6 +598,7 @@ live::Connection::~Connection()
 
 void live::Connection::connect()
 {
+    kill_kitten {
     qDebug() << "Connect" << (a.valid() ? a->name() : "NULL") << "to" << (b.valid() ? b->name() : "NULL") << (t ? (t==1) ? "midi" : "hybrid" : "audio");
 
     if (!a || !b)
@@ -612,10 +616,13 @@ void live::Connection::connect()
     {
         a->hybridConnect(b);
     }
+    }
 }
 
 void live::Connection::disconnect()
 {
+    kill_kitten {
+
     qDebug() << "Disconnect" << (a.valid() ? a->name() : "NULL") << "to" << (b.valid() ? b->name() : "NULL");
 
     if (!a || !b)
@@ -632,5 +639,6 @@ void live::Connection::disconnect()
     else if(t==HybridConnection)
     {
         a->hybridDisconnect(b);
+    }
     }
 }

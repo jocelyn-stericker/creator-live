@@ -141,6 +141,11 @@ void live::AudioTrack::startRecord() {
     Q_ASSERT(!s_record);
     Q_ASSERT(!s_overdub);
     s_record=1;
+    float* a;
+    for (int i = 0; i < s_chans; ++i) {
+        s_container[i]->getRawPointer((unsigned)s_curPos,a,1,0);
+        s_container[i]->pointGraph(s_curPos);
+    }
 }
 
 void live::AudioTrack::stopRecord() {
@@ -153,6 +158,11 @@ void live::AudioTrack::startOverdub() {
     Q_ASSERT(!s_overdub);
     Q_ASSERT(!s_record);
     s_overdub=1;
+    float* a;
+    for (int i = 0; i < s_chans; ++i) {
+        s_container[i]->getRawPointer((unsigned)s_curPos,a,1,0);
+        s_container[i]->pointGraph(s_curPos);
+    }
 }
 
 void live::AudioTrack::stopOverdub() {
@@ -194,6 +204,7 @@ void live::AudioTrack::setPos(float pos) {
 void live::AudioTrack::aIn(const float *in, int chan, Object*) {
     if (!s_playback && !(s_record||s_overdub)) {
         aOut(in, chan, this);
+        return;
     }
     memcpy(m_proc,in,sizeof(float)*nframes);
     aThru(m_proc,chan);

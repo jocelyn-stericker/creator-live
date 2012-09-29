@@ -18,6 +18,9 @@ live_widgets::ObjectChooser::ObjectChooser(QWidget* parent)
   , ui_bottomFrame(0)
   , s_alignedLeft(0)
   , b_trackName(0)
+  , s_oldHeight(0)
+  , s_maximizedWidth(400)
+  , s_maximizedHeight(-1)
   {
     connect(live::object::singleton(),SIGNAL(stockChanged()),this,SLOT(updateObjects()));
 }
@@ -27,8 +30,8 @@ void live_widgets::ObjectChooser::setMinimized(bool minimized) {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     QPropertyAnimation* qaa = new QPropertyAnimation(this, "fixedWidth");
     qaa->setStartValue(width());
-    qaa->setEndValue(minimized ? 55 : 400);
-    qaa->setDuration(200);
+    qaa->setEndValue(minimized ? 55 : s_maximizedWidth);
+    qaa->setDuration(100);
     qaa->setEasingCurve(QEasingCurve::InQuad);
     qaa->start(QAbstractAnimation::DeleteWhenStopped);
     connect(qaa, SIGNAL(destroyed()), this, SIGNAL(doneResizing()));
@@ -36,6 +39,16 @@ void live_widgets::ObjectChooser::setMinimized(bool minimized) {
         connect(qaa, SIGNAL(destroyed()), this, SLOT(setCornersRounded()));
     else
         setCornersRounded(false);
+
+    if ((minimized && s_oldHeight) || (!minimized && s_maximizedHeight != -1)) {
+        if (!minimized) s_oldHeight = height();
+        qaa = new QPropertyAnimation(this, "fixedHeight");
+        qaa->setStartValue(height());
+        qaa->setEndValue(minimized ? s_oldHeight : qMax(height(),s_maximizedHeight));
+        qaa->setDuration(100);
+        qaa->setEasingCurve(QEasingCurve::InQuad);
+        qaa->start(QAbstractAnimation::DeleteWhenStopped);
+    }
 }
 
 void live_widgets::ObjectChooser::resizeEvent(QResizeEvent* e) {

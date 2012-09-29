@@ -25,11 +25,11 @@
 
 #if _WIN32
 #include <Windows.h>
+#endif
 typedef unsigned char     uint8_t;
 typedef unsigned short    uint16_t;
 typedef unsigned int      uint32_t;
 typedef unsigned long int uint64_t;
-#endif
 
 using namespace std;
 

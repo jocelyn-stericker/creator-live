@@ -154,17 +154,21 @@ void AudioOut::init() {
     }
 }
 
-void AudioOut::aIn(const float*data, int chan, live::Object*) {
-    s_processed = 1;
+void AudioOut::aIn(const float*data, int chan, live::Object*p) {
+    if (!chan) {
+        Q_ASSERT (!s_processed);
+        s_processed = 1;
+    }
     Q_ASSERT(chan<chans);
 
-    live_mutex(SecretAudio::x_sa) {
+//    live_mutex(SecretAudio::x_sa) {
         jack_default_audio_sample_t* out0 = (float*) jack_port_get_buffer( s_port_[chan][0], SecretAudio::singleton->nframes );
 
         if ( out0 ) {
             memcpy (out0, data, sizeof (jack_default_audio_sample_t) * SecretAudio::singleton->nframes );
         }
-    }
+
+//    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -357,6 +361,8 @@ bool SecretAudio::delClient() {
 void SecretAudio::process() {
 
     live::Object::beginProc();
+    float* buffer = new float[ nframes ]; //{
+
     foreach( AudioOut* i, outputs ) {
         if ( i ) /*live_mutex(SecretAudio::x_sa)*/ {
             i->s_processed = false;
@@ -364,10 +370,9 @@ void SecretAudio::process() {
     }
     foreach( AudioIn* i, inputs ) {
         if ( i ) /*live_mutex(SecretAudio::x_sa)*/ {
-            i->proc();
+            kill_kitten i->proc();
         }
     }
-    live::Object::endProc();
 //#ifdef _WIN32 FIXME : -> null
 //    live::Object::beginProc();
 //    foreach(Vst* v, Vst::s_vst) {
@@ -376,23 +381,23 @@ void SecretAudio::process() {
 //    live::Object::endProc();
 //#endif
 
-    float* buffer = new float[ nframes ]; //{
-    live::Object::beginProc();
     foreach( AudioNull* i, nulls ) {
         for ( int j = 0; j < i->chans; j++ ) {
             for (unsigned k=0; k<nframes; k++) {
                 buffer[k]=0.0;
             }
-            i->aIn(buffer, j, 0);
+            kill_kitten i->aIn(buffer, j, 0);
         }
-        foreach( AudioOut* i, outputs ) {
-            if ( i && !i->s_processed) /*live_mutex(SecretAudio::x_sa)*/ {
-                for (int j = 0; j < i->chans; ++j) {
-                    for (unsigned k=0; k<nframes; k++) {
-                        buffer[k]=0.0;
-                    }
-                    i->aIn(buffer, j, 0);
+
+    }
+
+    foreach( AudioOut* i, outputs ) {
+        if ( i && !i->s_processed) /*live_mutex(SecretAudio::x_sa)*/ {
+            for (int j = 0; j < i->chans; ++j) {
+                for (unsigned k=0; k<nframes; k++) {
+                    buffer[k]=0.0;
                 }
+                kill_kitten i->aIn(buffer, j, 0);
             }
         }
     }

@@ -26,7 +26,7 @@ Track::Track(live::ObjectPtr cinput, live::ObjectPtr coutput)
   , x_me(QMutex::Recursive)
   , s_id(++s_lastId)
   , s_busy(0)
-  , ui_outputName(0)
+  , ui_outputChooser(0)
   , ui_chainWidget(new ChainTypeWidget(this))
   { initialize(); }
 
@@ -38,7 +38,7 @@ Track::Track(Ambition* bp)
   , x_me(QMutex::Recursive)
   , s_id(-1)
   , s_busy(0)
-  , ui_outputName(0)
+  , ui_outputChooser(0)
   , ui_chainWidget(new ChainTypeWidget(this))
   { initialize(); }
 
@@ -60,7 +60,7 @@ void Track::initialize() {
 
 Track::~Track() {
     live_mutex(x_me) {
-        delete ui_outputName;
+        delete ui_outputChooser;
         foreach(QWidget* a,s_appUi_) {
             delete a;
         }
@@ -118,7 +118,7 @@ void Track::makeUiPipeline() {
             ui->show();
         }
         if (remCount) {
-            int widthForRemaining = (width() - sum - (ui_outputName ? ui_outputName->width() : 0) - 3) / remCount;
+            int widthForRemaining = (width() - sum - (ui_outputChooser ? ui_outputChooser->width() : 0) - 3) / remCount;
             for (int i = 0; i < s_appUi_.size(); ++i) {
                 if (sizes[i] == -1)
                     sizes[i] = widthForRemaining;
@@ -135,8 +135,8 @@ void Track::makeUiPipeline() {
 
         delete[] sizes;
 
-        if (ui_outputName) {
-            ui_outputName->setGeometry(width() - ui_outputName->width(), 0, ui_outputName->width(), height());
+        if (ui_outputChooser) {
+            ui_outputChooser->setGeometry(width() - ui_outputChooser->width(), 0, ui_outputChooser->width(), height());
         }
         setGeometry(geometry());
         remakeChainWidget();
@@ -433,29 +433,30 @@ int Track::getMaximumWidthFor(QWidget* w) {
 
 void Track::setOutputChooser(live_widgets::ObjectChooser* a) {
     live_mutex(x_me) {
-        if (ui_outputName)
-            ui_outputName->deleteLater();
+        if (ui_outputChooser)
+            ui_outputChooser->deleteLater();
 
-        ui_outputName = a;
+        ui_outputChooser = a;
 
-        if (!ui_outputName) {
+        if (!ui_outputChooser) {
             resizeEvent();
             return;
         }
 
-        ui_outputName->b_trackName = s_ambition.b_output;
+        ui_outputChooser->b_trackName = s_ambition.b_output;
 
         connect(&s_ambition.b_output,
                 SIGNAL(changeObserved(QString,QString)),
-                &ui_outputName->b_trackName,
+                &ui_outputChooser->b_trackName,
                 SLOT(set(QString)));
 
-        ui_outputName->setParent(this);
-        ui_outputName->setObjectName("ui_outputName");
-        ui_outputName->show();
-        connect(ui_outputName, SIGNAL(resized()), this, SLOT(updateGeometriesIfNeeded()));
-        connect(ui_outputName, SIGNAL(objectChosen(live::ObjectPtr)), this, SLOT(setOutput(live::ObjectPtr)));
-        connect(ui_outputName, SIGNAL(doneResizing()), this, SLOT(updateGeometriesOrDie()));
+        ui_outputChooser->setParent(this);
+        ui_outputChooser->setObjectName("ui_outputName");
+        ui_outputChooser->show();
+        connect(ui_outputChooser, SIGNAL(resized()), this, SLOT(updateGeometriesIfNeeded()));
+        connect(ui_outputChooser, SIGNAL(objectChosen(live::ObjectPtr)), this, SLOT(setOutput(live::ObjectPtr)));
+        connect(ui_outputChooser, SIGNAL(objectChosen(live::ObjectPtr,live::ObjectPtr)), this, SLOT(setOutput(live::ObjectPtr,live::ObjectPtr)));
+        connect(ui_outputChooser, SIGNAL(doneResizing()), this, SLOT(updateGeometriesOrDie()));
         updateGeometriesOrDie();
     }
 }

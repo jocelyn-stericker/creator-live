@@ -16,7 +16,7 @@ using namespace live;
 SequencerApp::SequencerApp(QString name,MidiTrack*cmidiTrack,AudioTrack*caudioTrack,bool newId)
   : Object(name,false,false,2)
   , s_midiTrack(cmidiTrack)
-  , s_midiTrackConnection(cmidiTrack,this, live::HybridConnection)
+  , s_midiTrackConnection(cmidiTrack,this, live::MidiConnection)
   , s_audioTrack(caudioTrack)
   , s_audioTrackConnection(caudioTrack,this, live::HybridConnection)
   , s_cheat(0)

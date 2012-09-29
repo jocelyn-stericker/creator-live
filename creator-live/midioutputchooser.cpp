@@ -102,7 +102,7 @@ void MidiOutputChooser::step2()
         s_ui->customPage->layout()->addWidget(w = instrument::interfaces()[s_ui->Bwidget->currentRow()]->selectionWidget(ObjectPtr(), ObjectPtr()));
         w->setParent(s_ui->customPage);
         connect(w, SIGNAL(instrumentUpdated(live::ObjectPtr, live::ObjectPtr)), this, SIGNAL(objectChosen(live::ObjectPtr, live::ObjectPtr)));
-        connect(w, SIGNAL(instrumentUpdated(live::ObjectPtr, live::ObjectPtr)), this, SLOT(deleteLater()));
+        connect(w, SIGNAL(instrumentUpdated(live::ObjectPtr, live::ObjectPtr)), this, SLOT(setMinimized()));
 
         s_busy = false;
     }

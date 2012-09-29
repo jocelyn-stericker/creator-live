@@ -34,7 +34,7 @@ public:
 
     Metronome* metronome;               /*003*/
     KeySignature* keySignature;         /*004*/
-    QMap<ObjectPtr,MidiFilter*> midiMaps;   /*005*/
+    QMap<qint32,MidiFilter*> midiMaps;   /*005*/
     QString name;                       /*006*/
     QString songName;                   /*007*/
     QStringList colours;

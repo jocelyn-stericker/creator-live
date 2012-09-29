@@ -31,7 +31,7 @@ void TrackGroup::setLastOutput(live::ObjectPtr obj, live::ObjectPtr loop)
     for (int i=s_hathorView->count()-1;(i!=-1)&&!ok;--i) {
         if (dynamic_cast<const Track*>(s_hathorView->at(i))) {
             static_cast<Track*>((*s_hathorView)[i])->setOutput(obj, loop);
-            static_cast<Track*>((*s_hathorView)[i])->setOutputChooser(dynamic_cast<AudioOutputChooser*>(sender()));
+            static_cast<Track*>((*s_hathorView)[i])->setOutputChooser(dynamic_cast<live_widgets::ObjectChooser*>(sender()));
             ok=1;
         }
     }

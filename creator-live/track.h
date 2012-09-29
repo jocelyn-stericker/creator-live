@@ -48,7 +48,7 @@ public:
 
     bool s_busy;
 
-    live_widgets::ObjectChooser* ui_outputName;
+    live_widgets::ObjectChooser* ui_outputChooser;
     live_widgets::ChainTypeWidget* ui_chainWidget;
 
     Track(live::ObjectPtr cinput, live::ObjectPtr coutput);
@@ -98,7 +98,7 @@ private:
       , x_me(QMutex::Recursive)
       , s_id(-1)
       , s_busy(0)
-      , ui_outputName(0)
+      , ui_outputChooser(0)
       , ui_chainWidget(0)
       { TCRASH();
     }

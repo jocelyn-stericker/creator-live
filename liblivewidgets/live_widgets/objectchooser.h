@@ -23,11 +23,16 @@ class LIBLIVEWIDGETSSHARED_EXPORT ObjectChooser : public QFrame
 {
     Q_OBJECT
     Q_PROPERTY(int fixedWidth READ width WRITE setFixedWidth)
+    Q_PROPERTY(int fixedHeight READ height WRITE setFixedHeight)
 
     live_widgets::ToolButton* ui_minimized;
     QWidget* ui_topFrame;
     QWidget* ui_bottomFrame;
     bool s_alignedLeft;
+    int s_oldHeight;
+protected:
+    int s_maximizedWidth;
+    int s_maximizedHeight;
 
 public:
     live::Bound<QString> b_trackName;

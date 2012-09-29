@@ -234,14 +234,16 @@ protected:
         quint32 mixer_nframes;
         int* mixer_at;
     void mixer_resetStatus();
-    inline void mixer_clear() {
-        Q_ASSERT(mixer_data[0]&&mixer_data[1]);
-        for(int i=0;i<s_chans;i++) std::fill(mixer_data[i],&mixer_data[i][mixer_nframes],0.0f);
+    inline void mixer_clear(int chan) {
+        Q_ASSERT(mixer_data[chan]);
+        std::fill(mixer_data[chan],&mixer_data[chan][mixer_nframes],0.0f);
     }
 
     void mixer_process(const float* data, int chan);
 
     static bool ss_XRUN;
+
+    static std::set<Object*> universe;
 
     friend class Connection;
 
@@ -289,7 +291,7 @@ public:
         return uiThreadId == QThread::currentThreadId();
     }
 
-#define NDEBUG
+//#define NDEBUG
 #ifndef NDEBUG
     static void assert_thread(const Qt::HANDLE& thread, const char* str);
 

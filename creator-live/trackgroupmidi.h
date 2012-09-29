@@ -18,26 +18,14 @@ typedef QColor QColour;
 class TrackGroupMidi : public TrackGroup
 {
     Q_OBJECT
-    int s_selectedFilter;       /*005*/
-    int s_selectedMode;         /*006*/
 public:
     explicit TrackGroupMidi(live::ObjectPtr  c_input, QWidget* c_parent, bool empty=0);
 
     QHBoxLayout* ui_mainLayout;
-    QGraphicsScene* ui_instScene;
-    QGraphicsView* ui_instView;
-    live_widgets::ToolButton* ui_colourSelect[5];
-    live_widgets::ToolButton* ui_modeSelect[5];
-    live::MidiFilter* s_midiFilters[5];   /*007*/
 signals:
 
 public slots:
     void newHathorAuto();
-    void reactToPianoKeyUpdate();
-    void drawKeyboard();
-    void changeActiveFilter(bool really);
-    void changeActiveMode(bool really);
-    void changeActiveMode_2(int mode);
 
 public:
     static TrackGroupMidi* load(const QByteArray&str,QWidget*c_parent);

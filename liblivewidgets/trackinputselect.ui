@@ -340,7 +340,7 @@ border-bottom-right-radius: 0px;</string>
     </widget>
    </item>
    <item>
-    <widget class="QFrame" name="frame">
+    <widget class="QStackedWidget" name="stackedWidget">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -354,7 +354,9 @@ border-bottom-right-radius: 0px;</string>
     font-weight: 200;
 }
 
-
+QWidget {
+background: #1c1c1c;
+}
 
  QComboBox {
      border: 1px solid #141414;
@@ -736,6 +738,16 @@ border-bottom-right-radius: 4px;
 
 QListWidget {
 background: #1c1c1c;
+}
+
+#stackedWidgetPage1 {
+border-top-right-radius: 4px;
+border-bottom-right-radius: 4px;
+}
+
+#piano {
+border-top-right-radius: 4px;
+border-bottom-right-radius: 4px;
 }</string>
      </property>
      <property name="frameShape">
@@ -744,79 +756,86 @@ background: #1c1c1c;
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <property name="leftMargin">
-       <number>0</number>
+     <widget class="QWidget" name="stackedWidgetPage1" native="true">
+      <property name="autoFillBackground">
+       <bool>false</bool>
       </property>
-      <property name="topMargin">
-       <number>5</number>
+      <property name="styleSheet">
+       <string notr="true"/>
       </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>5</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="label_5">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>345</width>
-          <height>27</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>345</width>
-          <height>27</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#ffffff;&quot;&gt;Choose an Input. &lt;/span&gt;&lt;span style=&quot; font-size:12pt; color:#adadad;&quot;&gt;See Live &amp;gt; &amp;quot;Audio Setup&amp;quot;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QListWidget" name="input_combo">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>345</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>345</width>
-          <height>350</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>handelgotdlig</family>
-          <weight>25</weight>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">* {
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>5</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>5</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label_5">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>345</width>
+           <height>27</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>345</width>
+           <height>27</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#ffffff;&quot;&gt;Choose an Input. &lt;/span&gt;&lt;span style=&quot; font-size:12pt; color:#adadad;&quot;&gt;See Live &amp;gt; &amp;quot;Audio Setup&amp;quot;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QListWidget" name="input_combo">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>345</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>345</width>
+           <height>350</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>handelgotdlig</family>
+           <weight>25</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">* {
 spacing: 0px;
 color: black;
 }
@@ -842,30 +861,32 @@ background-color: #5b5a5b
 QListWidget::item::hover {
    background-color: #5b5a5b;
 }</string>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::NoFrame</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Plain</enum>
-        </property>
-        <property name="resizeMode">
-         <enum>QListView::Fixed</enum>
-        </property>
-        <property name="spacing">
-         <number>3</number>
-        </property>
-        <property name="selectionRectVisible">
-         <bool>false</bool>
-        </property>
-        <item>
-         <property name="text">
-          <string>Loading...</string>
          </property>
-        </item>
-       </widget>
-      </item>
-     </layout>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="resizeMode">
+          <enum>QListView::Fixed</enum>
+         </property>
+         <property name="spacing">
+          <number>3</number>
+         </property>
+         <property name="selectionRectVisible">
+          <bool>false</bool>
+         </property>
+         <item>
+          <property name="text">
+           <string>Loading...</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="piano"/>
     </widget>
    </item>
   </layout>

@@ -373,7 +373,7 @@ Physical Ports
 /*/////////////////////////////////////////////////////////////////////////////////////
 
 MidiIn::MidiIn(QString ccname,int devId)
-  : live::Object(ccname,true,false, 2)
+  : live::Object(ccname,true,true, 2)
   , valid(1)
   , deviceId(devId)
   , s_null(live::audio::null(2))

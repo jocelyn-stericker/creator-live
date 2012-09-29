@@ -695,25 +695,17 @@ QByteArray song::save()
     /*005B*/
     for (int i=0;i<mapsize;i++)
     {
-        QString ns=IS_SAVE?x->midiMaps.keys()[i]->name():"";
-        /*005B_1*/ P_QSTRING(ns);
+        qint32 ns=IS_SAVE?x->midiMaps.keys()[i]:0;
+        /*005B_1*/ P_INT32(ns);
         qint32 ni=IS_SAVE?x->midiMaps.values()[i]->s_id:-1;
         /*005B_2*/ P_INT32(ni);
         if (IS_LOAD)
         {
             live::ObjectPtr search=0;
             midi::refresh();  //i.e., refresh
-            for (int j=0;j<object::get(MidiOnly|InputOnly).size();j++)
-            {
-                if (ns==object::get(MidiOnly|InputOnly)[j]->name())
-                {
-                    search=object::get(MidiOnly|InputOnly)[j];
-                    break;
-                }
-            }
             Q_ASSERT(search);
             Q_ASSERT(ni!=-1&&ni<MidiFilter::_u.size());
-            x->midiMaps.insertMulti(search,MidiFilter::_u[ni]);
+            x->midiMaps.insertMulti(ns,MidiFilter::_u[ni]);
         }
     }
 

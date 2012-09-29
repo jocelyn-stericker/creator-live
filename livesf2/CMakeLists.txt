@@ -70,12 +70,12 @@ set_target_properties(livesf2 PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins
 )
 
+if (WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DLIVESF2_LIBRARY=1")
 target_link_libraries (livesf2
     C:/QtSDK/Desktop/Qt/4.8.1/msvc2010/lib/fluidsynth.lib
     livecore
     ${QT_LIBRARIES}
 )
 
-if (WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DLIVESF2_LIBRARY=1")
 endif (WIN32)

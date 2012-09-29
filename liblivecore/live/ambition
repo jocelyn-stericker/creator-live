@@ -119,7 +119,7 @@ public:
                     for(int i=0;i<s_chain.size();i++) {
                         if(stage==0&&s_chain[i]->isAudioObject()) {
                             qDebug() << "Stage 0";
-                            s_connections.push_back(new Connection(prev,s_output,HybridConnection));
+                            s_connections.push_back(new Connection(prev,s_output,MidiConnection));
                             s_connections.push_back(new Connection(s_output,s_chain[i],AudioConnection));
 
                             s_chain[i]->s_aOn=1;
@@ -163,7 +163,7 @@ public:
                         prev=s_chain[i];
                     }
                     if(stage==0) {
-                        s_connections.push_back(new Connection(prev,s_output,HybridConnection));
+                        s_connections.push_back(new Connection(prev,s_output,MidiConnection));
                         s_connections.push_back(new Connection(s_output,s_loopbackOut,AudioConnection));
                     } else {
                         s_connections.push_back(new Connection(prev,s_loopbackOut,AudioConnection));
@@ -189,7 +189,7 @@ public:
                         mprev=s_chain[i];
                     }
                     if(!s_loopbackOut.valid()) {
-                        s_connections.push_back(new Connection(mprev,s_output,HybridConnection));
+                        s_connections.push_back(new Connection(mprev,s_output,MidiConnection));
                     } else {
                         s_connections.push_back(new Connection(mprev,s_output,MidiConnection));
                         s_connections.push_back(new Connection(s_output,s_loopbackOut,AudioConnection));

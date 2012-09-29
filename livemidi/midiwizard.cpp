@@ -49,9 +49,13 @@ MidiWizard::MidiWizard(QWidget *parent) :
     connect(ui->toolButton_next_4, SIGNAL(clicked()), this, SLOT(next()));
 
     connect(ui->listWidget_midi, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(next()));
+    connect(ui->listWidget_midi, SIGNAL(clicked(QModelIndex)), this, SLOT(next()));
     connect(ui->listWidget_out, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(next()));
+    connect(ui->listWidget_out, SIGNAL(clicked(QModelIndex)), this, SLOT(next()));
     connect(ui->listWidget_programs, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(next()));
+    connect(ui->listWidget_programs, SIGNAL(clicked(QModelIndex)), this, SLOT(next()));
     connect(ui->listWidget_return, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(next()));
+    connect(ui->listWidget_return, SIGNAL(clicked(QModelIndex)), this, SLOT(next()));
 }
 
 MidiWizard::~MidiWizard()

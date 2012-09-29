@@ -510,23 +510,25 @@ QByteArray TrackGroupMidi::save()
     }
     x->setObjectName("TrackGroup_"+QString::number(x->s_id));
 
+    /// FIXME ///
+
     /*005*/
-    P_INT32(x->s_selectedFilter);
+//    P_INT32(x->s_selectedFilter);
 
     /*006*/
-    P_INT32(x->s_selectedMode);
+//    P_INT32(x->s_selectedMode);
 
     /*007*/
-    for (int i=0;i<5;i++) {
-        if (IS_SAVE) {
-            xba=x->s_midiFilters[i]->save();
-        }
-        ret IO xba;
-        if (IS_LOAD) {
-            x->s_midiFilters[i]=MidiFilter::load(xba);
-        }
-    }
-    x->changeActiveMode_2(x->s_selectedMode);
+//    for (int i=0;i<5;i++) {
+//        if (IS_SAVE) {
+//            xba=x->s_midiFilters[i]->save();
+//        }
+//        ret IO xba;
+//        if (IS_LOAD) {
+//            x->s_midiFilters[i]=MidiFilter::load(xba);
+//        }
+//    }
+//    x->changeActiveMode_2(x->s_selectedMode);
 
     /*008*/
     (verify(ret,(QString)"END TrackGroupMidi"));
