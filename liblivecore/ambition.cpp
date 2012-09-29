@@ -19,6 +19,7 @@ Ambition::Ambition(ObjectPtr cinput, ObjectChain chain, ObjectPtr coutput
   , s_loopbackOut(cloop)
   , s_connections()
   , x_ambition(QMutex::Recursive)
+  , mef(new MidiEventFilter)
   , b_output(s_output->name())
   { b_output = s_output->name();
     setChain(s_chain);

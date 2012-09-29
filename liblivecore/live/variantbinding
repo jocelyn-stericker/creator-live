@@ -99,7 +99,7 @@ public:
         return operator=(that.ref());
     }
 
-    void operator==(const U&that)   // fast
+    bool operator==(const U&that)   // fast
     {
         return(s_t==that);
     }

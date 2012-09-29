@@ -39,6 +39,8 @@ public:
     QStringList all;
     TrackInputSelect(QWidget*parent, bool popout, bool allowMidi, bool allowAudio);
 
+    int inputId() { return s_inputId; }
+
     live::Bound<QString> b_trackName;
     live::Bound<bool> b_audio;  // else midi
 

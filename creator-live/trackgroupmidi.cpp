@@ -41,8 +41,11 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
     ui_mainLayout->addWidget(s_hathorView);
 
     s_hathorView->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-    if (!empty)
-        s_hathorView->push_back(new Track(c_input,midi::null()));
+    if (!empty) {
+        Track* trk=new Track(c_input,midi::null());
+        trk->s_ambition.setInputId(instLabel->inputId(),0);
+        s_hathorView->push_back(trk);
+    }
     s_hathorView->back()->setMinimumWidth(400);
     s_hathorView->compact=1;
     s_hathorView->updateItems();

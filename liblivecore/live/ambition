@@ -14,10 +14,41 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live/object>
 #include <live/variantbinding>
 #include <live/midieventcounter>
+#include <live/songsystem>
 
 #include <iostream>
 
 namespace live {
+
+class MidiEventFilter : public live::Object {
+    int id;
+    int filterId;
+public:
+    LIVE_MIDI
+    LIVE_EFFECT
+    MidiEventFilter() : live::Object("MidiFilter", false, false, 2), id(0), filterId(0) {}
+
+    void setId(int i) { id = i; }
+    void setFilter(int i) { filterId= i; }
+
+    void mIn(const Event *data, ObjectChain *p) {
+        ((live::song::current()->midiMaps.value(id)->b_filterForNote[data->note()]==filterId));
+        bool ok = 0;
+        if (((data->simpleStatus() != live::Event::NOTE_ON) && (data->simpleStatus() != live::Event::NOTE_OFF))) {
+            ok = 1;
+        }
+        if (live::song::current()->midiMaps.value(id))
+            if (live::song::current()->midiMaps.value(id)->b_filterForNote[data->note()] == filterId) {
+                ok = 1;
+            }
+        if (ok) {
+            p->push_back(this);
+            mOut(data,p);
+            p->pop_back();
+        }
+    }
+
+};
 
 class LIBLIVECORESHARED_EXPORT Ambition
 {
@@ -28,6 +59,7 @@ class LIBLIVECORESHARED_EXPORT Ambition
     QList<Connection*> s_connections;
     friend class live::Object;
     QMutex x_ambition;
+    ObjectPtr mef;
 public:
     RELOADABLE(Ambition)
     live::Bound<QString> b_output;
@@ -115,7 +147,8 @@ public:
                 if(ok) {
                     qDebug() << "(Done)";
                     stage=0;
-                    live::ObjectPtr prev=s_input;
+                    s_connections.push_back(new Connection(s_input,mef,HybridConnection));
+                    live::ObjectPtr prev=mef;
                     for(int i=0;i<s_chain.size();i++) {
                         if(stage==0&&s_chain[i]->isAudioObject()) {
                             qDebug() << "Stage 0";
@@ -182,7 +215,8 @@ public:
                 for(int i=0;i<s_chain.size();i++) if(!s_chain[i]->isMidiObject()) ok=0;
                 if(ok) {
                     qDebug() << "(Done)";
-                    live::ObjectPtr mprev=s_input;
+                    s_connections.push_back(new Connection(s_input,mef,HybridConnection));
+                    live::ObjectPtr mprev=mef;
                     for(int i=0;i<s_chain.size();i++)
                     {
                         s_connections.push_back(new Connection(mprev,s_chain[i],HybridConnection));
@@ -296,6 +330,12 @@ public:
         return s_chain[b];
     }
 
+    void setInputId(int i, int t)
+    {
+        cast<MidiEventFilter*>(mef)->setId(i);
+        cast<MidiEventFilter*>(mef)->setFilter(t);
+    }
+
 private:
     Ambition(const live::Ambition&)
       : s_input()
@@ -304,6 +344,7 @@ private:
       , s_loopbackOut()
       , s_connections()
       , x_ambition(QMutex::Recursive)
+      , mef(new MidiEventFilter)
       , b_output()
       { TCRASH();
     }

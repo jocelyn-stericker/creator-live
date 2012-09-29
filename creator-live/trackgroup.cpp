@@ -47,6 +47,9 @@ void TrackGroup::newHathor(live::ObjectPtr coutput)
 
     Track* t = 0;
     s_hathorView->insert(s_hathorView->count(),t = new Track(s_input,coutput));
+
+    t->s_ambition.setInputId(instLabel->inputId(), s_hathorView->count()-1);
+
     s_hathorView->updateItems();
     if (coutput->isMidiObject())
         t->setOutputChooser(new MidiOutputChooser);
