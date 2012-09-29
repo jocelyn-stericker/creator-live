@@ -401,7 +401,7 @@ border-bottom-right-radius: 0px;
 }</string>
   </property>
   <property name="currentIndex">
-   <number>0</number>
+   <number>1</number>
   </property>
   <widget class="QWidget" name="wizardPage1">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -540,7 +540,36 @@ border-bottom-left-radius: 0px;</string>
      </widget>
     </item>
     <item>
-     <widget class="QListWidget" name="listWidget_out"/>
+     <widget class="QListWidget" name="listWidget_out">
+      <property name="styleSheet">
+       <string notr="true">* {
+spacing: 0px;
+color: black;
+}
+
+QListWidget {
+   alignment: center;
+   spacing: 23;
+}
+
+QListWidget::item {
+   height: 36px;
+   border: 1px solid #141414;
+   border-radius: 4px;
+   background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #3c3c3c, stop: 1 #262627);
+    color: #e8e8e8;
+}
+
+QListWidget::item::selected {
+background-color: #5b5a5b
+}
+
+
+QListWidget::item::hover {
+   background-color: #5b5a5b;
+}</string>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QLabel" name="label_8">
@@ -681,7 +710,41 @@ border-bottom-left-radius: 0px;</string>
      </widget>
     </item>
     <item>
-     <widget class="QListWidget" name="listWidget_loop"/>
+     <widget class="QListWidget" name="listWidget_loop">
+      <property name="styleSheet">
+       <string notr="true">* {
+spacing: 0px;
+color: black;
+}
+
+QListWidget {
+   alignment: center;
+   spacing: 23;
+}
+
+QListWidget::item {
+   height: 36px;
+   border: 1px solid #141414;
+   border-radius: 4px;
+   background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #3c3c3c, stop: 1 #262627);
+    color: #e8e8e8;
+}
+
+QListWidget::item::selected {
+background-color: #5b5a5b
+}
+
+
+QListWidget::item::hover {
+   background-color: #5b5a5b;
+}</string>
+      </property>
+      <item>
+       <property name="text">
+        <string>A</string>
+       </property>
+      </item>
+     </widget>
     </item>
     <item>
      <widget class="QLabel" name="label_10">

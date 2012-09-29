@@ -656,7 +656,7 @@ background: #1c1c1c;
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <widget class="QWidget" name="stackedWidgetPage1" native="true">
+     <widget class="QWidget" name="stackedWidgetPage1">
       <layout class="QVBoxLayout" name="verticalLayout">
        <property name="spacing">
         <number>0</number>
@@ -679,7 +679,8 @@ background: #1c1c1c;
           </size>
          </property>
          <property name="styleSheet">
-          <string notr="true">padding-right: 9px;</string>
+          <string notr="true">padding-right: 9px;
+border-bottom-left-radius: 0px;</string>
          </property>
          <property name="text">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; color:#ffffff;&quot;&gt;Choose a kind of &lt;/span&gt;&lt;span style=&quot; font-size:12pt; color:#adadad;&quot;&gt;output.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -717,9 +718,13 @@ background: #1c1c1c;
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">* {
+          <string notr="true">#BWidget {
+}
+* {
 spacing: 0px;
 color: black;
+   border-top-left-radius: 0px;
+
 }
 
 QListWidget {

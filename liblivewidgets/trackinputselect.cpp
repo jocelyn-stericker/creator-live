@@ -147,7 +147,7 @@ TrackInputSelect::TrackInputSelect(QWidget*parent, bool popout, bool allowMidi, 
         ui_colourSelect[i]->show();
     }
 
-    ui_topLayout->addSpacerItem(new QSpacerItem(0,0,QSizePolicy::Fixed,QSizePolicy::Expanding));
+    ui_topLayout->addSpacerItem(new QSpacerItem(0,20,QSizePolicy::Fixed,QSizePolicy::Fixed));
     bg=new QButtonGroup;
 
     for (int i=0;i<5;i++)
