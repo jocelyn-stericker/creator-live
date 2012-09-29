@@ -238,8 +238,8 @@ void SequencerGraph::updateMidiData(float t1, float t2)
             {
                 float buddyTime=((float)ev->buddy->time.toTime_ms()/1000.0f);
 
-                QPen pen( QColor( 0, 0, 0, ev->buddy->velocity()*2 ) );
-                QBrush brush( QColor( 0, 0, 0, ev->buddy->velocity()*2 ) );
+                QPen pen( QColor( 125, 0, 0, ev->buddy->velocity()*2 ) );
+                QBrush brush( QColor( 125, 0, 0, ev->buddy->velocity()*2 ) );
                 painter.setBrush( brush );
                 painter.setPen( pen );
                 if (buddyTime*(float)sampleRate-s_initial>=0 &&

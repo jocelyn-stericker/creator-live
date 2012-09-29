@@ -24,6 +24,7 @@ SequencerApp::SequencerApp(QString name,MidiTrack*cmidiTrack,AudioTrack*caudioTr
   , s_id(newId?SequencerSys::newIdForTrack():-1)
   , s_audioOverdubForced(0)
   , s_scale(2646000)
+  , x_sequencer(QMutex::Recursive)
 {
     Q_ASSERT(name=="SEQUENCER"||name=="LOOPER");    //awkward inheritance
 }

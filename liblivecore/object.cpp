@@ -338,20 +338,19 @@ void live::Object::audioDisconnect(const live::ObjectPtr& bl) {
         break;
     }
 
-    kill_kitten {
-        for (std::multiset<live::ObjectPtr>::iterator it = a->aConnections.begin(); it != a->aConnections.end(); ++it) {
-            if ((*it).data()==b) {
-                a->aConnections.erase(it);
-                break;
-            }
-        }
-        for (std::multiset<live::ObjectPtr>::iterator it = b->aInverseConnections.begin(); it != b->aInverseConnections.end(); ++it) {
-            if ((*it).data()==a) {
-                b->aInverseConnections.erase(it);
-                break;
-            }
+    for (std::multiset<live::ObjectPtr>::iterator it = a->aConnections.begin(); it != a->aConnections.end(); ++it) {
+        if ((*it).data()==b) {
+            a->aConnections.erase(it);
+            break;
         }
     }
+    for (std::multiset<live::ObjectPtr>::iterator it = b->aInverseConnections.begin(); it != b->aInverseConnections.end(); ++it) {
+        if ((*it).data()==a) {
+            b->aInverseConnections.erase(it);
+            break;
+        }
+    }
+
     b->mixer_resetStatus();
 
     b->deleteConnection();
@@ -407,8 +406,10 @@ public:
 
 void live::Object::mixer_resetStatus() {
 //    live_mutex(x_mixers) {
-        for (int i = 0; i < s_chans; ++i)
+        for (int i = 0; i < s_chans; ++i) {
+            mixer_clear(i);
             mixer_at[i] = 0;
+        }
 //    }
 }
 

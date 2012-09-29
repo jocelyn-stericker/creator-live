@@ -37,7 +37,7 @@ int LooperApp::pos() const
 
 void LooperApp::modeChanged(int now)
 {
-    switch (now) {
+    live_mutex(x_sequencer) switch (now) {
     case Off:
         if (isPlaying())
             stopPlayback();
@@ -62,8 +62,8 @@ void LooperApp::modeChanged(int now)
     case Recording:
         b_loopLength=0;
     case Replacing:
-//        s_audioTrack->clearData();
-//        s_midiTrack->clearData();
+        s_audioTrack->clearData();
+        s_midiTrack->clearData();
         if (now==Replacing) {
             b_loopMode=Overdubbing;
             return;
@@ -108,7 +108,7 @@ void LooperApp::modeChanged(int now)
 
 void LooperApp::looperLogic()
 {
-    if (isPlaying())
+    live_mutex(x_sequencer) if (isPlaying())
     {
         int curpos=pos();
         if (curpos>b_loopLength)
@@ -123,11 +123,9 @@ void LooperApp::looperLogic()
                 b_loopMode=Playing;
             case Playing:
             case Overdubbing:
-                kill_kitten {
                     stopPlayback();
                     setPos(0);
                     startPlayback();
-                }
                 break;
             case Multiplying:
                 Q_ASSERT(0);    //don't feel like it right now.
@@ -141,7 +139,10 @@ void LooperApp::looperLogic()
 
 void LooperApp::aIn(const float *data, int chan, Object*p)
 {
-    looperLogic();
+    int curpos=pos();
+    if (curpos>b_loopLength)
+        QMetaObject::invokeMethod(this, "looperLogic", Qt::QueuedConnection);
+//    looperLogic();
     if (p==s_audioTrack)
     {
         SequencerApp::aIn(data,chan,p);
