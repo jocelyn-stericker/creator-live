@@ -20,7 +20,7 @@ class TrackGroupAudio : public TrackGroup
 protected:
     QHBoxLayout* mainLayout;
 public:
-    explicit TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent,bool empty=0);
+    explicit TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent,bool empty=0, live_widgets::ObjectChooser* oc=0);
     ~TrackGroupAudio();
 
 public slots:

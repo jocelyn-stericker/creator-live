@@ -52,6 +52,10 @@ public:
 
     void drawKeyboard();
 
+    void setPopup(bool);
+    void showAudio(bool);
+    void showMidi(bool);
+
 public slots:
     void reactToPianoKeyUpdate();
     void changeActiveFilter(bool really);

@@ -19,16 +19,23 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 using namespace live;
 using namespace live_widgets;
 
-TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
-  : TrackGroup(c_input,c_parent)
+TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty, ObjectChooser *oc)
+  : TrackGroup(c_input,c_parent, oc)
   , ui_mainLayout(new QHBoxLayout)
   { ui_mainLayout->setContentsMargins(0, 0, 0, 0);
+    parentWidget()->setUpdatesEnabled(false);
     s_hathorView = new VScrollContainer(0);
     s_hathorView->setObjectName("s_hathorView");
     s_hathorView->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
 
-    instLabel = new live_widgets::TrackInputSelect(this, false, true, false);
+    Q_ASSERT(instLabel);
+//    instLabel = new live_widgets::TrackInputSelect(this, false, true, false);
+  //     TrackInputSelect* ni=new TrackInputSelect(ui->sac_contents, true, true, true);
+
+    instLabel->showMidi(true);
+    instLabel->showAudio(false);
+    instLabel->setPopup(false);
     instLabel->b_trackName = c_input->name();
     instLabel->b_audio = false;
     instLabel->setMinimumHeight(350);
@@ -37,6 +44,7 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty)
     connect(instLabel,SIGNAL(newOutputRequested()),this,SLOT(newHathorAuto()));
     ui_mainLayout->addWidget(instLabel,0, Qt::AlignTop | Qt::AlignLeft);
     instLabel->setObjectName("instLabel");
+    parentWidget()->setUpdatesEnabled(true);
 
     ui_mainLayout->addWidget(s_hathorView);
 

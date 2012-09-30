@@ -19,7 +19,7 @@ class TrackGroupMidi : public TrackGroup
 {
     Q_OBJECT
 public:
-    explicit TrackGroupMidi(live::ObjectPtr  c_input, QWidget* c_parent, bool empty=0);
+    explicit TrackGroupMidi(live::ObjectPtr  c_input, QWidget* c_parent, bool empty=0, live_widgets::ObjectChooser* oc = 0);
 
     QHBoxLayout* ui_mainLayout;
 signals:

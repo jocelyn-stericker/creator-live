@@ -13,10 +13,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "track.h"
 #include "live_widgets/vscrollcontainer.h"
 #include "live_widgets/bindableparent.h"
-
-namespace live_widgets {
-    class TrackInputSelect;
-}
+#include "live_widgets/trackinputselect.h"
 
 class TrackGroup : public QFrame, public live_widgets::BindableParent
 {
@@ -29,7 +26,7 @@ public:
     int s_id;                   /*004*/
     static int s_lastId;
 
-    explicit TrackGroup(live::ObjectPtr  cinput, QWidget *parent = 0)
+    explicit TrackGroup(live::ObjectPtr  cinput, QWidget *parent = 0, live_widgets::ObjectChooser* oc = 0)
       : QFrame(parent)
       , BindableParent(this)
       , s_input(cinput)
@@ -38,6 +35,7 @@ public:
       , s_id(++s_lastId)
       , ui_selectWidget(0)
     {
+        instLabel = dynamic_cast<live_widgets::TrackInputSelect*>(oc);
         setFrameStyle(QFrame::NoFrame);
         setLineWidth(0);
         setObjectName("TrackGroup_"+QString::number(s_id));

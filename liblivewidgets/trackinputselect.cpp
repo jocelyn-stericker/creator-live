@@ -117,13 +117,7 @@ TrackInputSelect::TrackInputSelect(QWidget*parent, bool popout, bool allowMidi, 
 
     setFixedWidth(55);
 
-    if (popout) {
-        s_ui->inputPaint->hide();
-        s_ui->inputNew->hide();
-        setMaximized();
-    } else {
-        setMinimized();
-    }
+    setPopup(popout);
 
     QButtonGroup* bg=new QButtonGroup;
 
@@ -203,6 +197,22 @@ TrackInputSelect::TrackInputSelect(QWidget*parent, bool popout, bool allowMidi, 
     hl->addWidget(ui_instView);
     ui_instView->show();
     drawKeyboard();
+}
+
+void TrackInputSelect::setPopup(bool popout) {
+    s_ui->inputPaint->setVisible(!popout);
+    s_ui->inputNew->setVisible(!popout);
+    setMaximized(popout);
+}
+
+void TrackInputSelect::showAudio(bool b) {
+    s_allowAudio = b;
+    updateObjects();
+}
+
+void TrackInputSelect::showMidi(bool b) {
+    s_allowMidi = b;
+    updateObjects();
 }
 
 void TrackInputSelect::updateObjects() {

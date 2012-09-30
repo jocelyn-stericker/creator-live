@@ -178,11 +178,10 @@ void LiveWindow::reactOnCreation(live::ObjectPtr s)
     curPatch()->widgets.removeOne(qobject_cast<QWidget*>(sender()));
     ui->sac_contents->removeOne(qobject_cast<QWidget*>(sender()));
 
-    sender()->deleteLater();
 
     if (s->isMidiObject())
     {
-        TrackGroupMidi* h=new TrackGroupMidi(s, ui->sac_contents);
+        TrackGroupMidi* h=new TrackGroupMidi(s, ui->sac_contents, false, dynamic_cast<live_widgets::TrackInputSelect*>(sender()));
         curPatch()->widgets.push_back(h);
         ui->sac_contents->push_back(h);
         ui->sac_contents->updateItems();
@@ -191,13 +190,15 @@ void LiveWindow::reactOnCreation(live::ObjectPtr s)
     }
     else if (s->isAudioObject())
     {
-        TrackGroupAudio* h=new TrackGroupAudio(s, ui->sac_contents);
+        TrackGroupAudio* h=new TrackGroupAudio(s, ui->sac_contents, false, dynamic_cast<live_widgets::TrackInputSelect*>(sender()));
         curPatch()->widgets.push_back(h);
         ui->sac_contents->push_back(h);
         ui->sac_contents->updateItems();
         connect(h, SIGNAL(outputSelected()), this, SLOT(showInsert()));
         h->show();
     }
+
+    disconnect(sender(), 0, this, 0);
 }
 
 void LiveWindow::hideInsert(bool animate)

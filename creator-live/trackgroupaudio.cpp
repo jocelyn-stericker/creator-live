@@ -19,15 +19,19 @@ int TrackGroup::s_lastId = -1;
 using namespace live;
 using namespace live_widgets;
 
-TrackGroupAudio::TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent, bool empty)
-  : TrackGroup(c_input,c_parent)
+TrackGroupAudio::TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent, bool empty, ObjectChooser *oc)
+  : TrackGroup(c_input,c_parent, oc)
   , mainLayout(new QHBoxLayout)
    {mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(3);
     s_hathorView = new VScrollContainer(0);
     s_hathorView->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
-    instLabel = new live_widgets::TrackInputSelect(this, false, false, true);
+    Q_ASSERT(instLabel);
+
+    instLabel->showMidi(false);
+    instLabel->showAudio(true);
+    instLabel->setPopup(false);
     instLabel->b_trackName = c_input->name();
     instLabel->b_audio = true;
     instLabel->setMinimumHeight(350);
