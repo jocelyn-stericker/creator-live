@@ -756,7 +756,7 @@ border-bottom-right-radius: 4px;
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
      </property>
-     <widget class="QWidget" name="stackedWidgetPage1" native="true">
+     <widget class="QWidget" name="stackedWidgetPage1">
       <property name="autoFillBackground">
        <bool>false</bool>
       </property>

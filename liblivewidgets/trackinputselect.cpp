@@ -115,7 +115,7 @@ TrackInputSelect::TrackInputSelect(QWidget*parent, bool popout, bool allowMidi, 
     connect(&b_audio, SIGNAL(changeObserved(bool,bool)), this, SLOT(onSetAudio(bool)));
     connect(&b_audio, SIGNAL(changeObserved(bool,bool)), s_ui->inputPaint, SLOT(setHidden(bool)));
 
-    setFixedWidth(53);
+    setFixedWidth(55);
 
     if (popout) {
         s_ui->inputPaint->hide();
@@ -257,7 +257,6 @@ void TrackInputSelect::showKeyboard(bool b) {
 
 void TrackInputSelect::drawKeyboard()
 {
-
     // fix this
     int vKeySize=11;
 

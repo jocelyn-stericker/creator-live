@@ -15,7 +15,6 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live_widgets/midibindingqt.h>
 
 #include <QPropertyAnimation>
-#include <QButtonGroup>
 #include <QTimer>
 
 using namespace live;
@@ -43,14 +42,10 @@ MidiOutputChooser::MidiOutputChooser(QWidget *parent)
     setFixedWidth(55);
     setMaximized();
 
-    connect(s_ui->inputType, SIGNAL(toggled(bool)), this, SLOT(setMaximized(bool)));
-    connect(s_ui->toolButton_settings, SIGNAL(toggled(bool)), this, SLOT(setMaximized(bool)));
     s_ui->toolButton_settings->hide();
 
-    QButtonGroup* bg = new QButtonGroup(this);
-    bg->setExclusive(true);
-    bg->addButton(s_ui->inputType);
-    bg->addButton(s_ui->toolButton_settings);
+    connect(s_ui->inputType, SIGNAL(toggled(bool)), this, SLOT(clickedLogic(bool)));
+    connect(s_ui->toolButton_settings, SIGNAL(toggled(bool)), this, SLOT(clickedLogic(bool)));
 }
 
 MidiOutputChooser::~MidiOutputChooser()
@@ -132,6 +127,28 @@ void MidiOutputChooser::setMinimized(bool minimized) {
     qaa->setDuration(200);
     qaa->setEasingCurve(QEasingCurve::InQuad);
     qaa->start(QAbstractAnimation::DeleteWhenStopped);
+    if (minimized) {
+        s_ui->inputType->setChecked(false);
+        s_ui->toolButton_settings->setChecked(false);
+    }
+}
+
+void MidiOutputChooser::checkedLogic(bool) {
+    if (sender() == s_ui->inputType) {
+        if (s_ui->inputType->isChecked()) {
+            s_ui->toolButton_settings->setChecked(false);
+            setMinimized(false);
+        }
+        else setMinimized();
+    }
+
+    if (sender() == s_ui->toolButton_settings) {
+        if (s_ui->toolButton_settings->isChecked()) {
+            s_ui->inputType->setChecked(false);
+            setMinimized(false);
+        }
+        else setMinimized();
+    }
 }
 
 void MidiOutputChooser::updateObjects() {

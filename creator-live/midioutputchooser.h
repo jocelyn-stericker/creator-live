@@ -33,6 +33,7 @@ public slots:
     void step1();
     void step2();
     virtual void setMinimized(bool minimized = true);
+    void checkedLogic(bool);
     
 private:
     virtual void activateSelected() { Q_ASSERT(0); /* see step2() */ }
