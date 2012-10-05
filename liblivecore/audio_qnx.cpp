@@ -416,15 +416,18 @@ bool SecretAudio::makeClient() { return 1; } // depr.
 
 SecretAudio::SecretAudio() : inputs(), outputs() {
     qDebug() << "NEWSECRETAUDIO...";
-    connect(qApp,SIGNAL(destroyed()),this,SLOT(delClient()));
+    nframes = 3072/2/sizeof(qint16);    // mort de rire.
     singleton=this;
-    outputs.push_back(new AudioOut(this));
-    inputs.push_back(new AudioIn(outputs.back()));
-    outputs.back()->start();
-    inputs.back()->start();
+    live::audio::registerInterface(this);
+    connect(qApp,SIGNAL(destroyed()),this,SLOT(delClient()));
+    solidOut.push_back(new AudioOut(this));
+    outputs.push_back(live::cast<AudioOut*>(solidOut.back()));
+    solidIn.push_back(new AudioIn(outputs.back()));
+    inputs.push_back(live::cast<AudioIn*>(solidIn.back()));
     live::object::set(outputs.back());
     live::object::set(inputs.back());
-    nframes = 3072/2/sizeof(qint16);    // mort de rire.
+    outputs.back()->start();
+    inputs.back()->start();
 }
 
 bool SecretAudio::delClient() {
@@ -433,6 +436,7 @@ bool SecretAudio::delClient() {
 }
 
 void SecretAudio::process() {
+    qDebug() << "Start proc.";
     live::Object::beginProc();
 
     float* buffer = 0;
@@ -443,14 +447,18 @@ void SecretAudio::process() {
             for(unsigned k=0; k<nframes; k++) {
                 buffer[k]=0.0;
             }
+		    qDebug() << "aIn?";
             i->aIn( buffer, j, 0);
+		    qDebug() << "aIn?";
         }
     }
     delete[] buffer;
 
+    qDebug() << "ENd proc. - 1";
     if(live::song::current()&&live::song::current()->metronome) {
         live::song::current()->metronome->clock();
     }
+    qDebug() << "ENd proc. - 2";
 
     live::Object::endProc();
 }
@@ -465,6 +473,7 @@ AudioSys
 /*/////////////////////////////////////////////////////////////////////////////////////
 
 LIBLIVECORESHARED_EXPORT live::AudioInterface* live::audio::s_audioInterface=0;
+bool live::audio::strictInnocentXruns=false;
 
 void live::audio::registerInterface(live::AudioInterface*ai) {
     if(s_audioInterface) s_audioInterface->delClient();
@@ -487,7 +496,7 @@ LIBLIVECORESHARED_EXPORT qint32 live::audio::sampleRate() {
 }
 
 qint32 live_private::SecretAudio::sampleRate() {
-    return nframes;
+    return 44100;
 }
 
 LIBLIVECORESHARED_EXPORT void live::audio::resetMappings() {
@@ -542,7 +551,8 @@ LIBLIVECORESHARED_EXPORT live::ObjectPtr live::audio::null(int chan) {
 }
 
 live::ObjectPtr live_private::SecretAudio::getNull(int chans) {
-    nulls.push_back( new AudioNull(chans) );
+    solidNull.push_back( new AudioNull(chans) );
+    nulls.push_back(live::cast<AudioNull*>(solidNull.back()));
     return nulls.back();
 }
 

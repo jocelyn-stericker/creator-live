@@ -40,6 +40,7 @@ void SecretMidi::refresh() {
 void SecretMidi::run() { // [MIDI THREAD]
     forever {
         msleep(12);
+    live_mutex(x_midi) {
         live::Object::beginProc();
 
         for(int i=0;i<withheld.size();i++) {
@@ -51,8 +52,8 @@ void SecretMidi::run() { // [MIDI THREAD]
                 delete w.ev;
             }
         }
-
         live::Object::endProc();
+}
     }
 }
 
@@ -61,7 +62,7 @@ void SecretMidi::queue(const live::Event* ev, int device, live::ObjectChain from
 }
 
 void SecretMidi::cancel(live::ObjectPtr from) {
-    live::lthread::midi();
+    live_mutex(x_midi) {
     for(int i=0; i<fromqueue.size(); i++) {
         bool ok=0;
         for(int j=0;j<fromqueue[i].size();j++) {
@@ -85,15 +86,19 @@ void SecretMidi::cancel(live::ObjectPtr from) {
         }
     }
 }
+}
 
 void SecretMidi::mWithhold(live::Event* x,live::ObjectChain p,live::ObjectPtr obj, bool reverse) {
-    live::lthread::midi();
+    return;
+    live_mutex(x_midi) {
     x->buddy=0;
     withheld.push_back(Withheld(x, p, obj, reverse));
+    }
 }
 
 void SecretMidi::mRemoveWithheld(live::ObjectPtr obj) {
-    live::lthread::midi();
+    return;
+    live_mutex(x_midi) {
     for(int i=0;i<withheld.size();i++) {
         if(withheld[i].obj==obj) {
             Withheld w = withheld.takeAt(i--);
@@ -101,15 +106,18 @@ void SecretMidi::mRemoveWithheld(live::ObjectPtr obj) {
         }
     }
 }
+}
 
 void SecretMidi::mClearEventsTo(live::Object* obj) {
-    live::lthread::midi();
+    return;
+    live_mutex(x_midi) {
     for(int i=0;i<withheld.size();i++) {
         if(withheld[i].obj.data()==obj) {
             Withheld w = withheld.takeAt(i--);
             delete w.ev;
         }
     }
+}
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////
@@ -118,10 +126,13 @@ Physical Ports
 ///////////////////////////////////////////////////////////////////////////////////////
 /*/////////////////////////////////////////////////////////////////////////////////////
 
-MidiIn::MidiIn(QString ccname,int devId) :
-    live::Object(ccname,true,false),
-    valid(1),
-    deviceId(devId) {
+MidiIn::MidiIn(QString ccname,int devId)
+  : live::Object(ccname,true,false,2)
+  , valid(1)
+  , deviceId(devId)
+  , s_null(live::audio::null(2))
+  , s_connection(s_null, this, live::HybridConnection) 
+ {
     setTemporary(0);
 
     live::ObjectPtr*x=new live::ObjectPtr[200];
@@ -129,13 +140,10 @@ MidiIn::MidiIn(QString ccname,int devId) :
         x[i]=0;
     }
     live::MidiBinding::customKey->insert(this,x);
-
-    s_null=live::audio::null(2);
-    live::audio::null(2)->hybridConnect(this);
 }
 
 MidiNull::MidiNull() :
-    live::Object("Null Midi Device",false,false) {
+    live::Object("Null Midi Device",false,false,2) {
 
 }
 

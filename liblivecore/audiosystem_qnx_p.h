@@ -39,7 +39,7 @@ public:
     int     chans;
     AudioOut* master;
 
-    AudioIn(AudioOut* cmaster) : live::Object("Microphone",true,false), chans(2), master(cmaster) { setTemporary(0); }
+    AudioIn(AudioOut* cmaster) : live::Object("Microphone",true,false,2), chans(2), master(cmaster) { setTemporary(0); }
 
 
     void run(); // <== this function is all you care about.
@@ -69,7 +69,7 @@ public:
     QWaitCondition* dataRead;
     SecretAudio* master;
 
-    AudioOut(SecretAudio* cmaster) : live::Object("Speaker or Headphones",true,true), chans(2), mSampleBfr2(new qint16[3072/sizeof(qint16)]), lock(new QMutex), dataRead(new QWaitCondition), master(cmaster) { setTemporary(0); }
+    AudioOut(SecretAudio* cmaster) : live::Object("Speaker or Headphones",true,true,2), chans(2), mSampleBfr2(new qint16[3072/sizeof(qint16)]), lock(new QMutex), dataRead(new QWaitCondition), master(cmaster) { setTemporary(0); }
 
     void run(); // <== this function processes data
     virtual void aIn(const float*data,int chan, live::Object*p); // <== that it got here.
@@ -83,7 +83,7 @@ public:
     bool mOn() const{ return 0; } bool aOn() const { return 1; }
     int     chans;
 
-    AudioNull(int cchans) : live::Object("Null Audio Device",false,false), chans(cchans) {}
+    AudioNull(int cchans) : live::Object("Null Audio Device",false,false,2), chans(cchans) { setTemporary(0); }
 
     virtual void aIn(const float*data,int chan, live::Object*p)
     {
@@ -101,8 +101,11 @@ public:
 
     quint32 nframes;
     QList< AudioIn* > inputs;
+    QList< live::ObjectPtr> solidIn;
     QList< AudioOut* > outputs;
+    QList< live::ObjectPtr> solidOut;
     QList< AudioNull* > nulls;
+    QList< live::ObjectPtr> solidNull;
     QList< QStringList > inputMappings;
     QStringList inputMappingsName;
     QList< QStringList > outputMappings;

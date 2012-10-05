@@ -26,7 +26,7 @@
         <action>access_shared</action>
         <action>set_audio_volume</action>
         <platformArchitecture>armle-v7</platformArchitecture>
-        <asset entry="true" path="creator-live/creator-live" type="Qnx/Elf">helloworld</asset>
+        <asset entry="true" path="creator-live/creator-live" type="Qnx/Elf">creator-live</asset>
         <asset path="deploy/pbsplash.png">pbsplash.png</asset>
         <asset path="deploy/pbicon.png">pbicon.png</asset>
         <asset path="lib">lib</asset>

@@ -143,11 +143,14 @@ target_link_libraries (livecore
     C:/QtSDK/Desktop/Qt/4.8.1/msvc2010/lib/portmidi.lib
 )
 else (WIN32)
+if (QNX)
+else (QNX)
 target_link_libraries (livecore
         portmidi
         jack
         fluidsynth
 )
+endif (QNX)
 endif (WIN32)
 
 set_target_properties(livecore PROPERTIES
