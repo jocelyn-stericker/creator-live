@@ -600,22 +600,21 @@ live::Connection::~Connection()
 void live::Connection::connect()
 {
     kill_kitten {
-    qDebug() << "Connect" << (a.valid() ? a->name() : "NULL") << "to" << (b.valid() ? b->name() : "NULL") << (t ? (t==1) ? "midi" : "hybrid" : "audio");
 
     if (!a || !b)
         return;
 
     if(t==AudioConnection)
     {
-        a->audioConnect(b);
+        kill_kitten a->audioConnect(b);
     }
     else if(t==MidiConnection)
     {
-        a->midiConnect(b);
+        kill_kitten a->midiConnect(b);
     }
     else if(t==HybridConnection)
     {
-        a->hybridConnect(b);
+        kill_kitten a->hybridConnect(b);
     }
     }
 }
@@ -624,22 +623,20 @@ void live::Connection::disconnect()
 {
     kill_kitten {
 
-    qDebug() << "Disconnect" << (a.valid() ? a->name() : "NULL") << "to" << (b.valid() ? b->name() : "NULL");
-
     if (!a || !b)
         return;
 
     if(t==AudioConnection)
     {
-        a->audioDisconnect(b);
+        kill_kitten a->audioDisconnect(b);
     }
     else if(t==MidiConnection)
     {
-        a->midiDisconnect(b);
+        kill_kitten a->midiDisconnect(b);
     }
     else if(t==HybridConnection)
     {
-        a->hybridDisconnect(b);
+        kill_kitten a->hybridDisconnect(b);
     }
     }
 }
