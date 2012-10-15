@@ -139,7 +139,7 @@ if (WIN32)
 target_link_libraries (livecore
     #${creator-live_libs}
     ${QT_LIBRARIES}
-    C:/QtSDK/Desktop/Qt/4.8.1/msvc2010/lib/libjack.lib
+    "C:/Program Files (x86)/Jack/lib/libjack.lib"
     C:/QtSDK/Desktop/Qt/4.8.1/msvc2010/lib/portmidi.lib
 )
 else (WIN32)

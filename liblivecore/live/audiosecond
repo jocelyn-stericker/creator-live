@@ -140,7 +140,7 @@ class AudioSecondBank : public QObject
         ret = m_identity.takeFirst();
         x.unlock();
         ret->setSampleOffset(offset);
-        t.start(0);
+        QMetaObject::invokeMethod(&t,"start",Qt::QueuedConnection, Q_ARG(int,0));
         return ret;
     }
 
