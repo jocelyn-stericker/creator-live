@@ -98,7 +98,6 @@ LiveWindow::LiveWindow(QWidget *parent)
                          "background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:0.243243 rgb(77, 76, 77), stop:0.972973 rgba(255, 255, 255, 255), stop:1 rgba(255, 255, 255, 255));"
                        "border-width:0;"
                          "}");
-        d->show();
         dynamic_cast<QBoxLayout*>(ui->sac_insert->layout())->insertWidget(1,d);
     }
 
@@ -165,7 +164,9 @@ void LiveWindow::newInput()
         delete s_iw;
         s_iw=0;
     }
+
     TrackInputSelect* ni=new TrackInputSelect(ui->sac_contents, true, true, true);
+
     connect(ni,SIGNAL(objectChosen(live::ObjectPtr)),this,SLOT(reactOnCreation(live::ObjectPtr )));
     ui->sac_contents->push_back(ni);
     ui->sac_contents->updateItems();

@@ -180,7 +180,6 @@ TrackInputSelect::TrackInputSelect(QWidget*parent, bool popout, bool allowMidi, 
 
     ui_instView->setObjectName("ui_instView");
     ui_instScene->setObjectName("ui_instScene");
-    ui_instView->show();
 
     for (int i=0;i<5;i++)
     {

@@ -125,6 +125,7 @@ LiveApplication::LiveApplication(int& argc, char **argv) :
     //    Store::request("Portable Grand MIDI 1")->hybridConnect(sf);
     //    sf->audioConnect(Store::get(Store::AudioOnly|Store::OutputOnly)[0]);
     _mainWindow=new LiveWindow;
+
     _mainWindow->setWindowState(Qt::WindowMaximized);
     _mainWindow->show();
 }
