@@ -106,9 +106,15 @@ add_library (livewidgets SHARED
     ${liblivewidgets_moc}
 )
 
+if (NOT WIN32)
 set_target_properties(livewidgets PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
 )
+else (NOT WIN32)
+set_target_properties(livewidgets PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
+)
+endif (NOT WIN32)
 
 if (WIN32)
 target_link_libraries (livewidgets

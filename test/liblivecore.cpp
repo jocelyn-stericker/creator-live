@@ -7,6 +7,11 @@
 
 #include <QApplication>
 
+#ifdef _WIN32
+#include <Windows.h>
+#define usleep(x) Sleep(x/500)
+#endif
+
 TEST(AudioSanity, Init) {
     live::audio::strictInnocentXruns = true; // initialization must not cause xruns
 

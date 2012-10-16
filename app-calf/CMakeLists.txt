@@ -111,9 +111,15 @@ add_library (app-calf SHARED
     ${app-calf_rcc}
 )
 
+if (NOT WIN32)
 set_target_properties(app-calf PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins
 )
+else (NOT WIN32)
+set_target_properties(app-calf PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plguins
+)
+endif (NOT WIN32)
 
 if (WIN32)
 target_link_libraries (app-calf

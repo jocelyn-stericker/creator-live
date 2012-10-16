@@ -66,9 +66,15 @@ add_library (livesf2 SHARED
     ${livesf2_qrc}
 )
 
+if (NOT WIN32)
 set_target_properties(livesf2 PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins
 )
+else (NOT WIN32)
+set_target_properties(livesf2 PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins
+)
+endif (NOT WIN32)
 
 if (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DLIVESF2_LIBRARY=1")

@@ -87,11 +87,15 @@ target_link_libraries (bridge
     ${QT_LIBRARIES}
 )
 
-if (!WIN32)
-    set_target_properties(creator-live PROPERTIES
+if (NOT WIN32)
+    set_target_properties(bridge PROPERTIES
         LINK_FLAGS "-Wl,-rpath=\'\$\$ORIGIN\'/../lib"
     )
-endif (!WIN32)
+else (NOT WIN32)
+    set_target_properties(bridge PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
+    )
+endif (NOT WIN32)
 
 
 if (WIN32)

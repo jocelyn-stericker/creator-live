@@ -153,9 +153,15 @@ target_link_libraries (livecore
 endif (QNX)
 endif (WIN32)
 
+if (NOT WIN32)
 set_target_properties(livecore PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
 )
+else (NOT WIN32)
+set_target_properties(livecore PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
+)
+endif (NOT WIN32)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DLIBLIVECORE_LIBRARY=1")
 

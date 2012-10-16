@@ -11,11 +11,9 @@
 
 cmake_minimum_required(VERSION 2.8)
 
-if (NOT WIN32)
 list (APPEND test_cpp
     liblivecore.cpp
 )
-endif (NOT WIN32)
 list (APPEND test_cpp
     gtest-src/gtest-all.cc
     gtest-src/gtest_main.cc
@@ -82,6 +80,15 @@ target_link_libraries (test
     ${test_libs}
     ${QT_LIBRARIES}
 )
+if (NOT WIN32)
+    set_target_properties(test PROPERTIES
+        LINK_FLAGS "-Wl,-rpath=\'\$\$ORIGIN\'/../lib"
+    )
+else (NOT WIN32)
+    set_target_properties(test PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
+    )
+endif (NOT WIN32)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 

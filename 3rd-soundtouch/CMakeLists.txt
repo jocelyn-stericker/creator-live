@@ -73,6 +73,12 @@ add_library (livesoundtouch SHARED
     ${livesoundtouch_moc}
 )
 
+if (NOT WIN32)
 set_target_properties(livesoundtouch PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
 )
+else (NOT WIN32)
+set_target_properties(livesoundtouch PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
+)
+endif (NOT WIN32)
