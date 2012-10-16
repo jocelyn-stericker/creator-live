@@ -39,6 +39,14 @@
 #ifndef STTypes_H
 #define STTypes_H
 
+#include <QObject>
+
+#if defined(LIVEST_LIBRARY)
+#  define LIVEST_EXPORT Q_DECL_EXPORT
+#else
+#  define LIVEST_EXPORT Q_DECL_IMPORT
+#endif
+
 typedef unsigned int    uint;
 typedef unsigned long   ulong;
 

@@ -1,7 +1,7 @@
 ############################################################
 # SoundTouch audio processing library v1.6.0               #
 #                                                          #
-# SoundTouch library Copyright Â© Olli Parviainen 2001-2011 #
+# SoundTouch library Copyright © Olli Parviainen 2001-2011 #
 ############################################################
 
 # This CMakeLists.txt (C) Joshua Netterfield 2012.
@@ -82,3 +82,12 @@ set_target_properties(livesoundtouch PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
 )
 endif (NOT WIN32)
+
+if (NOT WIN32)
+if (NOT QNX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -Wall -Weffc++ -pedantic -pedantic-errors -Wextra  -Wall -Wcast-align -Wcast-qual  -Wchar-subscripts  -Wcomment -Wconversion -Wdisabled-optimization -Wformat -Wformat=2 -Wformat-nonliteral -Wformat-security  -Wformat-y2k -Wimport -Winit-self -Winline -Winvalid-pch -Wunsafe-loop-optimizations -Wlong-long -Wmissing-braces -Wmissing-field-initializers -Wmissing-format-attribute -Wmissing-include-dirs -Wmissing-noreturn -Wpacked -Wparentheses -Wpointer-arith -Wredundant-decls -Wreturn-type -Wsequence-point  -Wsign-compare  -Wstack-protector -Wstrict-aliasing -Wstrict-aliasing=2 -Wswitch -Wtrigraphs  -Wuninitialized -Wunknown-pragmas  -Wunreachable-code -Wunused -Wunused-function  -Wunused-label  -Wunused-parameter -Wunused-value  -Wunused-variable  -Wvariadic-macros -Wvolatile-register-var  -Wwrite-strings")
+endif (NOT QNX)
+endif (NOT WIN32)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DLIVEST_LIBRARY=1")
+

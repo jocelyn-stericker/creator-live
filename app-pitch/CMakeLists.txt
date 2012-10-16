@@ -68,9 +68,15 @@ add_library (app-pitch SHARED
     ${app-pitch_rcc}
 )
 
+if (NOT WIN32)
 set_target_properties(app-pitch PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins
 )
+else (NOT WIN32)
+set_target_properties(app-pitch PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins
+)
+endif (NOT WIN32)
 
 target_link_libraries (app-pitch
     ${app-pitch_libs}

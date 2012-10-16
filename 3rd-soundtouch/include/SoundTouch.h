@@ -69,6 +69,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <QObject>
+
 #ifndef SoundTouch_H
 #define SoundTouch_H
 
@@ -141,7 +143,7 @@ namespace soundtouch
 ///   tempo/pitch/rate/samplerate settings.
 #define SETTING_NOMINAL_OUTPUT_SEQUENCE		7
 
-class SoundTouch : public FIFOProcessor
+class LIVEST_EXPORT SoundTouch : public FIFOProcessor
 {
 private:
     /// Rate transposer class instance

@@ -33,9 +33,11 @@ list (APPEND app-bpm_qrc
     bpm_icons.qrc
 )
 
+if (NOT WIN32)
 list (APPEND app-bpm_libs
-    livesoundtouch 
+    livesoundtouch
 )
+endif (NOT WIN32)
 
 ################## PLATFORM-SPECIFIC CODE ##################
 
@@ -67,9 +69,16 @@ add_library (app-bpm SHARED
     ${app-bpm_rcc}
 )
 
+if (NOT WIN32)
 set_target_properties(app-bpm PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins
 )
+else (NOT WIN32)
+set_target_properties(app-bpm PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins
+)
+endif (NOT WIN32)
+
 
 target_link_libraries (app-bpm
     ${app-bpm_libs}
@@ -85,6 +94,7 @@ if (WIN32)
 target_link_libraries (app-bpm
     livecore
     livewidgets
+    livesoundtouch
     ${QT_LIBRARIES}
 )
 endif (WIN32)

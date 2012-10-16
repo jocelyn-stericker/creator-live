@@ -71,7 +71,7 @@ namespace soundtouch
 
 
 /// Class for calculating BPM rate for audio data.
-class BPMDetect
+class LIVEST_EXPORT BPMDetect
 {
 protected:
     /// Auto-correlation accumulator bins.
