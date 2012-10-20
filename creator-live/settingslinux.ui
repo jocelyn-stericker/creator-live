@@ -15,8 +15,8 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0" colspan="5">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="1">
       <widget class="QLabel" name="label">
        <property name="minimumSize">
         <size>
@@ -41,14 +41,14 @@ font: 11pt &quot;HandelGotDLig&quot;;
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="../../Icons/Icons.qrc">:/icons/cl-add-setup.png</pixmap>
+        <pixmap resource="icons/icons.qrc">:/icons/settings.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item>
+     <item row="0" column="2">
       <widget class="QLabel" name="label_2">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -63,6 +63,13 @@ font: 14pt &quot;HandelGotDLig&quot;;
        </property>
        <property name="text">
         <string>Audio Setup</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" colspan="2">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Drag channels into groups so that Creator Live knows what to call them. Groups can either be stereo or mono. Examples of a good group names are &quot;Microphone&quot; and &quot;Surround 1&quot;</string>
        </property>
       </widget>
      </item>
@@ -126,7 +133,13 @@ font: 14pt &quot;HandelGotDLig&quot;;
      <property name="minimumSize">
       <size>
        <width>600</width>
-       <height>200</height>
+       <height>700</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
       </size>
      </property>
     </widget>
@@ -137,7 +150,7 @@ font: 14pt &quot;HandelGotDLig&quot;;
       <enum>Qt::Vertical</enum>
      </property>
      <property name="sizeType">
-      <enum>QSizePolicy::Fixed</enum>
+      <enum>QSizePolicy::Expanding</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>
@@ -153,7 +166,7 @@ font: 14pt &quot;HandelGotDLig&quot;;
       <enum>Qt::Vertical</enum>
      </property>
      <property name="sizeType">
-      <enum>QSizePolicy::Fixed</enum>
+      <enum>QSizePolicy::Expanding</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>
@@ -174,7 +187,7 @@ font: 14pt &quot;HandelGotDLig&quot;;
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../Icons/Icons.qrc"/>
+  <include location="icons/icons.qrc"/>
  </resources>
  <connections/>
 </ui>

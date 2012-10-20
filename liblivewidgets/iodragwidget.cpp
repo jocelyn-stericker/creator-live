@@ -113,9 +113,6 @@ live_widgets::OutputDragWidget::OutputDragWidget(QWidget *parent)
   { s_ui->setupUi(this);
     connect(s_ui->newMapping_frame,SIGNAL(textDropped(QString)),this,SLOT(newGroup(QString)));
     s_ui->chans_frame_in->hide();
-    s_ui->label->setText(s_ui->label->text().replace("In","Out"));
-    s_ui->label->setText(s_ui->label->text().replace("in","out"));
-    s_ui->label->setText(s_ui->label->text().replace("outto","into"));     //lol
 
     QSettings settings;
     QList<QVariant> outMap=settings.value("audio_outputMappings").toList();
