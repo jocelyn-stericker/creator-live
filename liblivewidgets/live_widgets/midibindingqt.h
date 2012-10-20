@@ -10,7 +10,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #ifndef MIDIBINDINGQT_H
 #define MIDIBINDINGQT_H
 
-#include "live/midibinding"
+#include <live/midibinding>
+
 #include <QComboBox>
 #include <QAbstractButton>
 #include <QLineEdit>
