@@ -16,6 +16,8 @@ endif (NOT DEFINED QNX)
 
 ###################### SUBDIRECTORIES! ######################
 
+add_subdirectory (launcher)
+
 add_subdirectory (3rd-soundtouch) 
 #add_subdirectory (3rd-fluidsynth)
 
@@ -33,9 +35,7 @@ add_subdirectory (livemidi)
 if (NQNX)
 add_subdirectory (livesf2) 
 endif (NQNX)
-if (NOT WIN32)
 add_subdirectory (livevst)
-endif (NOT WIN32)
 
 add_subdirectory (bridge) 
 if (NQNX)
@@ -78,10 +78,8 @@ add_dependencies (livesf2 liblivecore)
 add_dependencies (livesf2 liblivewidgets)
 endif (NQNX)
 
-if (NOT WIN32)
 add_dependencies (livevst liblivecore)
 add_dependencies (livevst liblivewidgets)
-endif (NOT WIN32)
 
 add_dependencies (bridge liblivecore)
 add_dependencies (bridge liblivewidgets)
@@ -117,9 +115,7 @@ add_dependencies (creator-live livemidi)
 if (NQNX)
 add_dependencies (creator-live livesf2)
 endif (NQNX)
-if (NOT WIN32)
 add_dependencies (creator-live livevst)
-endif (NOT WIN32)
 
 if (NQNX)
 add_dependencies (test creator-live)
