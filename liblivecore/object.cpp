@@ -7,6 +7,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
+#include <live/object>
+
 #include "midisystem_p.h"
 
 #include <live/audio>
@@ -17,7 +19,6 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live/midi>
 #include <live/midievent>
 #include <live/midieventcounter>
-#include <live/object>
 
 #include <QtConcurrentRun>
 #include <QMutex>
