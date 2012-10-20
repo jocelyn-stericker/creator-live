@@ -24,6 +24,7 @@ class LIBLIVEWIDGETSSHARED_EXPORT DragListFrame : public QFrame {
     QGridLayout* s_layout;
 public:
     DragListFrame(QStringList,QWidget*);
+    int count() const { return s_list.size(); }
 private:
     Q_DISABLE_COPY(DragListFrame)
 };

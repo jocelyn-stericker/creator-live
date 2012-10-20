@@ -52,6 +52,7 @@ live_widgets::InputDragWidget::InputDragWidget(QWidget *parent)
     if (!ok) {
         newGroup("","","");
     }
+    refresh();
 }
 
 void live_widgets::InputDragWidget::newGroup(QString x,QString y,QString z) {
@@ -128,6 +129,7 @@ live_widgets::OutputDragWidget::OutputDragWidget(QWidget *parent)
     if (!ok) {
         newGroup("","","");
     }
+    refresh();
 }
 
 void live_widgets::OutputDragWidget::newGroup(QString x,QString y,QString z) {
@@ -170,12 +172,14 @@ void live_widgets::InputDragWidget::refresh() {
     delete s_ui->chans_frame_in;
     s_ui->chans_frame_in=new InputDragListFrame(this);
     qobject_cast<QVBoxLayout*>(layout())->insertWidget(0,s_ui->chans_frame_in);
+    s_ui->chans_frame_in->setMinimumHeight(((s_ui->chans_frame_in->count()+1)/2)*40);
 }
 
 void live_widgets::OutputDragWidget::refresh() {
     delete s_ui->chans_frame_out;
     s_ui->chans_frame_out=new OutputDragListFrame(this);
     qobject_cast<QVBoxLayout*>(layout())->insertWidget(0,s_ui->chans_frame_out);
+    s_ui->chans_frame_out->setMinimumHeight(((s_ui->chans_frame_out->count()+1)/2)*40);
 }
 
 void live_widgets::OutputDragWidget::destroyRow() {
