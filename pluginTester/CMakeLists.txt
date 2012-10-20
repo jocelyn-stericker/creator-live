@@ -89,15 +89,11 @@ target_link_libraries (pluginTester
     ${QT_LIBRARIES}
 )
 
-if (NOT WIN32)
-    set_target_properties(pluginTester PROPERTIES
-        LINK_FLAGS "-Wl,-rpath=\'\$\$ORIGIN\'/../lib"
-    )
-else (NOT WIN32)
+if (WIN32)
     set_target_properties(pluginTester PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
     )
-endif (NOT WIN32)
+endif (WIN32)
 
 if (WIN32)
 target_link_libraries (pluginTester

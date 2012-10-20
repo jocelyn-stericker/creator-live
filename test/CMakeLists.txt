@@ -80,15 +80,11 @@ target_link_libraries (test
     ${test_libs}
     ${QT_LIBRARIES}
 )
-if (NOT WIN32)
-    set_target_properties(test PROPERTIES
-        LINK_FLAGS "-Wl,-rpath=\'\$\$ORIGIN\'/../lib"
-    )
-else (NOT WIN32)
+if (WIN32)
     set_target_properties(test PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
     )
-endif (NOT WIN32)
+endif (WIN32)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
