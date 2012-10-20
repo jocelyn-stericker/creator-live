@@ -1,0 +1,12 @@
+CNL JACK32
+#####################################################################################
+#Ver| Path on server                 | Path on computer                             #
+#####################################################################################
+002 | jack32/jackd.exe 			| HOME/jack32/jackd.exe
+002 | jack32/libsamplerate_x86.dll	| HOME/jack32/libsamplerate_x86.dll
+002 | jack32/mingwm10.dll			| HOME/jack32/mingwm10.dll
+002 | jack32/jack/audioadapter.dll	| HOME/jack32/jack/audioadapter.dll
+002 | jack32/jack/jack_portaudio.dll	| HOME/jack32/jack/jack_portaudio.dll
+002 | jack32/jack/jack_winmme.dll	| HOME/jack32/jack/jack_winmme.dll
+CNL LIVE
+test

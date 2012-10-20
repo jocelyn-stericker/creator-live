@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AudioSettingsWidget</class>
+ <widget class="QWidget" name="AudioSettingsWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>266</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#asettings {
+  background-color: rgb(255, 255, 255,0);
+color: rgb(255,255,255);
+}</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="horizontalSpacing">
+    <number>0</number>
+   </property>
+   <property name="margin">
+    <number>0</number>
+   </property>
+   <item row="0" column="0" colspan="4">
+    <widget class="QFrame" name="frame">
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">* {
+background-color: rgb(255, 255, 255,0);
+color: rgb(255,255,255);
+}
+
+#frame {
+	background-color: rgb(0,0,0,125);
+    border-radius:4;
+	border: 1 solid white;
+}
+
+ QComboBox QAbstractItemView {
+     border: 1px solid darkgray;
+     border-radius: 3;
+     selection-background-color: white;
+     background-color: black;
+     selection-color: black;
+ }
+
+ QComboBox {
+     border: 1px solid gray;
+     border-radius: 3px;
+     padding: 1px 18px 1px 3px;
+     min-width: 6em;
+ }
+
+ QComboBox:selected {
+     border: 1px solid gray;
+     border-radius: 3px;
+     padding: 1px 18px 1px 3px;
+     min-width: 6em;
+ }
+
+
+ QComboBox::drop-down {
+     border: 0px solid black;
+     subcontrol-origin: padding;
+     subcontrol-position: top right;
+     width: 15px;
+ }</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+      </property>
+      <property name="margin">
+       <number>5</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="device_label">
+        <property name="text">
+         <string>Device:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="asioDevice_comboBox">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>Detecting ASIO devices...</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="fp_label">
+        <property name="text">
+         <string>Frames/Period:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="fp_comboBox">
+        <property name="currentIndex">
+         <number>4</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>16</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>32</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>64</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>128</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>256 (Recommended for fast computers)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>512 (Recommended if you hear crackling at 256)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>1024</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>2048</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>4096</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLabel" name="advancedWarning_label">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Lower values will have less delay, but might cause crackles.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="sr_label">
+        <property name="text">
+         <string>Sample Rate:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QComboBox" name="sr_comboBox">
+        <property name="currentIndex">
+         <number>2</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>22055 (Bad Quality)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>32000 (Bad Quality)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>44100 (CD Quality, Recommended)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>48000 (TV Quality)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>88200 (2x CD Quality)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>96000 (2x TV Quality)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>192000 (Kinda silly)</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QLabel" name="label">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>For almost all work, 44100 or 48000 Hz are both sufficient.</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0">
+       <widget class="QLabel" name="devType_label">
+        <property name="text">
+         <string>Device Type:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="1">
+       <widget class="QComboBox" name="devType_comboBox">
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <item>
+         <property name="text">
+          <string>Auto (Recommended)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Duplex</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Playback Only</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Recording Only</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="10" column="1">
+       <widget class="QLabel" name="label_2">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Change this if your device doesn't support both input and output.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="1">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>306</width>
+          <height>3</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QPushButton" name="pushButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+       <underline>true</underline>
+      </font>
+     </property>
+     <property name="text">
+      <string>Start!</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QCheckBox" name="dontAsk">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(255, 255, 255);</string>
+     </property>
+     <property name="text">
+      <string>Make these settings default.</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

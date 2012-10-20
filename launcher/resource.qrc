@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>welcome.jpeg</file>
+        <file>installNow.png</file>
+    </qresource>
+</RCC>
