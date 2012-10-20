@@ -7,6 +7,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
+#if defined(__linux__) && __linux__
 #ifndef VST_RH
 #define VST_RH
 
@@ -242,3 +243,5 @@ public:
 };
 
 #endif //VST_RH
+#endif
+

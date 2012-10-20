@@ -7,20 +7,20 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#ifndef VST_WIN_RH
-#define VST_WIN_RH
+#if defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
 
-#ifdef _WIN32
+#ifndef VST_WIN_RH_
+#define VST_WIN_RH_
 
 #include "vst.h"
 #include "live/object"
 #include "live/midievent"
-#include "vstsidekick.h"
 #include <QWidget>
 #include <QTimer>
 
 class AEffect;
 class VstEvents;
+class VstSidekick;
 class VstR;
 
 class VstEditor : public QWidget
@@ -37,7 +37,7 @@ public:
         init();
     }
 
-    ~VstEditor()
+    virtual ~VstEditor()
     {
         unInit();
         delete s_timer;
@@ -52,8 +52,10 @@ public slots:
     void timeEvent();
 };
 
-class VstR
+class VstR : public live::Object
 {
+    LIVE_EFFECT
+    LIVE_HYBRID
 public:
     Vst& me;
     AEffect* _vst;
@@ -65,9 +67,10 @@ public:
     QList<live::Event*> midiQueue;
     QList<live::ObjectPtr> sourceQueue;
 
-    QList<VstSidekick*> sideKicks;
+    QList<VstSidekick*> s_sidekicks;
 
     VstR(Vst* cme,AEffect* cvst) :
+        live::Object("VSTR", true, false, 2),
         me(*cme),
         _vst(cvst),
         vstEditor(0),
@@ -75,7 +78,7 @@ public:
         midiEventCount(-1),
         midiEventsProcessed(1)
     {
-
+        setTemporary(0);
     }
 
     static void silenceChannel( float **channelData, int numChannels, long numFrames );
@@ -111,4 +114,4 @@ private:
 
 #endif
 
-#endif //VST_WIN_RH
+#endif //VST_WIN_RH_

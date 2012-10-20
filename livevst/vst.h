@@ -55,7 +55,7 @@ public:
         s_map.insertMulti(path, qMakePair(instance,live::ObjectPtr(this)));
     }
 
-    ~Vst();
+    virtual ~Vst();
 
     int getId() const { return vstId; }
 
@@ -72,7 +72,7 @@ public:
 #ifdef _WIN32
     float** channelData;
     float** outData;
-    live::ObjectChain* chains;
+    QList<live::ObjectPtr> lasts;
     void PROC_VST();
 #endif
 public:

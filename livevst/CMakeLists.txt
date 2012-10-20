@@ -22,9 +22,6 @@ list (APPEND livevst_cpp
 )
 
 list (APPEND livevst_h
-    vst.h
-    vst_p.h
-    vstsidekick.h
 )
 
 list (APPEND livevst_h_qobject
@@ -34,6 +31,9 @@ list (APPEND livevst_h_qobject
     vstsettingswidget.h
     vstwizard.h
     hackwidget.h
+    vst.h
+    vst_p.h
+    vstsidekick.h
 )
 
 list (APPEND livevst_ui
@@ -66,7 +66,7 @@ include_directories (
     ../liblivewidgets/
 )
 
-qt4_wrap_cpp (livevst_moc ${livevst_h_qobject})
+qt4_wrap_cpp (livevst_cpp ${livevst_h_qobject})
 qt4_wrap_ui (livevst_moc ${livevst_ui}) 
 qt4_add_resources (livevst_rcc ${livevst_qrc})
 
@@ -75,6 +75,14 @@ add_library (livevst SHARED
     ${livevst_moc}
     ${livevst_qrc}
 )
+
+if (WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DLIVEVST_LIBRARY=1")
+target_link_libraries (livevst
+    livecore
+    ${QT_LIBRARIES}
+)
+endif (WIN32)
 
 set_target_properties(livevst PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins

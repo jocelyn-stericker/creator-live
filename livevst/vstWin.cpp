@@ -11,10 +11,11 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include "Vst_p.h"
 #include "live/object"
+#include <live/midi>
 #include "VstSidekick.h"
 //#undef UNICODE
 
-//#include "windows.h"
+#include "windows.h"
 
 #include "vst2.x/aeffect.h"
 #include "vst2.x/aeffectx.h"
@@ -22,7 +23,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 QStringList Vst::s_vstpaths_linux;
 QStringList* Vst::s_vstCache=0;
-QMultiMap<QString, QPair<QString, Vst*> > Vst::s_map;
+QMultiMap<QString, QPair<QString, live::ObjectPtr> > Vst::s_map;
 
 SecretVst* SecretVst::singleton=0;
 int Vst::lastVstId=-1;
@@ -149,10 +150,8 @@ void Vst::init()
     if (!SecretVst::singleton) new SecretVst;
     Q_ASSERT(SecretVst::singleton);
 
-    Q_UNUSED(lock);
-
     rep=new VstR(this,SecretVst::singleton->s_loadPlugin(filename));
-    const quint32& nframes=AudioSys::nFrames();
+    const quint32& nframes=live::audio::nFrames();
     channelData = new float*[ rep->_vst->numInputs ];
     outData = new float*[ rep->_vst->numOutputs ];
     for (int i=0;i<rep->_vst->numInputs;i++)
@@ -163,11 +162,13 @@ void Vst::init()
     {
         outData[i]=new float[nframes];
     }
-    chains=new ObjectChain[ rep->_vst->numOutputs ];
+    for(int i = 0; i < rep->_vst->numOutputs; ++i)
+        lasts.push_back(live::ObjectPtr());
+
     for (int i=0;i<rep->_vst->numOutputs/2;i++)
     {
         VstSidekick* l=new VstSidekick(rep,i,this,this,i*2);
-        ObjectStore::set(l); //reg to unload...
+        live::object::set(l); //reg to unload...
         rep->s_sidekicks.push_back(l);
 
     }
@@ -188,6 +189,12 @@ void Vst::show()
     rep->vstEditor=new VstEditor(rep->_vst,rep);
 }
 
+bool Vst::ok() const
+{
+    return rep;
+}
+
+
 void Vst::hide()
 {
     if (!rep->vstEditor)
@@ -197,24 +204,25 @@ void Vst::hide()
     rep->vstEditor->hide();
 }
 
+Vst::~Vst() {
+
+}
+
 void Vst::aIn(const float* x, int chan, Object*s)
 {
-    Q_UNUSED(lock);
     Q_UNUSED(s);
 
     //todo: should be mixer.
-    const quint32& nframes = AudioSys::nFrames();
+    const quint32& nframes = live::audio::nFrames();
     for (long frame = 0; frame < nframes; ++frame)
     {
         channelData[chan][frame] = x[frame];
     }
-//    chains[chan]=s;
+//    lasts[chan]=s;
 } //////////////////////////////// GOES TO ////////////////////////////////
 void Vst::PROC_VST()
 {
-    Q_UNUSED(lock);
-
-    const quint32& nframes=AudioSys::nFrames();
+    const quint32& nframes=live::audio::nFrames();
 
     rep->silenceChannel( outData, rep->_vst->numOutputs, nframes );
     rep->processAudio( channelData, outData, nframes );
@@ -222,22 +230,20 @@ void Vst::PROC_VST()
     rep->silenceChannel( channelData, rep->_vst->numInputs, nframes );
     for (int i=0;i<rep->_vst->numOutputs;i++)
     {
-        chains[i].push_back(this);
-        aOut(outData[i],i,chains[i]);
-        chains[i].pop_back();
+        aOut(outData[i],i,lasts[i].data());
     }
 }
 
-void Vst::mIn(const Event *data, ObjectChain*p)
+void Vst::mIn(const live::Event *data, live::ObjectChain*p)
 {
     p->push_back(this);
     mOut(data,p);
     p->pop_back();
 
     if (data->simpleStatus()==-1) return;
-    Q_UNUSED(lock);
 
-    Event* ev=new Event;
+
+    live::Event* ev=new live::Event;
     *ev=*data;
     rep->midiQueue.push_back(ev);
     rep->sourceQueue.push_back(p->back());   //check this
@@ -312,8 +318,8 @@ void VstR::silenceChannel(float **channelData, int numChannels, long numFrames)
 
 void VstR::processAudio(float **inputs, float **outputs, long numFrames)
 {
-    QList<Event*> playNow;
-    Time x=MidiSys::getTime()+Time(20);
+    QList<live::Event*> playNow;
+    live::Time x=live::midi::getTime()+live::Time(20);
     for (int i=0; i<midiQueue; i++)
     {
         if (midiQueue[i]->time<x)
@@ -431,8 +437,8 @@ void SecretVst::s_initPlugin(AEffect *&plugin)
     if (!plugin) return;
 
     plugin->dispatcher(plugin, effOpen, 0, 0, 0, 0);
-    plugin->dispatcher(plugin, effSetSampleRate, 0, 0, 0, AudioSys::sampleRate());
-    plugin->dispatcher(plugin, effSetBlockSize, 0, AudioSys::nFrames(), 0, 0);
+    plugin->dispatcher(plugin, effSetSampleRate, 0, 0, 0, live::audio::sampleRate());
+    plugin->dispatcher(plugin, effSetBlockSize, 0, live::audio::nFrames(), 0, 0);
 
     return;
 }

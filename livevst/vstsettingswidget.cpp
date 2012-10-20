@@ -14,6 +14,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QMessageBox>
 #include <QDirIterator>
 #include "vst.h"
+#include "vst_p.h"
 
 VstSettingsWidget::VstSettingsWidget(QWidget *parent) :
     QWidget(parent),
@@ -49,7 +50,7 @@ void VstSettingsWidget::addSingleAction(QStringList l)
 #ifdef _WIN32
     for (int i=0;i<l.size();i++) {
         if (!SecretVst::isValid(l[i])) {
-            QMessageBox::warning(this,"Not a valid VST",l+" is not a valid VST. Note that only 32-bit VSTs are supported at this time.");
+            QMessageBox::warning(this,"Not a valid VST",l[i]+" is not a valid VST. Note that only 32-bit VSTs are supported at this time.");
             l.removeAt(i--);
         }
     }

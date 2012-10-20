@@ -7,16 +7,15 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
+#include "vst_p.h"
+
 #include <live/object>
 #include <live/midievent>
 #include "vst.h"
-#ifdef __linux
 #include "vstlinux_p.h"
-#endif
 #ifdef _WIN32
 #include <live/audio>
 #endif
-#include "vst_p.h"
 
 #ifndef VSTSIDEKICK_H
 #define VSTSIDEKICK_H
