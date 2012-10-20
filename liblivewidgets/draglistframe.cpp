@@ -21,4 +21,5 @@ live_widgets::DragListFrame::DragListFrame(QStringList x,QWidget*p) : QFrame(p),
         }
         s_layout->addWidget(s_list.back(),r,c);
     }
+    setMinimumHeight(s_list.size()*40);
 }

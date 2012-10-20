@@ -425,9 +425,8 @@ void LiveWindow::editAudioSetup()
     ui->pushButton_creatorLive->setEnabled(0);
 
     LiveAudioSettingsWidget* w = new LiveAudioSettingsWidget();
-    ui->sac_contents->push_back(w);
-    ui->sac_contents->updateItems();
-    connect(w,SIGNAL(destroyed(QObject*)),ui->sac_contents,SLOT(removeOne(QObject*)));
+    w->show();
+    connect(w,SIGNAL(finished(int)), w, SLOT(deleteLater()));
     connect(w,SIGNAL(destroyed()),this,SLOT(editAudioSetupDone()));
 }
 
