@@ -129,6 +129,8 @@ void LiveWindow::newProject(bool ask)
         delete ui->sac_contents->takeFirst();
     }
 
+    while (MidiFilter::_u.size()) delete MidiFilter::_u.takeFirst();
+
     connect(ui->spinBox_bpm,SIGNAL(valueChanged(int)),&song::current()->metronome->b_bpm,SLOT(set(int)));
     connect(&song::current()->metronome->b_bpm,SIGNAL(changeObserved(int,int)),this,SLOT(setBPM(int)));
 

@@ -135,11 +135,10 @@ QByteArray LiveWindow::save()
     }
 
     /*001*/
-    verify(ret,(QString)"Creator Live Project File\n"
-           "Creator Live is Copyright Joshua Netterfield\n");
+    verify(ret,(QString)"live.nettek.ca\n");
 
     /*002*/
-    verify(ret,(QString)"Not from an official/stable version of Live");
+    verify(ret,(QString)"VOLATILE_UNRELEASED");
 
     /*003*/
 
@@ -285,24 +284,13 @@ QByteArray LiveWindow::save()
         }
     }
     x->hathorView()->updateItems();
+    verify(ret,(QString)"SECTION_1\n");
 
     /*006*/
-#ifdef SAVE
-    ret IO x->s_patches.size();
-    for (int i=0;i<x->s_patches;i++) {
-        for (int k=0;k<x->s_patches[i]->widgets.size();k++)  {
-            int l=-1;
-            for (unsigned j=0;j<x->hathorView()->count();j++) {
-                if ((*x->hathorView())[j]==x->s_patches[i]->widgets[k]) {
-                    k=j;
-                    break;
-                }
-            }
-            Q_ASSERT(l!=-1);
-            ret IO l;
-        }
-    }
-#endif
+
+    // implement patches
+
+    verify(ret,(QString)"SECTION_2\n");
 
     /*007*/
 #ifdef SAVE
@@ -320,7 +308,7 @@ QByteArray LiveWindow::save()
 #endif
 
     /*008*/
-    (verify(ret,(QString)"Yay!"));
+    (verify(ret,(QString)"imogen\n"));
 
     RETURN;
 }

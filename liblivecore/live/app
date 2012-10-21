@@ -36,7 +36,7 @@ public:
     static QList<AppInterface*> interfaces();
     static ObjectPtr newBackend(QString name);
     static QObject* newFrontend(QString name,ObjectPtr backend);
-    static ObjectPtr loadBackend(const QByteArray&);
+    static ObjectPtr loadBackend(const QByteArray& name, const QByteArray&);
 };
 
 }

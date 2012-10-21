@@ -47,7 +47,7 @@ void Track::initialize() {
     ui_chainWidget->setGeometry(0,0,width(),3);
     ui_chainWidget->setFixedHeight(2);
     setAcceptDrops(1);
-    s_th->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    if(s_th) s_th->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     //    ui_midiSelect->hide();
 
     setFixedHeight(350);

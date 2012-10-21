@@ -693,6 +693,8 @@ QByteArray song::save()
     //////////////////////////////////////////////////////////////////
 
     /*005B*/
+    midi::refresh();
+
     for (int i=0;i<mapsize;i++)
     {
         qint32 ns=IS_SAVE?x->midiMaps.keys()[i]:0;
@@ -701,9 +703,6 @@ QByteArray song::save()
         /*005B_2*/ P_INT32(ni);
         if (IS_LOAD)
         {
-            live::ObjectPtr search=0;
-            midi::refresh();  //i.e., refresh
-            Q_ASSERT(search);
             Q_ASSERT(ni!=-1&&ni<MidiFilter::_u.size());
             x->midiMaps.insertMulti(ns,MidiFilter::_u[ni]);
         }
@@ -849,8 +848,10 @@ QByteArray Ambition::save()
     ObjectChain chain;
     for (int i=0;i<cchain_size;i++)
     {
+        QByteArray name;
+        ret IO name;
         ret IO xba;
-        chain.push_back(app::loadBackend(xba));
+        chain.push_back(app::loadBackend(name,xba));
     }
     x=new Ambition(cinput,chain,coutput,loopback);
 
@@ -869,7 +870,8 @@ QByteArray Ambition::save()
     ret IO this->s_chain.size();
     for (int i=0;i<this->s_chain.size();i++)
     {
-        ret IO x->at(i)->name();
+        xba = x->at(i)->name().toAscii();
+        ret IO xba;
         ret IO x->at(i)->save();
     }
 #endif
@@ -1352,20 +1354,16 @@ QByteArray MidiEventCounter::save()
 }
 
 #ifdef LOAD
-ObjectPtr app::loadBackend(const QByteArray&str)
+ObjectPtr app::loadBackend(const QByteArray& name, const QByteArray&str)
 {
     BEGIN;
     Q_UNUSED(xint32);
     Q_UNUSED(xbool);
 
-    ret.setFloatingPointPrecision(QDataStream::SinglePrecision);
-
-    QString xstr;
-    ret IO xstr;
     for (int i=0;i<appNames().size();i++) {
-        if (appNames()[i]==xstr) {
-            ret IO xba;
-            ObjectPtr optr=interfaces()[i]->loadBackend(xba);
+        qDebug() << "Checking" << name << "against" << appNames()[i];
+        if (appNames()[i]==name) {
+            ObjectPtr optr=interfaces()[i]->loadBackend(str);
             optr->setTemporary(0);
             return optr;
         }

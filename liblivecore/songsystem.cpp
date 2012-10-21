@@ -44,4 +44,5 @@ live::song::song()
   {
     //don't count on "current"
     universe.push_back(this);
+    colours<<"white"<<"red"<<"green"<<"blue"<<"yellow"<<"orange"<<"purple"<<"indigo"<<"grey";
 }

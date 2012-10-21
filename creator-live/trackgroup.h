@@ -35,7 +35,9 @@ public:
       , s_id(++s_lastId)
       , ui_selectWidget(0)
     {
-        instLabel = dynamic_cast<live_widgets::TrackInputSelect*>(oc);
+        if (! (instLabel = dynamic_cast<live_widgets::TrackInputSelect*>(oc))) {
+            instLabel = new live_widgets::TrackInputSelect(this, false, true, true); // will be corrected
+        }
         setFrameStyle(QFrame::NoFrame);
         setLineWidth(0);
         setObjectName("TrackGroup_"+QString::number(s_id));
