@@ -74,6 +74,8 @@ public:
     void pop_back() { s_identity.pop_back(); }
 };
 
+template<typename T> class Ptr;
+
 /**
  * Object is the base class for all objects which process MIDI data, audio data, or both.
  *
@@ -211,6 +213,7 @@ protected:
 #endif
 
     friend class ObjectPtr;
+    template <typename T> friend class Ptr;
     friend class live_private::SecretAudio;
     friend class live::Ambition;
     friend class ScopedLock;
@@ -389,8 +392,8 @@ struct ScopedMutexLock {
  */
 class LIBLIVECORESHARED_EXPORT ObjectPtr
 {
-    Object* s_obj;
 protected:
+    Object* s_obj;
     void obliviate();
     bool restore(Object *a);
     friend class Object;
@@ -436,7 +439,7 @@ public:
         }
     }
 
-    ObjectPtr& operator=(Object* other) {
+    virtual ObjectPtr& operator=(Object* other) {
         detach();
         if (other) live_mutex(other->x_ptr) {
             s_obj=other;
@@ -448,7 +451,7 @@ public:
         } else s_obj = 0;
         return* this;
     }
-    ObjectPtr& operator=(const ObjectPtr& other) {
+    virtual ObjectPtr& operator=(const ObjectPtr& other) {
         detach();
         if (other.data()) live_mutex(const_cast<ObjectPtr&>(other)->x_ptr) {
             s_obj=const_cast<ObjectPtr&>(other).data();
@@ -475,6 +478,91 @@ public:
     Object& operator*()              { Q_ASSERT(s_obj); return *s_obj; }
     Object* operator->() const       { Q_ASSERT(s_obj); return s_obj; }
     Object* operator->()             { Q_ASSERT(s_obj); return s_obj; }
+
+    friend uint qHash(const live::ObjectPtr &p);
+};
+
+template<typename T> class LIBLIVECORESHARED_EXPORT Ptr : public ObjectPtr
+{
+    T* sp_obj;
+protected:
+    friend class Object;
+    Ptr(QString s,T* o)
+      : ObjectPtr(s, o)
+      , sp_obj(o)
+      {
+        s_obj->s_ptrList.insert(this);
+    }
+
+public:
+    Ptr(T* o=0)
+      : ObjectPtr(o)
+      , sp_obj(o)
+      { if(s_obj) live_mutex(s_obj->x_ptr) {
+            s_obj->s_ptrList.insert(this);
+//            s_isInput=s_obj->isInput();
+//            s_isOutput=s_obj->isOutput();
+//            s_isAudio=s_obj->isAudioObject();
+//            s_isMidi=s_obj->isMidiObject();
+        }
+    }
+
+    Ptr(Object *o, bool b)
+        : ObjectPtr(o, b)
+        , sp_obj(o)
+    {
+
+    }
+
+    virtual ~Ptr() {
+        //
+    }
+
+    Ptr(const Ptr<T>& other)
+      : ObjectPtr(other.data())
+      , sp_obj(const_cast<Ptr<T>&>(other).data())
+      { if(other.data()) live_mutex(s_obj->x_ptr) {
+            s_obj->s_ptrList.insert(this);
+//            s_isInput=s_obj->isInput();
+//            s_isOutput=s_obj->isOutput();
+//            s_isAudio=s_obj->isAudioObject();
+//            s_isMidi=s_obj->isMidiObject();
+        }
+    }
+
+    Ptr& operator=(Object* other) {
+        detach();
+        if (other) live_mutex(other->x_ptr) {
+            s_obj=sp_obj=dynamic_cast<T*>(other);
+                s_obj->s_ptrList.insert(this);
+                //            s_isInput=s_obj->isInput();
+                //            s_isOutput=s_obj->isOutput();
+                //            s_isAudio=s_obj->isAudioObject();
+                //            s_isMidi=s_obj->isMidiObject();
+        } else s_obj = 0;
+        return* this;
+    }
+    ObjectPtr& operator=(const ObjectPtr& other) {
+        detach();
+        if (other.data()) live_mutex(const_cast<ObjectPtr&>(other)->x_ptr) {
+            s_obj=sp_obj=dynamic_cast<T*>(other.data());
+            if(other.data()) {
+                s_obj->s_ptrList.insert(this);
+                //            s_isInput=s_obj->isInput();
+                //            s_isOutput=s_obj->isOutput();
+                //            s_isAudio=s_obj->isAudioObject();
+                //            s_isMidi=s_obj->isMidiObject();
+            }
+        } else s_obj = 0;
+        return* this;
+    }
+
+    T* data() { return sp_obj; }
+    T* data() const { return sp_obj; }
+    T& operator*() const        { Q_ASSERT(s_obj); return *sp_obj; }
+    T& operator*()              { Q_ASSERT(s_obj); return *sp_obj; }
+    T* operator->() const       { Q_ASSERT(s_obj); return sp_obj; }
+    T* operator->()             { Q_ASSERT(s_obj); return sp_obj; }
 
     friend uint qHash(const live::ObjectPtr &p);
 };

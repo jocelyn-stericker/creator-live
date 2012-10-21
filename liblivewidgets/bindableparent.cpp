@@ -219,7 +219,7 @@ QByteArray live_widgets::BindableParent::saveBindings() {
                     ret<<(QString)w->objectName();
                     ret<<(qint32)live::MidiBinding::universe[i]->parentType;
                     ret<<(qint32)live::MidiBinding::universe[i]->type;
-                    MidiBindingQt* mbq=qobject_cast<MidiBindingQt*>(live::MidiBinding::universe[i]);
+                    MidiBindingQt* mbq=qobject_cast<MidiBindingQt*>(live::MidiBinding::universe[i].data());
                     Q_ASSERT(mbq);
                     ret<<(bool)mbq->s_quantized;
                     ret<<(QString)live::MidiBinding::universe[i]->data;

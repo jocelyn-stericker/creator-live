@@ -101,7 +101,7 @@ class LIBLIVECORESHARED_EXPORT MidiBinding : public QObject, public live::Object
 public:
     static QMap<ObjectPtr,ObjectPtr*>* customKey;
     static ObjectPtr* customNow;
-    static QList<MidiBinding*> universe;
+    static QList<live::Ptr<MidiBinding> > universe;
 
     enum BindingType
     {
@@ -161,6 +161,10 @@ public:
         }
     }
 
+    virtual ~MidiBinding() {
+
+    }
+
 public slots:
     virtual void doAction(int vel=0) = 0;
 
@@ -169,7 +173,7 @@ public slots:
     {
         lthread::assertMidi();
 
-        if(midi::getTime_msec()-lastEventTime<100)
+        if(midi::getTime_msec()-lastEventTime<125)
         {
             return;
         }
@@ -195,6 +199,7 @@ public slots:
             // FIXME: Remove Qt::BlockQueuedConnection as soon as this is verified to work
         }
     }
+
 private:
     MidiBinding(const live::MidiBinding&)
       : QObject()

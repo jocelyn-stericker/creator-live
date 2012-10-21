@@ -40,6 +40,9 @@ public:
         QObject* qtGuiObject=static_cast<QObject*>(cGuiObject);
         connect(qtGuiObject,SIGNAL(destroyed()),this,SLOT(deleteLater()));
     }
+    virtual ~MidiBindingQt()
+    {
+    }
 
 protected:
     virtual void doAction(int ccval=-1) {

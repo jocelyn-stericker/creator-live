@@ -45,7 +45,7 @@ namespace MidiBindingQtSysPrivate {
                 );
 
         if (!ok) {
-            delete live::MidiBinding::universe.takeLast();
+            live::MidiBinding::universe.takeLast().detach();
         }
     }
 
@@ -72,7 +72,7 @@ namespace MidiBindingQtSysPrivate {
         }
 
         if (!ok) {
-            delete live::MidiBinding::universe.takeLast();
+            live::MidiBinding::universe.takeLast().detach();
         }
     }
 
@@ -171,7 +171,7 @@ void live_widgets::MidiBindingQtSys::delWidgetReal(QObject *object) {
     }
     for ( int i = 0;i<live::MidiBinding::universe;i++) {
         if ( object == live::MidiBinding::universe[i]->guiObject ) {
-            delete live::MidiBinding::universe.takeAt(i);
+            live::MidiBinding::universe.takeAt(i).detach();
             i--;
         }
     }
@@ -399,7 +399,7 @@ void live_widgets::MidiBindingQtSys::removeBind() {
     Q_ASSERT(activeWidget);
     for (int i=0;i<live::MidiBinding::universe;i++) {
         if (activeWidget==live::MidiBinding::universe[i]->guiObject) {
-            delete live::MidiBinding::universe.takeAt(i);
+            live::MidiBinding::universe.takeAt(i).detach();
             return;
         }
     }
@@ -410,6 +410,6 @@ live_widgets::MidiBindingQtSys::~MidiBindingQtSys() {
     delete currentCM;
 
     while (live::MidiBinding::universe.size()) {
-        delete live::MidiBinding::universe.takeFirst();
+        live::MidiBinding::universe.takeFirst().detach();
     }
 }
