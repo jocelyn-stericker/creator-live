@@ -17,7 +17,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 using namespace live;
 using namespace live_widgets;
 
-LIBLIVEWIDGETSSHARED_EXPORT MidiBindingQtSys* MidiBindingQtSys::singleton=0;
+LIBLIVEWIDGETSSHARED_EXPORT binding* binding::singleton=0;
 
 namespace MidiBindingQtSysPrivate {
     void bindClick(QWidget* widget, live::MidiBinding::GuiType widgetType,bool q ) {
@@ -132,12 +132,12 @@ namespace MidiBindingQtSysPrivate {
     }
 }
 
-void live_widgets::MidiBindingQtSys::addWidget(QWidget* widget) {
-    if (!singleton) singleton = new MidiBindingQtSys();
+void live_widgets::binding::addWidget(QWidget* widget) {
+    if (!singleton) singleton = new binding();
     singleton->addWidgetReal(widget);
 }
 
-void live_widgets::MidiBindingQtSys::addWidgetReal(QWidget *widget) {
+void live_widgets::binding::addWidgetReal(QWidget *widget) {
     for ( int i = 0; i < widget->children().size(); i++ ) {
         QWidget* child = qobject_cast< QWidget* >( widget->children()[i] );
         if ( child ) addWidget( child );
@@ -152,12 +152,12 @@ void live_widgets::MidiBindingQtSys::addWidgetReal(QWidget *widget) {
     // silent fail.
 }
 
-void live_widgets::MidiBindingQtSys::delWidget(QWidget* widget) {
-    if (!singleton) singleton = new MidiBindingQtSys();
+void live_widgets::binding::delWidget(QWidget* widget) {
+    if (!singleton) singleton = new binding();
     singleton->delWidgetReal(widget);
 }
 
-void live_widgets::MidiBindingQtSys::delWidgetReal(QObject *object) {
+void live_widgets::binding::delWidgetReal(QObject *object) {
     QWidget* widget = qobject_cast<QWidget*>(object);
     for ( int i = 0; i < widgets.size(); i++ ) {
         if ( widgets[i] == object ) {
@@ -177,7 +177,7 @@ void live_widgets::MidiBindingQtSys::delWidgetReal(QObject *object) {
     }
 }
 
-void live_widgets::MidiBindingQtSys::showContextMenu( QPoint ) {
+void live_widgets::binding::showContextMenu( QPoint ) {
     QWidget *widget = qobject_cast<QWidget *>( sender() );
 
     if (!widget) {
@@ -274,7 +274,7 @@ void live_widgets::MidiBindingQtSys::showContextMenu( QPoint ) {
     currentCM->exec( QCursor::pos() );
 }
 
-void live_widgets::MidiBindingQtSys::bindClick(bool q) {
+void live_widgets::binding::bindClick(bool q) {
     Q_ASSERT(activeWidget);
     MidiBindingQtSysPrivate::bindClick(activeWidget,activeWidgetType,q);
     if ( currentCM != 0 ) {
@@ -284,9 +284,9 @@ void live_widgets::MidiBindingQtSys::bindClick(bool q) {
     }
 }
 
-void live_widgets::MidiBindingQtSys::bindClickQ() { bindClick(1); }
+void live_widgets::binding::bindClickQ() { bindClick(1); }
 
-void live_widgets::MidiBindingQtSys::bindToggle(bool q) {
+void live_widgets::binding::bindToggle(bool q) {
     Q_ASSERT(activeWidget);
     MidiBindingQtSysPrivate::bindToggle(activeWidget,activeWidgetType,q);
     if ( currentCM != 0 ) {
@@ -296,9 +296,9 @@ void live_widgets::MidiBindingQtSys::bindToggle(bool q) {
     }
 }
 
-void live_widgets::MidiBindingQtSys::bindToggleQ() { bindToggle(1); }
+void live_widgets::binding::bindToggleQ() { bindToggle(1); }
 
-void live_widgets::MidiBindingQtSys::bindSetCurrentIndex(bool q) {
+void live_widgets::binding::bindSetCurrentIndex(bool q) {
     Q_ASSERT(activeWidget);
     MidiBindingQtSysPrivate::bindSetCurrentIndex(activeWidget,activeWidgetType,q);
     if ( currentCM != 0 ) {
@@ -308,9 +308,9 @@ void live_widgets::MidiBindingQtSys::bindSetCurrentIndex(bool q) {
     }
 }
 
-void live_widgets::MidiBindingQtSys::bindSetCurrentIndexQ() { bindSetCurrentIndex(1); }
+void live_widgets::binding::bindSetCurrentIndexQ() { bindSetCurrentIndex(1); }
 
-void live_widgets::MidiBindingQtSys::bindSetText(bool q) {
+void live_widgets::binding::bindSetText(bool q) {
     Q_ASSERT(activeWidget);
     MidiBindingQtSysPrivate::bindSetText(activeWidget,activeWidgetType,q);
     if ( currentCM != 0 ) {
@@ -320,9 +320,9 @@ void live_widgets::MidiBindingQtSys::bindSetText(bool q) {
     }
 }
 
-void live_widgets::MidiBindingQtSys::bindSetTextQ() { bindSetText(1); }
+void live_widgets::binding::bindSetTextQ() { bindSetText(1); }
 
-void live_widgets::MidiBindingQtSys::bindStepUp(bool q) {
+void live_widgets::binding::bindStepUp(bool q) {
     Q_ASSERT(activeWidget);
     MidiBindingQtSysPrivate::bindStepUp(activeWidget,activeWidgetType,q);
     if ( currentCM != 0 ) {
@@ -333,9 +333,9 @@ void live_widgets::MidiBindingQtSys::bindStepUp(bool q) {
 
 }
 
-void live_widgets::MidiBindingQtSys::bindStepUpQ() { bindStepUp(1); }
+void live_widgets::binding::bindStepUpQ() { bindStepUp(1); }
 
-void live_widgets::MidiBindingQtSys::bindStepDown(bool q) {
+void live_widgets::binding::bindStepDown(bool q) {
     Q_ASSERT(activeWidget);
     MidiBindingQtSysPrivate::bindStepDown(activeWidget,activeWidgetType,q);
     if ( currentCM != 0 ) {
@@ -345,9 +345,9 @@ void live_widgets::MidiBindingQtSys::bindStepDown(bool q) {
     }
 }
 
-void live_widgets::MidiBindingQtSys::bindStepDownQ() { bindStepDown(1); }
+void live_widgets::binding::bindStepDownQ() { bindStepDown(1); }
 
-void live_widgets::MidiBindingQtSys::bindMenuAction(bool q) {
+void live_widgets::binding::bindMenuAction(bool q) {
     Q_ASSERT(activeWidget);
     MidiBindingQtSysPrivate::bindMenuAction(qobject_cast<QAction*>(sender()),activeWidget,activeWidgetType,q);
     if ( currentCM != 0 ) {
@@ -357,7 +357,7 @@ void live_widgets::MidiBindingQtSys::bindMenuAction(bool q) {
     }
 }
 
-void live_widgets::MidiBindingQtSys::bindMenuActionQ() { bindMenuAction(1); }
+void live_widgets::binding::bindMenuActionQ() { bindMenuAction(1); }
 
 //void live_widgets::MidiBindingQtSys::bindSeqCurrentPos(bool q)
 //{
@@ -385,7 +385,7 @@ void live_widgets::MidiBindingQtSys::bindMenuActionQ() { bindMenuAction(1); }
 
 //void live_widgets::MidiBindingQtSys::bindSeqChoosePosQ() { bindSeqChoosePos(1); }
 
-void live_widgets::MidiBindingQtSys::bindSlider() {
+void live_widgets::binding::bindSlider() {
     Q_ASSERT(activeWidget);
     MidiBindingQtSysPrivate::bindSlider(activeWidget,activeWidgetType);
     if ( currentCM != 0 ) {
@@ -395,7 +395,7 @@ void live_widgets::MidiBindingQtSys::bindSlider() {
     }
 }
 
-void live_widgets::MidiBindingQtSys::removeBind() {
+void live_widgets::binding::removeBind() {
     Q_ASSERT(activeWidget);
     for (int i=0;i<live::MidiBinding::universe;i++) {
         if (activeWidget==live::MidiBinding::universe[i]->guiObject) {
@@ -405,7 +405,7 @@ void live_widgets::MidiBindingQtSys::removeBind() {
     }
 }
 
-live_widgets::MidiBindingQtSys::~MidiBindingQtSys() {
+live_widgets::binding::~binding() {
     singleton=0;
     delete currentCM;
 

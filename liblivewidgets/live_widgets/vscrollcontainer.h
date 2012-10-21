@@ -55,7 +55,7 @@ public:
       , s_vBox(new QVBoxLayout(this))
       , s_resizeable(cresizeable)
       { s_vBox->setContentsMargins(0, 0, 0, 0);
-        live_widgets::MidiBindingQtSys::addWidget(this);
+        live_widgets::binding::addWidget(this);
         s_vBox->setSizeConstraint(QLayout::SetMaximumSize);
     }
 

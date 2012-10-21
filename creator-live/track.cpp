@@ -52,7 +52,7 @@ void Track::initialize() {
 
     setFixedHeight(350);
     //    connect(ui_midiSelect,SIGNAL(indexSet(int)),this,SLOT(selectOutput(int)));
-    MidiBindingQtSys::addWidget(this);
+    binding::addWidget(this);
 
     setObjectName("Track_"+QString::number(s_id));
     setGeometry(geometry());

@@ -62,6 +62,8 @@ FJReverbFrame::FJReverbFrame(FJReverbApp *backend, AbstractTrack *parent)
     connect(ui->toolButton_more, SIGNAL(toggled(bool)), this, SLOT(setMore(bool)));
 
     setDesiredWidth(330);
+
+    binding::addWidget(this);
 }
 
 FJReverbFrame::~FJReverbFrame()

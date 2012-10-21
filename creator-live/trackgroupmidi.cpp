@@ -62,7 +62,7 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty,
     this->setLayout( ui_mainLayout );
     setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
 
-    MidiBindingQtSys::addWidget(this);
+    binding::addWidget(this);
 
     MidiOutputChooser* moc=new MidiOutputChooser(this);
     connect(moc, SIGNAL(resized()), this, SLOT(resizeEvent()));

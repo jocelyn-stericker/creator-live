@@ -178,10 +178,10 @@ protected:
     }
 };
 
-class LIBLIVEWIDGETSSHARED_EXPORT MidiBindingQtSys : public QObject {
+class LIBLIVEWIDGETSSHARED_EXPORT binding : public QObject {
     Q_OBJECT
 public:
-    static MidiBindingQtSys* singleton;
+    static binding* singleton;
     static void addWidget(QWidget* w);
     static void delWidget(QWidget* w);
 private:
@@ -190,7 +190,7 @@ private:
     QWidget* activeWidget;
     live::MidiBinding::GuiType activeWidgetType;
 public:
-    MidiBindingQtSys()
+    binding()
       : widgets()
       , currentCM(0)
       , activeWidget(0)
@@ -198,7 +198,7 @@ public:
       {
     }
 
-    virtual ~MidiBindingQtSys();
+    virtual ~binding();
 
 public slots:
     void addWidgetReal(QWidget* w);
@@ -229,7 +229,7 @@ public slots:
     void removeBind();
 
 private:
-    MidiBindingQtSys(const MidiBindingQtSys&)
+    binding(const binding&)
       : QObject()
       , widgets()
       , currentCM(0)
@@ -238,7 +238,7 @@ private:
       { TCRASH();
     }
 
-    MidiBindingQtSys& operator=(const MidiBindingQtSys&) {
+    binding& operator=(const binding&) {
         TCRASH();
         return *this;
     }

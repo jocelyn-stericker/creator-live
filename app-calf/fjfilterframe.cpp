@@ -47,6 +47,7 @@ FJFilterFrame::FJFilterFrame(FJFilterApp *s_backend, AbstractTrack *parent)
     connect(ui->comboBox_mode1,SIGNAL(currentIndexChanged(int)),this,SLOT(onMode()));
 
     connect(ui->toolButton_more, SIGNAL(toggled(bool)), this, SLOT(setMore(bool)));
+    binding::addWidget(this);
 }
 
 FJFilterFrame::~FJFilterFrame()

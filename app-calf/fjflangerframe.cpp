@@ -60,6 +60,8 @@ FJFlangerFrame::FJFlangerFrame(FJFlangerApp *backend, AbstractTrack *parent)
     connect(ui->pushButton_reset,SIGNAL(pressed()),this,SLOT(onReset()));
 
     connect(ui->toolButton_more, SIGNAL(toggled(bool)), this, SLOT(setMore(bool)));
+
+    binding::addWidget(this);
 }
 
 FJFlangerFrame::~FJFlangerFrame()

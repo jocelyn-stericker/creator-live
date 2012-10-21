@@ -66,7 +66,7 @@ SequencerGraph::SequencerGraph( QWidget* parent,SequencerApp* capp )
 
     updateMidiData();   // ensure this is last
 
-    MidiBindingQtSys::addWidget(this);
+    binding::addWidget(this);
     setObjectName("sequencerGraph");
 }
 

@@ -35,7 +35,7 @@ MixerFrame::MixerFrame(MixerApp *backend, AbstractTrack *parent) :
 
     setDesiredWidth(56);
 
-    MidiBindingQtSys::addWidget(this);
+    binding::addWidget(this);
 }
 
 MixerFrame::~MixerFrame()

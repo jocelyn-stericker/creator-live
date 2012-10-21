@@ -51,6 +51,8 @@ FJPhaserFrame::FJPhaserFrame(FJPhaserApp* app, AbstractTrack *parent)
     }
 
     connect(ui->toolButton_more, SIGNAL(toggled(bool)), this, SLOT(setMore(bool)));
+
+    binding::addWidget(this);
 }
 
 FJPhaserFrame::~FJPhaserFrame()

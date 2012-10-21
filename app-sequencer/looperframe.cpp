@@ -56,7 +56,7 @@ LooperFrame::LooperFrame(LooperApp*backend,AbstractTrack *parent) :
 
     graph.show();
     ui->visLayout->addWidget(&graph);
-    MidiBindingQtSys::addWidget(this);
+    binding::addWidget(this);
 
     syncState();
 

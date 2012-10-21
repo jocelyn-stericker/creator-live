@@ -104,7 +104,7 @@ LiveWindow::LiveWindow(QWidget *parent)
     connect(ambition::self(), SIGNAL(created(Ambition*)), this, SLOT(onAmbitionCreated(Ambition*)));
     connect(ambition::self(), SIGNAL(destoryed(Ambition*)), this, SLOT(onAmbitionDestroyed(Ambition*)));
 
-    MidiBindingQtSys::addWidget(this);
+    binding::addWidget(this);
 }
 
 void LiveWindow::newProject(bool ask)

@@ -37,7 +37,7 @@ MidiOutputChooser::MidiOutputChooser(QWidget *parent)
     connect(s_ui->Bwidget,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(step2()));
     connect(&b_trackName, SIGNAL(changeObserved(QString,QString)), s_ui->inputName, SLOT(setText(QString)));
 
-    MidiBindingQtSys::addWidget(this);
+    binding::addWidget(this);
 
     setFixedWidth(55);
     setMaximized();

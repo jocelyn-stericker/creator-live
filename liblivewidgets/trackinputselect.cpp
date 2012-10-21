@@ -106,7 +106,7 @@ TrackInputSelect::TrackInputSelect(QWidget*parent, bool popout, bool allowMidi, 
     all.push_back("0");
     updateObjects();
 
-    MidiBindingQtSys::addWidget(this);
+    binding::addWidget(this);
 
     connect(s_ui->inputType, SIGNAL(toggled(bool)), this, SLOT(setMaximized(bool)));
 

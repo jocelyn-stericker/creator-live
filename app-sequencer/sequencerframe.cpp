@@ -49,7 +49,7 @@ SequencerFrame::SequencerFrame(SequencerApp* backend,AbstractTrack *parent)
     connect(&app,SIGNAL(scaleChanged(int)),&graph,SLOT(setScale(int)));
 
     ui->visLayout->addWidget(&graph);
-    MidiBindingQtSys::addWidget(this);
+    binding::addWidget(this);
     syncState();
 
     ui->menu->setText("Track");

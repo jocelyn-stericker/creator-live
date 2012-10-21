@@ -54,7 +54,7 @@ TrackGroupAudio::TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent, bo
 
     this->setLayout( mainLayout );
 
-    MidiBindingQtSys::addWidget(this);
+    binding::addWidget(this);
     mainLayout->setObjectName("mainLayout");
     s_hathorView->setObjectName("s_hathorView");
     AudioOutputChooser* aoo=new AudioOutputChooser(this);

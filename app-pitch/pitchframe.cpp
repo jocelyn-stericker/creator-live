@@ -7,8 +7,11 @@
                  All rights reserved.
 *****************************************************/
 
+
 #include "pitchframe.h"
 #include "ui_pitchframe.h"
+
+#include <live_widgets/midibindingqt.h>
 
 #include <QtPlugin>
 #include <QPropertyAnimation>
@@ -29,6 +32,7 @@ PitchFrame::PitchFrame(PitchApp* backend, AbstractTrack *parent)
     setDesiredWidth(307);
 
     setObjectName("PitchFrame_"+QString::number(app->s_id));
+    live_widgets::binding::addWidget(this);
 }
 
 void PitchFrame::syncState()

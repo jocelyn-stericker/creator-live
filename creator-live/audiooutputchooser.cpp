@@ -37,7 +37,7 @@ AudioOutputChooser::AudioOutputChooser(QWidget *parent)
 
     updateObjects();
 
-    MidiBindingQtSys::addWidget(this);
+    binding::addWidget(this);
 
     setFixedWidth(55);
     setMaximized(true);

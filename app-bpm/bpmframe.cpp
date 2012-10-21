@@ -29,6 +29,8 @@ BPMFrame::BPMFrame(BPMApp*backend,AbstractTrack *parent) :
     connect(ui_tb,SIGNAL(toggled(bool)),&app.b_sync,SLOT(set(bool)));
     connect(&app.b_sync,SIGNAL(changeObserved(bool,bool)),ui_tb,SLOT(setChecked(bool)));
     ui_tb->setChecked(app.b_sync);
+
+    binding::addWidget(this);
 }
 
 BPMFrame::~BPMFrame()
