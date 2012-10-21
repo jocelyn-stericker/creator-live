@@ -170,6 +170,7 @@ protected:
                 QAbstractSlider* as=static_cast<QAbstractSlider*>(guiObject);
                 as->setValue(static_cast<int>((float)ccval/127.0*(float)(as->maximum()-as->minimum()))+as->minimum());
             }
+            break;
         }
         case InvalidBinding:
         case NumberOfBindingTypes:
