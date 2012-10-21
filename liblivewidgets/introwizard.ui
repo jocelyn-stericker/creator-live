@@ -200,7 +200,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="pushButton_continue">
         <property name="text">
          <string>Continue an Existing Project...</string>
         </property>

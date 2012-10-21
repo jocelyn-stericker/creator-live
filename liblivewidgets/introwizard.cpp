@@ -21,6 +21,7 @@ IntroWizard::IntroWizard(QWidget *parent) :
     ui->setupUi(this);
     connect(ui->commandLinkButton_live,SIGNAL(clicked()),this,SIGNAL(standardRequested()));
     connect(ui->pushButton_quit,SIGNAL(clicked()),this,SIGNAL(quitRequested()));
+    connect(ui->pushButton_continue,SIGNAL(clicked()),this,SIGNAL(openRequested()));
     resizeEvent(0);
 }
 

@@ -150,6 +150,7 @@ void LiveWindow::selectMode()
     ui->header->hide(); ui->header_->show();
     connect(s_iw,SIGNAL(standardRequested()),this,SLOT(newInput()));
     connect(s_iw,SIGNAL(quitRequested()),this,SLOT(close()));
+    connect(s_iw,SIGNAL(openRequested()),this,SLOT(open()));
     ui->sac_contents->push_back(s_iw);
     ui->sac_contents->updateItems();
     curPatch()->widgets.push_back(s_iw);

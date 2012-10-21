@@ -34,6 +34,7 @@ private:
 signals:
     void standardRequested();
     void quitRequested();
+    void openRequested();
 
 private:
     IntroWizard(const IntroWizard &);
