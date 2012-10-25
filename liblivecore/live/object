@@ -235,7 +235,7 @@ protected:
     /***** MINI MIXER *****/
         float** mixer_data;
         quint32 mixer_nframes;
-        int* mixer_at;
+        uint* mixer_at;
     void mixer_resetStatus();
     inline void mixer_clear(int chan) {
         Q_ASSERT(mixer_data[chan]);

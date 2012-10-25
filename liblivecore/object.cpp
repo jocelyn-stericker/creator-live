@@ -206,7 +206,7 @@ live::Object::Object(QString cname, bool isPhysical, bool allowMixer, int chans)
     kill_kitten universe.insert(this);
 
     mixer_data = new float*[s_chans];
-    mixer_at = new int[s_chans];
+    mixer_at = new uint[s_chans];
 
     mixer_nframes = live::audio::nFrames();
 

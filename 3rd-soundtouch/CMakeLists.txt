@@ -73,6 +73,10 @@ add_library (livesoundtouch SHARED
     ${livesoundtouch_moc}
 )
 
+if (UNIX)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse2")
+endif (UNIX)
+
 if (NOT WIN32)
 set_target_properties(livesoundtouch PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
