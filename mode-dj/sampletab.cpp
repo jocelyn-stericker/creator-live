@@ -10,9 +10,10 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "sampletab.h"
 #include "ui_sampletab.h"
 
-SampleTab::SampleTab(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::sampletab)
+SampleTab::SampleTab(QWidget *parent)
+  : QWidget(parent)
+  , live_widgets::BindableParent(this)
+  , ui(new Ui::sampletab)
 {
     ui->setupUi(this);
 }

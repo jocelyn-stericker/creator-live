@@ -16,11 +16,12 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 using namespace live;
 
-EffectsTab::EffectsTab(QWidget *parent) :
-    QWidget(parent)
-    , s_samplerL(*new SamplerDJ)
-    , s_samplerR(*new SamplerDJ)
-    , ui(new Ui::effectstab)
+EffectsTab::EffectsTab(QWidget *parent)
+  : QWidget(parent)
+  , live_widgets::BindableParent(this)
+  , s_samplerL(*new SamplerDJ)
+  , s_samplerR(*new SamplerDJ)
+  , ui(new Ui::effectstab)
 {
     for (int i = 0; i < 8; i++)
     {

@@ -10,9 +10,10 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "tracktab.h"
 #include "ui_tracktab.h"
 
-TrackTab::TrackTab(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::tracktab)
+TrackTab::TrackTab(QWidget *parent)
+  : QWidget(parent)
+  , live_widgets::BindableParent(this)
+  , ui(new Ui::tracktab)
 {
     ui->setupUi(this);
 }

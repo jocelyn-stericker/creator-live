@@ -13,13 +13,14 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live/object>
 #include <live/variantbinding>
 #include <live_widgets/toolbutton.h>
+#include <live_widgets/bindableparent.h>
 
 #include <QFrame>
 #include <QWidget>
 
 namespace live_widgets {
 
-class LIBLIVEWIDGETSSHARED_EXPORT ObjectChooser : public QFrame
+class LIBLIVEWIDGETSSHARED_EXPORT ObjectChooser : public QFrame, public live_widgets::BindableParent
 {
     Q_OBJECT
     Q_PROPERTY(int fixedWidth READ width WRITE setFixedWidth)

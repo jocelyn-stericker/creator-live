@@ -64,15 +64,23 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty,
 
     binding::addWidget(this);
 
-    MidiOutputChooser* moc=new MidiOutputChooser(this);
-    connect(moc, SIGNAL(resized()), this, SLOT(resizeEvent()));
+    if (!empty) {
+        MidiOutputChooser* moc=new MidiOutputChooser(this);
+        connect(moc, SIGNAL(resized()), this, SLOT(resizeEvent()));
+
+        ui_selectWidget = moc;
+        moc->setGeometry(width() - moc->width(), 0, moc->width(), moc->height());
+        connect(moc,SIGNAL(objectChosen(live::ObjectPtr, live::ObjectPtr)),this,SLOT(setLastOutput(live::ObjectPtr, live::ObjectPtr)));
+        connect(moc, SIGNAL(objectChosen(live::ObjectPtr, live::ObjectPtr)), this, SLOT(clearSelect()));
+    } else {
+        clearSelect();
+        s_hathorView->show();
+        instLabel->enableAddTrackButton();
+    }
+
     setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     adjustSize();
     s_hathorView->hide();
-    ui_selectWidget = moc;
-    moc->setGeometry(width() - moc->width(), 0, moc->width(), moc->height());
-    connect(moc,SIGNAL(objectChosen(live::ObjectPtr, live::ObjectPtr)),this,SLOT(setLastOutput(live::ObjectPtr, live::ObjectPtr)));
-    connect(moc, SIGNAL(objectChosen(live::ObjectPtr, live::ObjectPtr)), this, SLOT(clearSelect()));
 }
 
 void TrackGroupMidi::newHathorAuto()

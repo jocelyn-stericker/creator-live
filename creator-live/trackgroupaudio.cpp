@@ -55,19 +55,28 @@ TrackGroupAudio::TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent, bo
     this->setLayout( mainLayout );
 
     binding::addWidget(this);
+
     mainLayout->setObjectName("mainLayout");
     s_hathorView->setObjectName("s_hathorView");
-    AudioOutputChooser* aoo=new AudioOutputChooser(this);
+    if (!empty) {
+        AudioOutputChooser* aoo=new AudioOutputChooser(this);
+        ui_selectWidget = aoo;
+        aoo->setGeometry(width() - aoo->width(), 0, aoo->width(), aoo->height());
+
+        connect(aoo, SIGNAL(resized()), this, SLOT(resizeEvent()));
+        connect(aoo, SIGNAL(objectChosen(live::ObjectPtr)), this, SLOT(setLastOutput(live::ObjectPtr)));
+        connect(aoo, SIGNAL(objectChosen(live::ObjectPtr)), this, SLOT(clearSelect()));
+    } else {
+        clearSelect();
+        s_hathorView->show();
+        instLabel->enableAddTrackButton();
+    }
     mainLayout->addWidget(s_hathorView);
     setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     adjustSize();
-    s_hathorView->hide();
-    ui_selectWidget = aoo;
-    aoo->setGeometry(width() - aoo->width(), 0, aoo->width(), aoo->height());
 
-    connect(aoo, SIGNAL(resized()), this, SLOT(resizeEvent()));
-    connect(aoo, SIGNAL(objectChosen(live::ObjectPtr)), this, SLOT(setLastOutput(live::ObjectPtr)));
-    connect(aoo, SIGNAL(objectChosen(live::ObjectPtr)), this, SLOT(clearSelect()));
+    if (!empty) s_hathorView->hide();
+
 }
 
 TrackGroupAudio::TrackGroupAudio(const TrackGroupAudio&)

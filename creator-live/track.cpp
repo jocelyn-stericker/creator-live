@@ -235,6 +235,10 @@ void Track::setOutput(live::ObjectPtr output,live::ObjectPtr loopback) {
     s_ambition.setLoopbackOut(loopback);
 }
 
+QString Track::outputName() {
+    return s_ambition.outputName();
+}
+
 void Track::setInput(live::ObjectPtr input) {
     s_ambition.setInput(input);
 }

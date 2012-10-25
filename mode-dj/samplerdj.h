@@ -9,11 +9,12 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include <live/audiotrack>
 #include <live/miditrack>
+#include <live_widgets/bindableparent.h>
 
 #ifndef SAMPLERDJ_H
 #define SAMPLERDJ_H
 
-class SamplerDJ : public QObject, public live::Object
+class SamplerDJ : public QObject, public live::Object, public live_widgets::BindableParent
 {
     Q_OBJECT
     static int s_lastId;

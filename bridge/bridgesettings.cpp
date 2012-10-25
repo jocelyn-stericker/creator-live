@@ -27,6 +27,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 BridgeSettings::BridgeSettings(QWidget *parent)
   : QWidget(parent)
   , live::Object("Creator Live Bridge",0,0,2)
+  , live_widgets::BindableParent(this)
   , ui(new Ui::BridgeSettings)
 {
 

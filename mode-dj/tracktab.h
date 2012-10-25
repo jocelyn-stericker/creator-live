@@ -11,12 +11,13 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define TRACKTAB_H
 
 #include <QWidget>
+#include <live_widgets/bindableparent.h>
 
 namespace Ui {
 class tracktab;
 }
 
-class TrackTab : public QWidget
+class TrackTab : public QWidget, public live_widgets::BindableParent
 {
     Q_OBJECT
     

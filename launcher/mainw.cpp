@@ -17,10 +17,15 @@
 
 static QProcess jackProcess;
 
-MainW::MainW(QWidget *parent) :
-    QWidget(parent),
-    s_prog(0), s_total(1),
-    ui(new Ui::MainW)
+MainW::MainW(QWidget *parent)
+  : QWidget(parent)
+  , s_channels()
+  , s_serverQueue()
+  , s_localQueue()
+  , s_newVerQueue()
+  , s_prog(0)
+  , s_total(1)
+  , ui(new Ui::MainW)
 {
     qApp->setApplicationName("Live");
     qApp->setOrganizationName("Nettek");
@@ -380,6 +385,8 @@ QStringList parse( QString a )
 
 int admin(QString command,QString param)
 {
+    Q_UNUSED(command);
+    Q_UNUSED(param);
 #ifdef _WIN32
     SHELLEXECUTEINFO shExecInfo;
 

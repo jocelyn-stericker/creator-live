@@ -21,13 +21,14 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 using namespace live;
 
 DJContext::DJContext(QWidget *parent)
-    : QWidget(parent)
-    , s_et(new EffectsTab)
-    , s_st(new SampleTab)
-    , s_tt(new TrackTab)
-    , s_lb(new LiveBar)
-    , s_cc(new CollectionContext(this))
-    , ui(new Ui::Ui_DJContext)
+  : QWidget(parent)
+  , BindableParent(this)
+  , s_et(new EffectsTab)
+  , s_st(new SampleTab)
+  , s_tt(new TrackTab)
+  , s_lb(new LiveBar)
+  , s_cc(new CollectionContext(this))
+  , ui(new Ui::Ui_DJContext)
 {
     ui->setupUi(this);
     ui->tmpWidget->setLayout(new QHBoxLayout);  // tmp

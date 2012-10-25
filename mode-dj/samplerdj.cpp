@@ -14,8 +14,14 @@ using namespace live;
 
 int SamplerDJ::s_lastId=-1;
 
-SamplerDJ::SamplerDJ(MidiTrack**cmidiTracks,AudioTrack**caudioTracks,bool newId) :
-    live::Object("SAMPLERDJ",0,0,2), s_bindingMode(-1), s_record(0), s_play(1), s_multi(1), s_id(newId?++s_lastId:-1)
+SamplerDJ::SamplerDJ(MidiTrack**cmidiTracks,AudioTrack**caudioTracks,bool newId)
+  : live::Object("SAMPLERDJ",0,0,2)
+  , live_widgets::BindableParent(this)
+  , s_bindingMode(-1)
+  , s_record(0)
+  , s_play(1)
+  , s_multi(1)
+  , s_id(newId?++s_lastId:-1)
 {
     kill_kitten for (int i=0;i<8;i++)
     {

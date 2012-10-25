@@ -11,6 +11,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define SETTINGSLINUX_H
 
 #include <live/object>
+#include <live_widgets/bindableparent.h>
 #include <QDialog>
 #include <QHideEvent>
 
@@ -18,7 +19,7 @@ namespace Ui {
     class SettingsLinux;
 }
 
-class LiveAudioSettingsWidget : public QDialog
+class LiveAudioSettingsWidget : public QDialog, public live_widgets::BindableParent
 {
     Q_OBJECT
 

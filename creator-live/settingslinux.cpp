@@ -24,6 +24,7 @@ QStringList LiveAudioSettingsWidget::s_inl, LiveAudioSettingsWidget::s_outl;
 
 LiveAudioSettingsWidget::LiveAudioSettingsWidget(QWidget *parent, bool automatic)
   : QDialog(parent)
+  , live_widgets::BindableParent(this)
   , s_inputMappings()
   , s_inputMappingNames()
   , s_outputMappings()

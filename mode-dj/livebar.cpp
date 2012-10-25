@@ -10,9 +10,10 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "livebar.h"
 #include "ui_livebar.h"
 
-LiveBar::LiveBar(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::LiveBar)
+LiveBar::LiveBar(QWidget *parent)
+  : QWidget(parent)
+  , live_widgets::BindableParent(this)
+  , ui(new Ui::LiveBar)
 {
     ui->setupUi(this);
     connect(ui->comboBox_mode,SIGNAL(activated(int)),this,SLOT(modeChosen(int)));

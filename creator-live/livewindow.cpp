@@ -473,7 +473,7 @@ void LiveWindow::saveAs()
 {
     QString f=QFileDialog::getSaveFileName(this,"Save...","","Creator Live Project Files (*.live)");
     s_fileName=f;
-    if (s_fileName) saveAct();
+    if (s_fileName.size()) saveAct();
 }
 
 void LiveWindow::open()

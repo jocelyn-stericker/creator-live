@@ -13,6 +13,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 live_widgets::ObjectChooser::ObjectChooser(QWidget* parent)
   : QFrame(parent)
+  , BindableParent(this)
   , ui_minimized(0)
   , ui_topFrame(0)
   , ui_bottomFrame(0)

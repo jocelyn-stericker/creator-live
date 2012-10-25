@@ -825,8 +825,6 @@ border-bottom-right-radius: 4px;</string>
        </widget>
       </item>
      </layout>
-     <zorder></zorder>
-     <zorder>horizontalFrame</zorder>
     </widget>
    </item>
   </layout>

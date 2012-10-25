@@ -66,6 +66,7 @@ public:
     Ambition(live::ObjectPtr cinput=0,live::ObjectChain chain=live::ObjectChain(), live::ObjectPtr coutput=0, live::ObjectPtr cloop=0);
     ~Ambition();
 
+    QString outputName() { return s_output.valid() ? s_output->name() : "NONE"; }
 
     void setInput(live::ObjectPtr o)
     {

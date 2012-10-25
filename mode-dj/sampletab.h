@@ -11,12 +11,13 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define SAMPLETAB_H
 
 #include <QWidget>
+#include <live_widgets/bindableparent.h>
 
 namespace Ui {
 class sampletab;
 }
 
-class SampleTab : public QWidget
+class SampleTab : public QWidget, public live_widgets::BindableParent
 {
     Q_OBJECT
     

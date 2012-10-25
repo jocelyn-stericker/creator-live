@@ -74,6 +74,7 @@ protected:
     void dropEvent(QDropEvent *e);
 public slots:
     void setOutput(live::ObjectPtr output,live::ObjectPtr loopback=0);
+    QString outputName();
     void setInput(live::ObjectPtr input);
     void addWidget(int i,QWidget* frame);
     void addApp(int i,live_widgets::AppFrame* appUi,live::ObjectPtr app);

@@ -54,7 +54,8 @@ void TrackGroup::newHathor(live::ObjectPtr coutput)
     s_hathorView->updateItems();
     if (coutput->isMidiObject())
         t->setOutputChooser(new MidiOutputChooser);
-    else
+    else {
         t->setOutputChooser(new AudioOutputChooser);
+    }
     t->show();
 }

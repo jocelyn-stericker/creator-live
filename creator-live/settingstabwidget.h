@@ -11,6 +11,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define SETTINGSTABWIDGET_H
 
 #include <QTabWidget>
+#include <live_widgets/bindableparent.h>
 
 namespace live_widgets {
 class InputDragWidget;
@@ -21,7 +22,7 @@ namespace Ui {
     class SettingsTabWidget;
 }
 
-class SettingsTabWidget : public QTabWidget
+class SettingsTabWidget : public QTabWidget, public live_widgets::BindableParent
 {
     Q_OBJECT
 

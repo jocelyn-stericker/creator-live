@@ -21,6 +21,8 @@ app_dotlive.cpp
 #include "trackgroupmidi.h"
 #include <live/core>
 #include <live_widgets/appframe.h>
+#include "audiooutputchooser.h"
+#include "midioutputchooser.h"
 #include <QMessageBox>
 
 #ifndef APP_DOTLIVE_CPP
@@ -375,7 +377,12 @@ QByteArray TrackGroupAudio::save()
         for (int i=0;i<ncount;i++)
         {
             ret IO xba;
-            x->s_hathorView->insert(x->s_hathorView->count()-1,Track::load(xba));
+            Track* t = Track::load(xba);
+            AudioOutputChooser* oc = new AudioOutputChooser(0);
+            oc->b_trackName = t->outputName();
+            oc->setMinimized(true);
+            t->setOutputChooser(oc);
+            x->s_hathorView->insert(x->s_hathorView->count()-1, t);
             x->s_hathorView->updateItems();
         }
     }
@@ -473,7 +480,12 @@ QByteArray TrackGroupMidi::save()
         for (int i=0;i<ncount;i++)
         {
             ret IO xba;
-            x->s_hathorView->insert(x->s_hathorView->count()-1,Track::load(xba) );
+            Track* t = 0;
+            x->s_hathorView->insert(x->s_hathorView->count()-1, t = Track::load(xba) );
+            MidiOutputChooser* oc = new MidiOutputChooser(0);
+            oc->b_trackName = t->outputName();
+            oc->setMinimized(true);
+            t->setOutputChooser(oc);
             x->s_hathorView->updateItems();
         }
     }

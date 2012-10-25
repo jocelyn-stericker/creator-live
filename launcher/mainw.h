@@ -42,6 +42,8 @@ public:
     
 private:
     Ui::MainW *ui;
+
+    Q_DISABLE_COPY(MainW)
 };
 
 #endif // MAINW_H

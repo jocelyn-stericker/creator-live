@@ -13,6 +13,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live/object>
 #include <live/variantbinding>
 #include <live/modeinterface>
+#include <live_widgets/bindableparent.h>
 
 #include <QIcon>
 #include <QWidget>
@@ -28,7 +29,7 @@ class Ui_DJContext;
 
 class LiveBar;
 
-class DJContext : public QWidget
+class DJContext : public QWidget, public live_widgets::BindableParent
 {
     Q_OBJECT
 

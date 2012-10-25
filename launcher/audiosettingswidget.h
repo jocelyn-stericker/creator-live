@@ -26,6 +26,7 @@ signals:
     
 private:
     Ui::AudioSettingsWidget *ui;
+    Q_DISABLE_COPY(AudioSettingsWidget)
 };
 
 #endif // AUDIOSETTINGSWIDGET_H

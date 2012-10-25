@@ -13,9 +13,10 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QFileDialog>
 #include <QSettings>
 
-SettingsTabWidget::SettingsTabWidget(QWidget *parent) :
-    QTabWidget(parent),
-    ui(new Ui::SettingsTabWidget)
+SettingsTabWidget::SettingsTabWidget(QWidget *parent)
+  : QTabWidget(parent)
+  , live_widgets::BindableParent(this)
+  , ui(new Ui::SettingsTabWidget)
 {
     ui->setupUi(this);
     setCurrentIndex(0);
