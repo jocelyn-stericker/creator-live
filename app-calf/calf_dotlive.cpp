@@ -136,7 +136,7 @@ QByteArray FJReverbApp::save()
     //////////////////////////////////////////////////////////////////
 
 
-    FJReverbApp*x=IS_SAVE?_THIS:0;
+    FJReverbApp*x=IS_SAVE?_THIS:new FJReverbApp;
 
     float xf=IS_SAVE?x->getRoomSize():0;
     ret IO xf;  /*003*/
@@ -203,7 +203,7 @@ QByteArray FJFlangerApp::save()
     //////////////////////////////////////////////////////////////////
 
 
-    FJFlangerApp*x=IS_SAVE?_THIS:0;
+    FJFlangerApp*x=IS_SAVE?_THIS:new FJFlangerApp;
 
     float xf=IS_SAVE?x->getDelay():0;
     ret IO xf;  /*003*/
@@ -267,7 +267,7 @@ QByteArray FJFilterApp::save()
     //////////////////////////////////////////////////////////////////
 
 
-    FJFilterApp*x=IS_SAVE?_THIS:0;
+    FJFilterApp*x=IS_SAVE?_THIS:new FJFilterApp;
 
     float xf=IS_SAVE?x->getCutoff():0;
     ret IO xf;  /*003*/
@@ -315,7 +315,7 @@ QByteArray FJPhaserApp::save()
     //////////////////////////////////////////////////////////////////
 
 
-    FJPhaserApp*x=IS_SAVE?_THIS:0;
+    FJPhaserApp*x=IS_SAVE?_THIS:new FJPhaserApp;
 
     float xf=IS_SAVE?x->getFreq():0;
     ret IO xf;  /*003*/
