@@ -399,7 +399,7 @@ protected:
     ObjectPtr(QString,Object* o)
       : s_obj(o)
       {
-        s_obj->s_ptrList.insert(this);
+        live_mutex(s_obj->x_ptr) s_obj->s_ptrList.insert(this);
     }
 
 public:
@@ -489,7 +489,7 @@ protected:
       : ObjectPtr(s, o)
       , sp_obj(o)
       {
-        s_obj->s_ptrList.insert(this);
+        live_mutex(s_obj->x_ptr) s_obj->s_ptrList.insert(this);
     }
 
 public:

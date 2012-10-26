@@ -146,7 +146,7 @@ void AudioIn::proc()
 
 void AudioOut::init() {
     live_mutex(SecretAudio::x_sa) {
-        for (int i=0; i<chans; i++) {
+        for (int i=0; i<chans || i < s_realnames.size(); i++) {
             s_port_[i].push_back(SecretAudio::singleton->getOutputPort());
 
             QString id = SecretAudio::singleton->getOutputPortId();
@@ -163,11 +163,13 @@ void AudioOut::aIn(const float*data, int chan, live::Object*p) {
     Q_ASSERT(chan<chans);
 
 //    live_mutex(SecretAudio::x_sa) {
+    if (s_port_[chan].size()) {
         jack_default_audio_sample_t* out0 = (float*) jack_port_get_buffer( s_port_[chan][0], SecretAudio::singleton->nframes );
 
         if ( out0 ) {
             memcpy (out0, data, sizeof (jack_default_audio_sample_t) * SecretAudio::singleton->nframes );
         }
+    }
 
 //    }
 }
@@ -355,7 +357,9 @@ SecretAudio::SecretAudio()
 }
 
 bool SecretAudio::delClient() {
+    if (!client) return 0;
     jack_client_close(client);
+    client = 0;
     return 1;
 }
 

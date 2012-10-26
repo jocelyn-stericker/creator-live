@@ -104,7 +104,7 @@ TEST(AudioSanity, NullWorks) {
     AudioListener* b = new AudioListener;
     live::Connection c(live::audio::null(2), b, live::AudioConnection);
     // wait a while for the audio thread to process data.
-    usleep(10000);
+    usleep(50000);
     EXPECT_TRUE(b->s_got);
     EXPECT_EQ(b->s_highest, 0.0f);
     EXPECT_EQ(b->s_lowest, 0.0f);
@@ -289,7 +289,7 @@ TEST(AudioTrack, TestFrameworkSanity) {
     AudioTestListener* l = new AudioTestListener;
     live::Connection c(live::audio::null(1),g,live::AudioConnection);
     live::Connection c1(g,l,live::AudioConnection);
-    usleep(100000);
+    usleep(500000);
     EXPECT_TRUE(l->gotData);
     EXPECT_EQ(l->failFrame, -1);
     delete l;
@@ -307,7 +307,7 @@ TEST(AudioTrack, Sanity) {
     t->startPlayback();
 
     live::audio::strictInnocentXruns = true; // recording to a track must not cause xruns.
-    usleep(100000);
+    usleep(500000);
     live::audio::strictInnocentXruns = false;
 
     t->stopPlayback();
@@ -321,7 +321,7 @@ TEST(AudioTrack, Sanity) {
     t->startPlayback();
     live::Connection c4(t,l,live::AudioConnection);
 
-    usleep(50000);
+    usleep(100000);
 
     EXPECT_TRUE(l->gotData);
     EXPECT_EQ(l->failFrame, -1);
@@ -341,7 +341,7 @@ TEST(AudioTrack, GraphCreated) {
     t->startPlayback();
 
     live::audio::strictInnocentXruns = true; // recording to a track must not cause xruns.
-    usleep(100000);
+    usleep(200000);
     live::audio::strictInnocentXruns = false;
 
     t->stopPlayback();
@@ -366,7 +366,7 @@ TEST(AudioTrack, GraphSanity) {
     t->startPlayback();
 
     live::audio::strictInnocentXruns = true; // recording to a track must not cause xruns.
-    usleep(100000);
+    usleep(200000);
     live::audio::strictInnocentXruns = false;
 
     t->stopPlayback();
