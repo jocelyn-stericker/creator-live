@@ -9,6 +9,7 @@ Sampler.cpp                                rev. 110731
 
 #include "samplerapp.h"
 #include <live/midibinding>
+#include <live/nframebuffer>
 
 using namespace live;
 
@@ -199,10 +200,10 @@ void SamplerApp::aIn(const float *in, int chan, Object*p)
 
     bool cpy_record=s_record;
 
-    float* proc=!cpy_record?new float[nframes]:0;
-    if (proc)
+    live::NFrameBuffer proc;
+    if (cpy_record)
     {
-        memcpy(proc,in,sizeof(float)*nframes);
+        memcpy(proc.ptr(),in,sizeof(float)*nframes);
     }
 
     if (cpy_record)    //[1]
@@ -216,12 +217,11 @@ void SamplerApp::aIn(const float *in, int chan, Object*p)
     {
         for (int i=0;i<16;i++)
         {
-            s_audioTracks[i]->aThru(proc,chan);
+            s_audioTracks[i]->aThru(proc.ptr(),chan);
         }
     }
 
-    aOut(proc?proc:in,chan,this);
-    delete[]proc;
+    aOut(cpy_record?proc.ptr():in,chan,this);
 }
 
 void SamplerApp::mIn(const Event *data, ObjectChain*p)

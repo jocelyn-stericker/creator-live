@@ -18,15 +18,11 @@ QList<MixerApp*> MixerApp::_u;
 
 MixerApp::MixerApp() : Object("Mixer", 0, 0, 2), b_vol(100), b_pan(50), b_mute(0), b_solo(0)
 {
-    for (int i = 0; i < 2; ++i)
-        s_period[i] = new float[audio::nFrames()];
     _u.push_back(this);
 }
 
 MixerApp::~MixerApp()
 {
-    for (int i = 0; i < 2; ++i)
-        delete[] s_period[i];
     _u.removeOne(this);
 }
 
@@ -55,7 +51,7 @@ void MixerApp::aIn(const float *data, int chan, Object* p)
         return;
     }
     const quint32& nframes=audio::nFrames();
-    float* dx = s_period[chan];
+    float* dx = s_period[chan].ptr();
     for (unsigned i=0;i<nframes;i++)
     {
         if (zero)

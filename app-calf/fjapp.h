@@ -26,6 +26,7 @@
 #include <live/audio>
 #include <live/midi>
 #include <live/midievent>
+#include <live/nframebuffer>
 
 #ifndef FJAPP_H
 #define FJAPP_H
@@ -57,8 +58,9 @@ public:
 
         init_module();
 
-        for (int i = 0; i < 2; ++i)
+        for (int i = 0; i < 2; ++i) {
             Module::outs[i] = s_out[i] = new float[live::audio::nFrames()];
+        }
     }
 
     virtual ~FJApp() {

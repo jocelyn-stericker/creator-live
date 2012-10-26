@@ -19,6 +19,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live/midi>
 #include <live/midievent>
 #include <live/midieventcounter>
+#include <live/nframebuffer>
 
 #include <QtConcurrentRun>
 #include <QMutex>
@@ -205,7 +206,7 @@ live::Object::Object(QString cname, bool isPhysical, bool allowMixer, int chans)
   {
     kill_kitten universe.insert(this);
 
-    mixer_data = new float*[s_chans];
+    mixer_data = new live::NFrameBuffer[s_chans];
     mixer_at = new uint[s_chans];
 
     mixer_nframes = live::audio::nFrames();
@@ -217,7 +218,6 @@ live::Object::Object(QString cname, bool isPhysical, bool allowMixer, int chans)
     }
 
     for (int i = 0; i < s_chans; ++i) {
-        mixer_data[i] = new float[mixer_nframes];
         mixer_at[i]=0;
     }
 
@@ -230,7 +230,7 @@ live::Object::~Object() {
     kill_kitten universe.erase(this);
     s_isDestroying = 1;
     kill();
-    for (int i=0;i<s_chans;i++) delete[] mixer_data[i];
+    delete[] mixer_data;
     QTimer::singleShot(0,live::object::singleton(),SLOT(notify()));
 }
 
@@ -414,13 +414,17 @@ void live::Object::mixer_resetStatus() {
 //    }
 }
 
+void live::Object::mixer_clear(int chan) {
+    std::fill(mixer_data[chan].ptr(),&mixer_data[chan][mixer_nframes],0.0f);
+}
+
 void live::Object::mixer_process(const float* data, int chan) {
-    live_mutex(x_mixers) {
-        Q_ASSERT(mixer_data[chan]);
+    kill_kitten live_mutex(x_mixers) {
+        Q_ASSERT(mixer_data[chan].ptr());
         for(unsigned i=0;i<mixer_nframes;i++)
             mixer_data[chan][i]+=data[i];
         if(++mixer_at[chan]==aInverseConnections.size()) {
-            aIn(mixer_data[chan],chan, 0);
+            aIn(mixer_data[chan].ptr(),chan, 0);
             mixer_clear(chan);
             mixer_at[chan]=0;
         }

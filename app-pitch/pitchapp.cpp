@@ -88,7 +88,7 @@ void PitchApp::mIn(const Event *data, ObjectChain*p)
 }
 
 PitchAppAudioR::PitchAppAudioR() : Object("SoundTouch PitchApp implementation", 0, 0, 2), s_soundTouch(new soundtouch::SoundTouch),
-    s_latency(0), s_inCache(new float[audio::nFrames()*2]), s_outCache(new float[audio::nFrames()*2])
+    s_latency(0), s_inCache(), s_outCache()
 {
     for (quint32 i=0;i<audio::nFrames()*2;i++) {
         s_inCache[i]=0.0f;
@@ -107,8 +107,6 @@ PitchAppAudioR::PitchAppAudioR() : Object("SoundTouch PitchApp implementation", 
 PitchAppAudioR::~PitchAppAudioR()
 {
     delete s_soundTouch;
-    delete[] s_inCache;
-    delete[] s_outCache;
 }
 
 float PitchAppAudioR::latency_msec()
@@ -131,8 +129,8 @@ void PitchAppAudioR::aIn(const float *data, int chan, Object*p)
         s_soundTouch->setPitchSemiTones(x);
     }
 
-    float*proc=new float[audio::nFrames()];
-    memcpy(proc,data,sizeof(float)*audio::nFrames());
+    live::NFrameBuffer proc;
+    memcpy(proc.ptr(),data,sizeof(float)*audio::nFrames());
 
     for (quint32 i=0;i<audio::nFrames();i++)
     {
@@ -141,10 +139,10 @@ void PitchAppAudioR::aIn(const float *data, int chan, Object*p)
 
     if (chan)
     {
-        s_soundTouch->putSamples(s_inCache,audio::nFrames());
+        s_soundTouch->putSamples(s_inCache.ptr(),audio::nFrames());
         if ((quint32)s_soundTouch->numSamples()>=audio::nFrames()
                 ) {
-            s_soundTouch->receiveSamples(s_outCache,audio::nFrames());
+            s_soundTouch->receiveSamples(s_outCache.ptr(),audio::nFrames());
             for (quint32 i=0;i<audio::nFrames();i++)
             {
                 proc[i]=s_outCache[2*i+1];
@@ -163,8 +161,7 @@ void PitchAppAudioR::aIn(const float *data, int chan, Object*p)
             proc[i]=s_outCache[2*i];
         }
     }
-    aOut(proc,chan,this);
-    delete[]proc;
+    aOut(proc.ptr(),chan,this);
 }
 void PitchAppAudioR::setPitchShift(int x) {
     s_shiftPitchAction=x;
