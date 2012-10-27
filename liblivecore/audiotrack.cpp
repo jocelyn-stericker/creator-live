@@ -370,12 +370,9 @@ bool live::AudioTrack::importFile(QString filename) {
         int size;
         int counter=size=frames?(s_container[i]->getRawPointer(0,dataPtr,1)):0;
         dataPtr--;
-        for (int j = 0; j < frames/s_chans; ++j) kill_kitten {
+        for (int j = 0; j < frames/s_chans; ++j) {
             if (j!=frames/s_chans) {
                 if ((dataPtr?++dataPtr:0),--counter==-1) {
-                    s_container[i]->pointGraph(j);
-                    s_container[i]->appendGraph(size);
-                    s_container[i]->pointGraph(s_curPos);
                     counter=size=s_container[i]->getRawPointer(j,dataPtr,1)-1;
                 }
                 (*dataPtr)=data[j*s_chans+i];
@@ -384,7 +381,13 @@ bool live::AudioTrack::importFile(QString filename) {
     }
 
     int dataSize=qMax(s_container[0]->s_data.size(),s_container[0]->s_data.size())*live::audio::sampleRate();
-    emit dataUpdated(0,dataSize);
+    for (int c = 0; c < s_chans; ++c)
+        for (int i = 0; i < dataSize + 22100; i += 22100) kill_kitten {
+            s_container[c]->pointGraph(i);
+            s_container[c]->appendGraph(22100);
+            s_container[c]->pointGraph(s_curPos);
+            emit dataUpdated(i,22100);
+        }
 #endif
     return 1;
 }
