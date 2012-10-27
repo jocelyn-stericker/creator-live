@@ -155,13 +155,12 @@ public:
     {
         t.setSingleShot(false);
         connect(&t, SIGNAL(timeout()), this, SLOT(allocSecond()));
-        for (int i = 0; i < 10; ++i)
-            allocSecond();
+        allocSecond();
     }
 public slots:
     void allocSecond() {
         t.stop();
-        while (m_identity.size() < 10) {
+        while (m_identity.size() < 200) {
             AudioSecond* s = new AudioSecond(-1);
             x.lock();
             m_identity.push_back(s);

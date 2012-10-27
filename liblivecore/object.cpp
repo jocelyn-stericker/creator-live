@@ -128,7 +128,7 @@ LIBLIVECORESHARED_EXPORT void live::Object::endProc(bool starting) {
         timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
         quint32 l = ts.tv_sec * 1000000000 + ts.tv_nsec;
-        if (live::audio::nFrames() > 50 && l - s_asyncTime.back() > 1000000*(live::audio::nFrames()/512.0) && !starting) {
+        if (live::audio::nFrames() > 50 && l - s_asyncTime.back() > 10000000*(live::audio::nFrames()/512.0) && !starting) {
             qCritical() << "THREADING ERROR: Audio thread killed" << (l - s_asyncTime.back()) << "kittens. The culprit has yet to be caught.\n";
 //            if (live::audio::strictInnocentXruns) TCRASH();
         }
@@ -145,7 +145,7 @@ LIBLIVECORESHARED_EXPORT void live::Object::endAsyncAction(const char* file, int
         timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
         quint32 l = ts.tv_sec * 1000000000 + ts.tv_nsec;
-        if (live::audio::nFrames() > 50 && l - s_asyncTime.back() > 1000000*(live::audio::nFrames()/512.0)) {
+        if (live::audio::nFrames() > 50 && l - s_asyncTime.back() > 10000000*(live::audio::nFrames()/512.0)) {
             qCritical() << "THREADING ERROR: Lock at" << file << "line" << line << "killed" << (l - s_asyncTime.back() ) << "kittens.";
             if (live::audio::strictInnocentXruns)
                 TCRASH();
@@ -297,7 +297,6 @@ void live::Object::midiDisconnect(const live::ObjectPtr &bl) {
 
 void live::Object::audioConnect(const live::ObjectPtr& bl) {
     // We need both locks on al and bl.
-
     live::Object* a=const_cast<live::Object*>(this);
     live::Object* b=const_cast<live::Object*>(bl.data());
 
@@ -312,14 +311,13 @@ void live::Object::audioConnect(const live::ObjectPtr& bl) {
         break;
     }
 
-    b->newConnection();
-
     kill_kitten {
+        b->newConnection();
+
         a->aConnections.insert(b);
         b->aInverseConnections.insert(a);
         b->mixer_resetStatus();
     }
-
     b->x_ptr.unlock();
     a->x_ptr.unlock();
 }
@@ -341,25 +339,26 @@ void live::Object::audioDisconnect(const live::ObjectPtr& bl) {
         break;
     }
 
-    for (std::multiset<live::ObjectPtr>::iterator it = a->aConnections.begin(); it != a->aConnections.end(); ++it) {
-        if ((*it).data()==b) {
-            a->aConnections.erase(it);
-            break;
+    kill_kitten {
+        for (std::multiset<live::ObjectPtr>::iterator it = a->aConnections.begin(); it != a->aConnections.end(); ++it) {
+            if ((*it).data()==b) {
+                a->aConnections.erase(it);
+                break;
+            }
+        }
+        for (std::multiset<live::ObjectPtr>::iterator it = b->aInverseConnections.begin(); it != b->aInverseConnections.end(); ++it) {
+            if ((*it).data()==a) {
+                b->aInverseConnections.erase(it);
+                break;
+            }
         }
     }
-    for (std::multiset<live::ObjectPtr>::iterator it = b->aInverseConnections.begin(); it != b->aInverseConnections.end(); ++it) {
-        if ((*it).data()==a) {
-            b->aInverseConnections.erase(it);
-            break;
-        }
-    }
-
     b->mixer_resetStatus();
 
     b->deleteConnection();
-
     b->x_ptr.unlock();
     a->x_ptr.unlock();
+
 }
 
 void live::Object::mOut(const live::Event *data, live::ObjectChain* p, bool backwards) {
@@ -601,14 +600,12 @@ live::Connection::~Connection()
 
 void live::Connection::connect()
 {
-    kill_kitten {
-
     if (!a || !b)
         return;
 
     if(t==AudioConnection)
     {
-        kill_kitten a->audioConnect(b);
+        a->audioConnect(b);
     }
     else if(t==MidiConnection)
     {
@@ -618,19 +615,16 @@ void live::Connection::connect()
     {
         kill_kitten a->hybridConnect(b);
     }
-    }
 }
 
 void live::Connection::disconnect()
 {
-    kill_kitten {
-
     if (!a || !b)
         return;
 
     if(t==AudioConnection)
     {
-        kill_kitten a->audioDisconnect(b);
+        a->audioDisconnect(b);
     }
     else if(t==MidiConnection)
     {
@@ -639,6 +633,5 @@ void live::Connection::disconnect()
     else if(t==HybridConnection)
     {
         kill_kitten a->hybridDisconnect(b);
-    }
     }
 }
