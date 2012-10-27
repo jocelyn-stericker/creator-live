@@ -10,7 +10,6 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live/audio>
 
 #include <live/audiointerface>
-#include <live/nframebuffer>
 #include <live/songsystem>
 #include <live/keysignature>
 
@@ -365,8 +364,8 @@ bool SecretAudio::delClient() {
 
 void SecretAudio::process() {
 
-    live::NFrameBuffer buffer;
     live::Object::beginProc();
+    float* buffer = new float[ nframes ]; //{
 
     foreach( AudioOut* i, outputs ) {
         if ( i ) /*live_mutex(SecretAudio::x_sa)*/ {
@@ -388,8 +387,10 @@ void SecretAudio::process() {
 
     foreach( AudioNull* i, nulls ) {
         for ( int j = 0; j < i->chans; j++ ) {
-            memset(buffer.ptr(), 0, sizeof(float)*nframes);
-            kill_kitten i->aIn(buffer.ptr(), j, 0);
+            for (unsigned k=0; k<nframes; k++) {
+                buffer[k]=0.0;
+            }
+            kill_kitten i->aIn(buffer, j, 0);
         }
 
     }
@@ -397,15 +398,18 @@ void SecretAudio::process() {
     foreach( AudioOut* i, outputs ) {
         if ( i && !i->s_processed) /*live_mutex(SecretAudio::x_sa)*/ {
             for (int j = 0; j < i->chans; ++j) {
-                memset(buffer.ptr(), 0, sizeof(float)*nframes);
-                kill_kitten i->aIn(buffer.ptr(), j, 0);
+                for (unsigned k=0; k<nframes; k++) {
+                    buffer[k]=0.0;
+                }
+                kill_kitten i->aIn(buffer, j, 0);
             }
         }
     }
     live::Object::endProc();
+    delete[] buffer;                      //}
 
     if (live::song::current()&&live::song::current()->metronome) {
-        kill_kitten live::song::current()->metronome->clock();
+        live::song::current()->metronome->clock();
     }
 }
 
@@ -461,7 +465,6 @@ void live::audio::registerInterface(live::AudioInterface*ai) {
     if (s_audioInterface) s_audioInterface->delClient();
     s_audioInterface=ai;
     s_audioInterface->makeClient();
-    live::nframebuffer::updateNFrames();
 }
 
 bool live::audio::valid() {

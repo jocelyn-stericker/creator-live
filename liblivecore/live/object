@@ -33,7 +33,6 @@ namespace live {
 class Ambition;
 class Event;
 class MidiEventCounter;
-class NFrameBuffer;
 class ObjectPtr;
 class Object;
 
@@ -234,11 +233,14 @@ protected:
     MidiEventCounter* s_ec;
 
     /***** MINI MIXER *****/
-        live::NFrameBuffer* mixer_data;
+        float** mixer_data;
         quint32 mixer_nframes;
         uint* mixer_at;
     void mixer_resetStatus();
-    void mixer_clear(int chan);
+    inline void mixer_clear(int chan) {
+        Q_ASSERT(mixer_data[chan]);
+        std::fill(mixer_data[chan],&mixer_data[chan][mixer_nframes],0.0f);
+    }
 
     void mixer_process(const float* data, int chan);
 

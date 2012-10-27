@@ -43,13 +43,16 @@ void live::MidiTrack::startPlayback() {
         }
     }
 
-    if ( (b_record||b_overdub) ) {
-        while (s_cache.size()) {
-            s_cache.front().time=Time();
-            mIn(&s_cache.front(),0);
-            s_cache.pop_front();
-        }
-    }
+//    if ( (b_record||b_overdub) ) {
+//        ObjectChain p;
+//        while (s_cache.size()) {
+//            s_cache.front().time=Time();
+//            mIn(&s_cache.front(),p);
+//            s_cache.pop_front();
+//        }
+//    }
+
+//    QTimer::singleShot(200,this,SLOT(timeEvent()));
 
     b_lastPos=b_curPos;
 }
@@ -100,7 +103,6 @@ void live::MidiTrack::mIn(const Event *ev, ObjectChain*p) {
 
         if ( (b_record||b_overdub) && b_playback && (ev->simpleStatus()==Event::NOTE_ON||ev->cc()!=-1||ev->simpleStatus()==Event::NOTE_OFF) ) {
             Time t=ev->time-b_systemTimeStart+b_recStart;
-            if (t.toTime_ms() < 0 && t.toTime_ms() > 80) t = 0;
             Event* data = new Event;
             *data = *ev;
 
@@ -280,3 +282,34 @@ void live::MidiTrack::exportFile(QString path) {
     mf.write(path.toAscii());
     return;
 }
+
+void live::MidiTrack::timeEvent() {
+    live_mutex(x_mTrack) {
+        if (isPlay()) {
+            //        QTimer::singleShot(20,this,SLOT(timeEvent()));
+        } else {
+            return;
+        }
+
+        if (isRecord()) {
+            Time t=pos();
+
+            int i = 0;
+            for ( i = s_data->size()-1; i>=0; i-- ) {
+                if ( (*s_data)[i]->time > t ) break;
+                if ( (*s_data)[i]->time.toTime_ms() <= t.toTime_ms() ) {
+                    if ( !b_overdub && (b_recStart<(*s_data)[i]->time)) {
+                        delete s_data->takeAt( i );
+                        emit dataUpdated();
+                        if ( i+1 < *s_data ) {
+                            i++;
+                        }
+                    }
+                    continue;
+                }
+                Q_ASSERT(1);
+            }
+        }
+    }
+}
+

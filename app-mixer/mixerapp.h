@@ -11,14 +11,13 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define MIXERAPP_H
 
 #include <live/object>
-#include <live/nframebuffer>
 #include <live/variantbinding>
 
 class MixerApp : public QObject, public live::Object
 {
     Q_OBJECT
     static QList<MixerApp*> _u;
-    live::NFrameBuffer s_period[2];
+    float* s_period[2];
 public:
     live::Bound<int> b_vol; /*003*/
     live::Bound<int> b_pan; /*004*/

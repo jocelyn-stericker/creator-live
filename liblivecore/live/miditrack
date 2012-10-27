@@ -99,6 +99,7 @@ public slots:
     void importFile(QString path);
     void exportFile(QString path);
     void mIn(const Event *data, ObjectChain*p);
+    void timeEvent();
     virtual void clearData() {
         live_mutex(x_mTrack) {
             EventListDeleter* eld=new EventListDeleter(s_data);
