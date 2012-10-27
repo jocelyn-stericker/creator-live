@@ -65,7 +65,7 @@ const bool& SequencerApp::isMute() const
     return s_midiTrack->isMute();
 }
 
-int SequencerApp::pos() const
+qint64 SequencerApp::pos() const
 {
 //        Q_ASSERT(s_midiTrack->pos()==s_audioTrack->pos());
     return s_audioTrack->pos();
@@ -142,8 +142,9 @@ void SequencerApp::stopMute()
     }
 }
 
-void SequencerApp::setPos(int pos)
+void SequencerApp::setPos(qint64 pos)
 {
+    Q_ASSERT(pos>=0);
     live_mutex(x_sequencer) {
         s_midiTrack->setPos(pos);
         s_audioTrack->setPos(pos);
@@ -172,7 +173,7 @@ void SequencerApp::aIn(const float *data, int chan, Object*p) {
     }
 }
 
-void SequencerApp::setScale(int z)
+void SequencerApp::setScale(qint64 z)
 {
     live_mutex(x_sequencer) {
         s_scale=z;

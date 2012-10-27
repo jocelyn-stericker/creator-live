@@ -46,7 +46,7 @@ SequencerFrame::SequencerFrame(SequencerApp* backend,AbstractTrack *parent)
     connect(ui->leftButton,SIGNAL(clicked()),&graph,SLOT(decrScroll()));
 
     connect(ui->horizontalSlider_scale,SIGNAL(valueChanged(int)),&app,SLOT(setScale(int)));
-    connect(&app,SIGNAL(scaleChanged(int)),&graph,SLOT(setScale(int)));
+    connect(&app,SIGNAL(scaleChanged(qint64)),&graph,SLOT(setScale(qint64)));
 
     ui->visLayout->addWidget(&graph);
     binding::addWidget(this);

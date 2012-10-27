@@ -21,46 +21,46 @@ public:
     SequencerGraph( QWidget* parent,SequencerApp* app );
     ~SequencerGraph();
     bool s_bindMode;
-    int scale() { return s_scale; }
+    qint64 scale() { return s_scale; }
 public slots:
     void setTime( double time );
-    void updateAudioData( int t1 = -1, int t2 = -1 );
+    void updateAudioData( qint64 t1 = -1, qint64 t2 = -1 );
     void updateMidiData( float t1 = -1, float t2 = -1 );
 
-    QList<live::Event> getEvents(int evx,int evy);
+    QList<live::Event> getEvents(qint64 evx,qint64 evy);
     virtual void paintEvent( QPaintEvent* event );
     void mousePressEvent( QMouseEvent* );
     void mouseMoveEvent( QMouseEvent* );
     void wheelEvent(QWheelEvent *);
     void keyPressEvent(QKeyEvent *);
     void resizeEvent(QResizeEvent *);
-    void setScroll(const int& scroll) { s_initial=scroll; updateAudioData(); }
-    const int& getScroll() const { return s_initial; }
+    void setScroll(const qint64& scroll) { s_initial=scroll; updateAudioData(); }
+    const qint64& getScroll() const { return s_initial; }
     void incrScroll();
     void decrScroll();
     void setShowBindingsChanged(bool ean);
-    void updatePos(quint32);
-    void setScale(int);
+    void updatePos(qint64);
+    void setScale(qint64);
 
     void setUpdatesDisabled(bool b) { QWidget::setUpdatesEnabled(!b); if(!b) updateAudioData(); }
 private:
     float selection;
-    int s_initial;
-    int s_redrawpos_st,s_redrawpos_nd;
-    int s_leftMost, s_rightMost;
-    int s_scale;
+    qint64 s_initial;
+    qint64 s_redrawpos_st,s_redrawpos_nd;
+    qint64 s_leftMost, s_rightMost;
+    qint64 s_scale;
 //Audio
     live::AudioTrack* audioTrack;
-    int oldBoxWidth;
+    qint64 oldBoxWidth;
     QPixmap* audioOriginal[2];
-    int audioEstart;
+    qint64 audioEstart;
     double audioLTime;
     double lastA;
     double lastB;
 //Midi
     live::MidiTrack* midiTrack;
     QPixmap* midiOriginal;
-    int midiEstart;
+    qint64 midiEstart;
     double midiLTime;
 };
 

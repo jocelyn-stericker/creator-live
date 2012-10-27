@@ -46,8 +46,8 @@ public:
             //same duration, keep old stuff while recording, then erase.
     };
     /*003-005 SequencerApp*/
-    live::Bound<int> b_loopMode; /*i.e., LoopMode*/ /*009*/
-    live::Bound<int> b_loopLength;    /*009*/
+    live::Bound<qint64> b_loopMode; /*i.e., LoopMode*/ /*009*/
+    live::Bound<qint64> b_loopLength;    /*009*/
     int s_id_looper;            /*010*/
     static int s_lastId;
     QList<live::Event> s_missedList;
@@ -55,7 +55,7 @@ public:
     LooperApp(live::MidiTrack*mt=0,live::AudioTrack*at=0);
 
     const bool& isMute() const;
-    int pos() const;
+    qint64 pos() const;
 
     QObject* qoThis() { return this;}
 

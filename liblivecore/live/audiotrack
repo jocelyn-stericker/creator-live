@@ -47,7 +47,7 @@ public:
 private:
     AudioContainer** s_container;
     qint32 s_chans;
-    quint32 s_curPos;
+    qint64 s_curPos;
     qint32 s_vol;          //s_vol e (0,100)
     qint32 s_pan;          //s_pan e (0,100) i.e., (L to R)
     bool s_record;
@@ -115,7 +115,7 @@ public slots:
     void aIn(const float *in, int chan, Object *p);
     void aThru(float*proc,int chan);
     void clearData();
-    void clearData(const quint32& a,const quint32& b);
+    void clearData(const qint64 &a, const qint64 &b);
     static int formatForString(QString s,bool verifyAvailable=0);
     static int rateForInt(int i);
     bool exportFile(QString filename,QString format="guess",int depth=24);
@@ -124,8 +124,8 @@ public slots:
     static AudioTrack* load(const QByteArray&str);
 
 signals:
-    void dataUpdated(int start=-1, int end=-1);
-    void locationChanged(quint32);
+    void dataUpdated(qint64 start=-1, qint64 end=-1);
+    void locationChanged(qint64);
 
 private:
     AudioTrack(const live::AudioTrack&);

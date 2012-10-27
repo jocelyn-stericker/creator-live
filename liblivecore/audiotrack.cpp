@@ -21,7 +21,7 @@ void live::AudioTrack::aThru(float*proc,int chan) {
     count=size=s_container[chan]->getRawPointer(s_curPos,RAW,s_playback&&(s_record||s_overdub));
     RAW-=RAW?1:0;
     unsigned i;
-    int cont = nframes;
+    qint64 cont = nframes;
 
     for (i=0; i<nframes; i++) {
         if ((RAW=RAW?RAW+1:0),--count==-1) {
@@ -57,7 +57,7 @@ void live::AudioTrack::aThru(float*proc,int chan) {
     }
 
     if (s_updateCounter>=38.0/float(live::audio::nFrames())*128.0) {
-        if (s_updateCounter) emit dataUpdated((int)(s_curPos-nframes*s_updateCounter),(int)(s_curPos));
+        if (s_updateCounter) emit dataUpdated((qint64)(s_curPos-nframes*s_updateCounter),(qint64)(s_curPos));
         s_updateCounter=0;
     } else {
         ++s_updateCounter;
@@ -212,7 +212,7 @@ void live::AudioTrack::aIn(const float *in, int chan, Object*) {
 }
 
 void live::AudioTrack::clearData() {
-    int dataSize=qMax(s_container[0]->s_data.size(),s_container[0]->s_data.size())*live::audio::sampleRate();
+    qint64 dataSize=qMax(s_container[0]->s_data.size(),s_container[0]->s_data.size())*live::audio::sampleRate();
     for (int h=0;h<s_chans;h++) {
         s_container[h]->clear();
         s_container[h]->pointGraph(0);
@@ -222,19 +222,19 @@ void live::AudioTrack::clearData() {
     emit dataUpdated(0,dataSize);
 }
 
-void live::AudioTrack::clearData(const quint32 &a, const quint32 &b) {
+void live::AudioTrack::clearData(const qint64 &a, const qint64 &b) {
     //FIXME: delete data in another thread (i.e., with Container::clear)
     for (int h=0;h<s_chans;h++) {
         float*dataPtr;
         int size;
-        int counter=size=quint32(s_container[h]->getRawPointer(quint32(a),dataPtr));
+        int counter=size=qint64(s_container[h]->getRawPointer(qint64(a),dataPtr));
         dataPtr-=dataPtr?1:0;
 
-        for (quint32 i=a;i<b;++i) {
+        for (qint64 i=a;i<b;++i) {
             if ((dataPtr+=dataPtr?1:0),--counter==-1) {
                 counter=size=s_container[h]->getRawPointer(i,dataPtr)-1;
                 if (i + counter < b) {
-                    int id=(int)(i/live::audio::sampleRate());
+                    qint64 id=(qint64)(i/live::audio::sampleRate());
                     kill_kitten {
                         live::AudioSecond* toDelete = s_container[h]->s_data[id];
                         s_container[h]->s_data[id] = live::AudioSecondBank::singleton->buySecond(i);
@@ -254,7 +254,7 @@ void live::AudioTrack::clearData(const quint32 &a, const quint32 &b) {
             }
         }
 
-        for(int i = a; i < b + 22100; i += 22100) kill_kitten {
+        for(qint64 i = a; i < b + 22100; i += 22100) kill_kitten {
             s_container[h]->pointGraph(i);
             s_container[h]->appendGraph(22100);
             s_container[h]->pointGraph(s_curPos);
@@ -323,12 +323,12 @@ bool live::AudioTrack::exportFile(QString filename,QString format,int depth) {
         return 0;
     }
 
-    int frames=qMax(s_container[0]->s_data.size(),s_container[0]->s_data.size())*live::audio::sampleRate();
+    qint64 frames=qMax(s_container[0]->s_data.size(),s_container[0]->s_data.size())*qint64(live::audio::sampleRate());
     float*data=new float[frames*s_chans];  //s_chans==chans, no of items, data is interlaced
     for (int i=0;i<s_chans;i++) {
         float*dataPtr;
-        int counter=s_container[i]->getRawPointer(0,dataPtr);
-        for (int j=0;j<s_container[i]->s_data.size()*live::audio::sampleRate();j++) {
+        qint64 counter=s_container[i]->getRawPointer(0,dataPtr);
+        for (qint64 j=0;j<s_container[i]->s_data.size()*live::audio::sampleRate();j++) {
             data[j*s_chans+i]=dataPtr?*dataPtr:0.0f;
             if (j!=frames/s_chans) {
                 if ((dataPtr?++dataPtr:0),--counter==-1) {
@@ -367,10 +367,10 @@ bool live::AudioTrack::importFile(QString filename) {
     file.readf(data,frames);
     for (int i=0;i<s_chans;i++) {
         float*dataPtr;
-        int size;
-        int counter=size=frames?(s_container[i]->getRawPointer(0,dataPtr,1)):0;
+        qint64 size;
+        qint64 counter=size=frames?(s_container[i]->getRawPointer(0,dataPtr,1)):0;
         dataPtr--;
-        for (int j = 0; j < frames/s_chans; ++j) {
+        for (qint64 j = 0; j < frames/s_chans; ++j) {
             if (j!=frames/s_chans) {
                 if ((dataPtr?++dataPtr:0),--counter==-1) {
                     counter=size=s_container[i]->getRawPointer(j,dataPtr,1)-1;
@@ -380,9 +380,9 @@ bool live::AudioTrack::importFile(QString filename) {
         }
     }
 
-    int dataSize=qMax(s_container[0]->s_data.size(),s_container[0]->s_data.size())*live::audio::sampleRate();
+    qint64 dataSize=qMax(s_container[0]->s_data.size(),s_container[0]->s_data.size())*live::audio::sampleRate();
     for (int c = 0; c < s_chans; ++c)
-        for (int i = 0; i < dataSize + 22100; i += 22100) kill_kitten {
+        for (qint64 i = 0; i < dataSize + 22100; i += 22100) kill_kitten {
             s_container[c]->pointGraph(i);
             s_container[c]->appendGraph(22100);
             s_container[c]->pointGraph(s_curPos);

@@ -27,9 +27,9 @@ public:
     live::Connection s_audioTrackConnection;
     LooperApp* s_cheat;                     /*N/A*/
     live::Bound<bool> b_clipped;                  /*005*/
-    int s_id;                               /*006*/ /*007 in looper*/
+    qint64 s_id;                               /*006*/ /*007 in looper*/
     bool s_audioOverdubForced;                   /*N/A*/
-    int s_scale;                            /*007*/
+    qint64 s_scale;                            /*007*/
 
     QMutex x_sequencer;
 
@@ -41,10 +41,10 @@ public:
     const bool& isOverdub() const;
     const bool& isPlaying() const;
     virtual const bool& isMute() const;
-    virtual int pos() const;
+    virtual qint64 pos() const;
     bool clipped() const;
 
-    const int& scale() const { return s_scale; }
+    const qint64& scale() const { return s_scale; }
 
     virtual QByteArray save();
     static live::ObjectPtr load(const QByteArray&str);
@@ -60,7 +60,7 @@ public slots:
     void stopPlayback();
     virtual void startMute();
     virtual void stopMute();
-    void setPos(int pos);
+    void setPos(qint64 pos);
     virtual void aIn(const float *data, int chan, live::Object*p);
     void setClipped(bool clipped=1);
     inline void setFree()
@@ -68,7 +68,8 @@ public slots:
         setClipped(0);
     }
 
-    void setScale(int);
+    void setScale(int z) { setScale(qint64(z)); }
+    void setScale(qint64);
     virtual void mIn(const live::Event *data, live::ObjectChain*p);
 
     void importAudio(QString file) {
@@ -80,10 +81,10 @@ public slots:
     }
 
 signals:
-    void posSet(quint32 pos);
+    void posSet(qint64 pos);
     void playbackStarted();
     void playbackStopped();
-    void scaleChanged(int);
+    void scaleChanged(qint64);
 };
 
 #endif // SEQUENCER_H

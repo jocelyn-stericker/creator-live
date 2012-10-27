@@ -22,7 +22,7 @@ LooperApp::LooperApp(MidiTrack*mt,AudioTrack*at) :
 {
     s_cheat=this;
 
-    connect(&b_loopMode,SIGNAL(changeObserved(int,int)),this,SLOT(modeChanged(int)));
+    connect(&b_loopMode,SIGNAL(changeObserved(qint64,qint64)),this,SLOT(modeChanged(qint64)));
 }
 
 const bool& LooperApp::isMute() const
@@ -30,7 +30,7 @@ const bool& LooperApp::isMute() const
     return SequencerApp::isMute();
 }
 
-int LooperApp::pos() const
+qint64 LooperApp::pos() const
 {
     return SequencerApp::pos();
 }
@@ -110,7 +110,7 @@ void LooperApp::looperLogic()
 {
     live_mutex(x_sequencer) if (isPlaying())
     {
-        int curpos=pos();
+        qint64 curpos=pos();
         if (curpos>b_loopLength)
         {
             switch (b_loopMode.ref())
@@ -139,7 +139,7 @@ void LooperApp::looperLogic()
 
 void LooperApp::aIn(const float *data, int chan, Object*p)
 {
-    int curpos=pos();
+    qint64 curpos=pos();
     if (curpos>b_loopLength)
         QMetaObject::invokeMethod(this, "looperLogic", Qt::QueuedConnection);
 //    looperLogic();
