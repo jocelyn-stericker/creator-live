@@ -121,7 +121,7 @@ void SequencerGraph::updateAudioData( qint64 t1, qint64 t2 )
     QColor red(255,0,0);
     QColor white(255,255,255);
 
-    for ( int i = 0; i < 2; i++ ) // chans
+    for ( int i = 0; i < 1; i++ ) // chans
     {
         if ( t1 == -1 || t2 == -1 || !audioOriginal[i] || this->size()!=audioOriginal[i]->size())
         {
@@ -270,7 +270,7 @@ void SequencerGraph::updateMidiData(float t1, float t2)
         }
         painter.end();
     }
-    update();
+    // FIXME: figure out what changed, and only update that.
 }
 
 QList<Event> SequencerGraph::getEvents(qint64 evx, qint64 evy)
@@ -337,6 +337,9 @@ void SequencerGraph::paintEvent( QPaintEvent* ev )
     Q_UNUSED(ev);
     QPainter painter;
     painter.begin( this );
+    painter.setRenderHint(QPainter::Antialiasing, 1);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform, 1);
+    painter.setRenderHint(QPainter::HighQualityAntialiasing, 1);
     qint64 width = s_scale;
     float wscale = (float) this->width() / ( float ) width;
     float hscale = (float) this->height() / 2000.0f;
