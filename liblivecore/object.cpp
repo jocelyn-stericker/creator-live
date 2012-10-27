@@ -441,12 +441,11 @@ void live::ObjectPtr::obliviate() {
 }
 
 bool live::ObjectPtr::restore(live::Object* a) {
-    // FIXME
-//    live_mutex(a->x_ptr) {
-//        if (dynamic_cast<MidiNull*>(s_obj)) delete s_obj;
-//        s_obj=a;
-//        a->s_ptrList.insert(this);
-//    }
+    live_mutex(a->x_ptr) {
+        if (dynamic_cast<MidiNull*>(s_obj)) delete s_obj;
+        s_obj=a;
+        a->s_ptrList.insert(this);
+    }
     return 1;
 }
 

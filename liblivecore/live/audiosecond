@@ -130,6 +130,7 @@ class AudioSecondBank : public QObject
     QTimer t;
     QMutex x;
 
+public:
     AudioSecond* buySecond(int offset) {
         AudioSecond* ret;
         x.lock();
@@ -339,7 +340,7 @@ public:
         AudioSecond* s_s;
         QReadWriteLock* s_l;
         AudioDataDestroyer(AudioSecond* s, QReadWriteLock* l) : s_s(s), s_l(l) {}
-        void run() { if(s_l) s_l->lockForWrite(); delete s_s; if(s_l) s_l->unlock(); }
+        void run() { if(s_l) s_l->lockForWrite(); delete s_s; if(s_l) s_l->unlock(); delete this; }
     };
 
     void clear(bool dying=0)

@@ -232,14 +232,35 @@ void live::AudioTrack::clearData(const quint32 &a, const quint32 &b) {
 
         for (quint32 i=a;i<b;++i) {
             if ((dataPtr+=dataPtr?1:0),--counter==-1) {
-                s_container[h]->appendGraph(size);
                 counter=size=s_container[h]->getRawPointer(i,dataPtr)-1;
+                if (i + counter < b) {
+                    int id=(int)(i/live::audio::sampleRate());
+                    kill_kitten {
+                        live::AudioSecond* toDelete = s_container[h]->s_data[id];
+                        s_container[h]->s_data[id] = live::AudioSecondBank::singleton->buySecond(i);
+
+                        live::AudioContainer::AudioDataDestroyer* add =
+                                new live::AudioContainer::AudioDataDestroyer(toDelete,0);
+                        QtConcurrent::run(add,&live::AudioContainer::AudioDataDestroyer::run);
+                        i += counter;
+                        counter = 0;
+                    }
+                    s_container[h]->regSecond(s_container[h]->s_data[id]);
+                    continue;
+                }
             }
             if (dataPtr) {
                 *dataPtr=0.0f;
             }
         }
+
+        for(int i = a; i < b + 22100; i += 22100) kill_kitten {
+            s_container[h]->pointGraph(i);
+            s_container[h]->appendGraph(22100);
+            s_container[h]->pointGraph(s_curPos);
+        }
     }
+    emit dataUpdated(a,b);
 }
 
 int live::AudioTrack::formatForString(QString s,bool verifyAvailable) {
