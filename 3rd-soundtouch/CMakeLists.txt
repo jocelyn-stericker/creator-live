@@ -72,7 +72,9 @@ add_library (livesoundtouch SHARED
 )
 
 if (UNIX)
+if (NOT QNX)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse2")
+endif (NOT QNX)
 endif (UNIX)
 
 if (NOT WIN32)
