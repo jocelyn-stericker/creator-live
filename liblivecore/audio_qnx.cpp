@@ -228,10 +228,10 @@ void AudioOut::run() {
                     }
                 }
 
-                if (written < 0) written = 0;
+//                if (written < 0) written = 0;
 
-                written += snd_pcm_write(pcm_handle, mSampleBfr2 + written, bsize - written);
-                std::cerr<<"TOTAL WRITTEN:"<<written<<"\n";
+//                written += snd_pcm_write(pcm_handle, mSampleBfr2 + written, bsize - written);
+//                std::cerr<<"TOTAL WRITTEN:"<<written<<"\n";
 
                 FD_SET (snd_mixer_file_descriptor (mixer_handle), &rfds);
                 FD_SET (snd_pcm_file_descriptor (pcm_handle, SND_PCM_CHANNEL_PLAYBACK), &wfds);
@@ -334,7 +334,7 @@ void AudioIn::run() {
     printf ("Rec Voices %d \n", setupR.format.voices);
     bsize = setupR.buf.block.frag_size;
 
-    qint16 *mSampleBfr = new qint16[(3072+bsize)/sizeof(qint16)];
+    qint16 *mSampleBfr = new qint16[(3072+bsize)/*/sizeof(qint16)*/];
     //    short *mSampleBfr2 = new short[bsize/sizeof(short)];
     FD_ZERO (&setR);
     n = 1;
@@ -375,6 +375,7 @@ void AudioIn::run() {
                         exit (1);
                     }
                 }
+
                 FD_SET (snd_pcm_file_descriptor (pcm_handleR, SND_PCM_CHANNEL_CAPTURE), &setR);
                 rtnB = snd_pcm_file_descriptor (pcm_handleR, SND_PCM_CHANNEL_CAPTURE);
             }
@@ -383,7 +384,8 @@ void AudioIn::run() {
                 lesi2f_array(mSampleBfr,3072/sizeof(qint16),bfrX2);
                 master->lock->lock();
 
-                master->dataRead->wait(master->lock);  // wait until bfrX2 is recorded.
+
+//                master->dataRead->wait(master->lock);  // wait until bfrX2 is recorded.
                 live::Object::beginProc();
                 aOut(bfrX2, 0, this);
                 aOut(bfrX2 + 3072/sizeof(qint16)/2, 1, this);
@@ -436,7 +438,6 @@ bool SecretAudio::delClient() {
 }
 
 void SecretAudio::process() {
-    qDebug() << "Start proc.";
     live::Object::beginProc();
 
     float* buffer = 0;
@@ -447,18 +448,14 @@ void SecretAudio::process() {
             for(unsigned k=0; k<nframes; k++) {
                 buffer[k]=0.0;
             }
-		    qDebug() << "aIn?";
             i->aIn( buffer, j, 0);
-		    qDebug() << "aIn?";
         }
     }
     delete[] buffer;
 
-    qDebug() << "ENd proc. - 1";
     if(live::song::current()&&live::song::current()->metronome) {
         live::song::current()->metronome->clock();
     }
-    qDebug() << "ENd proc. - 2";
 
     live::Object::endProc();
 }
