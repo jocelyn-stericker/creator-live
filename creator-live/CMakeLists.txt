@@ -68,13 +68,13 @@ if (QNX)
         asound
     )
 else (QNX)
-if (!WIN32)
+if (NOT WIN32)
     list (APPEND creator-live_libs
         portmidi
         jack
         sndfile
     )
-endif (!WIN32)
+endif (NOT WIN32)
 endif (QNX)
 
 ########################## BUILD! ##########################

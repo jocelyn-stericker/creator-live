@@ -62,6 +62,7 @@ include_directories (
 
 include_directories ( SYSTEM
     /usr/include # Avoid ugly warnings.
+    /usr/include/qt4
     /usr/include/QtGui # Avoid ugly warnings.
     /usr/include/QtCore # Avoid ugly warnings.
 )
