@@ -72,7 +72,7 @@ LiveApplication::LiveApplication(int& argc, char **argv) :
 
 #ifndef __QNX__
     QDir pluginsDir = QDir(qApp->applicationDirPath()+"/../plugins");
-    std::cerr << "Plugin directory:" << pluginsDir.absolutePath().toAscii().data() << std::endl;
+    std::cerr << "Plugin directory:" << pluginsDir.absolutePath().toLatin1().data() << std::endl;
     foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
         if (!fileName.endsWith(".so")&&!fileName.endsWith(".dll",Qt::CaseInsensitive)) continue;
         std::cerr << "Loaded plugin " << qPrintable(qApp->applicationDirPath()+"/../plugins/"+fileName) << ": ";
@@ -83,7 +83,7 @@ LiveApplication::LiveApplication(int& argc, char **argv) :
             if (appi) {
                 std::cerr << "APP[";
                 do {
-                    std::cerr << " " << appi->name().toAscii().data();
+                    std::cerr << " " << appi->name().toLatin1().data();
                     app::registerInterface(appi);
                 } while ((appi=appi->next())); // Extra parentheses to avoid warning
                 std::cerr << " ]";
@@ -93,7 +93,7 @@ LiveApplication::LiveApplication(int& argc, char **argv) :
             if (insi) {
                 std::cerr << "INSTRUMENT[";
                 do {
-                    std::cerr << " " << insi->name().toAscii().data();
+                    std::cerr << " " << insi->name().toLatin1().data();
                     instrument::registerInterface(insi);
                 } while ((insi = insi->next())); // Extra parentheses to avoid warning
                 std::cerr << " ]";

@@ -11,6 +11,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QMouseEvent>
 #include <QDebug>
 #include <QTimer>
+#include <QDrag>
+#include <QMimeData>
 
 live_widgets::DragLabel::DragLabel(QWidget *parent) :
     QLabel(parent),

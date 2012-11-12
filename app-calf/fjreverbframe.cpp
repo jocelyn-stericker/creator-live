@@ -160,5 +160,3 @@ void FJReverbFrame::removeRounding()
     style.replace("border-bottom-right-radius: 4px;", "border-bottom-right-radius: 0px;");
     ui->toolButton_more->setStyleSheet(style);
 }
-
-Q_EXPORT_PLUGIN2(live::AppInterface, FJReverbCreator)

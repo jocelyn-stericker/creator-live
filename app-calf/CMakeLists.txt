@@ -90,8 +90,8 @@ endif (QNX)
 
 add_definitions(-Wall)
 
-find_package (Qt4 REQUIRED)
-include (${QT_USE_FILE})
+find_package (Qt5Widgets REQUIRED)
+set(CMAKE_AUTOMOC ON)
 
 include_directories (${cmake_binary_dir}
     ${CMAKE_BINARY_DIR}/app-calf
@@ -101,9 +101,8 @@ include_directories (${cmake_binary_dir}
     ../3rd-soundtouch/include
 )
 
-qt4_wrap_cpp (app-calf_moc ${app-calf_h_qobject})
-qt4_wrap_ui (app-calf_moc ${app-calf_ui}) 
-qt4_add_resources (app-calf_rcc ${app-calf_qrc})
+qt5_wrap_ui (app-calf_moc ${app-calf_ui}) 
+qt5_add_resources (app-calf_rcc ${app-calf_qrc})
 
 add_library (app-calf SHARED
     ${app-calf_cpp}
@@ -129,3 +128,4 @@ set_target_properties(app-calf PROPERTIES
 )
 endif (NOT WIN32)
 
+qt5_use_modules(app-calf Widgets)

@@ -8,6 +8,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 *******************************************************/
 
 #include <live/miditrack>
+#include <QtConcurrentRun>
 
 #include "live/extern/midifile/MidiFile.h"
 
@@ -245,7 +246,7 @@ void live::MidiTrack::importFile(QString path) {
     }
 
     MidiFile mf;
-    mf.read(path.toAscii());
+    mf.read(path.toLatin1());
     mf.absoluteTime();
     if (!mf.getNumTracks()) {
         return;
@@ -263,7 +264,7 @@ void live::MidiTrack::importFile(QString path) {
 }
 
 void live::MidiTrack::exportFile(QString path) {
-    MidiFile mf(path.toAscii());
+    MidiFile mf(path.toLatin1());
     mf.absoluteTime();
     Array<uchar> midievent;
     midievent.setSize(3);
@@ -279,7 +280,7 @@ void live::MidiTrack::exportFile(QString path) {
         mf.addEvent(0, (int)(((double)(*s_data)[i]->time.toTime_ms()/1000.0f)/secondsPerTick), midievent);
     }
     mf.sortTracks();
-    mf.write(path.toAscii());
+    mf.write(path.toLatin1());
     return;
 }
 
@@ -313,3 +314,10 @@ void live::MidiTrack::timeEvent() {
     }
 }
 
+void live::MidiTrack::clearData() {
+    live_mutex(x_mTrack) {
+        EventListDeleter* eld=new EventListDeleter(s_data);
+        QtConcurrent::run(eld,&EventListDeleter::run);
+        s_data=new QList<Event*>;
+    }
+}

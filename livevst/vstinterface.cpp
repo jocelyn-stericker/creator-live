@@ -18,5 +18,3 @@ VstInterface::VstInterface()
     QSettings settings("Nettek", "VSTi plugin for Creator Live");
     Vst::s_vstpaths_linux=settings.value("vstis",QStringList()).toStringList();
 }
-
-Q_EXPORT_PLUGIN2(live::InstrumentInterface, VstInterface)

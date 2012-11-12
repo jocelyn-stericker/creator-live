@@ -90,7 +90,7 @@ inline char letterName(int a)
     int dif[]={0,1,1,2,2,3,3,4,5,5,6,6};                        // common letter name differences by intervals in semi-tones
     int m_root=song::current()->keySignature->midiNote()%12;   // the role the tonic has in the chromatic octave starting on C (0=C, 1=C#, ...)
     a=(a%12)+((m_root>a%12)?12:0);                              // set 'a' such that 'a-m_root' defines the interval in semi-tones between the tonic and 'a'
-    return ((QChar(song::current()->keySignature->s_root).toUpper().toAscii()-'A'+dif[a-m_root])%7+'A');   // return the best guess for the letter name based on the tonic letter name(...->s_root) and the interval (m_root-a)
+    return ((QChar(song::current()->keySignature->s_root).toUpper().toLatin1()-'A'+dif[a-m_root])%7+'A');   // return the best guess for the letter name based on the tonic letter name(...->s_root) and the interval (m_root-a)
 }
 
 inline int xoctave(int mPitch)

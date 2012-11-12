@@ -13,9 +13,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live/audio>
 #include <live/audiograph>
 #include <live/object>
-#include <QApplication>
+#include <QCoreApplication>
 #include <QReadWriteLock>
-#include <QtConcurrentRun>
 #include <QTimer>
 
 namespace live {
@@ -343,22 +342,7 @@ public:
         void run() { if(s_l) s_l->lockForWrite(); delete s_s; if(s_l) s_l->unlock(); delete this; }
     };
 
-    void clear(bool dying=0)
-    {
-        if(!s_readLock.tryLockForWrite()&&!dying) {
-            QtConcurrent::run(this,&AudioContainer::clear,0);
-            return;
-        }
-        s_dataSize=0;
-        while (s_data.size())
-        {
-            AudioDataDestroyer* add = new AudioDataDestroyer(s_data.takeFirst(),(dying?0:&s_readLock));
-            QtConcurrent::run(add,&AudioDataDestroyer::run);
-        }
-        if(!dying) {
-            s_readLock.unlock();
-        }
-    }
+    void clear(bool dying=0);
 
     float length() const
     {

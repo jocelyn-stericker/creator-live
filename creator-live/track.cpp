@@ -12,6 +12,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live_widgets/trackhint.h>
 
 #include <QCoreApplication>
+#include <QMimeData>
 
 using namespace live;
 using namespace live_widgets;

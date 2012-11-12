@@ -83,19 +83,19 @@ public:
                 bool ok=1;
                 qDebug() << "SLOT:"<<s_dSlot;
                 if(list.size()==4||!ok) {
-                    ok=QMetaObject::invokeMethod(s_dest,s_dSlot.toAscii(),Qt::DirectConnection,QGenericArgument(list[0].typeName(),a[1]),QGenericArgument(list[1].typeName(),a[2]),QGenericArgument(list[2].typeName(),a[3]),QGenericArgument(list[3].typeName(),a[4]));
+                    ok=QMetaObject::invokeMethod(s_dest,s_dSlot.toLatin1(),Qt::DirectConnection,QGenericArgument(list[0].typeName(),a[1]),QGenericArgument(list[1].typeName(),a[2]),QGenericArgument(list[2].typeName(),a[3]),QGenericArgument(list[3].typeName(),a[4]));
                 }
                 if(list.size()==3||!ok) {
-                    ok=QMetaObject::invokeMethod(s_dest,s_dSlot.toAscii(),Qt::DirectConnection,QGenericArgument(list[0].typeName(),a[1]),QGenericArgument(list[1].typeName(),a[2]),QGenericArgument(list[2].typeName(),a[3]));
+                    ok=QMetaObject::invokeMethod(s_dest,s_dSlot.toLatin1(),Qt::DirectConnection,QGenericArgument(list[0].typeName(),a[1]),QGenericArgument(list[1].typeName(),a[2]),QGenericArgument(list[2].typeName(),a[3]));
                 }
                 if(list.size()==2||!ok) {
-                    ok=QMetaObject::invokeMethod(s_dest,s_dSlot.toAscii(),Qt::DirectConnection,QGenericArgument(list[0].typeName(),a[1]),QGenericArgument(list[1].typeName(),a[2]));
+                    ok=QMetaObject::invokeMethod(s_dest,s_dSlot.toLatin1(),Qt::DirectConnection,QGenericArgument(list[0].typeName(),a[1]),QGenericArgument(list[1].typeName(),a[2]));
                 }
                 if(list.size()==1||!ok) {
-                    ok=QMetaObject::invokeMethod(s_dest,s_dSlot.toAscii(),Qt::DirectConnection,QGenericArgument(list[0].typeName(),a[1]));
+                    ok=QMetaObject::invokeMethod(s_dest,s_dSlot.toLatin1(),Qt::DirectConnection,QGenericArgument(list[0].typeName(),a[1]));
                 }
                 if(list.size()==0||!ok) {
-                    ok=QMetaObject::invokeMethod(s_dest,s_dSlot.toAscii(),Qt::DirectConnection);
+                    ok=QMetaObject::invokeMethod(s_dest,s_dSlot.toLatin1(),Qt::DirectConnection);
                 }
             }
 

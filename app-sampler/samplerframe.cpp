@@ -245,4 +245,3 @@ SamplerFrame::~SamplerFrame()
     delete ui;
 }
 
-Q_EXPORT_PLUGIN2(live::AppInterface, SamplerCreator)

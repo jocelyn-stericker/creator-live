@@ -60,11 +60,9 @@ endif (QNX)
 
 add_definitions(-Wall)
 
-find_package (Qt4 REQUIRED)
-set (QT_USE_QTNETWORK TRUE)
-include (${QT_USE_FILE})
+find_package (Qt5Widgets REQUIRED)
+set(CMAKE_AUTOMOC ON)
 
-qt4_wrap_cpp (livesoundtouch_moc ${livesoundtouch_qobject})
 include_directories (${cmake_binary_dir}
     .
 )
@@ -91,3 +89,4 @@ endif (NOT WIN32)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DLIVEST_LIBRARY=1")
 
+qt5_use_modules(livesoundtouch Widgets)

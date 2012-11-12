@@ -56,8 +56,8 @@ endif (QNX)
 
 add_definitions(-Wall)
 
-find_package (Qt4 REQUIRED)
-include (${QT_USE_FILE})
+set(CMAKE_AUTOMOC ON)
+find_package (Qt5Widgets REQUIRED)
 
 include_directories (${cmake_binary_dir}
     ${CMAKE_BINARY_DIR}/mode-dj
@@ -65,9 +65,8 @@ include_directories (${cmake_binary_dir}
     ../liblivewidgets/
 )
 
-qt4_wrap_cpp (mode-dj_moc ${mode-dj_h_qobject})
-qt4_wrap_ui (mode-dj_moc ${mode-dj_ui}) 
-qt4_add_resources (livevst_rcc ${livevst_qrc})
+qt5_wrap_ui (mode-dj_moc ${mode-dj_ui}) 
+qt5_add_resources (livevst_rcc ${livevst_qrc})
 
 add_library (mode-dj SHARED
     ${mode-dj_cpp}
@@ -92,3 +91,5 @@ target_link_libraries (mode-dj
     ${QT_LIBRARIES}
 )
 endif (WIN32)
+
+qt5_use_modules(mode-dj Widgets)

@@ -19,6 +19,7 @@ class SF2Interface : public QObject, public live::InstrumentInterface
 {
     Q_OBJECT
     Q_INTERFACES(live::InstrumentInterface)
+    Q_PLUGIN_METADATA(IID "ca.nettek.live.sf2")
 public:
     SF2Interface();
     QString name() { return "SoundFont"; }

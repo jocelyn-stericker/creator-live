@@ -83,5 +83,3 @@ void PitchFrame::removeRounding()
     ui->toolButton_more->setStyleSheet(style);
 }
 
-
-Q_EXPORT_PLUGIN2(live::AppInterface, PitchCreator)

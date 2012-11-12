@@ -48,8 +48,8 @@ endif (QNX)
 
 add_definitions(-Wall)
 
-find_package (Qt4 REQUIRED)
-include (${QT_USE_FILE})
+set(CMAKE_AUTOMOC ON)
+find_package (Qt5Widgets REQUIRED)
 
 include_directories (${cmake_binary_dir}
     ${CMAKE_BINARY_DIR}/app-pitch
@@ -58,9 +58,8 @@ include_directories (${cmake_binary_dir}
     ../3rd-soundtouch/include
 )
 
-qt4_wrap_cpp (app-pitch_moc ${app-pitch_qobject})
-qt4_wrap_ui (app-pitch_moc ${app-pitch_ui}) 
-qt4_add_resources (app-pitch_rcc ${app-pitch_qrc})
+qt5_wrap_ui (app-pitch_moc ${app-pitch_ui}) 
+qt5_add_resources (app-pitch_rcc ${app-pitch_qrc})
 
 add_library (app-pitch SHARED
     ${app-pitch_cpp}
@@ -95,3 +94,5 @@ target_link_libraries (app-pitch
     ${QT_LIBRARIES}
 )
 endif (WIN32)
+
+qt5_use_modules(app-pitch Widgets)

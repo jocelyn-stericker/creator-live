@@ -45,5 +45,3 @@ MixerFrame::~MixerFrame()
     }
     delete ui;
 }
-
-Q_EXPORT_PLUGIN2(live::AppInterface, MixerCreator)

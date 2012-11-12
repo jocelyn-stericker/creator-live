@@ -125,7 +125,7 @@ void PitchAppAudioR::aIn(const float *data, int chan, Object*p)
         return;
     }
 
-    if (s_shiftPitchAction!=999)
+    if (s_shiftPitchAction.fetchAndAddAcquire(0)!=999)
     {
         int x=s_shiftPitchAction.fetchAndStoreOrdered(999);
         s_soundTouch->setPitchSemiTones(x);

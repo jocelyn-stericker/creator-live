@@ -52,8 +52,9 @@ endif (QNX)
 
 add_definitions(-Wall)
 
-find_package (Qt4 REQUIRED)
-include (${QT_USE_FILE})
+set(CMAKE_AUTOMOC ON)
+find_package (Qt5Widgets REQUIRED)
+find_package (Qt5Concurrent REQUIRED)
 
 include_directories (${cmake_binary_dir}
     ${CMAKE_BINARY_DIR}/app-sequencer
@@ -61,9 +62,8 @@ include_directories (${cmake_binary_dir}
     ../liblivewidgets/
 )
 
-qt4_wrap_cpp (app-sequencer_moc ${app-sequencer_h_qobject})
-qt4_wrap_ui (app-sequencer_moc ${app-sequencer_ui}) 
-qt4_add_resources (app-sequencer_rcc ${app-sequencer_qrc})
+qt5_wrap_ui (app-sequencer_moc ${app-sequencer_ui}) 
+qt5_add_resources (app-sequencer_rcc ${app-sequencer_qrc})
 
 add_library (app-sequencer SHARED
     ${app-sequencer_cpp}
@@ -88,3 +88,6 @@ target_link_libraries (app-sequencer
     ${QT_LIBRARIES}
 )
 endif (WIN32)
+
+qt5_use_modules(app-sequencer Widgets Concurrent)
+

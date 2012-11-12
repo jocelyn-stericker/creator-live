@@ -56,8 +56,8 @@ endif (QNX)
 
 add_definitions(-Wall)
 
-find_package (Qt4 REQUIRED)
-include (${QT_USE_FILE})
+set(CMAKE_AUTOMOC ON)
+find_package (Qt5Widgets REQUIRED)
 
 include_directories (
     .
@@ -66,9 +66,8 @@ include_directories (
     ../liblivewidgets/
 )
 
-qt4_wrap_cpp (livevst_cpp ${livevst_h_qobject})
-qt4_wrap_ui (livevst_moc ${livevst_ui}) 
-qt4_add_resources (livevst_rcc ${livevst_qrc})
+qt5_wrap_ui (livevst_moc ${livevst_ui}) 
+qt5_add_resources (livevst_rcc ${livevst_qrc})
 
 add_library (livevst SHARED
     ${livevst_cpp}
@@ -87,3 +86,5 @@ endif (WIN32)
 set_target_properties(livevst PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins
 )
+
+qt5_use_modules(livevst Widgets)

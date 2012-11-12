@@ -56,9 +56,9 @@ endif (QNX)
 
 add_definitions(-Wall)
 
-find_package (Qt4 REQUIRED)
-set (QT_USE_QTNETWORK TRUE)
-include (${QT_USE_FILE})
+set(CMAKE_AUTOMOC ON)
+find_package (Qt5Widgets REQUIRED)
+find_package (Qt5Network REQUIRED)
 
 include_directories (
     ${CMAKE_BINARY_DIR}/bridge
@@ -72,9 +72,8 @@ link_directories (
     ${CMAKE_BINARY_DIR}/plugins/    # tmp
 )
 
-qt4_wrap_cpp (bridge_moc ${bridge_h_qobject})
-qt4_wrap_ui (bridge_moc ${bridge_ui}) 
-qt4_add_resources (bridge_rcc ${bridge_qrc})
+qt5_wrap_ui (bridge_moc ${bridge_ui}) 
+qt5_add_resources (bridge_rcc ${bridge_qrc})
 
 add_executable(bridge
     ${bridge_cpp}
@@ -101,3 +100,6 @@ target_link_libraries (bridge
     ${QT_LIBRARIES}
 )
 endif (WIN32)
+
+qt5_use_modules(bridge Widgets)
+qt5_use_modules(bridge Network)

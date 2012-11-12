@@ -28,7 +28,7 @@ Soundfont::Soundfont(QString url)
     fluid_settings_setnum(s_settings,"synth.gain",3.0);
     live_mutex(x_synth) {
         s_synth = new_fluid_synth(s_settings);
-        fluid_synth_sfload(s_synth,url.toAscii(),1);
+        fluid_synth_sfload(s_synth,url.toLatin1(),1);
     }
 }
 

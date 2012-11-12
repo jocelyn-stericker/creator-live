@@ -99,9 +99,9 @@ void jackConnectPorts( QString readPort, QString writePort, bool disconnect ) {
         if ( !SecretAudio::singleton ) client = jack_client_open("HathorListen", JackNullOption, NULL);
         else client = SecretAudio::singleton->client;
         if (disconnect) {
-            jack_disconnect( client, readPort.toAscii(), writePort.toAscii() );
+            jack_disconnect( client, readPort.toLatin1(), writePort.toLatin1() );
         } else {
-            jack_connect( client, readPort.toAscii(), writePort.toAscii() );
+            jack_connect( client, readPort.toLatin1(), writePort.toLatin1() );
         }
         if ( !SecretAudio::singleton ) {
             jack_client_close( client );
@@ -295,7 +295,7 @@ bool SecretAudio::makeClient() {
     live::Object::beginProc();
     {
         qDebug() << "Trying to connect to jackd... (you can start the JACK server with qjackctl, for example...)";
-        client = jack_client_open(live::audio::getKey().toAscii(), (jack_options_t) (JackNoStartServer | JackUseExactName), 0);
+        client = jack_client_open(live::audio::getKey().toLatin1(), (jack_options_t) (JackNoStartServer | JackUseExactName), 0);
         if (!client) {
 #ifdef _WIN32
             QMessageBox::critical(0,"Error","Please ensure that Live is installed correctly.");
@@ -320,9 +320,9 @@ bool SecretAudio::makeClient() {
     live::Object::endProc(true);
 
     for (int i = 0; i < 32; ++i) {
-        s_availInPorts.push_back( jack_port_register(getJackClient(),QString("clIn"+QString::number(i)).toAscii(),JACK_DEFAULT_AUDIO_TYPE,JackPortIsInput,0) );
+        s_availInPorts.push_back( jack_port_register(getJackClient(),QString("clIn"+QString::number(i)).toLatin1(),JACK_DEFAULT_AUDIO_TYPE,JackPortIsInput,0) );
         s_availInPortIds.push_back(QString(live::audio::getKey()+":clIn"+QString::number(i)));
-        s_availOutPorts.push_back( jack_port_register(getJackClient(),QString("clOut"+QString::number(i)).toAscii(),JACK_DEFAULT_AUDIO_TYPE,JackPortIsOutput,0));
+        s_availOutPorts.push_back( jack_port_register(getJackClient(),QString("clOut"+QString::number(i)).toLatin1(),JACK_DEFAULT_AUDIO_TYPE,JackPortIsOutput,0));
         s_availOutPortIds.push_back(QString(live::audio::getKey()+":clOut"+QString::number(i)));
     }
 
@@ -502,7 +502,7 @@ LIBLIVECORESHARED_EXPORT void live::audio::resetMappings() {
 }
 
 void live_private::SecretAudio::jack_disconnect(QString readPort,QString writePort) {
-    ::jack_disconnect( client, readPort.toAscii(), writePort.toAscii() );
+    ::jack_disconnect( client, readPort.toLatin1(), writePort.toLatin1() );
 }
 
 

@@ -59,9 +59,8 @@ endif (QNX)
 
 add_definitions(-Wall)
 
-find_package (Qt4 REQUIRED)
-set (QT_USE_QTNETWORK TRUE)
-include (${QT_USE_FILE})
+set(CMAKE_AUTOMOC ON)
+find_package (Qt5Widgets REQUIRED)
 
 include_directories (
     ${CMAKE_BINARY_DIR}/pluginTester
@@ -74,9 +73,8 @@ link_directories (
     ${CMAKE_BINARY_DIR}/lib/
 )
 
-qt4_wrap_cpp (pluginTester_moc ${pluginTester_h_qobject})
-qt4_wrap_ui (pluginTester_moc ${pluginTester_ui}) 
-qt4_add_resources (pluginTester_rcc ${pluginTester_qrc})
+qt5_wrap_ui (pluginTester_moc ${pluginTester_ui}) 
+qt5_add_resources (pluginTester_rcc ${pluginTester_qrc})
 
 add_executable(pluginTester
     ${pluginTester_cpp}
@@ -103,3 +101,4 @@ target_link_libraries (pluginTester
     C:/QtSDK/Desktop/Qt/4.8.1/msvc2010/bin/portmidi.lib
 )
 endif (WIN32)
+qt5_use_modules(pluginTester Widgets)

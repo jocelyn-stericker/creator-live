@@ -53,4 +53,3 @@ void BPMFrame::resizeEvent(QResizeEvent *)
     }
 }
 
-Q_EXPORT_PLUGIN2(live::AppInterface, BPMCreator)

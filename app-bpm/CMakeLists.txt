@@ -49,8 +49,8 @@ endif (QNX)
 
 add_definitions(-Wall)
 
-find_package (Qt4 REQUIRED)
-include (${QT_USE_FILE})
+set(CMAKE_AUTOMOC ON)
+find_package (Qt5Widgets REQUIRED)
 
 include_directories (${cmake_binary_dir}
     ${CMAKE_BINARY_DIR}/app-bpm
@@ -59,9 +59,8 @@ include_directories (${cmake_binary_dir}
     ../3rd-soundtouch/include
 )
 
-qt4_wrap_cpp (app-bpm_moc ${app-bpm_h_qobject})
-qt4_wrap_ui (app-bpm_moc ${app-bpm_ui}) 
-qt4_add_resources (app-bpm_rcc ${app-bpm_qrc})
+qt5_wrap_ui (app-bpm_moc ${app-bpm_ui}) 
+qt5_add_resources (app-bpm_rcc ${app-bpm_qrc})
 
 add_library (app-bpm SHARED
     ${app-bpm_cpp}
@@ -98,3 +97,5 @@ target_link_libraries (app-bpm
     ${QT_LIBRARIES}
 )
 endif (WIN32)
+
+qt5_use_modules(app-bpm Widgets)

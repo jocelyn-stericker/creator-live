@@ -11,7 +11,6 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "livewindow.h"
 #include <live_widgets/draglabel.h>
 
-#include <QtGui/QApplication>
 #include <QMutex>
 #include <iostream>
 using namespace live;

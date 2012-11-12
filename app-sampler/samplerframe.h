@@ -49,6 +49,7 @@ class SamplerCreator : public QObject, public live::AppInterface
 {
     Q_OBJECT
     Q_INTERFACES(live::AppInterface)
+    Q_PLUGIN_METADATA(IID "ca.nettek.live.sampler")
 public:
     SamplerCreator()
     {

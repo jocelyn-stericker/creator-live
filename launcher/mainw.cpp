@@ -6,7 +6,8 @@
 #include <QNetworkAccessManager>
 #include <QDebug>
 #include <QSettings>
-#include <QDesktopServices>
+#include <QStandardPaths>
+#include <QStandardPaths>
 #include <QDir>
 #include <QProcess>
 #include <QMessageBox>
@@ -60,7 +61,7 @@ void MainW::closeEvent(QCloseEvent *)
 void MainW::gotChannel(QNetworkReply *r)
 {
     QSettings sett;
-    QString homePath=QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+    QString homePath=QStandardPaths::writableLocation(QStandardPaths::DataLocation);
     QDir dir;
     dir.mkpath(homePath);
     QVariantMap vm=sett.value("vmap").toMap();
@@ -271,11 +272,11 @@ QString MainW::exec(QString cmd)
         return "ERROR";
     }
     if(sl[0].startsWith("jack")) {
-        qDebug()<<QDesktopServices::storageLocation(QDesktopServices::DataLocation)+"/jack32/";
-        sl[0]="\""+QDesktopServices::storageLocation(QDesktopServices::DataLocation)+"/jack32/"+sl[0]+"\"";
+        qDebug()<<QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/jack32/";
+        sl[0]="\""+QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/jack32/"+sl[0]+"\"";
     }
     QProcess* proc=(cmd.contains("-p"))?(&jackProcess):new QProcess;
-    proc->setWorkingDirectory( QDesktopServices::storageLocation(QDesktopServices::DataLocation)+"/jack32/");
+    proc->setWorkingDirectory( QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/jack32/");
     proc->start(sl.takeFirst(),sl,QIODevice::ReadOnly);
     if(!proc->waitForStarted(3000))
     {
@@ -555,7 +556,7 @@ void MainW::start_asio(QString dev,int fp,int sr,int mode,bool again)
                       QString::number(settings.value("frameRate",44100).toInt()) + QString(" -D -d") +
                       " \"" + settings.value("asioName",QString("")).toString() + "\" " //+
 //                      "-P" + " \"" + settings.value("asioName",QString("")).toString() + "\""
-                      ).toAscii());
+                      ).toLatin1());
     } else {
         settings.setValue("dontAskAudioSettings",0);
         QMessageBox::information(this,"Error","Live only supports duplex mode. (To be fixed.)");
@@ -597,7 +598,7 @@ void MainW::installAsio4All(QNetworkReply* r) {
     if(!r||(r->error()!=QNetworkReply::NoError)) {
         ui->primary_label->setText("Could not download generic ASIO driver...");
     }
-    QString p=QDesktopServices::storageLocation(QDesktopServices::TempLocation)+"/asio4all.exe";
+    QString p=QStandardPaths::writableLocation(QStandardPaths::TempLocation)+"/asio4all.exe";
     if(QFile::exists(p)) {
         QDir d;
         qDebug()<<d.remove(p);
@@ -612,7 +613,7 @@ void MainW::installAsio4All(QNetworkReply* r) {
     f.close();
 
     hide();
-    QString homePath=QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+    QString homePath=QStandardPaths::writableLocation(QStandardPaths::DataLocation);
     qDebug()<<isActiveWindow();
     admin(p,"/S /D="+homePath+"");
     bool ok=0;

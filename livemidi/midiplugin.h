@@ -15,8 +15,6 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live/object>
 #include <live/instrumentinterface>
 
-#include <QtGui/QStylePlugin>
-
 class MidiPluginObject : public live::Object
 {
     live::ObjectPtr s_in;
@@ -52,6 +50,7 @@ class MidiInterface : public QObject, public live::InstrumentInterface
 {
     Q_OBJECT
     Q_INTERFACES(live::InstrumentInterface)
+    Q_PLUGIN_METADATA(IID "ca.nettek.live.midi")
 public:
     MidiInterface();
     QString name() { return "Physical MIDI Device"; }

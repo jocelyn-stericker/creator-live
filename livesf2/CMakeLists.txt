@@ -47,8 +47,8 @@ file (INSTALL grand.sf2 mustheory2.sf2 DESTINATION ${CMAKE_BINARY_DIR}/plugins)
 
 add_definitions(-Wall)
 
-find_package (Qt4 REQUIRED)
-include (${QT_USE_FILE})
+set(CMAKE_AUTOMOC ON)
+find_package (Qt5Widgets REQUIRED)
 
 include_directories (${cmake_binary_dir}
     ${CMAKE_BINARY_DIR}/livesf2
@@ -56,9 +56,8 @@ include_directories (${cmake_binary_dir}
     ../liblivewidgets/
 )
 
-qt4_wrap_cpp (livesf2_moc ${livesf2_h_qobject})
-qt4_wrap_ui (livesf2_moc ${livesf2_ui}) 
-qt4_add_resources (livesf2_rcc ${livesf2_qrc})
+qt5_wrap_ui (livesf2_moc ${livesf2_ui}) 
+qt5_add_resources (livesf2_rcc ${livesf2_qrc})
 
 add_library (livesf2 SHARED
     ${livesf2_cpp}
@@ -85,3 +84,4 @@ target_link_libraries (livesf2
 )
 
 endif (WIN32)
+qt5_use_modules(livesf2 Widgets)

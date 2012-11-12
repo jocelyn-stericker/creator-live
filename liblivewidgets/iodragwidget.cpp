@@ -15,6 +15,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QLineEdit>
 #include <QToolButton>
 #include <QSettings>
+#include <QMimeData>
 #include <QTimer>
 #include "ui_inputdragwidget.h"
 

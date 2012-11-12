@@ -38,8 +38,8 @@ endif (QNX)
 
 add_definitions(-Wall)
 
-find_package (Qt4 REQUIRED)
-include (${QT_USE_FILE})
+set(CMAKE_AUTOMOC ON)
+find_package (Qt5Widgets REQUIRED)
 
 include_directories (${cmake_binary_dir}
     ${CMAKE_BINARY_DIR}/livemidi
@@ -47,8 +47,7 @@ include_directories (${cmake_binary_dir}
     ../liblivewidgets/
 )
 
-qt4_wrap_cpp (livemidi_moc ${livemidi_qobject})
-qt4_wrap_ui (livemidi_moc ${livemidi_ui}) 
+qt5_wrap_ui (livemidi_moc ${livemidi_ui}) 
 
 add_library (livemidi SHARED
     ${livemidi_cpp}
@@ -72,3 +71,5 @@ target_link_libraries (livemidi
     ${QT_LIBRARIES}
 )
 endif (WIN32)
+
+qt5_use_modules(livemidi Widgets)

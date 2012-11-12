@@ -49,9 +49,9 @@ endif (WIN32)
 
 add_definitions(-Wall)
 
-find_package (Qt4 REQUIRED)
-set (QT_USE_QTNETWORK TRUE)
-include (${QT_USE_FILE})
+find_package (Qt5Widgets REQUIRED)
+find_package (Qt5Network REQUIRED)
+set(CMAKE_AUTOMOC ON)
 
 include_directories (
     ${CMAKE_BINARY_DIR}/launcher
@@ -60,20 +60,12 @@ include_directories (
     ../liblivewidgets/
 )
 
-include_directories ( SYSTEM
-    /usr/include # Avoid ugly warnings.
-    /usr/include/qt4
-    /usr/include/QtGui # Avoid ugly warnings.
-    /usr/include/QtCore # Avoid ugly warnings.
-)
-
 link_directories (
     ${CMAKE_BINARY_DIR}/lib/
 )
 
-qt4_wrap_cpp (launcher_cpp ${launcher_h_qobject})
-qt4_wrap_ui (launcher_moc ${launcher_ui}) 
-qt4_add_resources (launcher_rcc ${launcher_qrc})
+qt5_wrap_ui (launcher_moc ${launcher_ui}) 
+qt5_add_resources (launcher_rcc ${launcher_qrc})
 
 add_executable(launcher
     ${launcher_cpp}
@@ -93,12 +85,13 @@ if (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 endif (WIN32)
 
-if (NOT QNX AND NOT WIN32)
+if (FALSE)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Weffc++ -pedantic -pedantic-errors -Wextra  -Wall -Wcast-align -Wcast-qual  -Wchar-subscripts  -Wcomment -Wconversion -Wdisabled-optimization -Wformat -Wformat=2 -Wformat-nonliteral -Wformat-security  -Wformat-y2k -Wimport -Winit-self -Winline -Winvalid-pch -Wunsafe-loop-optimizations -Wlong-long -Wmissing-braces -Wmissing-field-initializers -Wmissing-format-attribute -Wmissing-include-dirs -Wmissing-noreturn -Wpacked -Wparentheses -Wpointer-arith -Wredundant-decls -Wreturn-type -Wsequence-point  -Wsign-compare  -Wstack-protector -Wstrict-aliasing -Wstrict-aliasing=2 -Wswitch -Wtrigraphs  -Wuninitialized -Wunknown-pragmas  -Wunreachable-code -Wunused -Wunused-function  -Wunused-label  -Wunused-parameter -Wunused-value  -Wunused-variable  -Wvariadic-macros -Wvolatile-register-var  -Wwrite-strings")
-endif (NOT QNX AND NOT WIN32)
+endif (FALSE)
 
 if (WIN32)
 target_link_libraries (launcher
     ${QT_LIBRARIES}
 )
 endif (WIN32)
+qt5_use_modules(launcher Widgets Network)

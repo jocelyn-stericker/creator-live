@@ -18,7 +18,4 @@ MidiInterface::MidiInterface()
 //    Vst::s_vstpaths_linux=settings.value("vstis",QStringList()).toStringList();
 }
 
-Q_EXPORT_PLUGIN2(live::InstrumentInterface, MidiInterface)
-
-
 //Q_EXPORT_PLUGIN2(livemidi, MidiPluginObject)

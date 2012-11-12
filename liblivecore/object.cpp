@@ -30,7 +30,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 using namespace live_private;
 
-#if !defined(__QNX__) && !defined(_WIN32)
+#if 0
 LIBLIVECORESHARED_EXPORT Qt::HANDLE live::lthread::uiThreadId = -1;
 LIBLIVECORESHARED_EXPORT Qt::HANDLE live::lthread::metronomeThreadId = -1;
 LIBLIVECORESHARED_EXPORT Qt::HANDLE live::lthread::audioThreadId = -1;
@@ -45,7 +45,7 @@ LIBLIVECORESHARED_EXPORT Qt::HANDLE live::lthread::midiThreadId = 0;
 #ifndef NDEBUG
 void live::lthread::assert_thread(const Qt::HANDLE& thread, const char* str) {
     return;
-#if !defined(__QNX__) && !defined(_WIN32)
+#if 0
         if (thread != QThread::currentThreadId()) {
             std::cerr << "### Thread assertion error ###\n";
             std::cerr << "expected: " << str << "(" << QString::number(thread).toUtf8().data() << ")\n";
@@ -572,6 +572,8 @@ void live::ObjectPtr::detach() {
         for (QMap<QString,ObjectPtr*>::iterator it=Object::zombies->begin(); it!=Object::zombies->end(); ++it) {
             if (it.value()==this) {
                 it=Object::zombies->erase(it);
+                if (it ==Object::zombies->end())
+                    break;
             }
         }
         s_obj=0;

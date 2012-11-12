@@ -12,6 +12,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QDropEvent>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QMimeData>
 
 live_widgets::DropFrame::DropFrame(QWidget*p) : QFrame(p), s_dl(0) {
     setAcceptDrops(1);

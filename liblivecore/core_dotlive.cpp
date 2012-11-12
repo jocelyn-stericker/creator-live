@@ -495,7 +495,7 @@ QByteArray audio::save()
             //qFatal( (QString("The file you are loading requires a ") + 
               //      QString("sample rate of ")+QString::number(sampleRate) +
                 //    QString("but it is set at ")+QString::number(audio::sampleRate())+QString("! ")+
-                  //  QString("Please adjust your settings!")).toAscii());
+                  //  QString("Please adjust your settings!")).toLatin1());
             qFatal("error.");
             Q_ASSERT(0);
         }
@@ -560,7 +560,7 @@ QByteArray audio::save()
 			qFatal("error.");
                     //qCritical(QString("The file you are loading requires an "+QString(i?"input":"output")+" named"+
                     //          xstr + "but it does not exist "+
-                    //          "Please adjust your settings!").toAscii());
+                    //          "Please adjust your settings!").toLatin1());
                     Q_ASSERT(0);
                 }
             }
@@ -870,7 +870,7 @@ QByteArray Ambition::save()
     ret IO this->s_chain.size();
     for (int i=0;i<this->s_chain.size();i++)
     {
-        xba = x->at(i)->name().toAscii();
+        xba = x->at(i)->name().toLatin1();
         ret IO xba;
         ret IO x->at(i)->save();
     }

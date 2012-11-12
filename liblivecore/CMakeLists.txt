@@ -13,6 +13,7 @@ cmake_minimum_required(VERSION 2.8)
 
 list (APPEND liblivecore_cpp
     anabeat.cpp
+    audiosecond.cpp
     mapping.cpp 
     songsystem.cpp 
     metronome.cpp 
@@ -85,14 +86,6 @@ list (APPEND liblivecore_qobject
     midibridge.h
 )
 
-if (!QNX)
-    include_directories ( SYSTEM
-        /usr/include # Avoid ugly warnings.
-        /usr/include/QtGui # Avoid ugly warnings.
-        /usr/include/QtCore # Avoid ugly warnings.
-    )
-endif (!QNX)
-
 ################## PLATFORM-SPECIFIC CODE ##################
 
 if (QNX)
@@ -121,14 +114,16 @@ endif (QNX)
 
 add_definitions(-Wall)
 
-find_package (Qt4 REQUIRED)
-set (QT_USE_QTNETWORK TRUE)
-include (${QT_USE_FILE})
+set(CMAKE_AUTOMOC OFF)
+find_package (Qt5Core)
+find_package (Qt5Network)
+find_package (Qt5Concurrent)
 
-qt4_wrap_cpp (liblivecore_moc ${liblivecore_qobject})
 include_directories (${cmake_binary_dir}
     .
 )
+
+qt5_wrap_cpp (liblivecore_cpp ${liblivecore_qobject})
 
 add_library (livecore SHARED
     ${liblivecore_cpp}
@@ -170,3 +165,5 @@ if (!QNX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -Wall -Weffc++ -pedantic -pedantic-errors -Wextra  -Wall -Wcast-align -Wcast-qual  -Wchar-subscripts  -Wcomment -Wconversion -Wdisabled-optimization -Wformat -Wformat=2 -Wformat-nonliteral -Wformat-security  -Wformat-y2k -Wimport -Winit-self -Winline -Winvalid-pch -Wunsafe-loop-optimizations -Wlong-long -Wmissing-braces -Wmissing-field-initializers -Wmissing-format-attribute -Wmissing-include-dirs -Wmissing-noreturn -Wpacked -Wparentheses -Wpointer-arith -Wredundant-decls -Wreturn-type -Wsequence-point  -Wsign-compare  -Wstack-protector -Wstrict-aliasing -Wstrict-aliasing=2 -Wswitch -Wtrigraphs  -Wuninitialized -Wunknown-pragmas  -Wunreachable-code -Wunused -Wunused-function  -Wunused-label  -Wunused-parameter -Wunused-value  -Wunused-variable  -Wvariadic-macros -Wvolatile-register-var  -Wwrite-strings")
 endif (!QNX)
 endif (!WIN32)
+
+qt5_use_modules(livecore Core Concurrent Network)

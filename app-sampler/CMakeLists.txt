@@ -43,8 +43,8 @@ endif (QNX)
 
 add_definitions(-Wall)
 
-find_package (Qt4 REQUIRED)
-include (${QT_USE_FILE})
+set(CMAKE_AUTOMOC ON)
+find_package (Qt5Widgets REQUIRED)
 
 include_directories (${cmake_binary_dir}
     ${CMAKE_BINARY_DIR}/app-sampler
@@ -52,9 +52,8 @@ include_directories (${cmake_binary_dir}
     ../liblivewidgets/
 )
 
-qt4_wrap_cpp (app-sampler_moc ${app-sampler_h_qobject})
-qt4_wrap_ui (app-sampler_moc ${app-sampler_ui}) 
-qt4_add_resources (app-sampler_rcc ${app-sampler_qrc})
+qt5_wrap_ui (app-sampler_moc ${app-sampler_ui}) 
+qt5_add_resources (app-sampler_rcc ${app-sampler_qrc})
 
 add_library (app-sampler SHARED
     ${app-sampler_cpp}
@@ -79,3 +78,4 @@ target_link_libraries (app-sampler
     ${QT_LIBRARIES}
 )
 endif (WIN32)
+qt5_use_modules(app-sampler Widgets)

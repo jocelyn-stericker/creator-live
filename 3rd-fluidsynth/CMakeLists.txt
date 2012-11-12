@@ -86,11 +86,9 @@ endif (QNX)
 
 add_definitions(-Wall)
 
-find_package (Qt4 REQUIRED)
-set (QT_USE_QTNETWORK TRUE)
-include (${QT_USE_FILE})
+find_package (Qt5Widgets REQUIRED)
+set(CMAKE_AUTOMOC ON)
 
-qt4_wrap_cpp (livefluidsynth_moc ${livesoundtouch_qobject})
 include_directories (${cmake_binary_dir}
     .
 )
@@ -102,3 +100,5 @@ add_library (livefluidsynth SHARED
 set_target_properties(livefluidsynth PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
 )
+
+qt5_use_modules(3rd-fluidsynth Widgets)

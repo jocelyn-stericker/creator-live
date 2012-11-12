@@ -45,9 +45,8 @@ endif (QNX)
 
 add_definitions(-Wall)
 
-find_package (Qt4 REQUIRED)
-set (QT_USE_QTNETWORK TRUE)
-include (${QT_USE_FILE})
+set(CMAKE_AUTOMOC ON)
+find_package (Qt5Widgets REQUIRED)
 
 include_directories (
     ${CMAKE_BINARY_DIR}/test
@@ -66,9 +65,8 @@ link_directories (
     ${CMAKE_BINARY_DIR}/lib/
 )
 
-qt4_wrap_cpp (test_moc ${test_h_qobject})
-qt4_wrap_ui (test_moc ${test_ui})
-qt4_add_resources (test_rcc ${test_qrc})
+qt5_wrap_ui (test_moc ${test_ui})
+qt5_add_resources (test_rcc ${test_qrc})
 
 add_executable(test
     ${test_cpp}
@@ -87,5 +85,6 @@ if (WIN32)
 endif (WIN32)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+qt5_use_modules(test Widgets)
 
 add_custom_command(TARGET test POST_BUILD COMMAND test)

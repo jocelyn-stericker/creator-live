@@ -63,6 +63,7 @@ class DJModeInterface : public QObject, public live::ModeInterface
 {
     Q_OBJECT
     Q_INTERFACES(live::ModeInterface)
+    Q_PLUGIN_METADATA(IID "ca.nettek.live.dj")
 public:
     virtual QString name() { return "DJ set"; }
     virtual QString description() { return "Everything you need to be a DJ"; }

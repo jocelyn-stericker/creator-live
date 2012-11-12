@@ -108,5 +108,3 @@ void DJContext::monitorChanged_logic(QString)
 {
     // FIXME
 }
-
-Q_EXPORT_PLUGIN2(live::ModeInterface, DJModeInterface)

@@ -10,6 +10,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live/audiotrack>
 #include <live/object>
 
+#include <QtConcurrentRun>
+
 live::AudioSecondBank* live::AudioSecondBank::singleton = 0;
 
 void live::AudioTrack::aThru(float*proc,int chan) {
@@ -391,3 +393,4 @@ bool live::AudioTrack::importFile(QString filename) {
 #endif
     return 1;
 }
+

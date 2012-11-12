@@ -46,6 +46,7 @@ class PitchCreator : public QObject, public live::AppInterface
 {
     Q_OBJECT
     Q_INTERFACES(live::AppInterface)
+    Q_PLUGIN_METADATA(IID "ca.nettek.live.pitch")
 public:
     PitchCreator()
     {

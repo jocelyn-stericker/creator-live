@@ -235,5 +235,3 @@ live::AppInterface* SequencerCreator::next()
 {
     return s_looper=(s_looper?s_looper:new LooperCreator);
 }
-
-Q_EXPORT_PLUGIN2(live::AppInterface, SequencerCreator)

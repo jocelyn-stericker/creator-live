@@ -43,8 +43,8 @@ endif (QNX)
 
 add_definitions(-Wall)
 
-find_package (Qt4 REQUIRED)
-include (${QT_USE_FILE})
+set(CMAKE_AUTOMOC ON)
+find_package (Qt5Widgets REQUIRED)
 
 include_directories (${cmake_binary_dir}
     ${CMAKE_BINARY_DIR}/app-mixer
@@ -52,9 +52,8 @@ include_directories (${cmake_binary_dir}
     ../liblivewidgets/
 )
 
-qt4_wrap_cpp (app-mixer_moc ${app-mixer_h_qobject})
-qt4_wrap_ui (app-mixer_moc ${app-mixer_ui}) 
-qt4_add_resources (app-mixer_rcc ${app-mixer_qrc})
+qt5_wrap_ui (app-mixer_moc ${app-mixer_ui}) 
+qt5_add_resources (app-mixer_rcc ${app-mixer_qrc})
 
 add_library (app-mixer SHARED
     ${app-mixer_cpp}
@@ -79,3 +78,5 @@ target_link_libraries (app-mixer
     ${QT_LIBRARIES}
 )
 endif (WIN32)
+
+qt5_use_modules(app-mixer Widgets)
