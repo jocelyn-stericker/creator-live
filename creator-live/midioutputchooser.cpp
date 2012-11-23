@@ -44,8 +44,8 @@ MidiOutputChooser::MidiOutputChooser(QWidget *parent)
 
     s_ui->toolButton_settings->hide();
 
-    connect(s_ui->inputType, SIGNAL(toggled(bool)), this, SLOT(clickedLogic(bool)));
-    connect(s_ui->toolButton_settings, SIGNAL(toggled(bool)), this, SLOT(clickedLogic(bool)));
+    connect(s_ui->inputType, SIGNAL(clicked(bool)), this, SLOT(checkedLogic(bool)));
+    connect(s_ui->toolButton_settings, SIGNAL(clicked(bool)), this, SLOT(checkedLogic(bool)));
 }
 
 MidiOutputChooser::~MidiOutputChooser()
@@ -108,7 +108,7 @@ void MidiOutputChooser::setMinimized(bool minimized) {
     if (!s_busy)
         senderObject = sender();
 
-    if (senderObject == s_ui->inputType || senderObject == s_ui->toolButton_settings) {
+    if (( s_ui->inputType && senderObject == s_ui->inputType) || (s_ui->toolButton_settings && senderObject == s_ui->toolButton_settings)) {
         if ((senderObject == s_ui->inputType && minimized)
          || (senderObject == s_ui->toolButton_settings && !minimized))
             step2();
@@ -133,7 +133,13 @@ void MidiOutputChooser::setMinimized(bool minimized) {
     }
 }
 
-void MidiOutputChooser::checkedLogic(bool) {
+void MidiOutputChooser::checkedLogic(bool b) {
+    s_busy = true;
+    if (!b) {
+        setMinimized();
+        s_busy = false;
+        return;
+    }
     if (sender() == s_ui->inputType) {
         if (s_ui->inputType->isChecked()) {
             s_ui->toolButton_settings->setChecked(false);
@@ -149,6 +155,7 @@ void MidiOutputChooser::checkedLogic(bool) {
         }
         else setMinimized();
     }
+    s_busy = false;
 }
 
 void MidiOutputChooser::updateObjects() {

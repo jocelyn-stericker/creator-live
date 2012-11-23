@@ -9,6 +9,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include <live_widgets/dropframe.h>
 
+#include <QDebug>
 #include <QDropEvent>
 #include <QVBoxLayout>
 #include <QLabel>
@@ -23,6 +24,7 @@ live_widgets::DropFrame::~DropFrame() {
 }
 
 void live_widgets::DropFrame::dragEnterEvent(QDragEnterEvent *e) {
+    qDebug() << e->mimeData();
     if (e->mimeData()->hasFormat("text/plain")) {
         e->acceptProposedAction();
     }

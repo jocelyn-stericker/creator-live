@@ -33,7 +33,7 @@ using namespace live_widgets;
 LiveApplication* liveApp=0;
 
 LiveApplication::LiveApplication(int& argc, char **argv) :
-    QApplication(argc,argv), _mainWindow(0)
+    QApplication(argc,argv), _mainWindow(0), _insert(0)
 {
     lthread::uiInit(false); // this thread is temporarily the ui thread. will be overriden in init().
     liveApp=this;
@@ -127,6 +127,7 @@ LiveApplication::LiveApplication(int& argc, char **argv) :
     _mainWindow=new LiveWindow;
 
     _mainWindow->setWindowState(Qt::WindowMaximized);
+    _mainWindow->setAcceptDrops(true);
     _mainWindow->show();
 }
 

@@ -13,6 +13,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "trackgroupaudio.h"
 #include "trackgroupmidi.h"
 #include "settingslinux.h"
+#include "liveapplication.h"
 
 #include <QMenu>
 #include <QMessageBox>
@@ -88,18 +89,18 @@ LiveWindow::LiveWindow(QWidget *parent)
     connect(ui->comboBox_patch,SIGNAL(currentIndexChanged(int)),this,SLOT(setCurrentPatch(int)));
     connect(ui->toolButton_patchEdit,SIGNAL(clicked()),this,SLOT(editCurrentPatchName()));
 
-    for (int i=0;i<app::interfaces().size();i++)
-    {
-        DragLabel* d=new DragLabel();
-        d->setPixmap(app::interfaces()[i]->icon().pixmap(85,85));
-        d->setFixedSize(85,85);
-        d->setProperty("dragID",app::interfaces()[i]->name());
-        d->setStyleSheet("* {"
-                         "background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:0.243243 rgb(77, 76, 77), stop:0.972973 rgba(255, 255, 255, 255), stop:1 rgba(255, 255, 255, 255));"
-                       "border-width:0;"
-                         "}");
-        dynamic_cast<QBoxLayout*>(ui->sac_insert->layout())->insertWidget(1,d);
-    }
+//    for (int i=0;i<app::interfaces().size();i++)
+//    {
+//        DragLabel* d=new DragLabel();
+//        d->setPixmap(app::interfaces()[i]->icon().pixmap(85,85));
+//        d->setFixedSize(85,85);
+//        d->setProperty("dragID",app::interfaces()[i]->name());
+//        d->setStyleSheet("* {"
+//                         "background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:0.243243 rgb(77, 76, 77), stop:0.972973 rgba(255, 255, 255, 255), stop:1 rgba(255, 255, 255, 255));"
+//                       "border-width:0;"
+//                         "}");
+//        dynamic_cast<QBoxLayout*>(ui->sac_insert->layout())->insertWidget(1,d);
+//    }
 
     connect(ambition::self(), SIGNAL(created(Ambition*)), this, SLOT(onAmbitionCreated(Ambition*)));
     connect(ambition::self(), SIGNAL(destoryed(Ambition*)), this, SLOT(onAmbitionDestroyed(Ambition*)));
@@ -205,19 +206,9 @@ void LiveWindow::reactOnCreation(live::ObjectPtr s)
     disconnect(sender(), 0, this, 0);
 }
 
-void LiveWindow::hideInsert(bool animate)
+void LiveWindow::hideInsert(bool)
 {
-    for (int i=0;i<3;i++) {
-        QWidget* w=(i?((i==2)?ui->widget_insertTop:ui->widget_insertBottom):ui->scrollArea_2);
-        if (animate) {
-            QPropertyAnimation* pa1=new QPropertyAnimation(w,"maximumHeight");
-            pa1->setStartValue(w->maximumHeight());
-            pa1->setEndValue(0);
-            pa1->start(QPropertyAnimation::DeleteWhenStopped);
-        } else {
-            w->setMaximumHeight(0);
-        }
-    }
+    liveApp->setInsert(0);
     if (!ui->comboBox_mode->isEnabled()) {
         ui->comboBox_mode->setEnabled(1);
         ui->comboBox_mode->setCurrentIndex(1); // live
@@ -229,13 +220,7 @@ void LiveWindow::hideInsert(bool animate)
 
 void LiveWindow::showInsert()
 {
-    for (int i=0;i<3;i++) {
-        QWidget* w=(i?((i==2)?ui->widget_insertTop:ui->widget_insertBottom):ui->scrollArea_2);
-        QPropertyAnimation* pa1=new QPropertyAnimation(w,"maximumHeight");
-        pa1->setStartValue(w->maximumHeight());
-        pa1->setEndValue(i?15:85);
-        pa1->start(QPropertyAnimation::DeleteWhenStopped);
-    }
+    liveApp->setInsert(1);
     if (!ui->comboBox_mode->isEnabled()) {
         ui->comboBox_mode->setEnabled(1);
         ui->comboBox_mode->setCurrentIndex(0); // insert

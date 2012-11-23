@@ -82,6 +82,7 @@ target_link_libraries (livesf2
     livecore
     ${QT_LIBRARIES}
 )
-
+else (WIN32)
+    target_link_libraries (livesf2 fluidsynth )
 endif (WIN32)
 qt5_use_modules(livesf2 Widgets)

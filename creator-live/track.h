@@ -20,6 +20,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live_widgets/chaintypewidget.h>
 #include <live_widgets/objectchooser.h>
 
+#include "insertbutton.h"
+
 #include <QPushButton>
 #include <QBoxLayout>
 #include <QToolButton>
@@ -33,13 +35,18 @@ class TrackHint;
 class AppFrame;
 }
 
+class InsertButton;
+
 class Track : public AbstractTrack, public live_widgets::BindableParent {
     Q_OBJECT
+
+    InsertButton* s_sel;
 public:
     live_widgets::TrackHint* s_th;
     live::Ambition& s_ambition;   /*003*/
 
     QList<live_widgets::AppFrame*> s_appUi_;  /*003B*/    //reintegrate
+    QList<InsertButton*> s_inserts;
 
     QMutex x_me;
 
@@ -68,6 +75,7 @@ public slots:
 
 private:
     void clearUiPipeline();
+public slots:
     void makeUiPipeline();
 protected:
     void dragEnterEvent(QDragEnterEvent *e);
@@ -85,6 +93,10 @@ public slots:
     void logic_appNext();
     void updateGeometriesIfNeeded();
     void updateGeometriesOrDie();
+
+    void showInsertApps();
+    void onInsertCanceled();
+    void onInsertInvoked(QString);
 public:
     QByteArray save();
     static Track* load(const QByteArray&);
@@ -93,6 +105,7 @@ private:
     Track(const Track&)
       : AbstractTrack()
       , BindableParent(this)
+      , s_sel(0)
       , s_th(0)
       , s_ambition(*new live::Ambition)
       , s_appUi_()

@@ -8,6 +8,10 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 *******************************************************/
 
 #include "track.h"
+
+#include "insertapp.h"
+#include "liveapplication.h"
+
 #include <live/app>
 #include <live_widgets/trackhint.h>
 
@@ -21,6 +25,7 @@ int Track::s_lastId=-1;
 
 Track::Track(live::ObjectPtr cinput, live::ObjectPtr coutput)
   : BindableParent(this)
+  , s_sel(0)
   , s_th(new TrackHint)
   , s_ambition(*(new Ambition(cinput,ObjectChain(),coutput)))
   , s_appUi_()
@@ -33,6 +38,7 @@ Track::Track(live::ObjectPtr cinput, live::ObjectPtr coutput)
 
 Track::Track(Ambition* bp)
   : BindableParent(this)
+  , s_sel(0)
   , s_th(0)
   , s_ambition(*bp)
   , s_appUi_()
@@ -44,7 +50,6 @@ Track::Track(Ambition* bp)
   { initialize(); }
 
 void Track::initialize() {
-    /*MAKE CHANGES IN BELOW CONSTRUCTOR TOO!!!!*/
     ui_chainWidget->setGeometry(0,0,width(),3);
     ui_chainWidget->setFixedHeight(2);
     setAcceptDrops(1);
@@ -57,6 +62,8 @@ void Track::initialize() {
 
     setObjectName("Track_"+QString::number(s_id));
     setGeometry(geometry());
+
+    connect(liveApp, SIGNAL(insertModeChanged(bool)), this, SLOT(makeUiPipeline()));
 }
 
 Track::~Track() {
@@ -102,32 +109,50 @@ void Track::clearUiPipeline() {
 
 void Track::makeUiPipeline() {
     live_mutex(x_me) {
+        QList<QWidget*> items;
+
+        int l = 0;
+        for(int i = 0; i <= s_appUi_.size(); ++i) {
+            if (liveApp->insertMode()) {
+                if (l >= s_inserts.size()) {
+                    s_inserts.push_back(new InsertButton(this));
+                    connect(s_inserts.back(), SIGNAL(pressed()), this, SLOT(showInsertApps()));
+                }
+                items.push_back(s_inserts[l++]);
+            }
+            if (i < s_appUi_.size()) items.push_back(s_appUi_[i]);
+        }
+        for(;l < s_inserts.size(); ++l) {
+            s_inserts[l]->hide();
+        }
+
         s_busy = 1;
-        int remCount = s_appUi_.count();
-        int* sizes = new int[s_appUi_.count()];
-        for (int i = 0; i < s_appUi_.count(); ++i) {
+        int remCount = items.count();
+        int* sizes = new int[items.count()];
+        for (int i = 0; i < items.count(); ++i) {
             sizes[i] = -1;
         }
         int sum = 0;
-        for (int i = 0; i < s_appUi_.count(); ++i) {
-            AppFrame* ui = s_appUi_[i];
-            if (!ui->expanding()) {
-                sizes[i] = ui->getDesiredWidth();
+        for (int i = 0; i < items.count(); ++i) {
+            qDebug() << "Item" << i << items[i];
+            AppFrame* ui_af = qobject_cast<AppFrame*>(items[i]);
+            if ((!ui_af && s_appUi_.count()) || (ui_af && !ui_af->expanding())) {
+                sizes[i] = (ui_af ? ui_af->getDesiredWidth() : 35);
                 sum += sizes[i];
                 --remCount;
             }
-            ui->show();
+            items[i]->show();
         }
         if (remCount) {
             int widthForRemaining = (width() - sum - (ui_outputChooser ? ui_outputChooser->width() : 0) - 3) / remCount;
-            for (int i = 0; i < s_appUi_.size(); ++i) {
+            for (int i = 0; i < items.size(); ++i) {
                 if (sizes[i] == -1)
                     sizes[i] = widthForRemaining;
             }
         }
         int state_x = 0;
-        for (int i = 0; i < s_appUi_.count(); ++i) {
-            AppFrame* ui = s_appUi_[i];
+        for (int i = 0; i < items.count(); ++i) {
+            QWidget* ui = items[i];
             ui->setFixedHeight(height());
             ui->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
             ui->setGeometry(state_x, 0, sizes[i], height());
@@ -149,6 +174,7 @@ void Track::dragEnterEvent(QDragEnterEvent *e) {
     live_mutex(x_me) {
         if(e->mimeData()->hasFormat("text/plain")&&app::appNames().contains(e->mimeData()->text())) {
             if(e->mimeData()->text()!="FILTER"||s_ambition.inputIsMidiObject()) {
+                qDebug() << "Accepting.";
                 e->acceptProposedAction();
             }
         }
@@ -464,4 +490,42 @@ void Track::setOutputChooser(live_widgets::ObjectChooser* a) {
         connect(ui_outputChooser, SIGNAL(doneResizing()), this, SLOT(updateGeometriesOrDie()));
         updateGeometriesOrDie();
     }
+}
+
+void Track::showInsertApps()
+{
+    Q_ASSERT(parentWidget());
+    s_sel = dynamic_cast<InsertButton*>(sender());
+
+    InsertApp* t = new InsertApp();
+    liveApp->mainWindow()->setEnabled(false);
+    connect(t, SIGNAL(canceled()), this, SLOT(onInsertCanceled()));
+    connect(t, SIGNAL(invoked(QString)), this, SLOT(onInsertInvoked(QString)));
+}
+
+void Track::onInsertCanceled()
+{
+    liveApp->mainWindow()->setEnabled(true);
+}
+
+void Track::onInsertInvoked(QString s)
+{
+    liveApp->mainWindow()->setEnabled(true);
+
+    InsertButton* sel = s_sel;
+    s_sel = 0;
+    if (!sel) return;
+    live::ObjectPtr backend = app::newBackend(s);
+    if (!backend) return;
+    AppFrame* frontend = qobject_cast<AppFrame*>(app::newFrontend(s,backend));
+    if (!frontend) return;
+
+    for (int i = 0; i < s_appUi_.size() + 1; ++i) {
+        Q_ASSERT(s_inserts.size() >= i);
+        if (s_inserts[i] == sel) {
+            addApp(i,frontend,backend);
+            return;
+        }
+    }
+    addApp(0,frontend,backend);
 }

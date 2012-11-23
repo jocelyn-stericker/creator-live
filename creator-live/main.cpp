@@ -8,19 +8,14 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 *******************************************************/
 
 #include "liveapplication.h"
-#include "livewindow.h"
-#include <live_widgets/draglabel.h>
 
-#include <QMutex>
-#include <iostream>
-using namespace live;
-using namespace std;
+#include <live/audio>
 
 int main(int argc,char** argv)
 {
-    cout<<"Creator Live is copyright Joshua Netterfield 2010-2012. All rights are reserved."<<std::endl;
+    std::cout<<"Creator Live is copyright Joshua Netterfield 2010-2012. All rights are reserved."<<std::endl;
     LiveApplication* liveApp=new LiveApplication(argc,argv);
     int ret = liveApp->exec();
-    audio::stop();
+    live::audio::stop();
     return ret;
 }

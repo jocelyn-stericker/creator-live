@@ -25,20 +25,24 @@ class LiveApplication : public QApplication
     friend class LiveWindow;
 
     QWidget* _mainWindow;
+    bool _insert;
 //    QWidget* _central;
 //    Ribbon* _ribbon;
 //    QList<Vst*> _vsts;
 public:
     explicit LiveApplication(int& argc, char **argv);
     QWidget* mainWindow() { return _mainWindow; }
+    bool insertMode() { return _insert; }
 //    const Ribbon* constRibbon() { return _ribbon; }
 //    Ribbon* ribbon() { return _ribbon; }
 //    void addVst(Vst* vst);
 
 signals:
+    void insertModeChanged(bool);
 
 public slots:
     void init();
+    void setInsert(bool b) { _insert = b; emit insertModeChanged(b); }
 
 private:
     LiveApplication(const LiveApplication&);

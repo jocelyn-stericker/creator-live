@@ -24,6 +24,9 @@ list (APPEND creator-live_cpp
     liveapplication.cpp
     audiooutputchooser.cpp
     midioutputchooser.cpp
+    insertbutton.cpp
+    insertapp.cpp
+    windowwidget.cpp
 )
 
 list (APPEND creator-live_h
@@ -40,6 +43,8 @@ list (APPEND creator-live_h_qobject
     liveapplication.h
     audiooutputchooser.h
     midioutputchooser.h
+    insertbutton.h
+    insertapp.h
 )
 
 list (APPEND creator-live_ui
@@ -83,6 +88,8 @@ add_definitions(-Wall)
 
 set(CMAKE_AUTOMOC ON)
 find_package (Qt5Widgets REQUIRED)
+find_package (Qt5Qml REQUIRED)
+find_package (Qt5Quick REQUIRED)
 
 include_directories (
     ${CMAKE_BINARY_DIR}/creator-live
@@ -137,4 +144,4 @@ target_link_libraries (creator-live
     C:/QtSDK/Desktop/Qt/4.8.1/msvc2010/bin/portmidi.lib
 )
 endif (WIN32)
-qt5_use_modules(creator-live Widgets)
+qt5_use_modules(creator-live Widgets Qml Quick)
