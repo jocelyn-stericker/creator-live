@@ -83,6 +83,7 @@ target_link_libraries (livesf2
     ${QT_LIBRARIES}
 )
 else (WIN32)
-    target_link_libraries (livesf2 fluidsynth )
+    target_link_libraries (livesf2 c:/qt5-pb/lib/libfluidsynth.so )
+    link_directories( /c/qt5-pb/lib )
 endif (WIN32)
 qt5_use_modules(livesf2 Widgets)

@@ -406,11 +406,11 @@ void AudioOut::aIn(const float *data, int chan, live::Object* ) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // The following is profoundly boring. It works, so don't change it.
 
-QStringList jackGetPorts(bool, bool) { Q_ASSERT(0); return QStringList(); }
-QStringList jackGetInputPorts() { Q_ASSERT(0); return QStringList(); }
-QStringList jackGetOutputPorts() { Q_ASSERT(0); return QStringList(); }
-void jackConnectPorts(QString, QString, bool) { Q_ASSERT(0); }
-void jackDisconnectPorts(QString, QString) { Q_ASSERT(0); }
+QStringList jackGetPorts(bool, bool) { return QStringList(); }
+QStringList jackGetInputPorts() { return QStringList(); }
+QStringList jackGetOutputPorts() { return QStringList(); }
+void jackConnectPorts(QString, QString, bool) { }
+void jackDisconnectPorts(QString, QString) { }
 
 LIBLIVECORESHARED_EXPORT SecretAudio* SecretAudio::singleton = 0;
 
@@ -501,7 +501,6 @@ LIBLIVECORESHARED_EXPORT void live::audio::resetMappings() {
 }
 
 void live_private::SecretAudio::jack_disconnect(QString readPort,QString writePort) {
-    Q_ASSERT(0);
 }
 
 bool live_private::SecretAudio::resetMappings() {
@@ -513,17 +512,14 @@ LIBLIVECORESHARED_EXPORT void live::audio::addMapping(QStringList mapping, bool 
 }
 
 bool live_private::SecretAudio::addMapping(QStringList, bool, QString) {
-    Q_ASSERT(0);
     return false;
 }
 
 LIBLIVECORESHARED_EXPORT int live::audio::mappingCount(bool) {
     return 0;
-    Q_ASSERT(0);
 }
 
 int live_private::SecretAudio::mappingCount(bool) {
-    Q_ASSERT(0);
     return 0;
 }
 

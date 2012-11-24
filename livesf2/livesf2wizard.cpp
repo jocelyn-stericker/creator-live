@@ -76,7 +76,7 @@ void LiveSF2Wizard::next() {
 #ifndef __QNX__
         qApp->applicationDirPath()+"/../plugins/";
 #else
-#error FIXME
+	qApp->applicationDirPath()+"/plugins/";
 #endif
         if (l < 3)
             s_out = live::ObjectPtr(new Soundfont(dir + "grand.sf2"));

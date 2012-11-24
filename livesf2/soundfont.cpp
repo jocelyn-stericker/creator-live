@@ -51,7 +51,9 @@ void Soundfont::mIn(const live::Event* data, live::ObjectChain *p) {
         setProgram(data->chan(), data->data1);
         break;
     case live::Event::CHANNEL_AFTERTOUCH:
+    #ifndef __QNX__
         fluid_synth_channel_pressure(s_synth, data->chan(), data->data1);
+    #endif
         break;
     case live::Event::PITCH_WHEEL:
         fluid_synth_pitch_bend(s_synth, data->chan(), data->data1);
