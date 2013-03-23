@@ -44,6 +44,8 @@ if (QNX)
 else (QNX)
 endif (QNX)
 
+file (INSTALL app_pitch.png DESTINATION ${CMAKE_BINARY_DIR}/plugins/icons)  
+
 ########################## BUILD! ##########################
 
 add_definitions(-Wall)

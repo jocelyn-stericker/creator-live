@@ -82,6 +82,9 @@ if (NOT WIN32)
 endif (NOT WIN32)
 endif (QNX)
 
+########################## FILES! ##########################
+file (INSTALL insertApp.qml DESTINATION ${CMAKE_BINARY_DIR}/plugins)
+
 ########################## BUILD! ##########################
 
 add_definitions(-Wall)

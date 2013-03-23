@@ -37,11 +37,11 @@ Rectangle {
 
     ListModel {
         id: appModel;
-        ListElement { intid: "SEQUENCER"; xtext: "Sequencer"; xpng: "../app-sequencer/Icons/app_seq.png"; }
-        ListElement { intid: "LOOPER"; xtext: "Looper"; xpng: "../app-sequencer/Icons/app_loop.png"; }
-        ListElement { intid: "SAMPLER"; xtext: "Sampler"; xpng: "../app-sampler/app_sampler.png"; }
-        ListElement { intid:" Mixer"; xtext: "Mixer"; xpng: "../app-mixer/app_mixer.png"}
-        ListElement { intid: "Pitch Shift"; xtext: "Pitch Shift"; xpng: "../app-pitch/app_pitch.png"; }
+        ListElement { intid: "SEQUENCER"; xtext: "Sequencer"; xpng: "icons/app_seq.png"; }
+        ListElement { intid: "LOOPER"; xtext: "Looper"; xpng: "icons/app_loop.png"; }
+        ListElement { intid: "SAMPLER"; xtext: "Sampler"; xpng: "icons/app_sampler.png"; }
+        ListElement { intid:" Mixer"; xtext: "Mixer"; xpng: "icons/app_mixer.png"}
+        ListElement { intid: "Pitch Shift"; xtext: "Pitch Shift"; xpng: "icons/app_pitch.png"; }
         ListElement { intid: "Reverb"; xtext: "Reverb" }
         ListElement { intid: "Flanger"; xtext: "Flanger" }
         ListElement { intid: "Phaser"; xtext: "Phaser" }

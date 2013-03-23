@@ -10,6 +10,7 @@
 ########################## COMMON ##########################
 
 cmake_minimum_required(VERSION 2.8)
+enable_testing()
 
 list (APPEND test_cpp
     liblivecore.cpp
@@ -87,4 +88,16 @@ endif (WIN32)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 qt5_use_modules(test Widgets)
 
-add_custom_command(TARGET test POST_BUILD COMMAND test)
+add_custom_command(TARGET test POST_BUILD DEPENDS test COMMAND test)
+
+add_custom_target(run_test)
+macro(run_test test_target depend2)
+  add_custom_target(${test_target}_runtest
+      COMMAND ${test_target} #cmake 2.6 required
+      DEPENDS ${depend2}
+      WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
+  add_dependencies(run_test ${test_target}_runtest)
+endmacro()
+
+run_test(test test)
+run_test(pluginTest test_runtest)

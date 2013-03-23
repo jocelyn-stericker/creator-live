@@ -28,6 +28,8 @@ using namespace live_widgets;
 
 int main(int argc, char *argv[])
 {
+    qDebug() << "Todo: Implement Plugin Tester";
+    return 0;
     QApplication a(argc, argv);
 
     QString plugin;

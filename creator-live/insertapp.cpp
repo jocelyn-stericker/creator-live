@@ -3,14 +3,24 @@
 #include <Qt>
 #include <QScreen>
 #include <QQmlContext>
+#include <QDir>
+
+QList<InsertApp*> InsertApp::s_identity;
 
 InsertApp::InsertApp()
 {
+    s_identity.push_back(this);
     setTitle("Creator Live");
     rootContext()->setContextProperty("selector", this);
     setResizeMode(SizeRootObjectToView);
-    setSource(QUrl("insertApp.qml"));
+
+    QDir pluginsDir = QDir(qApp->applicationDirPath()+"/../plugins");
+    setSource(QUrl(pluginsDir.absolutePath() + "/insertApp.qml"));
     setFlags(Qt::Popup);
     setGeometry(0, 50, qGuiApp->primaryScreen()->geometry().width(), qGuiApp->primaryScreen()->QScreen::geometry().height() - 100 );
     show();
+}
+
+InsertApp::~InsertApp() {
+    s_identity.removeOne(this);
 }

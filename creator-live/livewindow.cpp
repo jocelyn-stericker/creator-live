@@ -10,6 +10,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include "livewindow.h"
 #include "ui_livewindow.h"
 
+#include "insertapp.h"
 #include "trackgroupaudio.h"
 #include "trackgroupmidi.h"
 #include "settingslinux.h"
@@ -337,6 +338,7 @@ void LiveWindow::closeEvent(QCloseEvent *e)
 
 bool LiveWindow::askForClose(QString title,QString question)
 {
+    InsertApp::quit();
     return (QMessageBox::question(this,title,
                              "Everything since you last saved will be lost. "+question,
                              QMessageBox::Yes, QMessageBox::No)==QMessageBox::Yes);
