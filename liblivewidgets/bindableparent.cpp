@@ -12,16 +12,16 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 QList<live_widgets::BindableParent*> live_widgets::BindableParent::_u;
 QList<QObject*> live_widgets::BindableParent::_u_qo;
-QStringList live_widgets::BindableParent::s_classBlacklist;
-QStringList live_widgets::BindableParent::s_objectnameBlacklist;
+QStringList live_widgets::BindableParent::m_classBlacklist;
+QStringList live_widgets::BindableParent::m_objectnameBlacklist;
 
 void live_widgets::BindableParent::fillBlacklist() {
-    s_classBlacklist<<"QTabBar"<<"QSpinBox"<<"QComboBox"<<"QListWidget"<<"QGraphicsView";
-    s_objectnameBlacklist<<"qt_scrollarea_vcontainer"<<"qt_scrollarea_hcontainer";
+    m_classBlacklist<<"QTabBar"<<"QSpinBox"<<"QComboBox"<<"QListWidget"<<"QGraphicsView";
+    m_objectnameBlacklist<<"qt_scrollarea_vcontainer"<<"qt_scrollarea_hcontainer";
 }
 
 void live_widgets::BindableParent::loadBindings(const QByteArray&ba) {
-    if (s_classBlacklist.isEmpty()) {
+    if (m_classBlacklist.isEmpty()) {
         fillBlacklist();
     }
     QDataStream ret(ba);
@@ -37,7 +37,7 @@ void live_widgets::BindableParent::loadBindings(const QByteArray&ba) {
     QObjectList objs;
     objs<<qo_this->children();
     for (int i=0;i<objs.size();i++) {
-        if (s_classBlacklist.contains(objs[i]->metaObject()->className())||s_objectnameBlacklist.contains(objs[i]->objectName())) {
+        if (m_classBlacklist.contains(objs[i]->metaObject()->className())||m_objectnameBlacklist.contains(objs[i]->objectName())) {
             continue;
         }
         if (!objs[i]->property("bindableParentObject").toBool()) {
@@ -156,7 +156,7 @@ void live_widgets::BindableParent::loadBindings(const QByteArray&ba) {
 }
 
 QByteArray live_widgets::BindableParent::saveBindings() {
-    if (s_classBlacklist.isEmpty()) {
+    if (m_classBlacklist.isEmpty()) {
         fillBlacklist();
     }
     QByteArray ba;
@@ -169,7 +169,7 @@ QByteArray live_widgets::BindableParent::saveBindings() {
     objs<<qo_this->children();
     for (int i=0;i<objs.size();i++) {
         if (!objs[i]->property("bindableParentObject").toBool()) {
-            if (s_classBlacklist.contains(objs[i]->metaObject()->className())||s_objectnameBlacklist.contains(objs[i]->objectName())) {
+            if (m_classBlacklist.contains(objs[i]->metaObject()->className())||m_objectnameBlacklist.contains(objs[i]->objectName())) {
                 continue;
             }
             objs<<objs[i]->children();
@@ -221,7 +221,7 @@ QByteArray live_widgets::BindableParent::saveBindings() {
                     ret<<(qint32)live::MidiBinding::universe[i]->type;
                     MidiBindingQt* mbq=qobject_cast<MidiBindingQt*>(live::MidiBinding::universe[i].data());
                     Q_ASSERT(mbq);
-                    ret<<(bool)mbq->s_quantized;
+                    ret<<(bool)mbq->m_quantized;
                     ret<<(QString)live::MidiBinding::universe[i]->data;
                     ret<<(qint32)live::MidiBinding::universe[i]->key;
                     ret<<(QString)live::MidiBinding::universe[i]->obj->name();

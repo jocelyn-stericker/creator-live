@@ -16,7 +16,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 live_widgets::DragLabel::DragLabel(QWidget *parent) :
     QLabel(parent),
-    s_drag(0) {
+    m_drag(0) {
 //    setAutoFillBackground(true);
 //    setFrameShape(QFrame::Panel);
 //    setFrameShadow(QFrame::Raised);
@@ -30,8 +30,8 @@ void live_widgets::DragLabel::mousePressEvent(QMouseEvent *e) {
 }
 
 void live_widgets::DragLabel::drag() {
-    if (s_drag) return;
-    s_drag = new QDrag(this);
+    if (m_drag) return;
+    m_drag = new QDrag(this);
     QMimeData *mimeData = new QMimeData;
 
     if (property("dragID").isNull()) {
@@ -41,10 +41,10 @@ void live_widgets::DragLabel::drag() {
     }
 
     if (pixmap()) {
-        s_drag->setPixmap(*pixmap());
+        m_drag->setPixmap(*pixmap());
     }
 
-    s_drag->setMimeData(mimeData);
-    s_drag->exec(Qt::CopyAction);
-    s_drag=0;
+    m_drag->setMimeData(mimeData);
+    m_drag->exec(Qt::CopyAction);
+    m_drag=0;
 }

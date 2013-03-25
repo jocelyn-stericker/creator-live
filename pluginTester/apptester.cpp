@@ -15,8 +15,8 @@ using namespace live_widgets;
 
 AppTester::AppTester(live::AppInterface *a, QWidget *parent) :
     QWidget(parent),
-    s_app(a->newBackend()),
-    s_frame(qobject_cast<AppFrame*>(a->newFrontend(s_app))),
+    m_app(a->newBackend()),
+    m_frame(qobject_cast<AppFrame*>(a->newFrontend(m_app))),
     ui(new Ui::AppTester)
 {
     ui->setupUi(this);
@@ -25,7 +25,7 @@ AppTester::AppTester(live::AppInterface *a, QWidget *parent) :
     QHBoxLayout* lay=new QHBoxLayout();
     lay->setContentsMargins(0,0,0,0);
     ui->widget_appHolder->setLayout(lay);
-    lay->addWidget(s_frame);
+    lay->addWidget(m_frame);
 
     QList<ObjectPtr> ins=object::get(MidiOnly|InputOnly)+object::get(AudioOnly|InputOnly|NoRefresh);
     QStringList insStr;
@@ -48,16 +48,16 @@ AppTester::AppTester(live::AppInterface *a, QWidget *parent) :
 
 void AppTester::settingsChangedEvent()
 {
-    for (int i = 0; i < s_connections.size(); ++i) {
-        if (s_connections[i].a == s_in && s_connections[i].b == s_app)
-            s_connections.removeAt(i--);
-        if (s_connections[i].a == s_app && s_connections[i].b == s_out)
-            s_connections.removeAt(i--);
+    for (int i = 0; i < m_connections.size(); ++i) {
+        if (m_connections[i].a == m_in && m_connections[i].b == m_app)
+            m_connections.removeAt(i--);
+        if (m_connections[i].a == m_app && m_connections[i].b == m_out)
+            m_connections.removeAt(i--);
     }
-    s_in=object::request(ui->comboBox_input->currentText(),InputOnly|NoRefresh);
-    s_out=object::request(ui->comboBox_output->currentText(),OutputOnly|NoRefresh);
-    s_connections.push_back(Connection(s_in, s_app, live::HybridConnection));
-    s_connections.push_back(Connection(s_app, s_out, live::HybridConnection));
+    m_in=object::request(ui->comboBox_input->currentText(),InputOnly|NoRefresh);
+    m_out=object::request(ui->comboBox_output->currentText(),OutputOnly|NoRefresh);
+    m_connections.push_back(Connection(m_in, m_app, live::HybridConnection));
+    m_connections.push_back(Connection(m_app, m_out, live::HybridConnection));
 }
 
 AppTester::~AppTester()

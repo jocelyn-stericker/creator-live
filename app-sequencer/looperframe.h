@@ -63,7 +63,7 @@ public:
     LooperCreator()
     {
     }
-    QString name() { return "LOOPER"; }
+    QString name() { return "ca.nettek.live.looper"; }
     QString description() { return "Record something, and then something on top of that..."; }
     live::ObjectPtr newBackend() { return new LooperApp(); }
     live::ObjectPtr loadBackend(const QByteArray &str) {

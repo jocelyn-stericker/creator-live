@@ -17,16 +17,16 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 class SamplerDJ : public QObject, public live::Object, public live_widgets::BindableParent
 {
     Q_OBJECT
-    static int s_lastId;
-    live::MidiTrack* s_midiTracks[8];            /*003*/
-    live::AudioTrack* s_audioTracks[8];          /*004*/
-    QMap<live::ObjectPtr,int*> s_customBindings;  /*008*/
-    int s_bindingMode;
-    bool s_record;                          /*006*/
-    bool s_play;                            /*^^^*/
-    bool s_multi;                           /*007*/
-    int s_id;                               /*005*/
-    QList<live::Connection> s_connections;
+    static int m_lastId;
+    live::MidiTrack* m_midiTracks[8];            /*003*/
+    live::AudioTrack* m_audioTracks[8];          /*004*/
+    QMap<live::ObjectPtr,int*> m_customBindings;  /*008*/
+    int m_bindingMode;
+    bool m_record;                          /*006*/
+    bool m_play;                            /*^^^*/
+    bool m_multi;                           /*007*/
+    int m_id;                               /*005*/
+    QList<live::Connection> m_connections;
 public:
     LIVE_HYBRID
     LIVE_EFFECT

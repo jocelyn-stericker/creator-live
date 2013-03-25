@@ -37,17 +37,17 @@ Rectangle {
 
     ListModel {
         id: appModel;
-        ListElement { intid: "SEQUENCER"; xtext: "Sequencer"; xpng: "icons/app_seq.png"; }
-        ListElement { intid: "LOOPER"; xtext: "Looper"; xpng: "icons/app_loop.png"; }
-        ListElement { intid: "SAMPLER"; xtext: "Sampler"; xpng: "icons/app_sampler.png"; }
-        ListElement { intid:" Mixer"; xtext: "Mixer"; xpng: "icons/app_mixer.png"}
-        ListElement { intid: "Pitch Shift"; xtext: "Pitch Shift"; xpng: "icons/app_pitch.png"; }
-        ListElement { intid: "Reverb"; xtext: "Reverb" }
-        ListElement { intid: "Flanger"; xtext: "Flanger" }
-        ListElement { intid: "Phaser"; xtext: "Phaser" }
-        ListElement { intid: "Filter"; xtext: "Filter"}
-        ListElement { intid: "BPM Detection"; xtext: "BPM"}
-        ListElement { intid: "VST"; xtext: "VST Effect"}
+        ListElement { intid: "ca.nettek.live.sequencer"; xtext: "Sequencer"; xpng: "icons/app_seq.png"; }
+        ListElement { intid: "ca.nettek.live.looper"; xtext: "Looper"; xpng: "icons/app_loop.png"; }
+        ListElement { intid: "ca.nettek.live.sampler"; xtext: "Sampler"; xpng: "icons/app_sampler.png"; }
+        ListElement { intid: "ca.nettek.live.mixer"; xtext: "Mixer"; xpng: "icons/app_mixer.png"}
+        ListElement { intid: "ca.nettek.live.pitch"; xtext: "Pitch Shift"; xpng: "icons/app_pitch.png"; }
+        ListElement { intid: "ca.nettek.live.reverb"; xtext: "Reverb" }
+        ListElement { intid: "ca.nettek.live.flanger"; xtext: "Flanger" }
+        ListElement { intid: "ca.nettek.live.phaser"; xtext: "Phaser" }
+        ListElement { intid: "ca.nettek.live.filter"; xtext: "Filter"}
+        ListElement { intid: "ca.nettek.live.bpm"; xtext: "BPM"}
+        ListElement { intid: "ca.nettek.live.vst"; xtext: "VST Effect"}
     }
 
     Rectangle {

@@ -34,7 +34,7 @@ public slots:
     void updateObjects();
 
 private:
-    Ui::AudioOutputChooser *s_ui;
+    Ui::AudioOutputChooser *m_ui;
 
 private:
     Q_DISABLE_COPY(AudioOutputChooser)

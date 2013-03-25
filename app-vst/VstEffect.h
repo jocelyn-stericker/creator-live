@@ -15,11 +15,11 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 class VstEffectApp : public QObject, public LObject
 {
     Q_OBJECT
-    Vst* s_internal;
-    int s_id;               /*003*/
-    bool s_isInit;          /*004*/
-    QString s_filename;     /*005*/
-    static int s_lastId;
+    Vst*m_internal;
+    intm_id;               /*003*/
+    boolm_isInit;          /*004*/
+    QStringm_filename;     /*005*/
+    static intm_lastId;
 public:
     LIVE_HYBRID
     LIVE_EFFECT

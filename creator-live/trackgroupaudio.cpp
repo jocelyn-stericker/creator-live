@@ -15,7 +15,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 #include <live_widgets/pushbutton.h>
 
-int TrackGroup::s_lastId = -1;
+int TrackGroup::m_lastId = -1;
 using namespace live;
 using namespace live_widgets;
 
@@ -24,8 +24,8 @@ TrackGroupAudio::TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent, bo
   , mainLayout(new QHBoxLayout)
    {mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(3);
-    s_hathorView = new VScrollContainer(0);
-    s_hathorView->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+    m_hathorView = new VScrollContainer(0);
+    m_hathorView->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
     Q_ASSERT(instLabel);
 
@@ -41,23 +41,23 @@ TrackGroupAudio::TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent, bo
     mainLayout->addWidget(instLabel,0, Qt::AlignTop | Qt::AlignLeft);
     instLabel->setObjectName("instLabel");
 
-    s_hathorView->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
+    m_hathorView->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
     setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
     if (!empty)
-        s_hathorView->push_back(new Track(c_input,audio::null(2)));
+        m_hathorView->push_back(new Track(c_input,audio::null(2)));
 
-    s_hathorView->compact = 1;
-    s_hathorView->updateItems();
+    m_hathorView->compact = 1;
+    m_hathorView->updateItems();
 
-    mainLayout->addWidget(s_hathorView);
-    s_hathorView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    mainLayout->addWidget(m_hathorView);
+    m_hathorView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     this->setLayout( mainLayout );
 
     binding::addWidget(this);
 
     mainLayout->setObjectName("mainLayout");
-    s_hathorView->setObjectName("s_hathorView");
+    m_hathorView->setObjectName("m_hathorView");
     if (!empty) {
         AudioOutputChooser* aoo=new AudioOutputChooser(this);
         ui_selectWidget = aoo;
@@ -68,14 +68,14 @@ TrackGroupAudio::TrackGroupAudio(live::ObjectPtr  c_input, QWidget* c_parent, bo
         connect(aoo, SIGNAL(objectChosen(live::ObjectPtr)), this, SLOT(clearSelect()));
     } else {
         clearSelect();
-        s_hathorView->show();
+        m_hathorView->show();
         instLabel->enableAddTrackButton();
     }
-    mainLayout->addWidget(s_hathorView);
+    mainLayout->addWidget(m_hathorView);
     setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     adjustSize();
 
-    if (!empty) s_hathorView->hide();
+    if (!empty) m_hathorView->hide();
 
 }
 

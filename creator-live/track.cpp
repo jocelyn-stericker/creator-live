@@ -21,30 +21,30 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 using namespace live;
 using namespace live_widgets;
 
-int Track::s_lastId=-1;
+int Track::m_lastId=-1;
 
 Track::Track(live::ObjectPtr cinput, live::ObjectPtr coutput)
   : BindableParent(this)
-  , s_sel(0)
-  , s_th(new TrackHint)
-  , s_ambition(*(new Ambition(cinput,ObjectChain(),coutput)))
-  , s_appUi_()
+  , m_sel(0)
+  , m_th(new TrackHint)
+  , m_ambition(*(new Ambition(cinput,ObjectChain(),coutput)))
+  , m_appUi_()
   , x_me(QMutex::Recursive)
-  , s_id(++s_lastId)
-  , s_busy(0)
+  , m_id(++m_lastId)
+  , m_busy(0)
   , ui_outputChooser(0)
   , ui_chainWidget(new ChainTypeWidget(this))
   { initialize(); }
 
 Track::Track(Ambition* bp)
   : BindableParent(this)
-  , s_sel(0)
-  , s_th(0)
-  , s_ambition(*bp)
-  , s_appUi_()
+  , m_sel(0)
+  , m_th(0)
+  , m_ambition(*bp)
+  , m_appUi_()
   , x_me(QMutex::Recursive)
-  , s_id(-1)
-  , s_busy(0)
+  , m_id(-1)
+  , m_busy(0)
   , ui_outputChooser(0)
   , ui_chainWidget(new ChainTypeWidget(this))
   { initialize(); }
@@ -53,14 +53,14 @@ void Track::initialize() {
     ui_chainWidget->setGeometry(0,0,width(),3);
     ui_chainWidget->setFixedHeight(2);
     setAcceptDrops(1);
-    if(s_th) s_th->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    if(m_th) m_th->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     //    ui_midiSelect->hide();
 
     setFixedHeight(350);
     //    connect(ui_midiSelect,SIGNAL(indexSet(int)),this,SLOT(selectOutput(int)));
     binding::addWidget(this);
 
-    setObjectName("Track_"+QString::number(s_id));
+    setObjectName("Track_"+QString::number(m_id));
     setGeometry(geometry());
 
     connect(liveApp, SIGNAL(insertModeChanged(bool)), this, SLOT(makeUiPipeline()));
@@ -69,18 +69,18 @@ void Track::initialize() {
 Track::~Track() {
     live_mutex(x_me) {
         delete ui_outputChooser;
-        foreach(QWidget* a,s_appUi_) {
+        foreach(QWidget* a,m_appUi_) {
             delete a;
         }
 
-        delete &s_ambition;
+        delete &m_ambition;
     }
 }
 
 void Track::resizeEvent(QResizeEvent *e) {
     live_mutex(x_me) {
-        if (s_th)
-            s_th->setGeometry(0, 0, width(), height());
+        if (m_th)
+            m_th->setGeometry(0, 0, width(), height());
         clearUiPipeline();
         makeUiPipeline();
         remakeChainWidget();
@@ -94,8 +94,8 @@ void Track::remakeChainWidget() {
     kill_kitten {
         ui_chainWidget->reset();
         int i=0;
-        foreach(QWidget* ui,s_appUi_) {
-            ui_chainWidget->setBack(ui->x()+ui->width(),s_ambition.at(i)->processingMidi(),s_ambition.at(i)->processingAudio());
+        foreach(QWidget* ui,m_appUi_) {
+            ui_chainWidget->setBack(ui->x()+ui->width(),m_ambition.at(i)->processingMidi(),m_ambition.at(i)->processingAudio());
             i++;
         }
     }
@@ -112,21 +112,21 @@ void Track::makeUiPipeline() {
         QList<QWidget*> items;
 
         int l = 0;
-        for(int i = 0; i <= s_appUi_.size(); ++i) {
+        for(int i = 0; i <= m_appUi_.size(); ++i) {
             if (liveApp->insertMode()) {
-                if (l >= s_inserts.size()) {
-                    s_inserts.push_back(new InsertButton(this));
-                    connect(s_inserts.back(), SIGNAL(pressed()), this, SLOT(showInsertApps()));
+                if (l >= m_inserts.size()) {
+                    m_inserts.push_back(new InsertButton(this));
+                    connect(m_inserts.back(), SIGNAL(pressed()), this, SLOT(showInsertApps()));
                 }
-                items.push_back(s_inserts[l++]);
+                items.push_back(m_inserts[l++]);
             }
-            if (i < s_appUi_.size()) items.push_back(s_appUi_[i]);
+            if (i < m_appUi_.size()) items.push_back(m_appUi_[i]);
         }
-        for(;l < s_inserts.size(); ++l) {
-            s_inserts[l]->hide();
+        for(;l < m_inserts.size(); ++l) {
+            m_inserts[l]->hide();
         }
 
-        s_busy = 1;
+        m_busy = 1;
         int remCount = items.count();
         int* sizes = new int[items.count()];
         for (int i = 0; i < items.count(); ++i) {
@@ -136,7 +136,7 @@ void Track::makeUiPipeline() {
         for (int i = 0; i < items.count(); ++i) {
             qDebug() << "Item" << i << items[i];
             AppFrame* ui_af = qobject_cast<AppFrame*>(items[i]);
-            if ((!ui_af && s_appUi_.count()) || (ui_af && !ui_af->expanding())) {
+            if ((!ui_af && m_appUi_.count()) || (ui_af && !ui_af->expanding())) {
                 sizes[i] = (ui_af ? ui_af->getDesiredWidth() : 35);
                 sum += sizes[i];
                 --remCount;
@@ -166,14 +166,14 @@ void Track::makeUiPipeline() {
         }
         setGeometry(geometry());
         remakeChainWidget();
-        s_busy = 0;
+        m_busy = 0;
     }
 }
 
 void Track::dragEnterEvent(QDragEnterEvent *e) {
     live_mutex(x_me) {
         if(e->mimeData()->hasFormat("text/plain")&&app::appNames().contains(e->mimeData()->text())) {
-            if(e->mimeData()->text()!="FILTER"||s_ambition.inputIsMidiObject()) {
+            if(e->mimeData()->text()!="FILTER"||m_ambition.inputIsMidiObject()) {
                 qDebug() << "Accepting.";
                 e->acceptProposedAction();
             }
@@ -191,13 +191,13 @@ void Track::dropEvent(QDropEvent *e) {
             AppFrame* frontend = qobject_cast<AppFrame*>(app::newFrontend("SEQUENCER",backend));
             int x=e->pos().x();
             int pos=0;
-            if(s_appUi_.size()) {
+            if(m_appUi_.size()) {
                 int lastHalfX = static_cast<int> (
-                            static_cast<float>(s_appUi_[0]->geometry().x())+0.5*static_cast<float>(s_appUi_[0]->geometry().width())
+                            static_cast<float>(m_appUi_[0]->geometry().x())+0.5*static_cast<float>(m_appUi_[0]->geometry().width())
                         );
-                for(int i=1;i<s_ambition.chainSize();i++) {
+                for(int i=1;i<m_ambition.chainSize();i++) {
                     int nextHalfX = static_cast<int> (
-                            static_cast<float>(s_appUi_[i]->geometry().x())+0.5*static_cast<float>(s_appUi_[i]->geometry().width())
+                            static_cast<float>(m_appUi_[i]->geometry().x())+0.5*static_cast<float>(m_appUi_[i]->geometry().width())
                         );
                     if(lastHalfX<=x&&x<=nextHalfX) {
                         pos=i;
@@ -208,8 +208,8 @@ void Track::dropEvent(QDropEvent *e) {
                         pos=i+1;
                     }
                 }
-                if(s_appUi_.size()==1&&x>=lastHalfX) {
-                    pos=s_appUi_.size();
+                if(m_appUi_.size()==1&&x>=lastHalfX) {
+                    pos=m_appUi_.size();
                 }
             }
             addApp(pos,frontend,backend);
@@ -229,13 +229,13 @@ void Track::dropEvent(QDropEvent *e) {
             AppFrame* frontend = qobject_cast<AppFrame*>(app::newFrontend(e->mimeData()->text(),backend));
             int x=e->pos().x();
             int pos=0;
-            if(s_appUi_.size()) {
+            if(m_appUi_.size()) {
                 int lastHalfX = static_cast<int> (
-                        static_cast<float>(s_appUi_[0]->geometry().x()) + 0.5*static_cast<float>(s_appUi_[0]->geometry().width())
+                        static_cast<float>(m_appUi_[0]->geometry().x()) + 0.5*static_cast<float>(m_appUi_[0]->geometry().width())
                     );
-                for(int i=1;i<s_ambition.chainSize();i++) {
+                for(int i=1;i<m_ambition.chainSize();i++) {
                     int nextHalfX = static_cast<int> (
-                        static_cast<float>(s_appUi_[i]->geometry().x()) + 0.5*static_cast<float>(s_appUi_[i]->geometry().width())
+                        static_cast<float>(m_appUi_[i]->geometry().x()) + 0.5*static_cast<float>(m_appUi_[i]->geometry().width())
                     );
                     if(lastHalfX<=x&&x<=nextHalfX) {
                         pos=i;
@@ -246,8 +246,8 @@ void Track::dropEvent(QDropEvent *e) {
                         pos=i+1;
                     }
                 }
-                if(s_appUi_.size()==1&&x>=lastHalfX) {
-                    pos=s_appUi_.size();
+                if(m_appUi_.size()==1&&x>=lastHalfX) {
+                    pos=m_appUi_.size();
                 }
             }
             addApp(pos,frontend,backend);
@@ -258,16 +258,16 @@ void Track::dropEvent(QDropEvent *e) {
 }
 
 void Track::setOutput(live::ObjectPtr output,live::ObjectPtr loopback) {
-    s_ambition.setOutput(output);
-    s_ambition.setLoopbackOut(loopback);
+    m_ambition.setOutput(output);
+    m_ambition.setLoopbackOut(loopback);
 }
 
 QString Track::outputName() {
-    return s_ambition.outputName();
+    return m_ambition.outputName();
 }
 
 void Track::setInput(live::ObjectPtr input) {
-    s_ambition.setInput(input);
+    m_ambition.setInput(input);
 }
 
 void Track::addWidget(int, QWidget *) {
@@ -275,12 +275,12 @@ void Track::addWidget(int, QWidget *) {
 }
 
 void Track::addApp(int i,AppFrame* appUi,live::ObjectPtr app) {
-    if(s_th) {
-        s_th->deleteLater();
-        s_th=0;
+    if(m_th) {
+        m_th->deleteLater();
+        m_th=0;
     }
     if(app.valid()) {
-        s_ambition.insert(i,app);
+        m_ambition.insert(i,app);
     }
     connect(appUi, SIGNAL(desiredWidthChanged()), this, SLOT(updateGeometriesIfNeeded()));
 
@@ -291,7 +291,7 @@ void Track::addApp(int i,AppFrame* appUi,live::ObjectPtr app) {
     live_mutex(x_me) {
         clearUiPipeline();
         appUi->setParent(this);
-        s_appUi_.insert(i,appUi);
+        m_appUi_.insert(i,appUi);
         makeUiPipeline();
         update();
     }
@@ -301,21 +301,21 @@ void Track::delApp(int i) {
     live_mutex(x_me) {
         //ONLY CALLED FROM logic_delApp. Do not actually delete app.
 
-        s_ambition.removeFromChain(i);
+        m_ambition.removeFromChain(i);
 
         clearUiPipeline();
-        s_appUi_.takeAt(i);
+        m_appUi_.takeAt(i);
         makeUiPipeline();
     }
 }
 
 void Track::outputSelection() {
     live_mutex(x_me) {
-        if(s_ambition.inputIsAudioObject()) {
+        if(m_ambition.inputIsAudioObject()) {
             QStringList a;
             a<<object::get(AudioOnly|OutputOnly);
             bool ok;
-            QString ix=QInputDialog::getItem(this,"Select an output","Output:",a,a.indexOf(s_ambition.b_output.ref()),0,&ok);
+            QString ix=QInputDialog::getItem(this,"Select an output","Output:",a,a.indexOf(m_ambition.b_output.ref()),0,&ok);
             int i=a.indexOf(ix);
             if(ok) {
                 QList<live::ObjectPtr> x=object::get(AudioOnly|OutputOnly);
@@ -325,12 +325,12 @@ void Track::outputSelection() {
                     QMessageBox::warning(this,"Oops.","Something went wrong in trying to set the output. Sorry about that. Maybe try again?");
                 }
             }
-        } else if(s_ambition.inputIsMidiObject()) {
+        } else if(m_ambition.inputIsMidiObject()) {
             QStringList a;
             a<<object::get(MidiOnly|OutputOnly|Instrument);
             QStringList out=a;
             bool ok;
-            QString ix=QInputDialog::getItem(this,"Select an output","Output:",out,out.indexOf(s_ambition.b_output),0,&ok);
+            QString ix=QInputDialog::getItem(this,"Select an output","Output:",out,out.indexOf(m_ambition.b_output),0,&ok);
             int i=out.indexOf(ix);
             if(ok) {
                 live::ObjectPtr out=object::get(MidiOnly|OutputOnly|Instrument|NoRefresh)[i];
@@ -339,7 +339,7 @@ void Track::outputSelection() {
                     QStringList a;
                     a<<object::get(AudioOnly|OutputOnly);
                     bool ok;
-                    QString ix=QInputDialog::getItem(this,"Select an output","This device supports audio out. Select one:",a,a.indexOf(s_ambition.b_output),0,&ok);
+                    QString ix=QInputDialog::getItem(this,"Select an output","This device supports audio out. Select one:",a,a.indexOf(m_ambition.b_output),0,&ok);
                     int i=a.indexOf(ix);
                     if(ok) {
                         if(i!=-1&&i<object::get(AudioOnly|OutputOnly|NoRefresh).size()&&
@@ -365,13 +365,13 @@ void Track::logic_appBack() {
     live_mutex(x_me) {
         AppFrame*x=qobject_cast<AppFrame*>(sender()->parent());
         Q_ASSERT(x);
-        for(int i=0;i<s_appUi_.size();i++) {
-            if(x==s_appUi_[i]) {
+        for(int i=0;i<m_appUi_.size();i++) {
+            if(x==m_appUi_[i]) {
                 if(!i) {
                     return;
                 } else {
-                    live::ObjectPtr oa=s_ambition.at(i);
-                    AppFrame* of=s_appUi_[i];
+                    live::ObjectPtr oa=m_ambition.at(i);
+                    AppFrame* of=m_appUi_[i];
                     delApp(i);
                     addApp(i-1,of,oa);
                 }
@@ -384,9 +384,9 @@ void Track::logic_appDel() {
     live_mutex(x_me) {
         AppFrame*x=qobject_cast<AppFrame*>(sender()->parent());
         Q_ASSERT(x);
-        for(int i=0;i<s_appUi_.size();i++) {
-            if(x==s_appUi_[i]) {
-                AppFrame* of=s_appUi_[i];
+        for(int i=0;i<m_appUi_.size();i++) {
+            if(x==m_appUi_[i]) {
+                AppFrame* of=m_appUi_[i];
                 delApp(i);
                 of->deleteLater();
             }
@@ -398,13 +398,13 @@ void Track::logic_appNext() {
     live_mutex(x_me) {
         AppFrame*x=qobject_cast<AppFrame*>(sender()->parent());
         Q_ASSERT(x);
-        for(int i=0;i<s_appUi_.size();i++) {
-            if(x==s_appUi_[i]) {
-                if(i+1==s_appUi_.size()) {
+        for(int i=0;i<m_appUi_.size();i++) {
+            if(x==m_appUi_[i]) {
+                if(i+1==m_appUi_.size()) {
                     return;
                 } else {
-                    live::ObjectPtr oa=s_ambition.at(i);
-                    AppFrame* of=s_appUi_[i];
+                    live::ObjectPtr oa=m_ambition.at(i);
+                    AppFrame* of=m_appUi_[i];
                     delApp(i);
                     addApp(i+1,of,oa);
                 }
@@ -415,10 +415,10 @@ void Track::logic_appNext() {
 
 void Track::updateGeometriesIfNeeded() {
     live_mutex(x_me) {
-        if (s_busy)
+        if (m_busy)
             return;
-        for (int i = 0; i < s_appUi_.size(); ++i) {
-            s_appUi_[i]->b_resizing = true;
+        for (int i = 0; i < m_appUi_.size(); ++i) {
+            m_appUi_[i]->b_resizing = true;
         }
         clearUiPipeline();
         makeUiPipeline();
@@ -429,8 +429,8 @@ void Track::updateGeometriesOrDie() {
     live_mutex(x_me) {
         clearUiPipeline();
         makeUiPipeline();
-        for (int i = 0; i < s_appUi_.size(); ++i) {
-            s_appUi_[i]->b_resizing = false;
+        for (int i = 0; i < m_appUi_.size(); ++i) {
+            m_appUi_[i]->b_resizing = false;
         }
     }
 }
@@ -440,8 +440,8 @@ int Track::getMaximumWidthFor(QWidget* w) {
 
         int sum = 0;
         int otherCount = 0;
-        for (int i = 0; i < s_appUi_.count(); ++i) {
-            AppFrame* ui = s_appUi_[i];
+        for (int i = 0; i < m_appUi_.count(); ++i) {
+            AppFrame* ui = m_appUi_[i];
 
             if (ui == w)
                 continue;
@@ -474,9 +474,9 @@ void Track::setOutputChooser(live_widgets::ObjectChooser* a) {
             return;
         }
 
-        ui_outputChooser->b_trackName = s_ambition.b_output;
+        ui_outputChooser->b_trackName = m_ambition.b_output;
 
-        connect(&s_ambition.b_output,
+        connect(&m_ambition.b_output,
                 SIGNAL(changeObserved(QString,QString)),
                 &ui_outputChooser->b_trackName,
                 SLOT(set(QString)));
@@ -495,7 +495,7 @@ void Track::setOutputChooser(live_widgets::ObjectChooser* a) {
 void Track::showInsertApps()
 {
     Q_ASSERT(parentWidget());
-    s_sel = dynamic_cast<InsertButton*>(sender());
+    m_sel = dynamic_cast<InsertButton*>(sender());
 
     InsertApp* t = new InsertApp();
     liveApp->mainWindow()->setEnabled(false);
@@ -512,17 +512,17 @@ void Track::onInsertInvoked(QString s)
 {
     liveApp->mainWindow()->setEnabled(true);
 
-    InsertButton* sel = s_sel;
-    s_sel = 0;
+    InsertButton* sel = m_sel;
+    m_sel = 0;
     if (!sel) return;
     live::ObjectPtr backend = app::newBackend(s);
     if (!backend) return;
     AppFrame* frontend = qobject_cast<AppFrame*>(app::newFrontend(s,backend));
     if (!frontend) return;
 
-    for (int i = 0; i < s_appUi_.size() + 1; ++i) {
-        Q_ASSERT(s_inserts.size() >= i);
-        if (s_inserts[i] == sel) {
+    for (int i = 0; i < m_appUi_.size() + 1; ++i) {
+        Q_ASSERT(m_inserts.size() >= i);
+        if (m_inserts[i] == sel) {
             addApp(i,frontend,backend);
             return;
         }

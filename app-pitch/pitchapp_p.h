@@ -20,11 +20,11 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 class PitchAppAudioR : public QObject, public live::Object {
     Q_OBJECT
-    soundtouch::SoundTouch* s_soundTouch;
-    int s_latency;
-    float* s_inCache;
-    float* s_outCache;
-    QAtomicInt s_shiftPitchAction;
+    soundtouch::SoundTouch* m_soundTouch;
+    int m_latency;
+    float* m_inCache;
+    float* m_outCache;
+    QAtomicInt m_shiftPitchAction;
 public:
     LIVE_HYBRID
     LIVE_EFFECT

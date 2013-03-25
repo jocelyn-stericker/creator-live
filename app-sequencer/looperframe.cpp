@@ -60,7 +60,7 @@ LooperFrame::LooperFrame(LooperApp*backend,AbstractTrack *parent) :
 
     syncState();
 
-    setObjectName("LooperFrame_"+QString::number(app.s_id_looper));
+    setObjectName("LooperFrame_"+QString::number(app.m_id_looper));
 
     connect(&b_growing, SIGNAL(changeObserved()), this, SIGNAL(desiredWidthChanged()));
     connect(&b_resizing, SIGNAL(changeObserved(bool,bool)), &graph, SLOT(setUpdatesDisabled(bool)));

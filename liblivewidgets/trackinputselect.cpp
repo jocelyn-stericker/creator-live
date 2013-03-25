@@ -20,7 +20,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 using namespace live_widgets;
 using namespace live;
 
-int TrackInputSelect::ss_inputId = 0;
+int TrackInputSelect::sm_inputId = 0;
 
 inline int octave(const int&mPitch)
 {
@@ -77,43 +77,43 @@ inline int whiteKeys(const int&a,const int&b)
 
 TrackInputSelect::TrackInputSelect(QWidget*parent, bool popout, bool allowMidi, bool allowAudio)
   : live_widgets::ObjectChooser(parent)
-  , s_selectedFilter(0)
-  , s_selectedMode(0)
-  , s_ui(new Ui_Frame)
-  , s_allowMidi(allowMidi)
-  , s_allowAudio(allowAudio)
-  , s_inputId(++ss_inputId)
+  , m_selectedFilter(0)
+  , m_selectedMode(0)
+  , m_ui(new Ui_Frame)
+  , m_allowMidi(allowMidi)
+  , m_allowAudio(allowAudio)
+  , m_inputId(++sm_inputId)
   , all()
   , b_trackName("No Input")
   , b_audio(allowAudio)
   , ui_instScene(new QGraphicsScene)
   , ui_instView(new QGraphicsView(ui_instScene))
-  { s_ui->setupUi(this);
+  { m_ui->setupUi(this);
 
     QVBoxLayout* ui_topLayout=new QVBoxLayout();
 
-    setMinimizedButton(s_ui->inputType);
-    setTopFrame(s_ui->inputType);
-    setBottomFrame(s_ui->missile);
+    setMinimizedButton(m_ui->inputType);
+    setTopFrame(m_ui->inputType);
+    setBottomFrame(m_ui->missile);
     setAlignedLeft(true);
 
-    connect(s_ui->input_combo,SIGNAL(clicked(QModelIndex)),s_ui->input_combo,SLOT(setCurrentIndex(QModelIndex)));
-    connect(s_ui->input_combo,SIGNAL(clicked(QModelIndex)),this,SLOT(activateSelected()));
-    connect(s_ui->input_combo,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(activateSelected()));
+    connect(m_ui->input_combo,SIGNAL(clicked(QModelIndex)),m_ui->input_combo,SLOT(setCurrentIndex(QModelIndex)));
+    connect(m_ui->input_combo,SIGNAL(clicked(QModelIndex)),this,SLOT(activateSelected()));
+    connect(m_ui->input_combo,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(activateSelected()));
 
-    connect(s_ui->inputNew, SIGNAL(clicked()), this, SIGNAL(newOutputRequested()));
+    connect(m_ui->inputNew, SIGNAL(clicked()), this, SIGNAL(newOutputRequested()));
 
     all.push_back("0");
     updateObjects();
 
     binding::addWidget(this);
 
-    connect(s_ui->inputType, SIGNAL(toggled(bool)), this, SLOT(setMaximized(bool)));
+    connect(m_ui->inputType, SIGNAL(toggled(bool)), this, SLOT(setMaximized(bool)));
 
-    s_ui->inputName->setText(b_trackName);
-    connect(&b_trackName, SIGNAL(changeObserved(QString,QString)), s_ui->inputName, SLOT(setText(QString)));
+    m_ui->inputName->setText(b_trackName);
+    connect(&b_trackName, SIGNAL(changeObserved(QString,QString)), m_ui->inputName, SLOT(setText(QString)));
     connect(&b_audio, SIGNAL(changeObserved(bool,bool)), this, SLOT(onSetAudio(bool)));
-    connect(&b_audio, SIGNAL(changeObserved(bool,bool)), s_ui->inputPaint, SLOT(setHidden(bool)));
+    connect(&b_audio, SIGNAL(changeObserved(bool,bool)), m_ui->inputPaint, SLOT(setHidden(bool)));
 
     setFixedWidth(55);
 
@@ -174,9 +174,9 @@ TrackInputSelect::TrackInputSelect(QWidget*parent, bool popout, bool allowMidi, 
     ui_instView->setMaximumHeight(300);  // and should be changed by the vertical key size and range.
 
     for (int i=0;i<5;i++) {
-        s_midiFilters[i]=new MidiFilter;
+        m_midiFilters[i]=new MidiFilter;
     }
-    song::current()->midiMaps.insert(s_inputId,s_midiFilters[0]);
+    song::current()->midiMaps.insert(m_inputId,m_midiFilters[0]);
 
     ui_instView->setObjectName("ui_instView");
     ui_instScene->setObjectName("ui_instScene");
@@ -186,12 +186,12 @@ TrackInputSelect::TrackInputSelect(QWidget*parent, bool popout, bool allowMidi, 
         ui_colourSelect[i]->setObjectName("ui_colourSelect"+QString::number(i));
     }
 
-    connect(s_ui->inputPaint, SIGNAL(toggled(bool)), this, SLOT(showKeyboard(bool)));
+    connect(m_ui->inputPaint, SIGNAL(toggled(bool)), this, SLOT(showKeyboard(bool)));
 
     ui_modeSelect[0]->setChecked(1);
     ui_colourSelect[0]->setChecked(1);
 
-    QHBoxLayout* hl = new QHBoxLayout(s_ui->piano);
+    QHBoxLayout* hl = new QHBoxLayout(m_ui->piano);
     hl->addLayout(ui_topLayout);
     hl->addWidget(ui_instView);
     ui_instView->show();
@@ -199,27 +199,27 @@ TrackInputSelect::TrackInputSelect(QWidget*parent, bool popout, bool allowMidi, 
 }
 
 void TrackInputSelect::setPopup(bool popout) {
-    s_ui->inputPaint->setVisible(!popout);
-    s_ui->inputNew->setVisible(!popout);
+    m_ui->inputPaint->setVisible(!popout);
+    m_ui->inputNew->setVisible(!popout);
     setMaximized(popout);
 }
 
 void TrackInputSelect::showAudio(bool b) {
-    s_allowAudio = b;
+    m_allowAudio = b;
     updateObjects();
 }
 
 void TrackInputSelect::showMidi(bool b) {
-    s_allowMidi = b;
+    m_allowMidi = b;
     updateObjects();
 }
 
 void TrackInputSelect::updateObjects() {
     int flags = InputOnly|NoRefresh;
 
-    if (s_allowAudio && !s_allowMidi)
+    if (m_allowAudio && !m_allowMidi)
         flags = flags|AudioOnly;
-    if (!s_allowAudio && s_allowMidi)
+    if (!m_allowAudio && m_allowMidi)
         flags = flags|MidiOnly;
 
     QList<ObjectPtr> list = object::get(flags);
@@ -228,40 +228,40 @@ void TrackInputSelect::updateObjects() {
     if (all!=v) {
         all.clear();
         all+=v;
-        s_ui->input_combo->clear();
-        s_ui->input_combo->insertItems(0,all);
+        m_ui->input_combo->clear();
+        m_ui->input_combo->insertItems(0,all);
     }
 }
 
 void TrackInputSelect::activateSelected() {
-    b_trackName = object::get(InputOnly|NoRefresh)[s_ui->input_combo->currentRow()]->name();
+    b_trackName = object::get(InputOnly|NoRefresh)[m_ui->input_combo->currentRow()]->name();
     if (width() != 55) {
         setMinimized();
         QTimer::singleShot(205, this, SLOT(activateSelected()));
     } else {
-        emit objectChosen(object::get(InputOnly|NoRefresh)[s_ui->input_combo->currentRow()]);
+        emit objectChosen(object::get(InputOnly|NoRefresh)[m_ui->input_combo->currentRow()]);
     }
 }
 
 void TrackInputSelect::onSetAudio(bool b) {
     if (b) {
-        s_ui->inputPaint->hide();
-        s_ui->inputType->setIcon(QIcon(":/icons/microphone.png"));
+        m_ui->inputPaint->hide();
+        m_ui->inputType->setIcon(QIcon(":/icons/microphone.png"));
     } else {
-        s_ui->inputPaint->show();
-        s_ui->inputType->setIcon(QIcon(":/icons/midi.png"));
+        m_ui->inputPaint->show();
+        m_ui->inputType->setIcon(QIcon(":/icons/midi.png"));
     }
 }
 
 void TrackInputSelect::enableAddTrackButton() {
-    s_ui->inputNew->setEnabled(true);
+    m_ui->inputNew->setEnabled(true);
 }
 
 void TrackInputSelect::showKeyboard(bool b) {
-    s_maximizedWidth = b ? 165 : 400;
-    s_maximizedHeight = b ? 600 : -1;
+    m_maximizedWidth = b ? 165 : 400;
+    m_maximizedHeight = b ? 600 : -1;
     setMaximized(b);
-    s_ui->stackedWidget->setCurrentIndex(b ? 1 : 0);
+    m_ui->stackedWidget->setCurrentIndex(b ? 1 : 0);
 }
 
 void TrackInputSelect::drawKeyboard()
@@ -289,7 +289,7 @@ void TrackInputSelect::drawKeyboard()
     }
 
     qint16 highest = 108, lowest = 21;
-    /*s_instView->setSceneRect( 0, -( ( 1+( highest-lowest ) )*6 ),
+    /*m_instView->setSceneRect( 0, -( ( 1+( highest-lowest ) )*6 ),
                             60, vKeySize*(highest.whiteKeysTo(lowest))-( ( 1+( highest-lowest ) )*6 )+0.38*vKeySize );*/
     ui_instView->setMinimumHeight( whiteKeys(lowest,highest)*vKeySize - 65 );
     ui_instView->setMaximumHeight( whiteKeys(lowest,highest)*vKeySize - 65 );
@@ -359,7 +359,7 @@ void TrackInputSelect::reactToPianoKeyUpdate()
     xid%=12;
     if (!x->isEnabled())
     {
-        if (s_selectedFilter>=0)
+        if (m_selectedFilter>=0)
         {
             x->enableKey(1);
             return;
@@ -372,16 +372,16 @@ void TrackInputSelect::reactToPianoKeyUpdate()
     }
     else
     {
-        if (s_selectedFilter<0)
+        if (m_selectedFilter<0)
         {
             x->enableKey(0);
             return;
         }
         else
         {
-            QColor col = song::current()->colours[ s_selectedFilter ]; //FIXME
+            QColor col = song::current()->colours[ m_selectedFilter ]; //FIXME
             x->setBrush( QBrush( (xid==1||xid==3||xid==6||xid==8||xid==10)?col.darker(250):col ) ); //1,3... are black keys
-            song::current()->midiMaps.value(s_inputId)->b_filterForNote[x->id()]=s_selectedFilter;
+            song::current()->midiMaps.value(m_inputId)->b_filterForNote[x->id()]=m_selectedFilter;
             return;
         }
     }
@@ -394,7 +394,7 @@ void TrackInputSelect::changeActiveFilter(bool really)
         return;
     }
     Q_ASSERT(sender()&&!sender()->property("filter_id").isNull());
-    s_selectedFilter = sender()->property("filter_id").toInt();
+    m_selectedFilter = sender()->property("filter_id").toInt();
 }
 
 
@@ -405,33 +405,33 @@ void TrackInputSelect::changeActiveMode(bool really)
         return;
     }
     Q_ASSERT(sender()&&!sender()->property("mode_id").isNull());
-    s_selectedMode=sender()->property("mode_id").toInt();
-    song::current()->midiMaps.insert(s_inputId,s_midiFilters[s_selectedMode]);
+    m_selectedMode=sender()->property("mode_id").toInt();
+    song::current()->midiMaps.insert(m_inputId,m_midiFilters[m_selectedMode]);
 
-    changeActiveMode_2(s_selectedMode);
+    changeActiveMode_2(m_selectedMode);
 }
 
 void TrackInputSelect::changeActiveMode_2(int mode)
 {
-    s_selectedMode=mode;
+    m_selectedMode=mode;
     QGraphicsItem* tmp;
-    int filterHold=s_selectedFilter;
+    int filterHold=m_selectedFilter;
     foreach( tmp, ui_instScene->items() )
     {
         PianoKey* v;
         if ( tmp->data(-999)=="PianoKey" )
         {
             v = static_cast< PianoKey* >( tmp );
-            s_selectedFilter=s_midiFilters[s_selectedMode]->b_filterForNote[v->id()];
+            m_selectedFilter=m_midiFilters[m_selectedMode]->b_filterForNote[v->id()];
             v->enableKey(1);
         }
     }
-    s_selectedFilter=filterHold;
+    m_selectedFilter=filterHold;
 }
 
 void TrackInputSelect::incrHeight(int z) {
-    if (s_oldHeight) {
-        s_oldHeight += z;
+    if (m_oldHeight) {
+        m_oldHeight += z;
         setMaximized(false);
     }
     else setFixedHeight(height() + z);

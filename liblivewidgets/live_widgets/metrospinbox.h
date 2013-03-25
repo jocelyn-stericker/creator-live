@@ -18,8 +18,8 @@ namespace live_widgets {
 
 class LIBLIVEWIDGETSSHARED_EXPORT MetroSpinbox : public SpinBox {
     Q_OBJECT
-    int s_toggle;
-    int s_lastBeat;
+    int m_toggle;
+    int m_lastBeat;
 public:
     explicit MetroSpinbox(QWidget *parent = 0);
     virtual ~MetroSpinbox();

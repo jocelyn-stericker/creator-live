@@ -19,20 +19,20 @@ class TrackGroup : public QFrame, public live_widgets::BindableParent
 {
     Q_OBJECT
 protected:                      /*IN CHILDREN*/
-    live::ObjectPtr  s_input;             /*CONSTRUCT*/
+    live::ObjectPtr  m_input;             /*CONSTRUCT*/
     live_widgets::TrackInputSelect* instLabel;
 public:
-    live_widgets::VScrollContainer* s_hathorView;   /*003*/
-    int s_id;                   /*004*/
-    static int s_lastId;
+    live_widgets::VScrollContainer* m_hathorView;   /*003*/
+    int m_id;                   /*004*/
+    static int m_lastId;
 
     explicit TrackGroup(live::ObjectPtr  cinput, QWidget *parent = 0, live_widgets::ObjectChooser* oc = 0)
       : QFrame(parent)
       , BindableParent(this)
-      , s_input(cinput)
+      , m_input(cinput)
       , instLabel(0)
-      , s_hathorView(0)
-      , s_id(++s_lastId)
+      , m_hathorView(0)
+      , m_id(++m_lastId)
       , ui_selectWidget(0)
     {
         if (! (instLabel = dynamic_cast<live_widgets::TrackInputSelect*>(oc))) {
@@ -40,7 +40,7 @@ public:
         }
         setFrameStyle(QFrame::NoFrame);
         setLineWidth(0);
-        setObjectName("TrackGroup_"+QString::number(s_id));
+        setObjectName("TrackGroup_"+QString::number(m_id));
     }
 
     QWidget* ui_selectWidget;
@@ -53,12 +53,12 @@ public slots:
 
     void setInput(live::ObjectPtr in)
     {
-        for (unsigned i = 0; i < s_hathorView->count(); ++i) {
-            Track* t = qobject_cast<Track*>((*s_hathorView)[i]);
+        for (unsigned i = 0; i < m_hathorView->count(); ++i) {
+            Track* t = qobject_cast<Track*>((*m_hathorView)[i]);
             if (t)
                 t->setInput(in);
         }
-        s_input = in;
+        m_input = in;
     }
 
     void clearSelect();
@@ -69,10 +69,10 @@ private:
     TrackGroup(const TrackGroup&)
       : QFrame()
       , BindableParent(this)
-      , s_input()
+      , m_input()
       , instLabel(0)
-      , s_hathorView(0)
-      , s_id(-1)
+      , m_hathorView(0)
+      , m_id(-1)
       , ui_selectWidget(0)
       { TCRASH();
     }

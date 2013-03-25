@@ -29,9 +29,8 @@ class LIBLIVEWIDGETSSHARED_EXPORT AppFrame : public QFrame, public BindableParen
     ToolButton* _tbBack;
     ToolButton* _tbClose;
     ToolButton* _tbNext;
-    ToolButton* _tbMini;
-    bool s_minimized;
-    int s_desiredWidth;
+    bool m_minimized;
+    int m_desiredWidth;
 
 public:
     friend class ::Track;
@@ -43,7 +42,7 @@ public:
 
     virtual bool expanding() const = 0;
 
-    int getDesiredWidth() const { return s_desiredWidth; }
+    int getDesiredWidth() const { return m_desiredWidth; }
     live::Bound<bool> b_resizing;
 
 signals:
@@ -51,8 +50,8 @@ signals:
     void desiredWidthChanged();
 
 public slots:
-    virtual void toggleMinimized();
     void setDesiredWidth(int);
+    void onModeChanged(int);
 
 private:
     Q_DISABLE_COPY(AppFrame)

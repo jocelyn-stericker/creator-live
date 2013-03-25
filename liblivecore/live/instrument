@@ -20,12 +20,12 @@ class InstrumentInterface;
 class LIBLIVECORESHARED_EXPORT instrument
 {
 protected:
-    static instrument* s_singleton;
-    QStringList s_instrumentNames;
-    QList<InstrumentInterface*> s_instruments;
+    static instrument* m_singleton;
+    QStringList m_instrumentNames;
+    QList<InstrumentInterface*> m_instruments;
     instrument()
-      : s_instrumentNames()
-      , s_instruments()
+      : m_instrumentNames()
+      , m_instruments()
       {
     }
     ~instrument();

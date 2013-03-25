@@ -29,15 +29,15 @@ public:
     void hideEvent(QHideEvent *);
 
 private:
-    QList<QVariant> s_inputMappings;
-    QStringList s_inputMappingNames;
-    QList<QVariant> s_outputMappings;
-    QStringList s_outputMappingNames;
+    QList<QVariant> m_inputMappings;
+    QStringList m_inputMappingNames;
+    QList<QVariant> m_outputMappings;
+    QStringList m_outputMappingNames;
     Ui::SettingsLinux *ui;
-    bool s_automatic;
+    bool m_automatic;
     static bool started;
-    static QString s_in,s_out;
-    static QStringList s_inl, s_outl;
+    static QString m_in,m_out;
+    static QStringList m_inl, m_outl;
 
 public slots:
     void verify();

@@ -19,16 +19,16 @@ signals:
 class InsertButton : public QFrame
 {
     Q_OBJECT
-    IBLabel s_label;
+    IBLabel m_label;
 public:
     InsertButton(QWidget* parent = 0);
     void resizeEvent(QResizeEvent* t) {
         if (width() > 100) {
-            s_label.setText(tr("<center>Click to Insert"));
+            m_label.setText(tr("<center>Click to Insert"));
         } else {
-            s_label.setText("<center>+");
+            m_label.setText("<center>+");
         }
-        s_label.setGeometry(0, 0, width(), height());
+        m_label.setGeometry(0, 0, width(), height());
         QFrame::resizeEvent(t);
     }
 signals:

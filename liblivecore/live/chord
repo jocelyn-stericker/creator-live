@@ -25,10 +25,10 @@ public:
 
 class LIBLIVECORESHARED_EXPORT SpecificChord : public Chord
 {
-    QList<Pitch> s_identity;
+    QList<Pitch> m_identity;
 public:
     SpecificChord()
-      : s_identity()
+      : m_identity()
       {
     }
 
@@ -37,10 +37,10 @@ public:
     QByteArray save();
     static SpecificChord* load(const QByteArray&str);
 
-    int count() const { return s_identity.count(); }
-    Pitch& operator[](int z) { return s_identity[z]; }
-    const Pitch& operator[](int z) const { return s_identity[z]; }
-    void push_back(const Pitch& p) { s_identity.push_back(p); }
+    int count() const { return m_identity.count(); }
+    Pitch& operator[](int z) { return m_identity[z]; }
+    const Pitch& operator[](int z) const { return m_identity[z]; }
+    void push_back(const Pitch& p) { m_identity.push_back(p); }
 };
 
 }

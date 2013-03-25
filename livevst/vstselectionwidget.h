@@ -22,17 +22,17 @@ class VstSelectionWidget : public QWidget
     Q_OBJECT
     
 public:
-    explicit VstSelectionWidget(live::ObjectPtr s_out, live::ObjectPtr s_loopback, QWidget *parent = 0);
+    explicit VstSelectionWidget(live::ObjectPtr m_out, live::ObjectPtr m_loopback, QWidget *parent = 0);
     ~VstSelectionWidget();
 public slots:
     void showEvent(QShowEvent *e=0);
     
 private:
-    live::ObjectPtr s_out, s_loopback;
+    live::ObjectPtr m_out, m_loopback;
     Ui::VstSelectionWidget *ui;
 
 signals:
-    void instrumentUpdated(live::ObjectPtr s_out, live::ObjectPtr s_loopback);  /*!!!*/
+    void instrumentUpdated(live::ObjectPtr m_out, live::ObjectPtr m_loopback);  /*!!!*/
 
 public slots:
     void vstChangedLogic();

@@ -32,9 +32,9 @@ SequencerFrame::SequencerFrame(SequencerApp* backend,AbstractTrack *parent)
 {
     ui->setupUi(this);
 
-    connect(&app.s_midiTrack->b_mute,SIGNAL(changeObserved(bool,bool)),ui->mute,SLOT(setChecked(bool)));
-    connect(&app.s_midiTrack->b_playback,SIGNAL(changeObserved(bool,bool)),ui->play,SLOT(setChecked(bool)));
-    connect(&app.s_midiTrack->b_record,SIGNAL(changeObserved(bool,bool)),ui->record,SLOT(setChecked(bool)));
+    connect(&app.m_midiTrack->b_mute,SIGNAL(changeObserved(bool,bool)),ui->mute,SLOT(setChecked(bool)));
+    connect(&app.m_midiTrack->b_playback,SIGNAL(changeObserved(bool,bool)),ui->play,SLOT(setChecked(bool)));
+    connect(&app.m_midiTrack->b_record,SIGNAL(changeObserved(bool,bool)),ui->record,SLOT(setChecked(bool)));
     connect(&app.b_clipped,SIGNAL(changeObserved(bool,bool)),ui->clip,SLOT(setChecked(bool)));
 
     connect(ui->mute,SIGNAL(clicked(bool)),this,SLOT(logicMute(bool)));
@@ -60,7 +60,7 @@ SequencerFrame::SequencerFrame(SequencerApp* backend,AbstractTrack *parent)
     connect(action_export,SIGNAL(triggered()),this,SLOT(logicExport()));
     ui->menu->menu()->addAction(action_newToolchain=new QAction("Create new effect toolchain for track",this));
 
-    setObjectName("SequencerFrame_"+QString::number(app.s_id));
+    setObjectName("SequencerFrame_"+QString::number(app.m_id));
     ui->clip->setObjectName("clip");
     ui->play->setObjectName("play");
     ui->mute->setObjectName("mute");
@@ -111,11 +111,11 @@ void SequencerFrame::logicImport()
     QString file=QFileDialog::getOpenFileName(this,QString("Import file"),QString(),"Audio Files (*.wav *.flac *.ogg);;MIDI Files (*.MIDI *.midi *.MID *.mid)");
     if (QFile::exists(file)&&(file.endsWith("flac")||file.endsWith("ogg")||file.endsWith("wav")))
     {
-        app.s_audioTrack->importFile(file);
+        app.m_audioTrack->importFile(file);
     }
     else if (QFile::exists(file)&&(file.endsWith("midi")||file.endsWith("MIDI")||file.endsWith("mid")||file.endsWith("MID")))
     {
-        app.s_midiTrack->importFile(file);
+        app.m_midiTrack->importFile(file);
     }
 }
 void SequencerFrame::logicExport()
@@ -123,11 +123,11 @@ void SequencerFrame::logicExport()
     QString file=QFileDialog::getSaveFileName(this,QString("Export file"),QString(),"Audio Files (*.wav *.flac *.ogg);;MIDI Files (*.MIDI *.midi *.MID *.mid)");
     if (file.endsWith("flac")||file.endsWith("ogg")||file.endsWith("wav"))
     {
-        app.s_audioTrack->exportFile(file);
+        app.m_audioTrack->exportFile(file);
     }
     else if (file.endsWith("midi")||file.endsWith("MIDI")||file.endsWith("mid")||file.endsWith("MID"))
     {
-        app.s_midiTrack->exportFile(file);
+        app.m_midiTrack->exportFile(file);
     }
 }
 
@@ -158,7 +158,6 @@ void SequencerFrame::toggleMinimized()
     ui->frame->setVisible(!ui->frame->isVisible());
     graph.updateAudioData();
     graph.updateMidiData();
-    AppFrame::toggleMinimized();
 }
 
 void SequencerFrame::setMore(bool more)
@@ -233,5 +232,5 @@ void SequencerFrame::removeRounding()
 
 live::AppInterface* SequencerCreator::next()
 {
-    return s_looper=(s_looper?s_looper:new LooperCreator);
+    return m_looper=(m_looper?m_looper:new LooperCreator);
 }

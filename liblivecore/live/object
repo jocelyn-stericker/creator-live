@@ -40,23 +40,23 @@ uint qHash(const live::ObjectPtr &p);
 
 class LIBLIVECORESHARED_EXPORT ObjectChain
 {
-    QList<ObjectPtr> s_identity;
+    QList<ObjectPtr> m_identity;
 public:
-    int size() const { return s_identity.size(); }
+    int size() const { return m_identity.size(); }
 
-    const ObjectPtr &at(int i) const { return s_identity.at(i); }
-    const ObjectPtr &operator[](int i) const { return s_identity[i]; }
-    ObjectPtr &operator[](int i) { return s_identity[i]; }
+    const ObjectPtr &at(int i) const { return m_identity.at(i); }
+    const ObjectPtr &operator[](int i) const { return m_identity[i]; }
+    ObjectPtr &operator[](int i) { return m_identity[i]; }
 
-    const ObjectPtr& back() const { return s_identity.back(); }
-    ObjectPtr& back() { return s_identity.back(); }
-    ObjectPtr& first() { return s_identity.first(); }
-    const ObjectPtr& first() const { return s_identity.first(); }
+    const ObjectPtr& back() const { return m_identity.back(); }
+    ObjectPtr& back() { return m_identity.back(); }
+    ObjectPtr& first() { return m_identity.first(); }
+    const ObjectPtr& first() const { return m_identity.first(); }
 
-    void insert(int a, const ObjectPtr& t) { s_identity.insert(a, t); }
-    void removeAt(int a) { s_identity.removeAt(a); }
+    void insert(int a, const ObjectPtr& t) { m_identity.insert(a, t); }
+    void removeAt(int a) { m_identity.removeAt(a); }
 
-    bool contains(const ObjectPtr& p) const { return s_identity.contains(p); }
+    bool contains(const ObjectPtr& p) const { return m_identity.contains(p); }
 
     ObjectChain();
 
@@ -69,9 +69,9 @@ public:
         }
         return tlist;
     }
-    inline void push_back(const ObjectPtr& o) { s_identity.push_back(o); }
+    inline void push_back(const ObjectPtr& o) { m_identity.push_back(o); }
     void push_back(Object* o);
-    void pop_back() { s_identity.pop_back(); }
+    void pop_back() { m_identity.pop_back(); }
 };
 
 template<typename T> class Ptr;
@@ -162,7 +162,7 @@ public:
     static void XRUN();
 
 
-    virtual QByteArray save() { qCritical() << "Hybrid::save() called on "<<s_name; qCritical("Hybrid::save() called on a non-savable type!!"); return QByteArray(); }
+    virtual QByteArray save() { qCritical() << "Hybrid::save() called on "<<m_name; qCritical("Hybrid::save() called on a non-savable type!!"); return QByteArray(); }
     friend class SecretMidi;
 
     virtual void newConnection() {}
@@ -183,14 +183,14 @@ private:
 
 public:
 
-    const QString& name() const { return s_name; }
+    const QString& name() const { return m_name; }
 
-    bool processingAudio() const { return s_aOn; }
-    bool processingMidi() const { return s_mOn; }
+    bool processingAudio() const { return m_aOn; }
+    bool processingMidi() const { return m_mOn; }
 
     /** Temporary objects are deleted when there are no references to them. Default: true. */
-    void setTemporary(bool temp) { s_temp=temp; }
-    const bool& isTemporary() const { return s_temp; }
+    void setTemporary(bool temp) { m_temp=temp; }
+    const bool& isTemporary() const { return m_temp; }
 
     /** Apps should reimplement this to avoid crashes from incorrect deletion. */
     virtual QObject* qoThis() { return 0; }
@@ -203,13 +203,13 @@ public:
     void mPanic();
 
 protected:
-    QString s_name;
-    bool s_aOn;
-    bool s_mOn;
-    bool s_temp;
-    bool s_allowMixer;
+    QString m_name;
+    bool m_aOn;
+    bool m_mOn;
+    bool m_temp;
+    bool m_allowMixer;
 #if !defined(NDEBUG) && defined(__linux__)
-    static std::vector<quint32> s_asyncTime;
+    static std::vector<quint32> m_asyncTime;
 #endif
 
     friend class ObjectPtr;
@@ -219,7 +219,7 @@ protected:
     friend class ScopedLock;
     friend void doAudioConnect(const Object* a, const Object* b);
     friend void doMidiConnect(const Object* a, const Object* b);
-    QSet<ObjectPtr*> s_ptrList;
+    QSet<ObjectPtr*> m_ptrList;
     static QMap<QString, ObjectPtr*>* zombies;
 
     std::multiset<ObjectPtr> aConnections;
@@ -228,9 +228,9 @@ protected:
     std::multiset<ObjectPtr> aInverseConnections;
     std::multiset<ObjectPtr> mInverseConnections;
 
-    bool s_isDestroying;
+    bool m_isDestroying;
 
-    MidiEventCounter* s_ec;
+    MidiEventCounter* m_ec;
 
     /***** MINI MIXER *****/
         float** mixer_data;
@@ -244,14 +244,14 @@ protected:
 
     void mixer_process(const float* data, int chan);
 
-    static bool ss_XRUN;
+    static bool sm_XRUN;
 
     static std::set<Object*> universe;
 
     friend class Connection;
 
 private:
-    int s_chans;
+    int m_chans;
     Object& operator=(const live::Object&);
     Object(const Object&);
 };
@@ -393,31 +393,31 @@ struct ScopedMutexLock {
 class LIBLIVECORESHARED_EXPORT ObjectPtr
 {
 protected:
-    Object* s_obj;
+    Object* m_obj;
     void obliviate();
     bool restore(Object *a);
     friend class Object;
-//    bool s_isInput, s_isOutput, s_isAudio, s_isMidi;
+//    bool m_isInput, m_isOutput, m_isAudio, m_isMidi;
     ObjectPtr(QString,Object* o)
-      : s_obj(o)
+      : m_obj(o)
       {
-        live_mutex(s_obj->x_ptr) s_obj->s_ptrList.insert(this);
+        live_mutex(m_obj->x_ptr) m_obj->m_ptrList.insert(this);
     }
 
 public:
     ObjectPtr(Object* o=0)
-      : s_obj(o)
-      { if(s_obj) live_mutex(s_obj->x_ptr) {
-            s_obj->s_ptrList.insert(this);
-//            s_isInput=s_obj->isInput();
-//            s_isOutput=s_obj->isOutput();
-//            s_isAudio=s_obj->isAudioObject();
-//            s_isMidi=s_obj->isMidiObject();
+      : m_obj(o)
+      { if(m_obj) live_mutex(m_obj->x_ptr) {
+            m_obj->m_ptrList.insert(this);
+//            m_isInput=m_obj->isInput();
+//            m_isOutput=m_obj->isOutput();
+//            m_isAudio=m_obj->isAudioObject();
+//            m_isMidi=m_obj->isMidiObject();
         }
     }
 
     ObjectPtr(Object *o, bool)
-        : s_obj(o)
+        : m_obj(o)
     {
 
     }
@@ -429,55 +429,55 @@ public:
     void detach();
 
     ObjectPtr(const ObjectPtr& other)
-      : s_obj(const_cast<ObjectPtr&>(other).data())
-      { if(other.data()) live_mutex(s_obj->x_ptr) {
-            s_obj->s_ptrList.insert(this);
-//            s_isInput=s_obj->isInput();
-//            s_isOutput=s_obj->isOutput();
-//            s_isAudio=s_obj->isAudioObject();
-//            s_isMidi=s_obj->isMidiObject();
+      : m_obj(const_cast<ObjectPtr&>(other).data())
+      { if(other.data()) live_mutex(m_obj->x_ptr) {
+            m_obj->m_ptrList.insert(this);
+//            m_isInput=m_obj->isInput();
+//            m_isOutput=m_obj->isOutput();
+//            m_isAudio=m_obj->isAudioObject();
+//            m_isMidi=m_obj->isMidiObject();
         }
     }
 
     virtual ObjectPtr& operator=(Object* other) {
         detach();
         if (other) live_mutex(other->x_ptr) {
-            s_obj=other;
-                s_obj->s_ptrList.insert(this);
-                //            s_isInput=s_obj->isInput();
-                //            s_isOutput=s_obj->isOutput();
-                //            s_isAudio=s_obj->isAudioObject();
-                //            s_isMidi=s_obj->isMidiObject();
-        } else s_obj = 0;
+            m_obj=other;
+                m_obj->m_ptrList.insert(this);
+                //            m_isInput=m_obj->isInput();
+                //            m_isOutput=m_obj->isOutput();
+                //            m_isAudio=m_obj->isAudioObject();
+                //            m_isMidi=m_obj->isMidiObject();
+        } else m_obj = 0;
         return* this;
     }
     virtual ObjectPtr& operator=(const ObjectPtr& other) {
         detach();
         if (other.data()) live_mutex(const_cast<ObjectPtr&>(other)->x_ptr) {
-            s_obj=const_cast<ObjectPtr&>(other).data();
+            m_obj=const_cast<ObjectPtr&>(other).data();
             if(other.data()) {
-                s_obj->s_ptrList.insert(this);
-                //            s_isInput=s_obj->isInput();
-                //            s_isOutput=s_obj->isOutput();
-                //            s_isAudio=s_obj->isAudioObject();
-                //            s_isMidi=s_obj->isMidiObject();
+                m_obj->m_ptrList.insert(this);
+                //            m_isInput=m_obj->isInput();
+                //            m_isOutput=m_obj->isOutput();
+                //            m_isAudio=m_obj->isAudioObject();
+                //            m_isMidi=m_obj->isMidiObject();
             }
-        } else s_obj = 0;
+        } else m_obj = 0;
         return* this;
     }
 
-    bool operator!() const { return !s_obj; }
+    bool operator!() const { return !m_obj; }
     bool operator==(const ObjectPtr&b) const { return data()==b.data(); }
     bool operator!=(const ObjectPtr&b) const { return data()!=b.data(); }
     bool operator<(const ObjectPtr&b) const { return data()<b.data(); }   //for QMap
     bool valid() const;
 
-    Object* data() { return s_obj; }
-    Object* data() const { return s_obj; }
-    Object& operator*() const        { Q_ASSERT(s_obj); return *s_obj; }
-    Object& operator*()              { Q_ASSERT(s_obj); return *s_obj; }
-    Object* operator->() const       { Q_ASSERT(s_obj); return s_obj; }
-    Object* operator->()             { Q_ASSERT(s_obj); return s_obj; }
+    Object* data() { return m_obj; }
+    Object* data() const { return m_obj; }
+    Object& operator*() const        { Q_ASSERT(m_obj); return *m_obj; }
+    Object& operator*()              { Q_ASSERT(m_obj); return *m_obj; }
+    Object* operator->() const       { Q_ASSERT(m_obj); return m_obj; }
+    Object* operator->()             { Q_ASSERT(m_obj); return m_obj; }
 
     friend uint qHash(const live::ObjectPtr &p);
 };
@@ -491,19 +491,19 @@ protected:
       : ObjectPtr(s, o)
       , sp_obj(o)
       {
-        live_mutex(s_obj->x_ptr) s_obj->s_ptrList.insert(this);
+        live_mutex(m_obj->x_ptr) m_obj->m_ptrList.insert(this);
     }
 
 public:
     Ptr(T* o=0)
       : ObjectPtr(o)
       , sp_obj(o)
-      { if(s_obj) live_mutex(s_obj->x_ptr) {
-            s_obj->s_ptrList.insert(this);
-//            s_isInput=s_obj->isInput();
-//            s_isOutput=s_obj->isOutput();
-//            s_isAudio=s_obj->isAudioObject();
-//            s_isMidi=s_obj->isMidiObject();
+      { if(m_obj) live_mutex(m_obj->x_ptr) {
+            m_obj->m_ptrList.insert(this);
+//            m_isInput=m_obj->isInput();
+//            m_isOutput=m_obj->isOutput();
+//            m_isAudio=m_obj->isAudioObject();
+//            m_isMidi=m_obj->isMidiObject();
         }
     }
 
@@ -521,48 +521,48 @@ public:
     Ptr(const Ptr<T>& other)
       : ObjectPtr(other.data())
       , sp_obj(const_cast<Ptr<T>&>(other).data())
-      { if(other.data()) live_mutex(s_obj->x_ptr) {
-            s_obj->s_ptrList.insert(this);
-//            s_isInput=s_obj->isInput();
-//            s_isOutput=s_obj->isOutput();
-//            s_isAudio=s_obj->isAudioObject();
-//            s_isMidi=s_obj->isMidiObject();
+      { if(other.data()) live_mutex(m_obj->x_ptr) {
+            m_obj->m_ptrList.insert(this);
+//            m_isInput=m_obj->isInput();
+//            m_isOutput=m_obj->isOutput();
+//            m_isAudio=m_obj->isAudioObject();
+//            m_isMidi=m_obj->isMidiObject();
         }
     }
 
     Ptr& operator=(Object* other) {
         detach();
         if (other) live_mutex(other->x_ptr) {
-            s_obj=sp_obj=dynamic_cast<T*>(other);
-                s_obj->s_ptrList.insert(this);
-                //            s_isInput=s_obj->isInput();
-                //            s_isOutput=s_obj->isOutput();
-                //            s_isAudio=s_obj->isAudioObject();
-                //            s_isMidi=s_obj->isMidiObject();
-        } else s_obj = 0;
+            m_obj=sp_obj=dynamic_cast<T*>(other);
+                m_obj->m_ptrList.insert(this);
+                //            m_isInput=m_obj->isInput();
+                //            m_isOutput=m_obj->isOutput();
+                //            m_isAudio=m_obj->isAudioObject();
+                //            m_isMidi=m_obj->isMidiObject();
+        } else m_obj = 0;
         return* this;
     }
     ObjectPtr& operator=(const ObjectPtr& other) {
         detach();
         if (other.data()) live_mutex(const_cast<ObjectPtr&>(other)->x_ptr) {
-            s_obj=sp_obj=dynamic_cast<T*>(other.data());
+            m_obj=sp_obj=dynamic_cast<T*>(other.data());
             if(other.data()) {
-                s_obj->s_ptrList.insert(this);
-                //            s_isInput=s_obj->isInput();
-                //            s_isOutput=s_obj->isOutput();
-                //            s_isAudio=s_obj->isAudioObject();
-                //            s_isMidi=s_obj->isMidiObject();
+                m_obj->m_ptrList.insert(this);
+                //            m_isInput=m_obj->isInput();
+                //            m_isOutput=m_obj->isOutput();
+                //            m_isAudio=m_obj->isAudioObject();
+                //            m_isMidi=m_obj->isMidiObject();
             }
-        } else s_obj = 0;
+        } else m_obj = 0;
         return* this;
     }
 
     T* data() { return sp_obj; }
     T* data() const { return sp_obj; }
-    T& operator*() const        { Q_ASSERT(s_obj); return *sp_obj; }
-    T& operator*()              { Q_ASSERT(s_obj); return *sp_obj; }
-    T* operator->() const       { Q_ASSERT(s_obj); return sp_obj; }
-    T* operator->()             { Q_ASSERT(s_obj); return sp_obj; }
+    T& operator*() const        { Q_ASSERT(m_obj); return *sp_obj; }
+    T& operator*()              { Q_ASSERT(m_obj); return *sp_obj; }
+    T* operator->() const       { Q_ASSERT(m_obj); return sp_obj; }
+    T* operator->()             { Q_ASSERT(m_obj); return sp_obj; }
 
     friend uint qHash(const live::ObjectPtr &p);
 };
@@ -674,13 +674,13 @@ class LIBLIVECORESHARED_EXPORT object : public QObject
 {
     Q_OBJECT
 protected:
-    QList<ObjectPtr> s_objects;
+    QList<ObjectPtr> m_objects;
     static object* me;
     friend class Ribbon;
     friend class ::LiveWindow;
 public:
     object()
-      : s_objects()
+      : m_objects()
       {
 
     }

@@ -31,7 +31,7 @@ PitchFrame::PitchFrame(PitchApp* backend, AbstractTrack *parent)
 
     setDesiredWidth(307);
 
-    setObjectName("PitchFrame_"+QString::number(app->s_id));
+    setObjectName("PitchFrame_"+QString::number(app->m_id));
     live_widgets::binding::addWidget(this);
 }
 

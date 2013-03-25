@@ -473,23 +473,23 @@ LIBLIVECORESHARED_EXPORT live::AudioInterface* live::audio::s_audioInterface=0;
 bool live::audio::strictInnocentXruns=false;
 
 void live::audio::registerInterface(live::AudioInterface*ai) {
-    if(s_audioInterface) s_audioInterface->delClient();
-    s_audioInterface=ai;
-    s_audioInterface->makeClient();
+    if(s_audioInterface)m_audioInterface->delClient();
+   m_audioInterface=ai;
+   m_audioInterface->makeClient();
 }
 
 QObject* live::audio::getCurrentInterface() {
-    return s_audioInterface->qobject();
+    returnm_audioInterface->qobject();
 }
 
-void live::audio::refresh() { s_audioInterface->refresh(); }
+void live::audio::refresh() {m_audioInterface->refresh(); }
 
 LIBLIVECORESHARED_EXPORT const quint32& live::audio::nFrames() {
-    return s_audioInterface->nFrames();
+    returnm_audioInterface->nFrames();
 }
 
 LIBLIVECORESHARED_EXPORT qint32 live::audio::sampleRate() {
-    return s_audioInterface->sampleRate();
+    returnm_audioInterface->sampleRate();
 }
 
 qint32 live_private::SecretAudio::sampleRate() {
@@ -497,7 +497,7 @@ qint32 live_private::SecretAudio::sampleRate() {
 }
 
 LIBLIVECORESHARED_EXPORT void live::audio::resetMappings() {
-    s_audioInterface->resetMappings();
+   m_audioInterface->resetMappings();
 }
 
 void live_private::SecretAudio::jack_disconnect(QString readPort,QString writePort) {
@@ -508,7 +508,7 @@ bool live_private::SecretAudio::resetMappings() {
 }
 
 LIBLIVECORESHARED_EXPORT void live::audio::addMapping(QStringList mapping, bool input,QString name) {
-    s_audioInterface->addMapping(mapping,input,name);
+   m_audioInterface->addMapping(mapping,input,name);
 }
 
 bool live_private::SecretAudio::addMapping(QStringList, bool, QString) {
@@ -524,7 +524,7 @@ int live_private::SecretAudio::mappingCount(bool) {
 }
 
 LIBLIVECORESHARED_EXPORT QStringList live::audio::getInputChanStringList() {
-    return s_audioInterface->getInputChanStringList();
+    returnm_audioInterface->getInputChanStringList();
 }
 
 QStringList live_private::SecretAudio::getInputChanStringList() {
@@ -532,7 +532,7 @@ QStringList live_private::SecretAudio::getInputChanStringList() {
 }
 
 LIBLIVECORESHARED_EXPORT QStringList live::audio::getOutputChanStringList() {
-    return s_audioInterface->getOutputChanStringList();
+    returnm_audioInterface->getOutputChanStringList();
 }
 
 QStringList live_private::SecretAudio::getOutputChanStringList() {
@@ -540,7 +540,7 @@ QStringList live_private::SecretAudio::getOutputChanStringList() {
 }
 
 LIBLIVECORESHARED_EXPORT live::ObjectPtr live::audio::null(int chan) {
-    return s_audioInterface->getNull(chan);
+    returnm_audioInterface->getNull(chan);
 }
 
 live::ObjectPtr live_private::SecretAudio::getNull(int chans) {
@@ -550,8 +550,8 @@ live::ObjectPtr live_private::SecretAudio::getNull(int chans) {
 }
 
 LIBLIVECORESHARED_EXPORT void live::audio::stop() {
-    delete s_audioInterface;
-    s_audioInterface=0;
+    deletem_audioInterface;
+   m_audioInterface=0;
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////

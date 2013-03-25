@@ -12,12 +12,12 @@ class MainW : public QWidget
 {
     Q_OBJECT
     
-    QString s_channels;
-    QList<QString> s_serverQueue;
-    QList<QString> s_localQueue;
-    QList<int> s_newVerQueue;
-    int s_prog;
-    int s_total;
+    QString m_channels;
+    QList<QString> m_serverQueue;
+    QList<QString> m_localQueue;
+    QList<int> m_newVerQueue;
+    int m_prog;
+    int m_total;
 
 public:
     explicit MainW(QWidget *parent = 0);

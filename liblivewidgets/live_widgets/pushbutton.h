@@ -17,7 +17,7 @@ namespace live_widgets {
 
 class LIBLIVEWIDGETSSHARED_EXPORT PushButton : public QPushButton {
     Q_OBJECT
-    bool s_bindMode;
+    bool m_bindMode;
 public:
     PushButton(QWidget* parent=0);
     PushButton(QString t,QWidget* parent=0);

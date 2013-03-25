@@ -22,11 +22,11 @@ public:
     LIVE_HYBRID
     LIVE_EFFECT
     static int lastVstId;
-    static QList<Vst*> s_vst;
-    static QMultiMap<QString, QPair<QString, live::ObjectPtr> > s_map;
-    static QStringList s_vstpaths_linux;
+    static QList<Vst*> m_vst;
+    static QMultiMap<QString, QPair<QString, live::ObjectPtr> > m_map;
+    static QStringList m_vstpaths_linux;
     static QStringList getVstPaths();
-    static QStringList* s_vstCache;
+    static QStringList* m_vstCache;
 
 protected:
     int vstId;         /*003*/
@@ -51,8 +51,8 @@ public:
     {
         setTemporary(0);
         init();
-        s_vst.push_back(this);
-        s_map.insertMulti(path, qMakePair(instance,live::ObjectPtr(this)));
+        m_vst.push_back(this);
+        m_map.insertMulti(path, qMakePair(instance,live::ObjectPtr(this)));
     }
 
     virtual ~Vst();

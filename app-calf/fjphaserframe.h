@@ -35,7 +35,7 @@ class FJPhaserFrame;
 class FJPhaserFrame : public live_widgets::AppFrame
 {
     Q_OBJECT
-    FJPhaserApp& s_app;
+    FJPhaserApp& m_app;
 
 public:
     explicit FJPhaserFrame(FJPhaserApp *app, AbstractTrack *parent = 0);
@@ -67,7 +67,7 @@ public:
     FJPhaserCreator()
     {
     }
-    QString name() { return "Phaser"; }
+    QString name() { return "ca.nettek.live.phaser"; }
     QString description() { return "Not the one from Star Trek..."; }
     live::ObjectPtr newBackend() { return new FJPhaserApp(); }
     live::ObjectPtr loadBackend(const QByteArray &str) {

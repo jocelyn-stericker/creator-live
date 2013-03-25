@@ -13,9 +13,9 @@ class LIBLIVECORESHARED_EXPORT BridgeMidiIn : public QObject, public live::Objec
     Q_OBJECT
     LIVE_MIDI
     LIVE_INPUT
-    QString s_name;
+    QString m_name;
 public:
-    BridgeMidiIn(QString name) : live::Object(name,1,0,2), s_name(name) { }
+    BridgeMidiIn(QString name) : live::Object(name,1,0,2), m_name(name) { }
 
 public slots:
     void readData(QByteArray data) {
@@ -30,8 +30,8 @@ public slots:
         qDebug() << "Event OK";
 
         if (!commands.size()) return;
-        qDebug()<<commands.first() << "VS"<<"FROM "+s_name;
-        if (commands.first()!="FROM "+s_name) return;
+        qDebug()<<commands.first() << "VS"<<"FROM "+m_name;
+        if (commands.first()!="FROM "+m_name) return;
         commands.pop_front();
 
         qDebug() << "From OK";
@@ -87,17 +87,17 @@ public slots:
 class LIBLIVECORESHARED_EXPORT BridgeMidiOut : public live::Object {
     LIVE_MIDI
     LIVE_OUTPUT
-    QTcpSocket* s_sock;
-    QString s_name;
+    QTcpSocket* m_sock;
+    QString m_name;
 public:
-    BridgeMidiOut(QTcpSocket* sock, QString name) : live::Object(name,1,0,2), s_sock(sock), s_name(name) {
+    BridgeMidiOut(QTcpSocket* sock, QString name) : live::Object(name,1,0,2), m_sock(sock), m_name(name) {
     }
     void mIn(const live::Event *ev, live::ObjectChain* )
     {
         QByteArray data;
-        qDebug() << "Hey, I'm"<<s_name;
+        qDebug() << "Hey, I'm"<<m_name;
         data+="BEGIN EVENT\n";
-        data+="TO "+s_name+"\n";
+        data+="TO "+m_name+"\n";
         data+="MSG "+QString::number(ev->message)+"\n";
         data+="DATA1 "+QString::number(ev->data1)+"\n";
         data+="DATA2 "+QString::number(ev->data2)+"\n";
@@ -105,7 +105,7 @@ public:
         data+="DATA3 "+QString::number(live::midi::getTime_msec()-ev->time.toTime_ms())+"\n";
         data+="END EVENT\n";
         qDebug() << "I'm sending "<<data;
-        s_sock->write(data);
+        m_sock->write(data);
         qDebug() << "Written!"<<live::midi::getTime_msec()-ev->time.toTime_ms();
     }
 private:
@@ -114,15 +114,15 @@ private:
 
 class LIBLIVECORESHARED_EXPORT BridgeClient : public QObject {
     Q_OBJECT
-    QTcpSocket* s_sock;
-    QList<BridgeMidiIn*> s_ins;
-    QList<BridgeMidiOut*> s_outs;
-    QList<live::Connection> s_connections;
+    QTcpSocket* m_sock;
+    QList<BridgeMidiIn*> m_ins;
+    QList<BridgeMidiOut*> m_outs;
+    QList<live::Connection> m_connections;
 public:
     BridgeClient()
-      : s_sock()
-      , s_ins()
-      , s_outs()
+      : m_sock()
+      , m_ins()
+      , m_outs()
       {
     }
 public slots:
@@ -130,11 +130,11 @@ public slots:
         if (code.size()!=8) {
             qDebug() << "Invalid IP code...";
         }
-        if (s_sock) {
-            while (s_ins.size()) { delete s_ins.back(); s_ins.pop_front(); }
-            while (s_outs.size()) { delete s_outs.back(); s_outs.pop_front(); }
-            delete s_sock;
-            s_sock=0;
+        if (m_sock) {
+            while (m_ins.size()) { delete m_ins.back(); m_ins.pop_front(); }
+            while (m_outs.size()) { delete m_outs.back(); m_outs.pop_front(); }
+            delete m_sock;
+            m_sock=0;
             return;
         }
         QStringList parts;
@@ -145,16 +145,16 @@ public slots:
             parts.push_back(QString::number(part.toInt(0,16)));
         } while (code.size());
         QString ip=parts.join(".");
-        s_sock = new QTcpSocket();
+        m_sock = new QTcpSocket();
         qDebug() << "Trying ipX "<<ip;
-        s_sock->connectToHost(ip,1143);
-        connect(s_sock,SIGNAL(readyRead()),this,SLOT(pair()));
+        m_sock->connectToHost(ip,1143);
+        connect(m_sock,SIGNAL(readyRead()),this,SLOT(pair()));
     }
 
     void pair() {
-        Q_ASSERT(sender()==s_sock);
-        disconnect(s_sock,SIGNAL(readyRead()),this,SLOT(pair()));
-        QList<QByteArray> data=s_sock->readAll().split('\n');
+        Q_ASSERT(sender()==m_sock);
+        disconnect(m_sock,SIGNAL(readyRead()),this,SLOT(pair()));
+        QList<QByteArray> data=m_sock->readAll().split('\n');
 
         qDebug() << "Pairing...";
 
@@ -172,8 +172,8 @@ public slots:
 
         if (!data.size()) return;
         while (data[0]!="END MIDI_INPUT") {
-            s_ins.push_back(new BridgeMidiIn(data[0]));
-            live::object::set(s_ins.back());
+            m_ins.push_back(new BridgeMidiIn(data[0]));
+            live::object::set(m_ins.back());
 
             data.pop_front();
             if (!data.size()) return;
@@ -188,8 +188,8 @@ public slots:
 
         if (!data.size()) return;
         while (data[0]!="END MIDI_OUTPUT") {
-            s_outs.push_back(new BridgeMidiOut(s_sock,data[0]));
-            live::object::set(s_outs.back());
+            m_outs.push_back(new BridgeMidiOut(m_sock,data[0]));
+            live::object::set(m_outs.back());
 
             data.pop_front();
             if (!data.size()) return;
@@ -198,21 +198,21 @@ public slots:
         if (!data.size()) return;
         data.pop_front();
 
-        for (int i=0;i<s_ins.size();i++)
+        for (int i=0;i<m_ins.size();i++)
         {
-            for (int j=0;j<s_outs.size();j++)
+            for (int j=0;j<m_outs.size();j++)
             {
                 if (i!=1||j!=1) continue;
-                s_connections.push_back(live::Connection(s_ins[i], s_outs[i], live::MidiConnection));
+                m_connections.push_back(live::Connection(m_ins[i], m_outs[i], live::MidiConnection));
             }
         }
 
-        connect(s_sock,SIGNAL(readyRead()),this,SLOT(readData()));
+        connect(m_sock,SIGNAL(readyRead()),this,SLOT(readData()));
     }
 
     void readData() {
-        QByteArray data=s_sock->readAll();
-        for (int i=0;i<s_ins.size();i++) s_ins[i]->readData(data);
+        QByteArray data=m_sock->readAll();
+        for (int i=0;i<m_ins.size();i++) m_ins[i]->readData(data);
     }
 
 private:

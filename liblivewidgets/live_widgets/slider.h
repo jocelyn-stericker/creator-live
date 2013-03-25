@@ -17,7 +17,7 @@ namespace live_widgets {
 
 class LIBLIVEWIDGETSSHARED_EXPORT Slider : public QSlider {
     Q_OBJECT
-    bool s_bindMode;
+    bool m_bindMode;
 public:
     explicit Slider(QWidget *parent = 0);
 

@@ -23,10 +23,10 @@ namespace Ui {
 class SamplerFrame : public live_widgets::AppFrame
 {
     Q_OBJECT
-    SamplerApp& s_app;
-    int s_times[16];
+    SamplerApp& m_app;
+    int m_times[16];
     QMenu* currentCM;
-    int s_activeButton;
+    int m_activeButton;
 public:
     explicit SamplerFrame(SamplerApp* backend, AbstractTrack *parent = 0);
     ~SamplerFrame();
@@ -54,7 +54,7 @@ public:
     SamplerCreator()
     {
     }
-    QString name() { return "SAMPLER"; }
+    QString name() { return "ca.nettek.live.sampler"; }
     QString description() { return "Make your own instrument..."; }
     live::ObjectPtr newBackend() { return new SamplerApp(); }
     live::ObjectPtr loadBackend(const QByteArray &str) {

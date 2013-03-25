@@ -13,13 +13,13 @@ int VstEffectApp::s_lastId=-1;
 
 VstEffectApp::VstEffectApp() :
     LObject("VST Effect App"),
-    s_internal(0), s_id(++s_lastId), s_isInit(0), s_filename("")
+   m_internal(0),m_id(++s_lastId),m_isInit(0),m_filename("")
 {
 }
 
 VstEffectApp::~VstEffectApp()
 {
-    delete s_internal;
+    deletem_internal;
 }
 
 void VstEffectApp::aIn(const float *data, int chan, Object*p)
@@ -38,7 +38,7 @@ void VstEffectApp::aIn(const float *data, int chan, Object*p)
     else
     {
         p->push_back(this);
-        s_internal->aIn(data,chan,p);
+       m_internal->aIn(data,chan,p);
         p->pop_back();
     }
 }
@@ -48,7 +48,7 @@ void VstEffectApp::mIn(const Event *data, ObjectChain*p)
     p->push_back(this);
     if(s_internal)
     {
-        s_internal->mIn(data,p);
+       m_internal->mIn(data,p);
     }
     mOut(data,p);
     p->pop_back();
@@ -57,16 +57,16 @@ void VstEffectApp::mIn(const Event *data, ObjectChain*p)
 void VstEffectApp::init(QString path)
 {
     Q_ASSERT(!s_internal);
-    s_isInit=1;
-    s_filename=path;
-    s_internal=new Vst(path);
+   m_isInit=1;
+   m_filename=path;
+   m_internal=new Vst(path);
     //ASSERT THAT IT IS VALID!!!
-    s_internal->hybridConnect(this);
-    s_internal->show();
+   m_internal->hybridConnect(this);
+   m_internal->show();
 }
 
 void VstEffectApp::show()
 {
     Q_ASSERT(s_internal);
-    s_internal->show();
+   m_internal->show();
 }

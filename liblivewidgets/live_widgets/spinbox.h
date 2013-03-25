@@ -17,7 +17,7 @@ namespace live_widgets {
 
 class LIBLIVEWIDGETSSHARED_EXPORT SpinBox : public QSpinBox {
     Q_OBJECT
-    bool s_bindMode;
+    bool m_bindMode;
 public:
     explicit SpinBox(QWidget *parent = 0);
 

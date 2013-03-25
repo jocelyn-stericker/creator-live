@@ -135,13 +135,13 @@ QByteArray PitchApp::save()
 
     PitchApp*x=IS_SAVE?_THIS:new PitchApp;
 
-    /*003*/ P_INT32(x->s_stShift);
+    /*003*/ P_INT32(x->m_stShift);
 
     /*004*/
-    P_INT32(x->s_id);
-    if (x->s_id>x->s_lastId)
+    P_INT32(x->m_id);
+    if (x->m_id>x->m_lastId)
     {
-        x->s_lastId=x->s_id;
+        x->m_lastId=x->m_id;
     }
 
     /*005*/

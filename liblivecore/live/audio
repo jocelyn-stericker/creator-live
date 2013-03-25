@@ -7,8 +7,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 *******************************************************/
 
-#ifndef AUDIOSYS_H
-#define AUDIOSYS_H
+#ifndef AUDIOSYm_H
+#define AUDIOSYm_H
 
 #include <live/object>
 
@@ -18,8 +18,8 @@ class AudioInterface;
 
 class LIBLIVECORESHARED_EXPORT audio
 {
-    static AudioInterface* s_audioInterface;
-    static QString s_serverKey;
+    static AudioInterface* m_audioInterface;
+    static QString m_serverKey;
 public:
     static bool strictInnocentXruns;
     static void registerInterface(AudioInterface*);
@@ -74,4 +74,4 @@ public:
 
 }
 
-#endif // AUDIOSYS_H
+#endif // AUDIOSYm_H

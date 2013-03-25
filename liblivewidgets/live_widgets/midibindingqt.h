@@ -27,7 +27,7 @@ namespace live_widgets {
 class LIBLIVEWIDGETSSHARED_EXPORT MidiBindingQt : public live::MidiBinding {
     Q_OBJECT
 protected:
-    bool s_quantized;
+    bool m_quantized;
 public:
     LIVE_MIDI
     LIVE_OUTPUT
@@ -36,7 +36,7 @@ public:
     friend class BindableParent;
 
     MidiBindingQt(QObject* cGuiObject,GuiType cparentType,BindingType ctype,bool quantized,QString cdata="",int ckey=-1,live::ObjectPtr parent=0, bool controller=0) :
-        MidiBinding(cGuiObject,cparentType,ctype,cdata,ckey,parent,controller), s_quantized(quantized) {
+        MidiBinding(cGuiObject,cparentType,ctype,cdata,ckey,parent,controller), m_quantized(quantized) {
         QObject* qtGuiObject=static_cast<QObject*>(cGuiObject);
         connect(qtGuiObject,SIGNAL(destroyed()),this,SLOT(deleteLater()));
     }
@@ -54,14 +54,14 @@ protected:
             break;
         case BindingClick:
             if ( parentType == GuiAbstractButton ) {
-                if(s_quantized) {
+                if(m_quantized) {
                     new live::QuantizedAction(static_cast<QAbstractButton*>(guiObject),SLOT(click()),2);  //quantize to half the beat
                 } else {
                     ( static_cast<QAbstractButton *>(guiObject) )->click();
                 }
             }
             if ( parentType == GuiAction ) {
-                if(s_quantized) {
+                if(m_quantized) {
                     new live::QuantizedAction( static_cast<QAction *>(guiObject),SLOT(trigger()),2);  //quantize to half the beat
                 } else {
                     ( static_cast<QAction *>(guiObject) )->trigger();
@@ -70,7 +70,7 @@ protected:
             break;
         case BindingToggle:
             if ( parentType == GuiAbstractButton ) {
-                if(s_quantized) {
+                if(m_quantized) {
                     new live::QuantizedAction(static_cast<QAbstractButton *>(guiObject),SLOT(click()),2);
                 } else {
                     ( static_cast<QAbstractButton *>(guiObject) )->click();
@@ -83,7 +83,7 @@ protected:
 
             for ( int i = 0; i < cb->count(); i++ ) {
                 if ( cb->itemText(i) == data ) {
-                    if(s_quantized) {
+                    if(m_quantized) {
                         new live::QuantizedAction(cb,SLOT(setCurrentIndex(int)),2,i);
                     } else {
                         cb->setCurrentIndex(i);
@@ -96,7 +96,7 @@ protected:
             if ( parentType == GuiComboBox ) {
                 cb = static_cast<QComboBox *>(guiObject);
                 if ( cb->lineEdit() ) {
-                    if(s_quantized) {
+                    if(m_quantized) {
                         new live::QuantizedAction(cb->lineEdit(),SLOT(setText(QString)),2,data);
                     } else {
                         cb->lineEdit()->setText( data );
@@ -105,7 +105,7 @@ protected:
                 break;
             } else if ( parentType == 3 ) {
                 s = static_cast<QAbstractSlider *>(guiObject);
-                if(s_quantized) {
+                if(m_quantized) {
                     new live::QuantizedAction(s,SLOT(setValue(int)),2,data.toInt());
                 } else {
                     s->setValue( data.toInt() );
@@ -113,13 +113,13 @@ protected:
             }
         case BindingStepUp:
             if ( parentType == 2 ) {
-                if(s_quantized) {
+                if(m_quantized) {
                     new live::QuantizedAction(static_cast<QAbstractSpinBox*>(guiObject),SLOT(stepUp()),2);
                 } else {
                     ( static_cast<QAbstractSpinBox *>(guiObject) )->stepUp();
                 }
             } else if ( parentType == 3 ) {
-                if(s_quantized) {
+                if(m_quantized) {
                     QAbstractSlider*as=static_cast<QAbstractSlider*>(guiObject);
                     new live::QuantizedAction(as,SLOT(setValue(int)),
                                         float(as->value()+as->singleStep()));    //best we can get easily
@@ -130,13 +130,13 @@ protected:
             break;
         case BindingStepDown:
             if ( parentType == 2 ) {
-                if(s_quantized) {
+                if(m_quantized) {
                     new live::QuantizedAction(static_cast<QAbstractSpinBox*>(guiObject),SLOT(stepDown()),2);
                 } else {
                     ( static_cast<QAbstractSpinBox *>(guiObject) )->stepDown();
                 }
             } else if ( parentType == 3 ) {
-                if(s_quantized) {
+                if(m_quantized) {
                     QAbstractSlider*as=static_cast<QAbstractSlider*>(guiObject);
                     new live::QuantizedAction(as,SLOT(setValue(int)),
                                         float(as->value() - as->singleStep()));    //best we can get easily
@@ -148,7 +148,7 @@ protected:
 //        case BindingSeqSetPos:
 //        {
 //            SequencerApp* app=static_cast<SequencerApp*>(guiObject);
-//            if(s_quantized)
+//            if(m_quantized)
 //            {
 //                new live::QuantizedAction(app,SLOT(setPos(int)),2,data.toInt());
 //            }

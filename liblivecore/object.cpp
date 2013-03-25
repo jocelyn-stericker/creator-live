@@ -86,9 +86,9 @@ public:
 };
 
 LIBLIVECORESHARED_EXPORT TheMutex* TheMutex::me=new TheMutex();
-LIBLIVECORESHARED_EXPORT bool live::Object::ss_XRUN = false;
+LIBLIVECORESHARED_EXPORT bool live::Object::sm_XRUN = false;
 #if !defined(NDEBUG) && defined(__linux__)
-LIBLIVECORESHARED_EXPORT std::vector<quint32> live::Object::s_asyncTime;
+LIBLIVECORESHARED_EXPORT std::vector<quint32> live::Object::m_asyncTime;
 #endif
 
 static QMutex x_asyncTime(QMutex::NonRecursive);
@@ -100,7 +100,7 @@ LIBLIVECORESHARED_EXPORT void live::Object::beginProc() {
     live_mutex(x_asyncTime) {
         timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
-        s_asyncTime.push_back(ts.tv_sec * 1000000000 + ts.tv_nsec);
+        m_asyncTime.push_back(ts.tv_sec * 1000000000 + ts.tv_nsec);
     }
 #endif
 }
@@ -111,7 +111,7 @@ LIBLIVECORESHARED_EXPORT void live::Object::beginAsyncAction() {
     live_mutex(x_asyncTime) {
         timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
-        s_asyncTime.push_back(ts.tv_sec * 1000000000 + ts.tv_nsec);
+        m_asyncTime.push_back(ts.tv_sec * 1000000000 + ts.tv_nsec);
     }
 #endif
 }
@@ -119,20 +119,20 @@ LIBLIVECORESHARED_EXPORT void live::Object::beginAsyncAction() {
 LIBLIVECORESHARED_EXPORT void live::Object::endProc(bool starting) {
     TheMutex::me->LOCK.unlock();
 
-    if (ss_XRUN) {
+    if (sm_XRUN) {
         qCritical() << "XRUN:: PROC guilty!";
-        ss_XRUN = false;
+        sm_XRUN = false;
     }
 #if !defined(NDEBUG) && defined(__linux__)
     live_mutex(x_asyncTime) {
         timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
         quint32 l = ts.tv_sec * 1000000000 + ts.tv_nsec;
-        if (live::audio::nFrames() > 50 && l - s_asyncTime.back() > 10000000*(live::audio::nFrames()/512.0) && !starting) {
-            qCritical() << "THREADING ERROR: Audio thread killed" << (l - s_asyncTime.back()) << "kittens. The culprit has yet to be caught.\n";
+        if (live::audio::nFrames() > 50 && l - m_asyncTime.back() > 10000000*(live::audio::nFrames()/512.0) && !starting) {
+            qCritical() << "THREADING ERROR: Audio thread killed" << (l - m_asyncTime.back()) << "kittens. The culprit has yet to be caught.\n";
 //            if (live::audio::strictInnocentXruns) TCRASH();
         }
-        s_asyncTime.pop_back();
+        m_asyncTime.pop_back();
     }
 #endif
 }
@@ -145,31 +145,31 @@ LIBLIVECORESHARED_EXPORT void live::Object::endAsyncAction(const char* file, int
         timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
         quint32 l = ts.tv_sec * 1000000000 + ts.tv_nsec;
-        if (live::audio::nFrames() > 50 && l - s_asyncTime.back() > 10000000*(live::audio::nFrames()/512.0)) {
-            qCritical() << "THREADING ERROR: Lock at" << file << "line" << line << "killed" << (l - s_asyncTime.back() ) << "kittens.";
+        if (live::audio::nFrames() > 50 && l - m_asyncTime.back() > 10000000*(live::audio::nFrames()/512.0)) {
+            qCritical() << "THREADING ERROR: Lock at" << file << "line" << line << "killed" << (l - m_asyncTime.back() ) << "kittens.";
             if (live::audio::strictInnocentXruns)
                 TCRASH();
         }
-        s_asyncTime.pop_back();
+        m_asyncTime.pop_back();
     }
 #endif
 
-    if (ss_XRUN) {
+    if (sm_XRUN) {
         qCritical() << "XRUN:: AsyncAction guilty?";
-        ss_XRUN = false;
+        sm_XRUN = false;
     }
 }
 
 LIBLIVECORESHARED_EXPORT void live::Object::XRUN() {
     if (!TheMutex::me->LOCK.tryLock(1)) {
-        ss_XRUN = true;
+        sm_XRUN = true;
     } else {
         TheMutex::me->LOCK.unlock();
         qDebug() << "XRUN:: Mutex innocent.";
         if (live::audio::strictInnocentXruns) {
             TCRASH();
         }
-        ss_XRUN = false;
+        sm_XRUN = false;
     }
 }
 
@@ -177,7 +177,7 @@ void live::Object::aOut(const float *data, int chan, Object *prev) {
     live::lthread::assertAudio();
     for (std::multiset<live::ObjectPtr>::iterator it = aConnections.begin(); it != aConnections.end(); ++it) {
         Q_ASSERT((*it)->aInverseConnections.size());
-        if ((*it)->aInverseConnections.size()<=1||!(*it)->s_allowMixer) (*it)->aIn(data,chan,prev);
+        if ((*it)->aInverseConnections.size()<=1||!(*it)->m_allowMixer) (*it)->aIn(data,chan,prev);
         else (*it)->mixer_process(data,chan);
     }
 }
@@ -188,25 +188,25 @@ std::set<live::Object*> live::Object::universe;
 
 live::Object::Object(QString cname, bool isPhysical, bool allowMixer, int chans)
   : x_ptr(QMutex::Recursive)
-  , s_name(cname)
-  , s_aOn(1)
-  , s_mOn(1)
-  , s_temp(1)
-  , s_allowMixer(allowMixer)
-  , s_ptrList()
+  , m_name(cname)
+  , m_aOn(1)
+  , m_mOn(1)
+  , m_temp(1)
+  , m_allowMixer(allowMixer)
+  , m_ptrList()
   , aConnections()
   , mConnections()
   , aInverseConnections()
   , mInverseConnections()
-  , s_isDestroying(false)
-  , s_ec((cname == "Midi Event Counter") ? new live::MidiEventCounter() : 0)
+  , m_isDestroying(false)
+  , m_ec((cname == "Midi Event Counter") ? new live::MidiEventCounter() : 0)
   , mixer_nframes(-1)
-  , s_chans(chans)
+  , m_chans(chans)
   {
     kill_kitten universe.insert(this);
 
-    mixer_data = new float*[s_chans];
-    mixer_at = new uint[s_chans];
+    mixer_data = new float*[m_chans];
+    mixer_at = new uint[m_chans];
 
     mixer_nframes = live::audio::nFrames();
 
@@ -216,7 +216,7 @@ live::Object::Object(QString cname, bool isPhysical, bool allowMixer, int chans)
         }
     }
 
-    for (int i = 0; i < s_chans; ++i) {
+    for (int i = 0; i < m_chans; ++i) {
         mixer_data[i] = new float[mixer_nframes];
         mixer_at[i]=0;
     }
@@ -228,9 +228,9 @@ live::Object::Object(QString cname, bool isPhysical, bool allowMixer, int chans)
 
 live::Object::~Object() {
     kill_kitten universe.erase(this);
-    s_isDestroying = 1;
+    m_isDestroying = 1;
     kill();
-    for (int i=0;i<s_chans;i++) delete[] mixer_data[i];
+    for (int i=0;i<m_chans;i++) delete[] mixer_data[i];
     QTimer::singleShot(0,live::object::singleton(),SLOT(notify()));
 }
 
@@ -248,9 +248,9 @@ void live::Object::kill() {
     if (!live_private::SecretMidi::me) new live_private::SecretMidi;
     live_private::SecretMidi::me->mClearEventsTo(this);
     live_mutex(x_ptr) {
-        for (QSet<ObjectPtr*>::iterator it = s_ptrList.begin(); it != s_ptrList.end(); ++it) {
+        for (QSet<ObjectPtr*>::iterator it = m_ptrList.begin(); it != m_ptrList.end(); ++it) {
             (*it)->obliviate();
-            zombies->insertMulti(s_name,*it);
+            zombies->insertMulti(m_name,*it);
         }
     }
 }
@@ -368,7 +368,7 @@ void live::Object::mOut(const live::Event *data, live::ObjectChain* p, bool back
         *x=*data;
         live_private::SecretMidi::me->mWithhold(x,*p,this, backwards);    //now owner.
     } else {
-        if(s_ec) s_ec->mIn(data,p);
+        if(m_ec) m_ec->mIn(data,p);
 
         for(std::multiset<live::ObjectPtr>::iterator it = mConnections.begin(); it != mConnections.end(); ++it) {
             live::Event*x=new live::Event(*data);
@@ -383,10 +383,10 @@ void live::Object::mOut(const live::Event *data, live::ObjectChain* p, bool back
 }
 
 void live::Object::mPanic() {
-    if (!s_ec)
+    if (!m_ec)
         return;
 
-    QList<live::Event> ons = s_ec->flush();
+    QList<live::Event> ons = m_ec->flush();
     live::ObjectChain me;
     me.push_back(this);
     for (int i = 0; i < ons.size(); ++i)
@@ -408,7 +408,7 @@ public:
 
 void live::Object::mixer_resetStatus() {
     live_mutex(x_mixers) {
-        for (int i = 0; i < s_chans; ++i) {
+        for (int i = 0; i < m_chans; ++i) {
             mixer_clear(i);
             mixer_at[i] = 0;
         }
@@ -436,15 +436,15 @@ void live::ObjectPtr::obliviate() {
     kill_kitten {
         live::ObjectPtr x=live::midi::null();
         x.data()->setTemporary(0);
-        s_obj=x.data();
+        m_obj=x.data();
     }
 }
 
 bool live::ObjectPtr::restore(live::Object* a) {
     live_mutex(a->x_ptr) {
-        if (dynamic_cast<MidiNull*>(s_obj)) delete s_obj;
-        s_obj=a;
-        a->s_ptrList.insert(this);
+        if (dynamic_cast<MidiNull*>(m_obj)) delete m_obj;
+        m_obj=a;
+        a->m_ptrList.insert(this);
     }
     return 1;
 }
@@ -461,21 +461,21 @@ QList<live::ObjectPtr> live::object::get(int flags) {
     }
 
     /* FIXME */ {
-        for (int i=0;i<me->s_objects.size();i++) {
-            if (!me->s_objects[i]) {
+        for (int i=0;i<me->m_objects.size();i++) {
+            if (!me->m_objects[i]) {
                 continue;
             }
-            if ((flags&Instrument)&&me->s_objects[i]->isInput()&&me->s_objects[i]->isOutput()) {
-                ret<<me->s_objects[i];
+            if ((flags&Instrument)&&me->m_objects[i]->isInput()&&me->m_objects[i]->isOutput()) {
+                ret<<me->m_objects[i];
             } else if ( (!(flags&Input)&&!(flags&Output)) ||
-                        (((flags&Input  && me->s_objects[i]->isInput()  && (!(flags&NotOutput) || !me->s_objects[i]->isOutput() )) ||
-                          (flags&Output && me->s_objects[i]->isOutput() && (!(flags&NotInput)  || !me->s_objects[i]->isInput()  ))) &&
-                         (!((flags&Input) && (flags&Output)) || (me->s_objects[i]->isInput()&&me->s_objects[i]->isOutput())))) {   // satisfies I/O requirements
+                        (((flags&Input  && me->m_objects[i]->isInput()  && (!(flags&NotOutput) || !me->m_objects[i]->isOutput() )) ||
+                          (flags&Output && me->m_objects[i]->isOutput() && (!(flags&NotInput)  || !me->m_objects[i]->isInput()  ))) &&
+                         (!((flags&Input) && (flags&Output)) || (me->m_objects[i]->isInput()&&me->m_objects[i]->isOutput())))) {   // satisfies I/O requirements
                 if ( (!(flags&Midi)&&!(flags&Audio)) ||
-                     ((((flags&Audio) && me->s_objects[i]->isAudioObject() && (!(flags&NotMidi)  || !me->s_objects[i]->isMidiObject() )) ||
-                       ((flags&Midi)  && me->s_objects[i]-> isMidiObject() && (!(flags&NotAudio) || !me->s_objects[i]->isAudioObject()))) &&
-                      (!((flags&Audio) && (flags&Midi)) || (me->s_objects[i]->isAudioObject()&&me->s_objects[i]->isMidiObject())))) {   // satisfies A/M requirements
-                    ret<<me->s_objects[i];
+                     ((((flags&Audio) && me->m_objects[i]->isAudioObject() && (!(flags&NotMidi)  || !me->m_objects[i]->isMidiObject() )) ||
+                       ((flags&Midi)  && me->m_objects[i]-> isMidiObject() && (!(flags&NotAudio) || !me->m_objects[i]->isAudioObject()))) &&
+                      (!((flags&Audio) && (flags&Midi)) || (me->m_objects[i]->isAudioObject()&&me->m_objects[i]->isMidiObject())))) {   // satisfies A/M requirements
+                    ret<<me->m_objects[i];
                 }
             }
         }
@@ -487,7 +487,7 @@ void live::object::clear(int flags) {
     kill_kitten {
         QList<live::ObjectPtr> toClear=get(flags);
         while (toClear.size()) {
-            me->s_objects.removeOne(toClear.takeFirst());
+            me->m_objects.removeOne(toClear.takeFirst());
         }
     }
 }
@@ -495,12 +495,12 @@ void live::object::clear(int flags) {
 void live::object::set(live::ObjectPtr o) {
     kill_kitten {
         me=me?me:new object;
-        for (int i=0;i<me->s_objects.size();i++) {
-            if (me->s_objects[i]==o) {
+        for (int i=0;i<me->m_objects.size();i++) {
+            if (me->m_objects[i]==o) {
                 return;
             }
         }
-        me->s_objects.push_back(o);
+        me->m_objects.push_back(o);
     }
 }
 
@@ -523,7 +523,7 @@ live::ObjectPtr live::object::request(QString req, int flags) {
         //        v=QInputDialog::getItem(0L,"Choose a mapping","Creator Live requires a device which does not exist. Which device should take "+req+"'s role?",b,0,1,&ok);
     }
     Mapping*m=new Mapping(req,objList[b.indexOf(v)]);
-    me->s_objects.push_back(m);
+    me->m_objects.push_back(m);
     return m;
 }
 
@@ -544,29 +544,29 @@ void live::ObjectChain::push_back(live::Object *o) {
 }
 
 live::ObjectChain::ObjectChain()
-  : s_identity()
+  : m_identity()
   {
 }
 
 void live::ObjectPtr::detach() {
-    if (!s_obj)
+    if (!m_obj)
         return;
 
-    live_mutex(s_obj->x_ptr) {
-        s_obj->s_ptrList.remove(this);
+    live_mutex(m_obj->x_ptr) {
+        m_obj->m_ptrList.remove(this);
     }
 
     // FIXME: we should assert that we're not currently killing kittens.
     live::Object* toDelete = 0;
 
-    live_mutex(s_obj->x_ptr) {
+    live_mutex(m_obj->x_ptr) {
         if (!valid()) return;
-        if (s_obj) {
-            if (!s_obj->s_ptrList.size()&&s_obj->isTemporary()) { // FIXME
-                if (s_obj->qoThis() && !s_obj->s_isDestroying)
-                    s_obj->qoThis()->deleteLater();
-                else if (!s_obj->s_isDestroying)
-                    toDelete = s_obj;
+        if (m_obj) {
+            if (!m_obj->m_ptrList.size()&&m_obj->isTemporary()) { // FIXME
+                if (m_obj->qoThis() && !m_obj->m_isDestroying)
+                    m_obj->qoThis()->deleteLater();
+                else if (!m_obj->m_isDestroying)
+                    toDelete = m_obj;
             }
         }
         for (QMap<QString,ObjectPtr*>::iterator it=Object::zombies->begin(); it!=Object::zombies->end(); ++it) {
@@ -576,13 +576,13 @@ void live::ObjectPtr::detach() {
                     break;
             }
         }
-        s_obj=0;
+        m_obj=0;
     }
     delete toDelete;
 }
 
 bool live::ObjectPtr::valid() const {
-    return s_obj?(!dynamic_cast<live_private::MidiNull*>(s_obj)):((bool)s_obj);
+    return m_obj?(!dynamic_cast<live_private::MidiNull*>(m_obj)):((bool)m_obj);
 }
 
 live::Connection::Connection(live::ObjectPtr ca, live::ObjectPtr cb, const ConnectionType &ct)

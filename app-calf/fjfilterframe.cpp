@@ -27,17 +27,17 @@
 
 using namespace live_widgets;
 
-FJFilterFrame::FJFilterFrame(FJFilterApp *s_backend, AbstractTrack *parent)
+FJFilterFrame::FJFilterFrame(FJFilterApp *m_backend, AbstractTrack *parent)
     : AppFrame(parent)
-    , s_app(*s_backend)
+    , m_app(*m_backend)
     , ui(new Ui::FJFilterFrame)
 {
     ui->setupUi(this);
 
-    onCutoff(s_app.getCutoff());
-    onResonance(s_app.getResonance()*1000.0f);
-    onMode(s_app.getMode());
-    onIntertia(s_app.getInertia());
+    onCutoff(m_app.getCutoff());
+    onResonance(m_app.getResonance()*1000.0f);
+    onMode(m_app.getMode());
+    onIntertia(m_app.getInertia());
 
     setDesiredWidth(227);
 
@@ -52,17 +52,17 @@ FJFilterFrame::FJFilterFrame(FJFilterApp *s_backend, AbstractTrack *parent)
 
 FJFilterFrame::~FJFilterFrame()
 {
-    s_app.deleteLater();
+    m_app.deleteLater();
     delete ui;
 }
 
 void FJFilterFrame::onCutoff(int f) { // 10...20000, 2000, log
-    s_app.setCutoff(f);
+    m_app.setCutoff(f);
     ui->verticalSlider_freq->setValue(f);
 }
 
 void FJFilterFrame::onResonance(int f) { // 0.707...32, 0.707, 1000
-    s_app.setResonance(float(f)/1000.0f);
+    m_app.setResonance(float(f)/1000.0f);
     ui->verticalSlider_res->setValue(f);
 }
 
@@ -72,13 +72,13 @@ void FJFilterFrame::onMode(int f) { // Filter
         ui->comboBox_mode2->setCurrentIndex(f%3);
     }
 
-    s_app.setMode(static_cast<FJFilterApp::Filter>
+    m_app.setMode(static_cast<FJFilterApp::Filter>
         ( ui->comboBox_mode1->currentIndex() * 3
         + ui->comboBox_mode2->currentIndex() / 3));
 }
 
 void FJFilterFrame::onIntertia(int f) { // 5...100, 20
-    s_app.setIntertia(f);
+    m_app.setIntertia(f);
     ui->verticalSlider_iner->setValue(f);
 }
 

@@ -140,7 +140,7 @@ QByteArray LooperApp::save()
     /*003*/
     MidiTrack*mt=0;
 
-    xba=IS_SAVE?x->s_midiTrack->save():QByteArray();
+    xba=IS_SAVE?x->m_midiTrack->save():QByteArray();
     ret IO xba;
     if (IS_LOAD)
     {
@@ -150,7 +150,7 @@ QByteArray LooperApp::save()
     /*004*/
     AudioTrack*at=0;
 
-    xba=IS_SAVE?x->s_audioTrack->save():QByteArray();
+    xba=IS_SAVE?x->m_audioTrack->save():QByteArray();
     ret IO xba;
     if (IS_LOAD)
     {
@@ -163,14 +163,14 @@ QByteArray LooperApp::save()
     }
 
     /*006/7*/
-    P_INT32(x->s_id);
-    if (x->s_id>(SequencerSys::self?SequencerSys::self:new SequencerSys)->_lastId)
+    P_INT32(x->m_id);
+    if (x->m_id>(SequencerSys::self?SequencerSys::self:new SequencerSys)->_lastId)
     {
-        (SequencerSys::self?SequencerSys::self:new SequencerSys)->_lastId=x->s_id;
+        (SequencerSys::self?SequencerSys::self:new SequencerSys)->_lastId=x->m_id;
     }
 
     /*007*/
-    P_INT32(x->s_scale);
+    P_INT32(x->m_scale);
 
     //////////////////////////////////////////////////////////////////
     // FROM LooperApp::
@@ -185,10 +185,10 @@ QByteArray LooperApp::save()
     P_INT32(x->b_loopLength);
 
     /*010*/
-    P_INT32(x->s_id_looper);
-    if (x->s_id_looper>x->s_lastId)
+    P_INT32(x->m_id_looper);
+    if (x->m_id_looper>x->m_lastId)
     {
-        x->s_lastId=x->s_id_looper;
+        x->m_lastId=x->m_id_looper;
     }
 
     /*011*/
@@ -230,7 +230,7 @@ QByteArray SequencerApp::save()
     MidiTrack* cmidiTrack=0;
     Q_UNUSED(cmidiTrack);
 
-    xba=IS_SAVE?x->s_midiTrack->save():QByteArray();
+    xba=IS_SAVE?x->m_midiTrack->save():QByteArray();
     ret IO xba;
     if (IS_LOAD)
     {
@@ -241,7 +241,7 @@ QByteArray SequencerApp::save()
     AudioTrack* caudioTrack=0;
     Q_UNUSED(caudioTrack);
 
-    xba=IS_SAVE?x->s_audioTrack->save():QByteArray();
+    xba=IS_SAVE?x->m_audioTrack->save():QByteArray();
     ret IO xba;
     if (IS_LOAD)
     {
@@ -266,14 +266,14 @@ QByteArray SequencerApp::save()
     P_BOOL(x->b_clipped);
 
     /*006*/
-    P_INT32(x->s_id);
-    if (x->s_id>(SequencerSys::self?SequencerSys::self:new SequencerSys)->_lastId)
+    P_INT32(x->m_id);
+    if (x->m_id>(SequencerSys::self?SequencerSys::self:new SequencerSys)->_lastId)
     {
-        (SequencerSys::self?SequencerSys::self:new SequencerSys)->_lastId=x->s_id;
+        (SequencerSys::self?SequencerSys::self:new SequencerSys)->_lastId=x->m_id;
     }
 
     /*007*/
-    P_INT32(x->s_scale);
+    P_INT32(x->m_scale);
 
     /*008*/
     (verify(ret,(QString)"END SequencerApp"));

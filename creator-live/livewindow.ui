@@ -17,7 +17,16 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -35,14 +44,14 @@
       <widget class="live_widgets::PushButton" name="pushButton_creatorLive">
        <property name="minimumSize">
         <size>
-         <width>130</width>
+         <width>145</width>
          <height>30</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
          <width>16777215</width>
-         <height>30</height>
+         <height>145</height>
         </size>
        </property>
        <property name="toolTip">
@@ -63,6 +72,7 @@ audio and more...</string>
 	border-color: white;
     outline: none;
 	font: 75 11pt &quot;HandelGotDLig&quot;;
+    padding-right: 0px;
 }
 
 QPushButton:hover {
@@ -105,7 +115,16 @@ QPushButton:hover {
         <property name="spacing">
          <number>0</number>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
          <number>0</number>
         </property>
         <item>
@@ -673,6 +692,16 @@ QComboBox:hover {
    <header>live_widgets/toolbutton.h</header>
   </customwidget>
   <customwidget>
+   <class>live_widgets::MetroSpinbox</class>
+   <extends>QSpinBox</extends>
+   <header>live_widgets/metrospinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>live_widgets::ComboBox</class>
+   <extends>QComboBox</extends>
+   <header>live_widgets/combobox.h</header>
+  </customwidget>
+  <customwidget>
    <class>live_widgets::PushButton</class>
    <extends>QPushButton</extends>
    <header>live_widgets/pushbutton.h</header>
@@ -682,16 +711,6 @@ QComboBox:hover {
    <extends>QWidget</extends>
    <header>live_widgets/vscrollcontainer.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>live_widgets::MetroSpinbox</class>
-   <extends>QSpinBox</extends>
-   <header>live_widgets/metrospinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>live_widgets::ComboBox</class>
-   <extends>QComboBox</extends>
-   <header>live_widgets/combobox.h</header>
   </customwidget>
  </customwidgets>
  <resources>

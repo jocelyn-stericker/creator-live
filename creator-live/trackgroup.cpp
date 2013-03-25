@@ -26,12 +26,12 @@ void TrackGroup::clearSelect() {
 
 void TrackGroup::setLastOutput(live::ObjectPtr obj, live::ObjectPtr loop)
 {
-    s_hathorView->show();
+    m_hathorView->show();
     bool ok=0;
-    for (int i=s_hathorView->count()-1;(i!=-1)&&!ok;--i) {
-        if (dynamic_cast<const Track*>(s_hathorView->at(i))) {
-            static_cast<Track*>((*s_hathorView)[i])->setOutput(obj, loop);
-            static_cast<Track*>((*s_hathorView)[i])->setOutputChooser(dynamic_cast<live_widgets::ObjectChooser*>(sender()));
+    for (int i=m_hathorView->count()-1;(i!=-1)&&!ok;--i) {
+        if (dynamic_cast<const Track*>(m_hathorView->at(i))) {
+            static_cast<Track*>((*m_hathorView)[i])->setOutput(obj, loop);
+            static_cast<Track*>((*m_hathorView)[i])->setOutputChooser(dynamic_cast<live_widgets::ObjectChooser*>(sender()));
             ok=1;
         }
     }
@@ -47,11 +47,11 @@ void TrackGroup::newHathor(live::ObjectPtr coutput)
     }
 
     Track* t = 0;
-    s_hathorView->insert(s_hathorView->count(),t = new Track(s_input,coutput));
+    m_hathorView->insert(m_hathorView->count(),t = new Track(m_input,coutput));
 
-    t->s_ambition.setInputId(instLabel->inputId(), s_hathorView->count()-1);
+    t->m_ambition.setInputId(instLabel->inputId(), m_hathorView->count()-1);
 
-    s_hathorView->updateItems();
+    m_hathorView->updateItems();
     if (coutput->isMidiObject())
         t->setOutputChooser(new MidiOutputChooser);
     else {

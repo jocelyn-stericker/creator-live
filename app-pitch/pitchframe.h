@@ -51,7 +51,7 @@ public:
     PitchCreator()
     {
     }
-    QString name() { return "Pitch Shift"; }
+    QString name() { return "ca.nettek.live.pitch"; }
     QString description() { return "Ooh! I sound like Micky Mouse..."; }
     live::ObjectPtr newBackend() { return new PitchApp(); }
     live::ObjectPtr loadBackend(const QByteArray &str) {

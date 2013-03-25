@@ -25,17 +25,17 @@ class BPMApp : public QObject, public live::Object
     QList<QTime> _bpmTime;
     QList<soundtouch::BPMDetect*> _bpmAudio;
     live::AnaBeat* _bpmMidi;
-    int s_id;
-    static int s_lastId;            /*003*/
-    float* s_histogram;
-    int s_histoBoxes;
-    int s_histoBox_i;
-    int s_histoBox_j;
-    float s_lastBPM;
-    float s_maxI_val;
-    int s_maxI;
-    int s_maxI_prev;
-    int s_boxLength;
+    int m_id;
+    static int m_lastId;            /*003*/
+    float* m_histogram;
+    int m_histoBoxes;
+    int m_histoBox_i;
+    int m_histoBox_j;
+    float m_lastBPM;
+    float m_maxI_val;
+    int m_maxI;
+    int m_maxI_prev;
+    int m_boxLength;
 public:
     live::Bound<bool> b_sync;
 
@@ -47,7 +47,7 @@ public:
     const bool& isSynced();
 public slots:
     void setSync(bool);
-    void reprimeMetro() { s_maxI_prev=-1; }
+    void reprimeMetro() { m_maxI_prev=-1; }
 public:
     float getBPM();
 

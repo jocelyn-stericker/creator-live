@@ -24,16 +24,16 @@ using namespace live_widgets;
 AudioOutputChooser::AudioOutputChooser(QWidget *parent)
   : live_widgets::ObjectChooser(parent)
   , all()
-  , s_ui(new Ui::AudioOutputChooser)
-  { s_ui->setupUi(this);
-    setMinimizedButton(s_ui->inputType);
-    setTopFrame(s_ui->inputType);
-    setBottomFrame(s_ui->frame_2);
+  , m_ui(new Ui::AudioOutputChooser)
+  { m_ui->setupUi(this);
+    setMinimizedButton(m_ui->inputType);
+    setTopFrame(m_ui->inputType);
+    setBottomFrame(m_ui->frame_2);
 
-    connect(s_ui->Bwidget,SIGNAL(clicked(QModelIndex)),s_ui->Bwidget,SLOT(setCurrentIndex(QModelIndex)));
-    connect(s_ui->Bwidget,SIGNAL(clicked(QModelIndex)),this,SLOT(activateSelected()));
-    connect(s_ui->Bwidget,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(activateSelected()));
-    connect(&b_trackName, SIGNAL(changeObserved(QString,QString)), s_ui->inputName, SLOT(setText(QString)));
+    connect(m_ui->Bwidget,SIGNAL(clicked(QModelIndex)),m_ui->Bwidget,SLOT(setCurrentIndex(QModelIndex)));
+    connect(m_ui->Bwidget,SIGNAL(clicked(QModelIndex)),this,SLOT(activateSelected()));
+    connect(m_ui->Bwidget,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(activateSelected()));
+    connect(&b_trackName, SIGNAL(changeObserved(QString,QString)), m_ui->inputName, SLOT(setText(QString)));
 
     updateObjects();
 
@@ -42,29 +42,29 @@ AudioOutputChooser::AudioOutputChooser(QWidget *parent)
     setFixedWidth(55);
     setMaximized(true);
 
-    connect(s_ui->inputType, SIGNAL(toggled(bool)), this, SLOT(setMaximized(bool)));
+    connect(m_ui->inputType, SIGNAL(toggled(bool)), this, SLOT(setMaximized(bool)));
 }
 
 AudioOutputChooser::AudioOutputChooser(const AudioOutputChooser&)
   : live_widgets::ObjectChooser(0)
   , all()
-  , s_ui(0)
+  , m_ui(0)
   {
 }
 
 AudioOutputChooser::~AudioOutputChooser()
 {
-    delete s_ui;
+    delete m_ui;
 }
 
 void AudioOutputChooser::activateSelected()
 {
-    b_trackName = object::get(OutputOnly|AudioOnly|NoRefresh)[s_ui->Bwidget->currentRow()]->name();
+    b_trackName = object::get(OutputOnly|AudioOnly|NoRefresh)[m_ui->Bwidget->currentRow()]->name();
     if (width() != 55) {
         setMinimized();
         QTimer::singleShot(200, this, SLOT(activateSelected()));
     } else {
-        emit objectChosen(object::get(OutputOnly|AudioOnly|NoRefresh)[s_ui->Bwidget->currentRow()]);
+        emit objectChosen(object::get(OutputOnly|AudioOnly|NoRefresh)[m_ui->Bwidget->currentRow()]);
     }
 }
 
@@ -77,8 +77,8 @@ void AudioOutputChooser::updateObjects()
     {
         all.clear();
         all+=v;
-        s_ui->Bwidget->clear();
-        s_ui->Bwidget->insertItems(0,all);
+        m_ui->Bwidget->clear();
+        m_ui->Bwidget->insertItems(0,all);
     }
 }
 

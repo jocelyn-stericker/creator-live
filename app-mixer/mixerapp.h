@@ -17,7 +17,7 @@ class MixerApp : public QObject, public live::Object
 {
     Q_OBJECT
     static QList<MixerApp*> _u;
-    float* s_period[2];
+    float* m_period[2];
 public:
     live::Bound<int> b_vol; /*003*/
     live::Bound<int> b_pan; /*004*/

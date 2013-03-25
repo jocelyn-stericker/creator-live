@@ -43,7 +43,7 @@ void AudioGraph::setPos(long pos) {
 void AudioGraph::append(int length) {
     Q_ASSERT(m_pos >= 0);
     if (!length) return;
-    float* data = &m_second->s_data[m_box*m_boxSize + m_pos];
+    float* data = &m_second->m_data[m_box*m_boxSize + m_pos];
     float* MIN = &m_mins[m_box];
     float* MAX = &m_maxs[m_box];
     while(1) {

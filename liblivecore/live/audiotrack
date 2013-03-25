@@ -30,31 +30,31 @@ public:
     bool mOn() const{ return 0; }
     const quint32& nframes;
     AudioContainer** acquireData() {
-        for(int i=0;i<s_chans;i++) {
-            if(s_container[i]) s_container[i]->lock();
+        for(int i=0;i<m_chans;i++) {
+            if(m_container[i]) m_container[i]->lock();
         }
-        return s_container;
+        return m_container;
     }
     void releaseData() {
-        for(int i=0;i<s_chans;i++) {
-            if(s_container[i]) s_container[i]->unlock();
+        for(int i=0;i<m_chans;i++) {
+            if(m_container[i]) m_container[i]->unlock();
         }
     }
 
     QObject* qoThis() { return this; }
 
 private:
-    AudioContainer** s_container;
-    qint32 s_chans;
-    qint64 s_curPos;
-    qint32 s_vol;          //s_vol e (0,100)
-    qint32 s_pan;          //s_pan e (0,100) i.e., (L to R)
-    bool s_record;
-    bool s_overdub;
-    bool s_playback;
-    bool s_mute;
-    int s_simpleCount;
-    int s_updateCounter;
+    AudioContainer** m_container;
+    qint32 m_chans;
+    qint64 m_curPos;
+    qint32 m_vol;          //m_vol e (0,100)
+    qint32 m_pan;          //m_pan e (0,100) i.e., (L to R)
+    bool m_record;
+    bool m_overdub;
+    bool m_playback;
+    bool m_mute;
+    int m_simpleCount;
+    int m_updateCounter;
 
     float* m_proc;
 
@@ -71,26 +71,26 @@ public:
     float length() const;
 
     void newGraph(long size) {
-        for (int i = 0; i < s_chans; ++i) {
-            s_container[i]->newGraph(size);
-            s_container[i]->pointGraph(s_curPos);
+        for (int i = 0; i < m_chans; ++i) {
+            m_container[i]->newGraph(size);
+            m_container[i]->pointGraph(m_curPos);
         }
     }
 
     void deleteGraph(long size) {
-        for (int i = 0; i < s_chans; ++i)
-            s_container[i]->deleteGraph(size);
+        for (int i = 0; i < m_chans; ++i)
+            m_container[i]->deleteGraph(size);
     }
 
     AudioGraph* currentGraph(long frames, int chan) {
-        if (chan < s_chans && chan > -1)
-            return s_container[chan]->currentGraph(frames);
+        if (chan < m_chans && chan > -1)
+            return m_container[chan]->currentGraph(frames);
         return 0;
     }
 
     AudioGraph* graphForPos(long frames, int chan, long pos) {
-        if (chan < s_chans && chan > -1)
-            return s_container[chan]->graphForPos(frames, pos);
+        if (chan < m_chans && chan > -1)
+            return m_container[chan]->graphForPos(frames, pos);
         return 0;
     }
 

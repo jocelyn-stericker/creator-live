@@ -20,7 +20,7 @@ BPMFrame::BPMFrame(BPMApp*backend,AbstractTrack *parent) :
     setMinimumWidth(50);
     setMaximumWidth(50);
     startTimer(200);
-    setObjectName("BPMDetectFrame_"+QString::number(app.s_id));
+    setObjectName("BPMDetectFrame_"+QString::number(app.m_id));
     ui_label->setParent(this);
     ui_tb->setIcon(QIcon(":/icons/clip.png"));
     layout()->addWidget(ui_tb);

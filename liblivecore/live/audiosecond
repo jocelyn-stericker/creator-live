@@ -22,32 +22,32 @@ namespace live {
 class LIBLIVECORESHARED_EXPORT AudioSecond
 {
        /*SAMPLE RATE->VERIFY->003*/
-    quint32 s_sampleOffset;     /*004*/
-    float* s_data;          /*005*/
-    QMap<long, AudioGraph*> s_graphs; /*???*/
+    quint32 m_sampleOffset;     /*004*/
+    float* m_data;          /*005*/
+    QMap<long, AudioGraph*> m_graphs; /*???*/
 public:
     friend class AudioContainer;
     friend class AudioGraph;
 
     AudioSecond(quint32 cbegin)
-      : s_sampleOffset(cbegin)
-      , s_data(new float[live::audio::sampleRate()])
-      , s_graphs()
+      : m_sampleOffset(cbegin)
+      , m_data(new float[live::audio::sampleRate()])
+      , m_graphs()
       { for(int i=0;i<live::audio::sampleRate();i++)
         {
-            s_data[i]=0.0f;
+            m_data[i]=0.0f;
         }
     }
-    ~AudioSecond() { delete[]s_data; }
+    ~AudioSecond() { delete[]m_data; }
 
     inline float& operator[](const int&sample)
     {
-        return s_data[sample-s_sampleOffset];
+        return m_data[sample-m_sampleOffset];
     }
 
     void newGraph(const long& boxSize)
     {
-        for (QMap<long, AudioGraph*>::iterator it = s_graphs.begin(); it != s_graphs.end(); ++it) {
+        for (QMap<long, AudioGraph*>::iterator it = m_graphs.begin(); it != m_graphs.end(); ++it) {
             if ((*it)->size() == boxSize) {
                 (*it)->incrRef();
                 return;
@@ -59,61 +59,61 @@ public:
             g->append(live::audio::sampleRate()-1);
         }
 
-        kill_kitten s_graphs.insert(boxSize,g);
+        kill_kitten m_graphs.insert(boxSize,g);
     }
 
     inline void deleteGraph(const long& boxSize)
     {
-        AudioGraph* g = s_graphs.value(boxSize);
+        AudioGraph* g = m_graphs.value(boxSize);
         Q_ASSERT(g);
         if (!g) return;
 
         if (g->decrRef()) {
-            s_graphs.remove(boxSize);
+            m_graphs.remove(boxSize);
             delete g;
         }
     }
 
     void updateGraph(const long& frame) {
-        for (QMap<long, AudioGraph*>::iterator it = s_graphs.begin(); it != s_graphs.end(); ++it) {
+        for (QMap<long, AudioGraph*>::iterator it = m_graphs.begin(); it != m_graphs.end(); ++it) {
             it.value()->updateBoxWithFrame(frame);
         }
     }
 
     void pointGraph(const long& frame) {
-        for (QMap<long, AudioGraph*>::iterator it = s_graphs.begin(); it != s_graphs.end(); ++it) {
+        for (QMap<long, AudioGraph*>::iterator it = m_graphs.begin(); it != m_graphs.end(); ++it) {
             it.value()->setPos(frame);
         }
     }
 
     long framesRemainingInGraph() {
-        if (!s_graphs.size()) return 0;
-        return live::audio::sampleRate() - s_graphs.begin().value()->pos();
+        if (!m_graphs.size()) return 0;
+        return live::audio::sampleRate() - m_graphs.begin().value()->pos();
     }
 
     void appendGraph(const long& frames) {
         if (frames <= 0 ) return;
-        for (QMap<long, AudioGraph*>::iterator it = s_graphs.begin(); it != s_graphs.end(); ++it) {
+        for (QMap<long, AudioGraph*>::iterator it = m_graphs.begin(); it != m_graphs.end(); ++it) {
             it.value()->append(frames);
         }
     }
 
     AudioGraph* graphForFrames(const long& frames) {
-        return s_graphs.value(frames, 0);
+        return m_graphs.value(frames, 0);
     }
 
     static AudioSecond* load(const QByteArray&);
     QByteArray save();
 
     void setSampleOffset(int offset) {
-        s_sampleOffset = offset;
+        m_sampleOffset = offset;
     }
 
 private:
     AudioSecond(const AudioSecond&)
-      : s_sampleOffset(0)
-      , s_data()
-      , s_graphs()
+      : m_sampleOffset(0)
+      , m_data()
+      , m_graphs()
       { TCRASH();
     }
     AudioSecond& operator=(const AudioSecond&) {
@@ -174,42 +174,42 @@ class LIBLIVECORESHARED_EXPORT AudioContainer
 protected:
     float zero;                 /*N/A*/
     quint32 sampleRate;     /*VERIFY->003*/
-    QList<AudioSecond*> s_data; /*004*/
-    quint32 s_dataSize;             /*004*/
-    QReadWriteLock s_readLock;          /*N/A*/
-    QMap<long, int> s_graphs; /* length -> refCount */
-    int s_graphPointingTo;
+    QList<AudioSecond*> m_data; /*004*/
+    quint32 m_dataSize;             /*004*/
+    QReadWriteLock m_readLock;          /*N/A*/
+    QMap<long, int> m_graphs; /* length -> refCount */
+    int m_graphPointingTo;
 public:
     friend class AudioTrack;
     AudioContainer()
       : zero(0.0f)
       , sampleRate(live::audio::sampleRate())
-      , s_data()
-      , s_dataSize(0)
-      , s_readLock(QReadWriteLock::NonRecursive)
-      , s_graphs()
-      , s_graphPointingTo(-1)
+      , m_data()
+      , m_dataSize(0)
+      , m_readLock(QReadWriteLock::NonRecursive)
+      , m_graphs()
+      , m_graphPointingTo(-1)
       {
     }
 
     void newGraph(long size) {
-        if (++s_graphs[size] == 1) {
-            for (int i = 0; i < s_data.size(); ++i) {
-                if(s_data[i]) s_data[i]->newGraph(size);
+        if (++m_graphs[size] == 1) {
+            for (int i = 0; i < m_data.size(); ++i) {
+                if(m_data[i]) m_data[i]->newGraph(size);
             }
         }
     }
 
     void deleteGraph(long size) {
-        if (--s_graphs[size] == 0) {
-            for (int i = 0; i < s_data.size(); ++i) {
-                if(s_data[i]) s_data[i]->deleteGraph(size);
+        if (--m_graphs[size] == 0) {
+            for (int i = 0; i < m_data.size(); ++i) {
+                if(m_data[i]) m_data[i]->deleteGraph(size);
             }
         }
     }
 
     void regSecond(AudioSecond* s) {
-        for (QMap<long, int>::iterator it = s_graphs.begin(); it != s_graphs.end(); ++it) {
+        for (QMap<long, int>::iterator it = m_graphs.begin(); it != m_graphs.end(); ++it) {
             for (int i = 0; i < it.value(); ++i) {
                 s->newGraph(it.key());
             }
@@ -217,22 +217,22 @@ public:
     }
 
     void pointGraph(long frame) {
-        if (int(frame/sampleRate) < s_data.size()) {
-            s_graphPointingTo = (int)(frame/sampleRate);
-            if(s_data[s_graphPointingTo]) s_data[s_graphPointingTo]->pointGraph(frame%sampleRate);
+        if (int(frame/sampleRate) < m_data.size()) {
+            m_graphPointingTo = (int)(frame/sampleRate);
+            if(m_data[m_graphPointingTo]) m_data[m_graphPointingTo]->pointGraph(frame%sampleRate);
         }
     }
 
     void appendGraph(long frames) {
-        while (s_graphPointingTo != -1 && s_graphPointingTo < s_data.size() && s_data[s_graphPointingTo]) {
-            int fb = frames - s_data[s_graphPointingTo]->framesRemainingInGraph();
-            s_data[s_graphPointingTo]->appendGraph(qMin(frames, s_data[s_graphPointingTo]->framesRemainingInGraph()));
+        while (m_graphPointingTo != -1 && m_graphPointingTo < m_data.size() && m_data[m_graphPointingTo]) {
+            int fb = frames - m_data[m_graphPointingTo]->framesRemainingInGraph();
+            m_data[m_graphPointingTo]->appendGraph(qMin(frames, m_data[m_graphPointingTo]->framesRemainingInGraph()));
             if (fb > 0) {
                 frames = fb;
-                if (s_graphPointingTo + 1 < s_data.size() && s_data[s_graphPointingTo + 1])
-                    s_data[++s_graphPointingTo]->pointGraph(0);
+                if (m_graphPointingTo + 1 < m_data.size() && m_data[m_graphPointingTo + 1])
+                    m_data[++m_graphPointingTo]->pointGraph(0);
                 else {
-                    s_graphPointingTo = -1; // this is usually transiant.
+                    m_graphPointingTo = -1; // this is usually transiant.
                     return;
                 }
             } else {
@@ -242,21 +242,21 @@ public:
     }
 
     AudioGraph* currentGraph(long frames) {
-        if (s_graphPointingTo != -1 && s_graphPointingTo < s_data.size() && s_data[s_graphPointingTo])
-            return s_data[s_graphPointingTo]->graphForFrames(frames);
+        if (m_graphPointingTo != -1 && m_graphPointingTo < m_data.size() && m_data[m_graphPointingTo])
+            return m_data[m_graphPointingTo]->graphForFrames(frames);
         return 0;
     }
 
     AudioGraph* graphForPos(long frames, long pos) {
-        if (pos/live::audio::sampleRate() >= 0 && pos/live::audio::sampleRate() < s_data.size() && s_data[pos/live::audio::sampleRate()])
-            return s_data[pos/live::audio::sampleRate()]->graphForFrames(frames);
+        if (pos/live::audio::sampleRate() >= 0 && pos/live::audio::sampleRate() < m_data.size() && m_data[pos/live::audio::sampleRate()])
+            return m_data[pos/live::audio::sampleRate()]->graphForFrames(frames);
         return 0;
     }
 
     ~AudioContainer()
     {
         clear(1);
-        s_dataSize=0;
+        m_dataSize=0;
     }
 
     void setData(const quint32&frame,const float&data)
@@ -267,31 +267,31 @@ public:
             return;
         }
 
-        for(quint32 i=s_data.size()-1;i<=frame/sampleRate;i++)
+        for(quint32 i=m_data.size()-1;i<=frame/sampleRate;i++)
         {
-            s_data.push_back(0);
-            s_dataSize=s_data.size();
+            m_data.push_back(0);
+            m_dataSize=m_data.size();
         }
 
-        if(!s_data[(int)(frame/sampleRate)])
+        if(!m_data[(int)(frame/sampleRate)])
         {
-            s_data[(int)(frame/sampleRate)]=AudioSecondBank::singleton->buySecond((frame/sampleRate)*sampleRate);
-            regSecond(s_data[(int)(frame/sampleRate)]);
+            m_data[(int)(frame/sampleRate)]=AudioSecondBank::singleton->buySecond((frame/sampleRate)*sampleRate);
+            regSecond(m_data[(int)(frame/sampleRate)]);
         }
 
-        (*s_data[(int)(frame/sampleRate)])[(int)frame]=data;
-        (*s_data[(int)(frame/sampleRate)]).updateGraph(frame);
+        (*m_data[(int)(frame/sampleRate)])[(int)frame]=data;
+        (*m_data[(int)(frame/sampleRate)]).updateGraph(frame);
     }
 
     const float& getData(const int&frame)
     {
-        if(s_dataSize<=frame/sampleRate||!s_data[(int)(frame/sampleRate)])
+        if(m_dataSize<=frame/sampleRate||!m_data[(int)(frame/sampleRate)])
         {
             return zero;
         }
         else
         {
-            return (*s_data[(int)(frame/sampleRate)])[frame];
+            return (*m_data[(int)(frame/sampleRate)])[frame];
         }
     }
 
@@ -305,28 +305,28 @@ public:
         if (enforceAudio)
             lthread::assertAudio();
         sampleRate=audio::sampleRate();
-        if((s_dataSize<=frame/sampleRate||!s_data[(int)frame/sampleRate])&&!forceCreation)
+        if((m_dataSize<=frame/sampleRate||!m_data[(int)frame/sampleRate])&&!forceCreation)
         {
             data=0;
             return (int)((frame/sampleRate)*sampleRate+sampleRate-frame);
         }
-        else if(s_dataSize<=frame/sampleRate)
+        else if(m_dataSize<=frame/sampleRate)
         {
-            for(long i=s_data.size()-1;i<=(long)frame/(long)sampleRate;i++)
+            for(long i=m_data.size()-1;i<=(long)frame/(long)sampleRate;i++)
             {
-                s_data.push_back(0);
-                s_dataSize=s_data.size();
+                m_data.push_back(0);
+                m_dataSize=m_data.size();
             }
         }
 
-        if(!s_data[(int)frame/sampleRate]) {
-            s_data[(int)(frame/sampleRate)]=AudioSecondBank::singleton->buySecond((frame/sampleRate)*sampleRate);
-            regSecond(s_data[(int)(frame/sampleRate)]);
+        if(!m_data[(int)frame/sampleRate]) {
+            m_data[(int)(frame/sampleRate)]=AudioSecondBank::singleton->buySecond((frame/sampleRate)*sampleRate);
+            regSecond(m_data[(int)(frame/sampleRate)]);
         }
 
         int id=(int)(frame/sampleRate);
-        data=&s_data[id]->s_data[frame-s_data[id]->s_sampleOffset];
-        return (int)(s_data[id]->s_sampleOffset+sampleRate-frame);
+        data=&m_data[id]->m_data[frame-m_data[id]->m_sampleOffset];
+        return (int)(m_data[id]->m_sampleOffset+sampleRate-frame);
     }
 
     int getConstPointer(const quint32&frame,const float*& data) const
@@ -336,31 +336,31 @@ public:
 
     class AudioDataDestroyer {
     public:
-        AudioSecond* s_s;
-        QReadWriteLock* s_l;
-        AudioDataDestroyer(AudioSecond* s, QReadWriteLock* l) : s_s(s), s_l(l) {}
-        void run() { if(s_l) s_l->lockForWrite(); delete s_s; if(s_l) s_l->unlock(); delete this; }
+        AudioSecond* m_s;
+        QReadWriteLock* m_l;
+        AudioDataDestroyer(AudioSecond* s, QReadWriteLock* l) : m_s(s), m_l(l) {}
+        void run() { if(m_l) m_l->lockForWrite(); delete m_s; if(m_l) m_l->unlock(); delete this; }
     };
 
     void clear(bool dying=0);
 
     float length() const
     {
-        float ret = (float) s_data.size();
+        float ret = (float) m_data.size();
         int i;
         for(i = audio::sampleRate() - 1;i >= 0; --i) {
-            if (s_data.back()->s_data[i]!=0.0f) break; // FIXME
+            if (m_data.back()->m_data[i]!=0.0f) break; // FIXME
         }
         ret -= float(audio::sampleRate() - i)/float(audio::sampleRate());
         return ret;
     }
 
     void lock() {
-        s_readLock.lockForRead();
+        m_readLock.lockForRead();
     }
 
     void unlock() {
-        s_readLock.unlock();
+        m_readLock.unlock();
     }
 
     static AudioContainer* load(const QByteArray&);

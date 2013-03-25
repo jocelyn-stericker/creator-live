@@ -18,20 +18,20 @@ namespace live_private {
 
 class LIBLIVECORESHARED_EXPORT ASyncConnection : public QObject
 {
-    QObject* s_obj;
-    const char* s_aSignal;
-    QObject* s_dest;
-    QString s_dSlot;
+    QObject*m_obj;
+    const char*m_aSignal;
+    QObject*m_dest;
+    QString m_dSlot;
 public:
     ASyncConnection(QObject *obj, const char *aSignal,QObject* dest, QString dSlot)
-      : s_obj(obj)
-      , s_aSignal(aSignal)
-      , s_dest(dest)
-      , s_dSlot(dSlot)
+      :m_obj(obj)
+      ,m_aSignal(aSignal)
+      ,m_dest(dest)
+      ,m_dSlot(dSlot)
       , sig()
       , args()
-      { if(s_dSlot.size()) s_dSlot.remove(0,1);
-        if(s_dSlot.contains('(')) s_dSlot.truncate(s_dSlot.indexOf('('));
+      { if(m_dSlot.size())m_dSlot.remove(0,1);
+        if(m_dSlot.contains('('))m_dSlot.truncate(m_dSlot.indexOf('('));
 #ifdef Q_CC_BOR
         const int memberOffset = QObject::staticMetaObject.methodCount();
 #else
@@ -81,21 +81,21 @@ public:
 
             kill_kitten {
                 bool ok=1;
-                qDebug() << "SLOT:"<<s_dSlot;
+                qDebug() << "SLOT:"<<m_dSlot;
                 if(list.size()==4||!ok) {
-                    ok=QMetaObject::invokeMethod(s_dest,s_dSlot.toLatin1(),Qt::DirectConnection,QGenericArgument(list[0].typeName(),a[1]),QGenericArgument(list[1].typeName(),a[2]),QGenericArgument(list[2].typeName(),a[3]),QGenericArgument(list[3].typeName(),a[4]));
+                    ok=QMetaObject::invokeMethod(m_dest,m_dSlot.toLatin1(),Qt::DirectConnection,QGenericArgument(list[0].typeName(),a[1]),QGenericArgument(list[1].typeName(),a[2]),QGenericArgument(list[2].typeName(),a[3]),QGenericArgument(list[3].typeName(),a[4]));
                 }
                 if(list.size()==3||!ok) {
-                    ok=QMetaObject::invokeMethod(s_dest,s_dSlot.toLatin1(),Qt::DirectConnection,QGenericArgument(list[0].typeName(),a[1]),QGenericArgument(list[1].typeName(),a[2]),QGenericArgument(list[2].typeName(),a[3]));
+                    ok=QMetaObject::invokeMethod(m_dest,m_dSlot.toLatin1(),Qt::DirectConnection,QGenericArgument(list[0].typeName(),a[1]),QGenericArgument(list[1].typeName(),a[2]),QGenericArgument(list[2].typeName(),a[3]));
                 }
                 if(list.size()==2||!ok) {
-                    ok=QMetaObject::invokeMethod(s_dest,s_dSlot.toLatin1(),Qt::DirectConnection,QGenericArgument(list[0].typeName(),a[1]),QGenericArgument(list[1].typeName(),a[2]));
+                    ok=QMetaObject::invokeMethod(m_dest,m_dSlot.toLatin1(),Qt::DirectConnection,QGenericArgument(list[0].typeName(),a[1]),QGenericArgument(list[1].typeName(),a[2]));
                 }
                 if(list.size()==1||!ok) {
-                    ok=QMetaObject::invokeMethod(s_dest,s_dSlot.toLatin1(),Qt::DirectConnection,QGenericArgument(list[0].typeName(),a[1]));
+                    ok=QMetaObject::invokeMethod(m_dest,m_dSlot.toLatin1(),Qt::DirectConnection,QGenericArgument(list[0].typeName(),a[1]));
                 }
                 if(list.size()==0||!ok) {
-                    ok=QMetaObject::invokeMethod(s_dest,s_dSlot.toLatin1(),Qt::DirectConnection);
+                    ok=QMetaObject::invokeMethod(m_dest,m_dSlot.toLatin1(),Qt::DirectConnection);
                 }
             }
 
@@ -128,9 +128,9 @@ private:
 
 class LIBLIVECORESHARED_EXPORT ASyncConnectSys : public QObject {
     Q_OBJECT
-    static ASyncConnectSys* s_singleton;
+    static ASyncConnectSys*m_singleton;
 public:
-    static ASyncConnectSys* me() { return s_singleton=(s_singleton?s_singleton:new ASyncConnectSys); }
+    static ASyncConnectSys* me() { return m_singleton=(m_singleton?m_singleton:new ASyncConnectSys); }
     bool newConnection(QObject* sender, const char* signal, QObject* receiver, const char* method) {
         new ASyncConnection(sender,signal,receiver,method);
         return 1;

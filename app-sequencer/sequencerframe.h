@@ -73,12 +73,12 @@ class SequencerCreator : public QObject, public live::AppInterface
     Q_OBJECT
     Q_INTERFACES(live::AppInterface)
     Q_PLUGIN_METADATA(IID "ca.nettek.live.sequencer")
-    LooperCreator* s_looper;
+    LooperCreator* m_looper;
 public:
-    SequencerCreator() : s_looper(0)
+    SequencerCreator() : m_looper(0)
     {
     }
-    QString name() { return "SEQUENCER"; }
+    QString name() { return "ca.nettek.live.sequencer"; }
     QString description() { return "A really fancy tape recorder"; }
     live::ObjectPtr newBackend() {return new SequencerApp(); }
     QObject* newFrontend(live::ObjectPtr backend) { return new SequencerFrame(live::cast_to_cptr<SequencerApp*>(backend)); }

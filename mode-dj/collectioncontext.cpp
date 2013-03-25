@@ -19,7 +19,7 @@ using namespace live;
 
 CollectionContext::CollectionContext(DJContext *parent) :
     QWidget(parent)
-  , s_parent(parent)
+  , m_parent(parent)
   , ui(new Ui::CollectionContext)
 {
     ui->setupUi(this);
@@ -36,14 +36,14 @@ CollectionContext::~CollectionContext()
 
 void CollectionContext::connect_changeEvents()
 {
-    connect(ui->comboBox_audio, SIGNAL(currentIndexChanged(QString)), s_parent, SLOT(audioanged_logic(QString)));
-    connect(ui->comboBox_monitor, SIGNAL(currentIndexChanged(QString)), s_parent, SLOT(monitorChanged_logic(QString)));
+    connect(ui->comboBox_audio, SIGNAL(currentIndexChanged(QString)), m_parent, SLOT(audioanged_logic(QString)));
+    connect(ui->comboBox_monitor, SIGNAL(currentIndexChanged(QString)), m_parent, SLOT(monitorChanged_logic(QString)));
 }
 
 void CollectionContext::disconnect_changeEvents()
 {
-    disconnect(ui->comboBox_audio, SIGNAL(currentIndexChanged(QString)), s_parent, SLOT(audioanged_logic(QString)));
-    disconnect(ui->comboBox_monitor, SIGNAL(currentIndexChanged(QString)), s_parent, SLOT(monitorChanged_logic(QString)));
+    disconnect(ui->comboBox_audio, SIGNAL(currentIndexChanged(QString)), m_parent, SLOT(audioanged_logic(QString)));
+    disconnect(ui->comboBox_monitor, SIGNAL(currentIndexChanged(QString)), m_parent, SLOT(monitorChanged_logic(QString)));
 }
 
 void CollectionContext::stockChanged_logic()
@@ -66,8 +66,8 @@ void CollectionContext::stockChanged_logic()
     {
         if (names.indexOf(i ? sa : sm) == -1)
         {
-            if (!i) s_parent->audioanged_logic(ui->comboBox_audio->currentText());
-            else s_parent->monitorChanged_logic(ui->comboBox_monitor->currentText());
+            if (!i) m_parent->audioanged_logic(ui->comboBox_audio->currentText());
+            else m_parent->monitorChanged_logic(ui->comboBox_monitor->currentText());
         }
         else
         {

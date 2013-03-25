@@ -17,14 +17,14 @@ using namespace live;
 
 int VstR::_lastId=0;
 int Vst::lastVstId=-1;
-QList<Vst*> Vst::s_vst;
-QStringList* Vst::s_vstCache=0;
-QStringList Vst::s_vstpaths_linux;
-QMultiMap<QString, QPair<QString, live::ObjectPtr> > Vst::s_map;
+QList<Vst*> Vst::m_vst;
+QStringList* Vst::m_vstCache=0;
+QStringList Vst::m_vstpaths_linux;
+QMultiMap<QString, QPair<QString, live::ObjectPtr> > Vst::m_map;
 
 QStringList Vst::getVstPaths()
 {
-    return s_vstpaths_linux;
+    return m_vstpaths_linux;
 }
 
 void Vst::init()
@@ -128,7 +128,7 @@ void VstR::addSidekicks(QStringList to, QStringList from)
         }
         VstSidekick* l=new VstSidekick(this,i,audioToVst,audioFromVst);
         object::set(l);
-        s_sidekicks.push_back(l);
+        m_sidekicks.push_back(l);
     }
 }
 

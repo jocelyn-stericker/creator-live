@@ -15,15 +15,15 @@ using namespace live;
 
 SequencerApp::SequencerApp(QString name,MidiTrack*cmidiTrack,AudioTrack*caudioTrack,bool newId)
   : Object(name,false,false,2)
-  , s_midiTrack(cmidiTrack)
-  , s_midiTrackConnection(cmidiTrack,this, live::MidiConnection)
-  , s_audioTrack(caudioTrack)
-  , s_audioTrackConnection(caudioTrack,this, live::HybridConnection)
-  , s_cheat(0)
+  , m_midiTrack(cmidiTrack)
+  , m_midiTrackConnection(cmidiTrack,this, live::MidiConnection)
+  , m_audioTrack(caudioTrack)
+  , m_audioTrackConnection(caudioTrack,this, live::HybridConnection)
+  , m_cheat(0)
   , b_clipped(0)
-  , s_id(newId?SequencerSys::newIdForTrack():-1)
-  , s_audioOverdubForced(0)
-  , s_scale(2646000)
+  , m_id(newId?SequencerSys::newIdForTrack():-1)
+  , m_audioOverdubForced(0)
+  , m_scale(2646000)
   , x_sequencer(QMutex::Recursive)
 {
     Q_ASSERT(name=="SEQUENCER"||name=="LOOPER");    //awkward inheritance
@@ -32,43 +32,43 @@ SequencerApp::SequencerApp(QString name,MidiTrack*cmidiTrack,AudioTrack*caudioTr
 
 SequencerApp::~SequencerApp()
 {
-    delete s_midiTrack;
-    delete s_audioTrack;
+    delete m_midiTrack;
+    delete m_audioTrack;
 }
 
 const bool& SequencerApp::isRecord() const
 {
-    Q_ASSERT(s_midiTrack->isRecord()==s_audioTrack->isRecord());
-    return s_midiTrack->isRecord();
+    Q_ASSERT(m_midiTrack->isRecord()==m_audioTrack->isRecord());
+    return m_midiTrack->isRecord();
 }
 
 const bool& SequencerApp::isOverdub() const
 {
-    /*if (!s_audioOverdubForced)*/ Q_ASSERT(s_midiTrack->isOverdub()==s_audioTrack->isOverdub());
-    return s_midiTrack->isOverdub();
+    /*if (!m_audioOverdubForced)*/ Q_ASSERT(m_midiTrack->isOverdub()==m_audioTrack->isOverdub());
+    return m_midiTrack->isOverdub();
 }
 
 const bool& SequencerApp::isPlaying() const
 {
-    if (s_midiTrack->isPlay()!=s_audioTrack->isPlay())
+    if (m_midiTrack->isPlay()!=m_audioTrack->isPlay())
     {
         qDebug() << "UH OH!!!";
-        qDebug()<<s_midiTrack->isPlay()<<s_audioTrack->isPlay();
+        qDebug()<<m_midiTrack->isPlay()<<m_audioTrack->isPlay();
     }
-    Q_ASSERT(s_midiTrack->isPlay()==s_audioTrack->isPlay());
-    return s_midiTrack->isPlay();
+    Q_ASSERT(m_midiTrack->isPlay()==m_audioTrack->isPlay());
+    return m_midiTrack->isPlay();
 }
 
 const bool& SequencerApp::isMute() const
 {
-    Q_ASSERT(s_midiTrack->isMute()==s_audioTrack->isMute());
-    return s_midiTrack->isMute();
+    Q_ASSERT(m_midiTrack->isMute()==m_audioTrack->isMute());
+    return m_midiTrack->isMute();
 }
 
 qint64 SequencerApp::pos() const
 {
-//        Q_ASSERT(s_midiTrack->pos()==s_audioTrack->pos());
-    return s_audioTrack->pos();
+//        Q_ASSERT(m_midiTrack->pos()==m_audioTrack->pos());
+    return m_audioTrack->pos();
 }
 
 bool SequencerApp::clipped() const
@@ -79,40 +79,40 @@ bool SequencerApp::clipped() const
 void SequencerApp::startRecord()
 {
     live_mutex(x_sequencer) {
-        s_midiTrack->startRecord();
-        s_audioTrack->startRecord();
+        m_midiTrack->startRecord();
+        m_audioTrack->startRecord();
     }
 }
 
 void SequencerApp::stopRecord()
 {
     live_mutex(x_sequencer) {
-        s_midiTrack->stopRecord();
-        s_audioTrack->stopRecord();
+        m_midiTrack->stopRecord();
+        m_audioTrack->stopRecord();
     }
 }
 
 void SequencerApp::startOverdub()
 {
     live_mutex(x_sequencer) {
-        s_midiTrack->startOverdub();
-        s_audioTrack->startOverdub();
+        m_midiTrack->startOverdub();
+        m_audioTrack->startOverdub();
     }
 }
 
 void SequencerApp::stopOverdub()
 {
     live_mutex(x_sequencer) {
-        s_midiTrack->stopOverdub();
-        s_audioTrack->stopOverdub();
+        m_midiTrack->stopOverdub();
+        m_audioTrack->stopOverdub();
     }
 }
 
 void SequencerApp::startPlayback()
 {
     live_mutex(x_sequencer) {
-        s_midiTrack->startPlayback();
-        s_audioTrack->startPlayback();
+        m_midiTrack->startPlayback();
+        m_audioTrack->startPlayback();
     }
     emit playbackStarted();
 }
@@ -120,8 +120,8 @@ void SequencerApp::startPlayback()
 void SequencerApp::stopPlayback()
 {
     live_mutex(x_sequencer) {
-        s_midiTrack->stopPlayback();
-        s_audioTrack->stopPlayback();
+        m_midiTrack->stopPlayback();
+        m_audioTrack->stopPlayback();
     }
     emit playbackStopped();
 }
@@ -129,16 +129,16 @@ void SequencerApp::stopPlayback()
 void SequencerApp::startMute()
 {
     live_mutex(x_sequencer) {
-        s_midiTrack->startMute();
-        s_audioTrack->startMute();
+        m_midiTrack->startMute();
+        m_audioTrack->startMute();
     }
 }
 
 void SequencerApp::stopMute()
 {
     live_mutex(x_sequencer) {
-        s_midiTrack->stopMute();
-        s_audioTrack->stopMute();
+        m_midiTrack->stopMute();
+        m_audioTrack->stopMute();
     }
 }
 
@@ -146,8 +146,8 @@ void SequencerApp::setPos(qint64 pos)
 {
     Q_ASSERT(pos>=0);
     live_mutex(x_sequencer) {
-        s_midiTrack->setPos(pos);
-        s_audioTrack->setPos(pos);
+        m_midiTrack->setPos(pos);
+        m_audioTrack->setPos(pos);
     }
     emit posSet(pos);
 }
@@ -166,30 +166,30 @@ void SequencerApp::setClipped(bool clipped)
 
 
 void SequencerApp::aIn(const float *data, int chan, Object*p) {
-    if (p==s_audioTrack) {
+    if (p==m_audioTrack) {
         aOut(data,chan,p);
     } else {
-        s_audioTrack->aIn(data,chan,this);
+        m_audioTrack->aIn(data,chan,this);
     }
 }
 
 void SequencerApp::setScale(qint64 z)
 {
     live_mutex(x_sequencer) {
-        s_scale=z;
+        m_scale=z;
         emit scaleChanged(z);
     }
 }
 
 void SequencerApp::mIn(const Event *data, ObjectChain*p)
 {
-    if (p->back()==s_midiTrack)
+    if (p->back()==m_midiTrack)
     {
         mOut(data,p);
         return;
     }
     p->push_back(this);
-    s_midiTrack->mIn(data,p);
+    m_midiTrack->mIn(data,p);
     p->pop_back();
 }
 

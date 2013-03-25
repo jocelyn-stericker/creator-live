@@ -29,21 +29,21 @@ using namespace live_widgets;
 
 FJReverbFrame::FJReverbFrame(FJReverbApp *backend, AbstractTrack *parent)
     : AppFrame(parent)
-    , s_app(*backend)
+    , m_app(*backend)
     , ui(new Ui::FJReverbFrame)
 {
     ui->setupUi(this);
-    onRoomSize(s_app.getRoomSize());
-    onDiffusion(s_app.getDiffusion()*100.0f);
-    onDecayTime(s_app.getDecayTime()*1000.0f);
-    onHFDamp(s_app.getHFDamp());
-    onTrebelCut(s_app.getTrebleCut());
-    onBassCut(s_app.getBassCut());
-    onPredelay(s_app.getPredelay()*2.0f);
+    onRoomSize(m_app.getRoomSize());
+    onDiffusion(m_app.getDiffusion()*100.0f);
+    onDecayTime(m_app.getDecayTime()*1000.0f);
+    onHFDamp(m_app.getHFDamp());
+    onTrebelCut(m_app.getTrebleCut());
+    onBassCut(m_app.getBassCut());
+    onPredelay(m_app.getPredelay()*2.0f);
 
-    if (s_app.getWet() + s_app.getDry() < 0.1f)
+    if (m_app.getWet() + m_app.getDry() < 0.1f)
     {
-        onWetDryBalance(s_app.getWet() * 50.0f / 6.0f + 50.0f);
+        onWetDryBalance(m_app.getWet() * 50.0f / 6.0f + 50.0f);
     }
     else
     {
@@ -68,55 +68,55 @@ FJReverbFrame::FJReverbFrame(FJReverbApp *backend, AbstractTrack *parent)
 
 FJReverbFrame::~FJReverbFrame()
 {
-    s_app.deleteLater();
+    m_app.deleteLater();
     delete ui;
 }
 
 void FJReverbFrame::onRoomSize(int f)
 {
-    s_app.setRoomSize((FJReverbApp::RoomSize)f);
+    m_app.setRoomSize((FJReverbApp::RoomSize)f);
     ui->verticalSlider_roomSize->setValue(f);
 }
 
 void FJReverbFrame::onDiffusion(int f)
 {
-    s_app.setDiffusion(float(f)/100.0f);
+    m_app.setDiffusion(float(f)/100.0f);
     ui->dial_diffusion->setValue(f);
 }
 
 void FJReverbFrame::onDecayTime(int f)
 {
-    s_app.setDecayTime(float(f)/1000.0f);
+    m_app.setDecayTime(float(f)/1000.0f);
     ui->verticalSlider_decayTime->setValue(f);
 }
 
 void FJReverbFrame::onHFDamp(int f)
 {
-    s_app.setHFDamp(f);
+    m_app.setHFDamp(f);
     ui->dial_treble->setValue(f);
 }
 
 void FJReverbFrame::onTrebelCut(int f)
 {
-    s_app.setTrebleCut(f);
+    m_app.setTrebleCut(f);
     ui->dial_trebleCut->setValue(f);
 }
 
 void FJReverbFrame::onBassCut(int f)
 {
-    s_app.setBassCut(f);
+    m_app.setBassCut(f);
     ui->dial_bass->setValue(f);
 }
 
 void FJReverbFrame::onPredelay(int f)
 {
-    s_app.setPredelay(float(f)/2.0f);
+    m_app.setPredelay(float(f)/2.0f);
     ui->verticalSlider_preDelay->setValue(f);
 }
 
 void FJReverbFrame::onWetDryBalance(int f)
 {
-    s_app.setWetDryBalance(f);
+    m_app.setWetDryBalance(f);
 }
 
 void FJReverbFrame::setMore(bool more)

@@ -130,8 +130,8 @@ MidiIn::MidiIn(QString ccname,int devId)
   : live::Object(ccname,true,false,2)
   , valid(1)
   , deviceId(devId)
-  , s_null(live::audio::null(2))
-  , s_connection(s_null, this, live::HybridConnection) 
+  ,m_null(live::audio::null(2))
+  ,m_connection(s_null, this, live::HybridConnection) 
  {
     setTemporary(0);
 

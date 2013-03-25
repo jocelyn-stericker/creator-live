@@ -22,11 +22,11 @@ class EffectsTab : public QWidget, public live_widgets::BindableParent
 {
     Q_OBJECT
 
-    SamplerDJ& s_samplerL;
-    SamplerDJ& s_samplerR;
-    int s_times[8][2];
-    int s_activeButton[2];
-    int s_rec[8][2];
+    SamplerDJ& m_samplerL;
+    SamplerDJ& m_samplerR;
+    int m_times[8][2];
+    int m_activeButton[2];
+    int m_rec[8][2];
     
 public:
     explicit EffectsTab(QWidget *parent = 0);

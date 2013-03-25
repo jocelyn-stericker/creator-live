@@ -17,30 +17,30 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 class MidiPluginObject : public live::Object
 {
-    live::ObjectPtr s_in;
-    live::ObjectPtr s_out;
-    live::Connection s_connection;
+    live::ObjectPtr m_in;
+    live::ObjectPtr m_out;
+    live::Connection m_connection;
 public:
     LIVE_HYBRID
     LIVE_EFFECT
 
     MidiPluginObject(live::ObjectPtr in, live::ObjectPtr out)
       : live::Object(in.valid() ? "" : in->name(), false, false, 2)
-      , s_in(in)
-      , s_out(out)
-      , s_connection(out, this, live::AudioConnection)
+      , m_in(in)
+      , m_out(out)
+      , m_connection(out, this, live::AudioConnection)
       {
     }
 
     void aIn(const float* data, int chan, live::ObjectChain* p) {
-        if (p->back() != s_out)
+        if (p->back() != m_out)
             return;
 
         aOut(data, chan, this);
     }
     void mIn(const live::Event* data, live::ObjectChain* p) {
         p->push_back(this);
-        s_in->mIn(data,p);
+        m_in->mIn(data,p);
         p->pop_back();
     }
 };

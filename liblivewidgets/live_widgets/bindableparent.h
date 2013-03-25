@@ -32,8 +32,8 @@ class LIBLIVEWIDGETSSHARED_EXPORT BindableParent {
     QObject* qo_this;
     static QList<BindableParent*> _u;
     static QList<QObject*> _u_qo;
-    static QStringList s_classBlacklist;
-    static QStringList s_objectnameBlacklist;
+    static QStringList m_classBlacklist;
+    static QStringList m_objectnameBlacklist;
     static void fillBlacklist();
 public:
     BindableParent(QObject* qo__this) : qo_this(qo__this) {qo_this->setProperty("bindableParentObject",QVariant::fromValue(true));_u.push_back(this);_u_qo.push_back(qo_this);}

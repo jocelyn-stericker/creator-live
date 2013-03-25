@@ -35,9 +35,9 @@ public:
         INVALID=-66
     };
 
-    char s_root;                /*003*/
-    Accidental s_accidental;    /*004*/
-    int s_octave;               /*005*/
+    char m_root;                /*003*/
+    Accidental m_accidental;    /*004*/
+    int m_octave;               /*005*/
     bool valid;
 
 public:

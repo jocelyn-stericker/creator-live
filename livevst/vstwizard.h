@@ -15,8 +15,8 @@ class VstWizard : public QStackedWidget
     Q_OBJECT
     
 private:
-    live::ObjectPtr s_out, s_loopback;
-    live::ObjectPtr s_vst;
+    live::ObjectPtr m_out, m_loopback;
+    live::ObjectPtr m_vst;
 
 public:
     explicit VstWizard(live::ObjectPtr out, live::ObjectPtr loopback, QWidget *parent);
@@ -33,7 +33,7 @@ public slots:
     void restart();
 
 signals:
-    void instrumentUpdated(live::ObjectPtr s_out, live::ObjectPtr s_loopback);  /*!!!*/
+    void instrumentUpdated(live::ObjectPtr m_out, live::ObjectPtr m_loopback);  /*!!!*/
 
 private:
     Ui::VstWizard *ui;

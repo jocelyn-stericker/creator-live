@@ -17,15 +17,15 @@ class PitchAppAudioR;
 class PitchApp : public QObject, public live::Object
 {
     Q_OBJECT
-    PitchAppAudioR* s_audioR;
-    live::Connection s_connections;
+    PitchAppAudioR* m_audioR;
+    live::Connection m_connections;
 public:
     LIVE_HYBRID
     LIVE_EFFECT
     friend class AppSys;
-    int s_stShift;  /*003*/
-    int s_id;       /*004*/
-    static int s_lastId;
+    int m_stShift;  /*003*/
+    int m_id;       /*004*/
+    static int m_lastId;
 
 public:
     RELOADABLE(PitchApp)

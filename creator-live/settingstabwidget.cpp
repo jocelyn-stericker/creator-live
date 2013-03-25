@@ -22,9 +22,9 @@ SettingsTabWidget::SettingsTabWidget(QWidget *parent)
     setCurrentIndex(0);
 //    connect(ui->pushButton_2,SIGNAL(clicked()),this,SLOT(addVst()));
 //    connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(delVst()));
-//    for (int i=0;i<Vst::s_vstpaths_linux.size();i++)
+//    for (int i=0;i<Vst::m_vstpathm_linux.size();i++)
 //    {
-//        ui->listWidget->addItem(Vst::s_vstpaths_linux[i]);
+//        ui->listWidget->addItem(Vst::m_vstpathm_linux[i]);
 //    }
     connect(inWidget(),SIGNAL(modified()),this,SIGNAL(modified()));
     connect(outWidget(),SIGNAL(modified()),this,SIGNAL(modified()));
@@ -65,9 +65,9 @@ void SettingsTabWidget::addVst()
 //    QStringList x=QFileDialog::getOpenFileNames(0,"Add VSTs",QString(),"*.dll");
 //    for (int i=0;i<x.size();i++)
 //    {
-//        if (!Vst::s_vstpaths_linux.contains(x[i]))
+//        if (!Vst::m_vstpathm_linux.contains(x[i]))
 //        {
-//            Vst::s_vstpaths_linux.push_back(x[i]);
+//            Vst::m_vstpathm_linux.push_back(x[i]);
 //            ui->listWidget->addItem(x[i]);
 //        }
 //    }
@@ -80,11 +80,11 @@ void SettingsTabWidget::delVst()
 //        return;
 //    }
 //    QString text=ui->listWidget->currentItem()->text();
-//    for (int i=0;i<Vst::s_vstpaths_linux.size();i++)
+//    for (int i=0;i<Vst::m_vstpathm_linux.size();i++)
 //    {
-//        if (Vst::s_vstpaths_linux[i]==text)
+//        if (Vst::m_vstpathm_linux[i]==text)
 //        {
-//            Vst::s_vstpaths_linux.removeAt(i--);
+//            Vst::m_vstpathm_linux.removeAt(i--);
 //        }
 //    }
 }

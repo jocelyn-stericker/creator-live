@@ -97,12 +97,12 @@ VstEditor
 
 void VstEditor::init()
 {
-    connect( s_timer, SIGNAL(timeout()), this, SLOT(timeEvent()) );
-    s_timer->start( 40 );
+    connect( m_timer, SIGNAL(timeout()), this, SLOT(timeEvent()) );
+    m_timer->start( 40 );
 
-    s_fx->dispatcher( s_fx, effEditOpen, 0, 0, this->winId(), 0 );
+    m_fx->dispatcher( m_fx, effEditOpen, 0, 0, this->winId(), 0 );
     ERect* eRect = 0;
-    s_fx->dispatcher( s_fx, effEditGetRect, 0, 0, &eRect, 0 );
+    m_fx->dispatcher( m_fx, effEditGetRect, 0, 0, &eRect, 0 );
     if ( eRect )
     {
         int width = eRect->right - eRect->left;
@@ -122,20 +122,20 @@ void VstEditor::init()
 void VstEditor::unInit()
 {
     Q_ASSERT(s_fx);
-    s_fx->dispatcher( s_fx, effEditClose, 0, 0, 0, 0 );
+    m_fx->dispatcher( m_fx, effEditClose, 0, 0, 0, 0 );
 }
 
 void VstEditor::hideEvent(QHideEvent *)
 {
     Q_ASSERT(s_parent);
-    s_parent->vstEditor=0;
+    m_parent->vstEditor=0;
     deleteLater();
 }
 
 void VstEditor::timeEvent()
 {
-    Q_ASSERT( s_fx );
-    s_fx->dispatcher( s_fx, effEditIdle , 0, 0, 0, 0 );
+    Q_ASSERT( m_fx );
+    m_fx->dispatcher( m_fx, effEditIdle , 0, 0, 0, 0 );
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////
@@ -254,12 +254,12 @@ void Vst::mIn(const live::Event *data, live::ObjectChain*p)
 
 QStringList Vst::getVstPaths()
 {
-    return s_vstpaths_linux;
+    return m_vstpaths_linux;
 //    if (s_vstCache) return *s_vstCache;
 //    QStringList vsts;
 //    for (int i=0; i<s_paths; i++)
 //    {
-//        QStringList files = s_paths[i].entryList(QStringList("*.dll"));
+//        QStringList files = m_paths[i].entryList(QStringList("*.dll"));
 //        for (int j=0; j<files; j++)
 //        {
 //            //verify it's a VST
@@ -295,7 +295,7 @@ QStringList Vst::getVstPaths()
 //            continue;
 //        }
 //    }
-//    s_vstCache=new QStringList;
+//    m_vstCache=new QStringList;
 //    return (*s_vstCache)=vsts;
 }
 
@@ -394,14 +394,14 @@ AEffect* SecretVst::s_loadPlugin(QString path)
     // Instantiate the plugin
     a = mainEntryPoint( hostCallback );
 
-    s_initPlugin( a );
+    m_initPlugin( a );
     if (!a) {
         FreeLibrary( (HMODULE) modulePtr);
         return 0;
     }
 
-    s_resumePlugin( a );
-    s_getProperties( a );
+    m_resumePlugin( a );
+    m_getProperties( a );
     return a;
 }
 

@@ -26,20 +26,20 @@ namespace live_widgets {
 class LIBLIVEWIDGETSSHARED_EXPORT TrackInputSelect : public live_widgets::ObjectChooser {
     Q_OBJECT
 private:
-    Ui_Frame* s_ui;
-    bool s_allowMidi;
-    bool s_allowAudio;
+    Ui_Frame* m_ui;
+    bool m_allowMidi;
+    bool m_allowAudio;
 
-    int s_selectedFilter;       /*005*/
-    int s_selectedMode;         /*006*/
+    int m_selectedFilter;       /*005*/
+    int m_selectedMode;         /*006*/
 
-    int s_inputId;
-    static int ss_inputId;
+    int m_inputId;
+    static int sm_inputId;
 public:
     QStringList all;
     TrackInputSelect(QWidget*parent, bool popout, bool allowMidi, bool allowAudio);
 
-    int inputId() { return s_inputId; }
+    int inputId() { return m_inputId; }
 
     live::Bound<QString> b_trackName;
     live::Bound<bool> b_audio;  // else midi
@@ -48,7 +48,7 @@ public:
     QGraphicsView* ui_instView;
     live_widgets::ToolButton* ui_colourSelect[5];
     live_widgets::ToolButton* ui_modeSelect[5];
-    live::MidiFilter* s_midiFilters[5];   /*007*/
+    live::MidiFilter* m_midiFilters[5];   /*007*/
 
     void drawKeyboard();
 

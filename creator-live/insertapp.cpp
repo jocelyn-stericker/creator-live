@@ -5,11 +5,11 @@
 #include <QQmlContext>
 #include <QDir>
 
-QList<InsertApp*> InsertApp::s_identity;
+QList<InsertApp*> InsertApp::m_identity;
 
 InsertApp::InsertApp()
 {
-    s_identity.push_back(this);
+    m_identity.push_back(this);
     setTitle("Creator Live");
     rootContext()->setContextProperty("selector", this);
     setResizeMode(SizeRootObjectToView);
@@ -22,5 +22,5 @@ InsertApp::InsertApp()
 }
 
 InsertApp::~InsertApp() {
-    s_identity.removeOne(this);
+    m_identity.removeOne(this);
 }

@@ -75,7 +75,7 @@ void MidiWizard::next()
         return;
 
     if (currentIndex() == 2 && !ui->listWidget_return->currentRow()) {
-        emit instrumentUpdated(s_midiIn, s_aOut = live::midi::null());
+        emit instrumentUpdated(m_midiIn, m_aOut = live::midi::null());
         return;
     }
 
@@ -84,7 +84,7 @@ void MidiWizard::next()
     }
 
     if (currentIndex() == 0)
-        s_midiIn = s_midiIns[ui->listWidget_midi->currentRow()];
+        m_midiIn = m_midiIns[ui->listWidget_midi->currentRow()];
 
     if (currentIndex() == 1) {
         live::ObjectChain p;
@@ -93,17 +93,17 @@ void MidiWizard::next()
         e.setChan(ui->comboBox_chan->currentIndex());
         e.setSimpleStatus(live::Event::PROGRAM_CHANGE);
         e.setNote(ui->listWidget_programs->currentRow());
-        s_midiIn->mIn(&e, &p);
+        m_midiIn->mIn(&e, &p);
     }
 
     if (currentIndex() == 2) {
-        s_return = s_returns[ui->listWidget_return->currentRow() - 1];
+        m_return = m_returns[ui->listWidget_return->currentRow() - 1];
         // -1 because of "No Return"
     }
 
     if (currentIndex() == 3) {
-        s_aOut = s_aOuts[ui->listWidget_out->currentRow()];
-        emit instrumentUpdated(new MidiPluginObject(s_midiIn, s_return), s_aOut);
+        m_aOut = m_aOuts[ui->listWidget_out->currentRow()];
+        emit instrumentUpdated(new MidiPluginObject(m_midiIn, m_return), m_aOut);
     }
 
     if (currentIndex() + 1 != count())
@@ -117,22 +117,22 @@ void MidiWizard::prev()
 }
 
 void MidiWizard::updateDevices() {
-    s_aOuts = live::object::get(live::AudioOnly | live::OutputOnly);
+    m_aOuts = live::object::get(live::AudioOnly | live::OutputOnly);
     ui->listWidget_out->clear();
-    for (int i = 0; i < s_aOuts.size(); ++i) {
-        ui->listWidget_out->addItem(s_aOuts[i]->name());
+    for (int i = 0; i < m_aOuts.size(); ++i) {
+        ui->listWidget_out->addItem(m_aOuts[i]->name());
     }
 
-    s_midiIns = live::object::get(live::MidiOnly | live::OutputOnly);
+    m_midiIns = live::object::get(live::MidiOnly | live::OutputOnly);
     ui->listWidget_midi->clear();
-    for (int i = 0; i < s_midiIns.size(); ++i) {
-        ui->listWidget_midi->addItem(s_midiIns[i]->name());
+    for (int i = 0; i < m_midiIns.size(); ++i) {
+        ui->listWidget_midi->addItem(m_midiIns[i]->name());
     }
 
-    s_returns = live::object::get(live::AudioOnly | live::InputOnly);
+    m_returns = live::object::get(live::AudioOnly | live::InputOnly);
     ui->listWidget_return->clear();
     ui->listWidget_return->addItem("No Return");
-    for (int i = 0; i < s_returns.size(); ++i) {
-        ui->listWidget_return->addItem(s_returns[i]->name());
+    for (int i = 0; i < m_returns.size(); ++i) {
+        ui->listWidget_return->addItem(m_returns[i]->name());
     }
 }

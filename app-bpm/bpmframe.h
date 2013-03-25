@@ -46,7 +46,7 @@ public:
     BPMCreator()
     {
     }
-    QString name() { return "BPM Detection"; }
+    QString name() { return "ca.nettek.live.bpm"; }
     QString description() { return "Works with some four-on-the-floor music."; }
     live::ObjectPtr newBackend() { return new BPMApp(); }
     live::ObjectPtr loadBackend(const QByteArray &str) {

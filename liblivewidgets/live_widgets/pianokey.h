@@ -23,11 +23,11 @@ namespace live_widgets {
 class LIBLIVEWIDGETSSHARED_EXPORT PianoKey : public QObject, public live::Object, public QGraphicsRectItem {
     Q_OBJECT
 private:
-    static int s_shiftTwinID;
-    static live_widgets::PianoKey* s_universe[300];
-    bool s_virtual;
-    qint16 s_id;
-    bool s_enabled;
+    static int m_shiftTwinID;
+    static live_widgets::PianoKey* m_universe[300];
+    bool m_virtual;
+    qint16 m_id;
+    bool m_enabled;
 
 public:
     LIVE_MIDI
@@ -40,18 +40,18 @@ public:
     void mouseReleaseEvent( QGraphicsSceneMouseEvent* event );
     void setID(qint16 id );
     void setVirtual( bool isVirtual ) {
-        s_virtual = isVirtual;
+        m_virtual = isVirtual;
     }
     void mIn(const live::Event *data, live::ObjectChain*p);
 
     int id() const {
-        return s_id;
+        return m_id;
     }
     int isEnabled() const {
-        return s_enabled;
+        return m_enabled;
     }
     bool isVirtual() const {
-        return s_virtual;
+        return m_virtual;
     }
 
 signals:

@@ -137,10 +137,10 @@ QByteArray BPMApp::save()
     BPMApp*x=IS_SAVE?_THIS:new BPMApp;
 
     /*003*/
-    P_INT32(x->s_id);
-    if (x->s_id>x->s_lastId)
+    P_INT32(x->m_id);
+    if (x->m_id>x->m_lastId)
     {
-        x->s_lastId=x->s_id;
+        x->m_lastId=x->m_id;
     }
 
     /*004*/

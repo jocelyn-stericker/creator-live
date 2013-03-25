@@ -13,30 +13,30 @@ namespace live {
 
 Ambition::Ambition(ObjectPtr cinput, ObjectChain chain, ObjectPtr coutput
                  , ObjectPtr cloop)
-  : s_input(cinput)
-  , s_chain(chain)
-  , s_output(coutput)
-  , s_loopbackOut(cloop)
-  , s_connections()
+  : m_input(cinput)
+  , m_chain(chain)
+  , m_output(coutput)
+  , m_loopbackOut(cloop)
+  , m_connections()
   , x_ambition(QMutex::Recursive)
   , mef(new MidiEventFilter)
-  , b_output(s_output->name())
-  { b_output = s_output->name();
-    setChain(s_chain);
+  , b_output(m_output->name())
+  { b_output = m_output->name();
+    setChain(m_chain);
     ambition::self()->notifyCreated(this);
 }
 
 Ambition::~Ambition() {
-    while (s_connections.size()) {
-        delete s_connections.takeFirst();
+    while (m_connections.size()) {
+        delete m_connections.takeFirst();
     }
     ambition::self()->notifyDestroyed(this);
 }
 
-ambition* ambition::s_self = 0;
+ambition* ambition::m_self = 0;
 
 ambition* ambition::self() {
-    return s_self ? s_self : (s_self = new ambition);
+    return m_self ? m_self : (m_self = new ambition);
 }
 
 void ambition::notifyCreated(Ambition* a) {

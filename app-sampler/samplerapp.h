@@ -16,16 +16,16 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 class SamplerApp : public QObject, public live::Object
 {
     Q_OBJECT
-    static int s_lastId;
-    live::MidiTrack* s_midiTracks[16];            /*003*/
-    live::AudioTrack* s_audioTracks[16];          /*004*/
-    QList<live::Connection> s_connections;
-    QMap<live::ObjectPtr,int*> s_customBindings;  /*008*/
-    int s_bindingMode;
-    bool s_record;                          /*006*/
-    bool s_play;                            /*^^^*/
-    bool s_multi;                           /*007*/
-    int s_id;                               /*005*/
+    static int m_lastId;
+    live::MidiTrack* m_midiTracks[16];            /*003*/
+    live::AudioTrack* m_audioTracks[16];          /*004*/
+    QList<live::Connection> m_connections;
+    QMap<live::ObjectPtr,int*> m_customBindings;  /*008*/
+    int m_bindingMode;
+    bool m_record;                          /*006*/
+    bool m_play;                            /*^^^*/
+    bool m_multi;                           /*007*/
+    int m_id;                               /*005*/
 public:
     LIVE_HYBRID
     LIVE_EFFECT

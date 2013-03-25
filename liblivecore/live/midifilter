@@ -17,11 +17,11 @@ namespace live {
 
 class LIBLIVECORESHARED_EXPORT MidiFilter
 {
-    int s_id;
+    int m_id;
 public:
-    static int ss_lastId;       //Midi.cpp
+    static int sm_lastId;       //Midi.cpp
     static QList<MidiFilter*> _u;
-    static int ss_loadState;
+    static int sm_loadState;
 public:
     friend class song;
     Bound<int> b_filterForNote[200];    /*003*/

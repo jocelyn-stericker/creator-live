@@ -23,28 +23,28 @@ using namespace live;
 DJContext::DJContext(QWidget *parent)
   : QWidget(parent)
   , BindableParent(this)
-  , s_et(new EffectsTab)
-  , s_st(new SampleTab)
-  , s_tt(new TrackTab)
-  , s_lb(new LiveBar)
-  , s_cc(new CollectionContext(this))
+  , m_et(new EffectsTab)
+  , m_st(new SampleTab)
+  , m_tt(new TrackTab)
+  , m_lb(new LiveBar)
+  , m_cc(new CollectionContext(this))
   , ui(new Ui::Ui_DJContext)
 {
     ui->setupUi(this);
     ui->tmpWidget->setLayout(new QHBoxLayout);  // tmp
     ui->tmpWidget->layout()->setContentsMargins(0,0,0,0);   // tmp
-    ui->tmpWidget->layout()->addWidget(s_lb);    //tmp
+    ui->tmpWidget->layout()->addWidget(m_lb);    //tmp
 
-    ui->modeContainer->layout()->addWidget(s_et);
-    ui->modeContainer->layout()->addWidget(s_st);
-    ui->modeContainer->layout()->addWidget(s_tt);
-    ui->modeContainer->layout()->addWidget(s_cc);
+    ui->modeContainer->layout()->addWidget(m_et);
+    ui->modeContainer->layout()->addWidget(m_st);
+    ui->modeContainer->layout()->addWidget(m_tt);
+    ui->modeContainer->layout()->addWidget(m_cc);
 
-    connect(s_lb, SIGNAL(noMode()), this, SLOT(showSnarky()));
-    connect(s_lb, SIGNAL(djMode()), this, SLOT(showEffects()));
-    connect(s_lb, SIGNAL(sampleMode()), this, SLOT(showSample()));
-    connect(s_lb, SIGNAL(trackMode()), this, SLOT(showTrack()));
-    connect(s_lb, SIGNAL(collectionMode()), this, SLOT(showCollection()));
+    connect(m_lb, SIGNAL(noMode()), this, SLOT(showSnarky()));
+    connect(m_lb, SIGNAL(djMode()), this, SLOT(showEffects()));
+    connect(m_lb, SIGNAL(sampleMode()), this, SLOT(showSample()));
+    connect(m_lb, SIGNAL(trackMode()), this, SLOT(showTrack()));
+    connect(m_lb, SIGNAL(collectionMode()), this, SLOT(showCollection()));
 
     showSnarky();
 }
@@ -56,52 +56,52 @@ DJContext::~DJContext()
 
 void DJContext::showSnarky()
 {
-    s_et->hide();
-    s_st->hide();
-    s_tt->hide();
-    s_cc->hide();
+    m_et->hide();
+    m_st->hide();
+    m_tt->hide();
+    m_cc->hide();
     ui->label_snarky->show();
 }
 
 void DJContext::showEffects()
 {
-    s_et->show();
-    s_st->hide();
-    s_tt->hide();
-    s_cc->hide();
+    m_et->show();
+    m_st->hide();
+    m_tt->hide();
+    m_cc->hide();
     ui->label_snarky->hide();
 }
 
 void DJContext::showSample()
 {
-    s_et->hide();
-    s_st->show();
-    s_tt->hide();
-    s_cc->hide();
+    m_et->hide();
+    m_st->show();
+    m_tt->hide();
+    m_cc->hide();
     ui->label_snarky->hide();
 }
 
 void DJContext::showTrack()
 {
-    s_et->hide();
-    s_st->hide();
-    s_tt->show();
-    s_cc->hide();
+    m_et->hide();
+    m_st->hide();
+    m_tt->show();
+    m_cc->hide();
     ui->label_snarky->hide();
 }
 
 void DJContext::showCollection()
 {
-    s_et->hide();
-    s_st->hide();
-    s_tt->hide();
-    s_cc->show();
+    m_et->hide();
+    m_st->hide();
+    m_tt->hide();
+    m_cc->show();
     ui->label_snarky->hide();
 }
 
 void DJContext::audioanged_logic(QString s)
 {
-    s_out = object::fetch(s, AudioOnly | OutputOnly);
+    m_out = object::fetch(s, AudioOnly | OutputOnly);
 }
 
 void DJContext::monitorChanged_logic(QString)

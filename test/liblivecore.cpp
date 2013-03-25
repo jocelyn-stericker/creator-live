@@ -84,19 +84,19 @@ TEST(AudioSanity, NFrames) {
 
 class AudioListener : public live::Object{
 public:
-    bool s_got;
-    float s_highest;
-    float s_lowest;
+    bool m_got;
+    float m_highest;
+    float m_lowest;
 
     LIVE_INPUT
     LIVE_AUDIO
-    AudioListener() : live::Object("AL", false, false,1), s_got(false), s_highest(-2.0f), s_lowest(2.0f) {}
+    AudioListener() : live::Object("AL", false, false,1), m_got(false), m_highest(-2.0f), m_lowest(2.0f) {}
     void aIn(const float *data, int, Object *) {
         for (unsigned i = 0; i < live::audio::nFrames(); ++i) {
-            s_highest = qMax(data[i], s_highest);
-            s_lowest = qMin(data[i], s_lowest);
+            m_highest = qMax(data[i], m_highest);
+            m_lowest = qMin(data[i], m_lowest);
         }
-        s_got = true;
+        m_got = true;
     }
 };
 
@@ -105,9 +105,9 @@ TEST(AudioSanity, NullWorks) {
     live::Connection c(live::audio::null(2), b, live::AudioConnection);
     // wait a while for the audio thread to process data.
     usleep(50000);
-    EXPECT_TRUE(b->s_got);
-    EXPECT_EQ(b->s_highest, 0.0f);
-    EXPECT_EQ(b->s_lowest, 0.0f);
+    EXPECT_TRUE(b->m_got);
+    EXPECT_EQ(b->m_highest, 0.0f);
+    EXPECT_EQ(b->m_lowest, 0.0f);
     delete b;
 }
 

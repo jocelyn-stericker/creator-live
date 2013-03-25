@@ -18,9 +18,9 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 namespace live_widgets {
 
 class LIBLIVEWIDGETSSHARED_EXPORT ChainTypeWidget : public QWidget {
-    QList<int> s_positions;
-    QList<bool> s_midi;
-    QList<bool> s_audio;
+    QList<int>m_positions;
+    QList<bool>m_midi;
+    QList<bool>m_audio;
 public:
     ChainTypeWidget(QWidget* p);
     void reset();

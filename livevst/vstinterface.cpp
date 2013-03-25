@@ -16,5 +16,5 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 VstInterface::VstInterface()
 {
     QSettings settings("Nettek", "VSTi plugin for Creator Live");
-    Vst::s_vstpaths_linux=settings.value("vstis",QStringList()).toStringList();
+    Vst::m_vstpaths_linux=settings.value("vstis",QStringList()).toStringList();
 }

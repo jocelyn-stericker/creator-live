@@ -33,13 +33,13 @@ class DJContext : public QWidget, public live_widgets::BindableParent
 {
     Q_OBJECT
 
-    EffectsTab* s_et;
-    SampleTab* s_st;
-    TrackTab* s_tt;
-    LiveBar* s_lb;
-    CollectionContext* s_cc;
+    EffectsTab* m_et;
+    SampleTab* m_st;
+    TrackTab* m_tt;
+    LiveBar* m_lb;
+    CollectionContext* m_cc;
 
-    live::ObjectPtr s_out;
+    live::ObjectPtr m_out;
 
 public:
     explicit DJContext (QWidget *parent = 0);

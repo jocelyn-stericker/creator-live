@@ -12,34 +12,34 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 using namespace live;
 
-instrument* instrument::s_singleton=0;
+instrument* instrument::m_singleton=0;
 
 void instrument::registerInterface(InstrumentInterface* c) {
     lthread::assertUi();
-    s_singleton = s_singleton?s_singleton:new instrument;
-    if (s_singleton->s_instrumentNames.contains(c->name())) {
+    m_singleton = m_singleton?m_singleton:new instrument;
+    if (m_singleton->m_instrumentNames.contains(c->name())) {
         return;
     }
-    s_singleton->s_instrumentNames.push_back(c->name());
-    s_singleton->s_instruments.push_back(c);
+    m_singleton->m_instrumentNames.push_back(c->name());
+    m_singleton->m_instruments.push_back(c);
 }
 
 instrument::~instrument() {
     lthread::assertUi();
-    while (s_instruments.size()) {
-        delete s_instruments.takeLast();
+    while (m_instruments.size()) {
+        delete m_instruments.takeLast();
     }
-    s_singleton=0;
+    m_singleton=0;
 }
 
 QStringList instrument::names() {
     lthread::assertUi();
-    s_singleton = s_singleton?s_singleton:new instrument;
-    return s_singleton->s_instrumentNames;
+    m_singleton = m_singleton?m_singleton:new instrument;
+    return m_singleton->m_instrumentNames;
 }
 
 QList<InstrumentInterface*> instrument::interfaces() {
     lthread::assertUi();
-    s_singleton = s_singleton?s_singleton:new instrument;
-    return s_singleton->s_instruments;
+    m_singleton = m_singleton?m_singleton:new instrument;
+    return m_singleton->m_instruments;
 }

@@ -43,8 +43,8 @@ core_dotlive.cpp
 #include "core_dotlive.cpp"
 #undef LOAD
 #undef BEGIN
-#undef IS_LOAD
-#undef IS_SAVE
+#undef Im_LOAD
+#undef Im_SAVE
 #undef IO
 #undef _THIS
 #undef RETURN
@@ -54,8 +54,8 @@ core_dotlive.cpp
 
 #ifdef LOAD
 #define BEGIN QDataStream ret(str); QString xqstring; qint32 xint32; qint16 xint16; quint8 xchar; bool xbool; QByteArray xba; Q_UNUSED(xint16); Q_UNUSED(xchar); Q_UNUSED(xint32)
-#define IS_LOAD 1
-#define IS_SAVE 0
+#define Im_LOAD 1
+#define Im_SAVE 0
 #define IO >>
 #define _THIS NULL
 #define RETURN return x;
@@ -75,8 +75,8 @@ template<typename T> bool verify1(QDataStream&ret,T chk)
 #endif
 #ifdef SAVE
 #define BEGIN QByteArray str; QDataStream ret(&str,QIODevice::WriteOnly); QString xqstring; qint32 xint32; qint16 xint16; quint8 xchar; bool xbool; QByteArray xba; Q_UNUSED(xint16); Q_UNUSED(xchar); Q_UNUSED(xint32)
-#define IS_LOAD 0
-#define IS_SAVE 1
+#define Im_LOAD 0
+#define Im_SAVE 1
 #define IO <<
 #define _THIS this
 #define RETURN return str
@@ -97,8 +97,8 @@ template<typename T> bool verify2(QDataStream&ret,T chk)
 #endif
 
 
-#ifndef TYPES_
-#define TYPES_
+#ifndef TYPEm_
+#define TYPEm_
 #define P_CHAR(var) \
     do { \
     xchar=var; \
@@ -163,7 +163,7 @@ QByteArray Time::save()
 
     //////////////////////////////////////////////////////////////////
 
-    Time*x=IS_SAVE?_THIS:new Time;
+    Time*x=Im_SAVE?_THIS:new Time;
 
     //////////////////////////////////////////////////////////////////
 
@@ -208,7 +208,7 @@ QByteArray live::Event::save()
 
     //////////////////////////////////////////////////////////////////
 
-    live::Event*x=IS_SAVE?_THIS:new live::Event;
+    live::Event*x=Im_SAVE?_THIS:new live::Event;
 
     //////////////////////////////////////////////////////////////////
 
@@ -224,12 +224,12 @@ QByteArray live::Event::save()
     //////////////////////////////////////////////////////////////////
 
     /*006*/
-    if (IS_SAVE)
+    if (Im_SAVE)
     {
         xba=x->time.save();
     }
     ret IO xba;
-    if (IS_LOAD)
+    if (Im_LOAD)
     {
         x->time = *Time::load(xba);
     }
@@ -271,8 +271,8 @@ QByteArray TimeSignature::save()
 
     //////////////////////////////////////////////////////////////////
 
-    TimeSignature*x=IS_SAVE?_THIS:NULL;
-    x=IS_SAVE?x:new TimeSignature;
+    TimeSignature*x=Im_SAVE?_THIS:NULL;
+    x=Im_SAVE?x:new TimeSignature;
 
     /*003*/
     P_INT32(x->numerator);
@@ -316,19 +316,19 @@ QByteArray Pitch::save()
 
     //////////////////////////////////////////////////////////////////
 
-    Pitch*x=IS_SAVE?_THIS:NULL;
-    x=IS_SAVE?x:new Pitch;
+    Pitch*x=Im_SAVE?_THIS:NULL;
+    x=Im_SAVE?x:new Pitch;
 
     /*003*/
-    P_CHAR(x->s_root);
+    P_CHAR(x->m_root);
 
     /*004*/
-    int accidental=x->s_accidental;
+    int accidental=x->m_accidental;
     P_INT32(accidental);
-    x->s_accidental=static_cast<Pitch::Accidental>(accidental); //!?!*!@#@?
+    x->m_accidental=static_cast<Pitch::Accidental>(accidental); //!?!*!@#@?
 
     /*005*/
-    P_INT32(x->s_octave);
+    P_INT32(x->m_octave);
 
 
     //////////////////////////////////////////////////////////////////
@@ -367,24 +367,24 @@ QByteArray KeySignature::save()
 
     //////////////////////////////////////////////////////////////////
 
-    KeySignature*x=IS_SAVE?_THIS:NULL;
-    x=IS_SAVE?x:new KeySignature;
+    KeySignature*x=Im_SAVE?_THIS:NULL;
+    x=Im_SAVE?x:new KeySignature;
 
     /*003*/
-    P_CHAR(x->s_root);
+    P_CHAR(x->m_root);
 
     /*004*/
-    qint32 accidental=x->s_accidental;
+    qint32 accidental=x->m_accidental;
     P_INT32(accidental);
-    x->s_accidental=static_cast<Pitch::Accidental>(accidental);
+    x->m_accidental=static_cast<Pitch::Accidental>(accidental);
 
     /*005*/
-    P_INT32(x->s_octave);
+    P_INT32(x->m_octave);
 
     /*006*/
-    qint32 tonality=x->s_tonality;
+    qint32 tonality=x->m_tonality;
     P_INT32(tonality);
-    x->s_tonality=static_cast<KeySignature::Tonality>(tonality);
+    x->m_tonality=static_cast<KeySignature::Tonality>(tonality);
 
 
     //////////////////////////////////////////////////////////////////
@@ -422,19 +422,19 @@ QByteArray SpecificChord::save()
 
     //////////////////////////////////////////////////////////////////
 
-    SpecificChord*x=IS_SAVE?_THIS:new SpecificChord();
+    SpecificChord*x=Im_SAVE?_THIS:new SpecificChord();
 
     int count=x?x->count():0;
     P_INT32(count);   /* NOT A PROPERTY */
     for (int i=0;i<count;i++)
     {
 
-        if (IS_SAVE)
+        if (Im_SAVE)
         {
             xba=(*x)[i].save();
         }
         /*006*/ ret IO xba;
-        if (IS_LOAD)
+        if (Im_LOAD)
         {
             Pitch* p=Pitch::load(xba);
             x->push_back(*p);
@@ -483,7 +483,7 @@ QByteArray audio::save()
 
     int sampleRate=audio::sampleRate();
     ret IO sampleRate;  /* NOT A PROPERTY */
-    if (IS_LOAD)
+    if (Im_LOAD)
     {
         if (sampleRate!=audio::sampleRate())
         {
@@ -505,7 +505,7 @@ QByteArray audio::save()
 
     quint32 nFrames=audio::nFrames();
     ret IO nFrames;  /* NOT A PROPERTY */
-    if (IS_LOAD)
+    if (Im_LOAD)
     {
         if (nFrames!=audio::nFrames())
         {
@@ -525,7 +525,7 @@ QByteArray audio::save()
     {
         int incount=(i?object::get(live::AudioOnly|live::InputOnly):object::get(live::AudioOnly|live::OutputOnly)).size();
         ret IO incount;  /* NOT A PROPERTY */
-        if (IS_SAVE)
+        if (Im_SAVE)
         {
             QList<live::ObjectPtr> inlist=i?object::get(live::AudioOnly|live::InputOnly):object::get(live::AudioOnly|live::OutputOnly);
             for (int i=0;i<inlist.size();i++)
@@ -609,7 +609,7 @@ QByteArray MidiFilter::save()
     //////////////////////////////////////////////////////////////////
 
 
-    MidiFilter*x=IS_SAVE?_THIS:new MidiFilter();
+    MidiFilter*x=Im_SAVE?_THIS:new MidiFilter();
 
     /*003*/
 
@@ -656,36 +656,36 @@ QByteArray song::save()
     //////////////////////////////////////////////////////////////////
 
 
-    song*x=IS_SAVE?_THIS:new song();
+    song*x=Im_SAVE?_THIS:new song();
 
 
     //////////////////////////////////////////////////////////////////
 
-    if (IS_SAVE)
+    if (Im_SAVE)
     {
         xba=x->metronome->save();
     }
     /*003*/ ret IO xba;
-    if (IS_LOAD)
+    if (Im_LOAD)
     {
         x->metronome = Metronome::load(xba);
     }
 
     //////////////////////////////////////////////////////////////////
 
-    if (IS_SAVE)
+    if (Im_SAVE)
     {
         xba=x->keySignature->save();
     }
     /*004*/ ret IO xba;
-    if (IS_LOAD)
+    if (Im_LOAD)
     {
         x->keySignature = KeySignature::load(xba);
     }
 
     //////////////////////////////////////////////////////////////////
 
-    Q_ASSERT(MidiFilter::ss_loadState==-1);
+    Q_ASSERT(MidiFilter::sm_loadState==-1);
 
     qint32 mapsize=x->midiMaps.count();
     /*005A*/ ret IO mapsize;
@@ -697,11 +697,11 @@ QByteArray song::save()
 
     for (int i=0;i<mapsize;i++)
     {
-        qint32 ns=IS_SAVE?x->midiMaps.keys()[i]:0;
+        qint32 ns=Im_SAVE?x->midiMaps.keys()[i]:0;
         /*005B_1*/ P_INT32(ns);
-        qint32 ni=IS_SAVE?x->midiMaps.values()[i]->s_id:-1;
+        qint32 ni=Im_SAVE?x->midiMaps.values()[i]->m_id:-1;
         /*005B_2*/ P_INT32(ni);
-        if (IS_LOAD)
+        if (Im_LOAD)
         {
             Q_ASSERT(ni!=-1&&ni<MidiFilter::_u.size());
             x->midiMaps.insertMulti(ns,MidiFilter::_u[ni]);
@@ -753,26 +753,26 @@ QByteArray Metronome::save()
     //////////////////////////////////////////////////////////////////
 
 
-    Metronome*x=IS_SAVE?_THIS:NULL;
+    Metronome*x=Im_SAVE?_THIS:NULL;
 
-    float xbpm = IS_SAVE?x->b_bpm:0.0f;
+    float xbpm = Im_SAVE?x->b_bpm:0.0f;
     /*003*/
     ret IO xbpm;
-    float xppq = IS_SAVE?x->s_ppq:0.0f;
+    float xppq = Im_SAVE?x->m_ppq:0.0f;
     /*004*/
     ret IO xppq;
 
-    x=IS_SAVE?x:new Metronome(TimeSignature(4,4),xbpm,xppq);
+    x=Im_SAVE?x:new Metronome(TimeSignature(4,4),xbpm,xppq);
     //We change the time signature below...
 
 
     //////////////////////////////////////////////////////////////////
 
 
-    xbool=x->s_isActive;
+    xbool=x->m_isActive;
     /*005*/
     ret IO xbool;
-    if (IS_LOAD&&xbool)
+    if (Im_LOAD&&xbool)
     {
         x->start();
     }
@@ -781,15 +781,15 @@ QByteArray Metronome::save()
     //////////////////////////////////////////////////////////////////
 
 
-    if (IS_SAVE)
+    if (Im_SAVE)
     {
-        xba=x->s_ts.save();
+        xba=x->m_ts.save();
     }
     /*006*/ ret IO xba;
-    if (IS_LOAD)
+    if (Im_LOAD)
     {
         TimeSignature* newts=TimeSignature::load(xba);
-        x->s_ts = *newts;
+        x->m_ts = *newts;
         delete newts;
     }
 
@@ -829,7 +829,7 @@ QByteArray Ambition::save()
 
     //////////////////////////////////////////////////////////////////
 
-    Ambition* x=IS_SAVE?_THIS:NULL;
+    Ambition* x=Im_SAVE?_THIS:NULL;
 #ifdef LOAD
     QString cin_str,cout_str,cout_loopback_str;
     int cchain_size;
@@ -857,18 +857,18 @@ QByteArray Ambition::save()
 
 #else
     Q_UNUSED(x);
-    ret IO this->s_input->name();
-    ret IO this->s_output->name();
-    if (s_loopbackOut.valid())
+    ret IO this->m_input->name();
+    ret IO this->m_output->name();
+    if (m_loopbackOut.valid())
     {
-        ret IO this->s_loopbackOut->name();
+        ret IO this->m_loopbackOut->name();
     }
     else
     {
         ret IO (QString)"__NO_LOOPBACK__";
     }
-    ret IO this->s_chain.size();
-    for (int i=0;i<this->s_chain.size();i++)
+    ret IO this->m_chain.size();
+    for (int i=0;i<this->m_chain.size();i++)
     {
         xba = x->at(i)->name().toLatin1();
         ret IO xba;
@@ -900,7 +900,7 @@ QByteArray AnaBeat::save()
     Q_UNUSED(xqstring);
     Q_UNUSED(xbool);
     Q_UNUSED(xba);
-    AnaBeat* x=IS_SAVE?_THIS:new AnaBeat();
+    AnaBeat* x=Im_SAVE?_THIS:new AnaBeat();
     Q_UNUSED(x);    //in saving
     RETURN;
 }
@@ -936,20 +936,20 @@ QByteArray AudioSecond::save()
 
 
     AudioSecond*x=0;
-    x = IS_SAVE?_THIS:NULL;
+    x = Im_SAVE?_THIS:NULL;
     /*003*/
     qint32 rate=audio::sampleRate();  //qint32
     ret IO rate;
     Q_ASSERT(rate==audio::sampleRate());
 
     /*004*/
-    qint32 offset=IS_SAVE?x->s_sampleOffset:0;
+    qint32 offset=Im_SAVE?x->m_sampleOffset:0;
     ret IO offset;
-    x = IS_SAVE?x:new AudioSecond(offset);
+    x = Im_SAVE?x:new AudioSecond(offset);
     /*005*/
     for (int i=0;i<audio::sampleRate();i++)
     {
-        ret IO x->s_data[i];        //float
+        ret IO x->m_data[i];        //float
     }
 
     /*006*/
@@ -988,28 +988,28 @@ QByteArray AudioContainer::save()
 
 
     AudioContainer*x=0;
-    x = IS_SAVE?_THIS:new AudioContainer();
+    x = Im_SAVE?_THIS:new AudioContainer();
     /*003*/
     qint32 rate=audio::sampleRate();  //qint32
     ret IO rate;
     Q_ASSERT(rate==audio::sampleRate());
 
     /*004*/
-    qint32 listSize=IS_SAVE?x->s_data.size():0;
+    qint32 listSize=Im_SAVE?x->m_data.size():0;
     ret IO listSize;
     for (int i=0;i<listSize;i++)
     {
-        xba=IS_SAVE?
-                    (x->s_data[i]?x->s_data[i]->save():QByteArray("NULL")):
+        xba=Im_SAVE?
+                    (x->m_data[i]?x->m_data[i]->save():QByteArray("NULL")):
                     QByteArray();
 
         ret IO xba;
-        if (IS_LOAD)
+        if (Im_LOAD)
         {
-            x->s_data.push_back((xba==QByteArray("NULL"))?0:AudioSecond::load(xba));
+            x->m_data.push_back((xba==QByteArray("NULL"))?0:AudioSecond::load(xba));
         }
     }
-    x->s_dataSize=x->s_data.size();
+    x->m_dataSize=x->m_data.size();
 
     /*005*/
     (verify(ret,(QString)"END AudioContainer"));
@@ -1047,13 +1047,13 @@ QByteArray AudioTrack::save()
 
 
     AudioTrack*x=0;
-    if (IS_SAVE)
+    if (Im_SAVE)
     {
         x = _THIS;
         /*003*/
-        ret IO x->s_chans;
+        ret IO x->m_chans;
     }
-    else if (IS_LOAD)
+    else if (Im_LOAD)
     {
         qint32 cchans;
 
@@ -1082,7 +1082,7 @@ QByteArray AudioTrack::save()
     /*005*/
     xint32=x->pan();
     ret IO xint32;
-    if (IS_LOAD&&(x->s_chans==2))
+    if (Im_LOAD&&(x->m_chans==2))
     {
         x->setPan(xint32);
     }
@@ -1094,7 +1094,7 @@ QByteArray AudioTrack::save()
     /*006*/
     xbool=x->isRecord();
     ret IO xbool;
-    if (IS_LOAD&&xbool)
+    if (Im_LOAD&&xbool)
     {
         x->startRecord();
     }
@@ -1106,7 +1106,7 @@ QByteArray AudioTrack::save()
     /*007*/
     xbool=x->isOverdub();
     ret IO xbool;
-    if (IS_LOAD&&xbool)
+    if (Im_LOAD&&xbool)
     {
         x->startOverdub();
     }
@@ -1118,7 +1118,7 @@ QByteArray AudioTrack::save()
     /*008*/
     xbool=x->isPlay();
     ret IO xbool;
-    if (IS_LOAD&&xbool)
+    if (Im_LOAD&&xbool)
     {
         x->startPlayback();
     }
@@ -1130,7 +1130,7 @@ QByteArray AudioTrack::save()
     /*009*/
     xbool=x->isMute();
     ret IO xbool;
-    if (IS_LOAD&&xbool)
+    if (Im_LOAD&&xbool)
     {
         x->startMute();
     }
@@ -1141,7 +1141,7 @@ QByteArray AudioTrack::save()
     /*010*/
     float f =x->pos();
     ret IO f;
-    if (IS_LOAD)
+    if (Im_LOAD)
     {
         x->setPos(f);
     }
@@ -1153,28 +1153,28 @@ QByteArray AudioTrack::save()
     //    /*011*/ (verify(ret,(QString)"BEGIN AudioTrack raw data"));
 
     //    /*012*/
-    //    for (int i=0; i<x->s_chans; i++)
+    //    for (int i=0; i<x->m_chans; i++)
     //    {
-    //        for (int j=0; j<x->s_dataEnd; j++)
+    //        for (int j=0; j<x->m_dataEnd; j++)
     //        {
-    //            float a=x->s_data[i][j];
+    //            float a=x->m_data[i][j];
     //            ret IO a;
-    //            if (IS_LOAD)
+    //            if (Im_LOAD)
     //            {
-    //                x->s_data[i][j]=a;
+    //                x->m_data[i][j]=a;
     //            }
     //        }
     //    }
 
     /*011*/
-    for (int i=0;i<x->s_chans;i++)
+    for (int i=0;i<x->m_chans;i++)
     {
-        xba=IS_SAVE?x->s_container[i]->save():xba;
+        xba=Im_SAVE?x->m_container[i]->save():xba;
         ret IO xba;
-        if (IS_LOAD)
+        if (Im_LOAD)
         {
-            delete x->s_container[i];
-            x->s_container[i]=AudioContainer::load(xba);
+            delete x->m_container[i];
+            x->m_container[i]=AudioContainer::load(xba);
         }
     }
 
@@ -1218,7 +1218,7 @@ QByteArray MidiTrack::save()
     //////////////////////////////////////////////////////////////////
 
 
-    MidiTrack*x=IS_SAVE?_THIS:new MidiTrack;
+    MidiTrack*x=Im_SAVE?_THIS:new MidiTrack;
     Q_UNUSED(x);
 
 
@@ -1235,7 +1235,7 @@ QByteArray MidiTrack::save()
     /*009*/
     xbool=x->isRecord();
     ret IO xbool;
-    if (IS_LOAD&&xbool)
+    if (Im_LOAD&&xbool)
     {
         x->startRecord();
     }
@@ -1247,7 +1247,7 @@ QByteArray MidiTrack::save()
     /*010*/
     xbool=x->isOverdub();
     ret IO xbool;
-    if (IS_LOAD&&xbool)
+    if (Im_LOAD&&xbool)
     {
         x->startOverdub();
     }
@@ -1259,7 +1259,7 @@ QByteArray MidiTrack::save()
     /*011*/
     xbool=x->isPlay();
     ret IO xbool;
-    if (IS_LOAD&&xbool)
+    if (Im_LOAD&&xbool)
     {
         x->startPlayback();
     }
@@ -1271,7 +1271,7 @@ QByteArray MidiTrack::save()
     /*012*/
     xbool=x->isMute();
     ret IO xbool;
-    if (IS_LOAD&&xbool)
+    if (Im_LOAD&&xbool)
     {
         x->startMute();
     }
@@ -1283,17 +1283,17 @@ QByteArray MidiTrack::save()
     /*013A*/ (verify(ret,(QString)"BEGIN MidiTrack data"));
 
     /*013B*/
-    xint32=x->s_data->size();
+    xint32=x->m_data->size();
     ret IO xint32;
 
     /*013C*/
     for (int i=0; i<xint32; i++)
     {
-        xba=IS_SAVE?(*x->s_data)[i]->save():QByteArray();
+        xba=Im_SAVE?(*x->m_data)[i]->save():QByteArray();
         ret IO xba;
-        if (IS_LOAD)
+        if (Im_LOAD)
         {
-            x->s_data->push_back(Event::load(xba));
+            x->m_data->push_back(Event::load(xba));
         }
     }
 
@@ -1305,7 +1305,7 @@ QByteArray MidiTrack::save()
 
     /*014*/ P_INT32(x->mTrack_id);
 
-    if (IS_LOAD)
+    if (Im_LOAD)
     {
         lastId=qMax(lastId,x->mTrack_id);
     }
@@ -1336,7 +1336,7 @@ QByteArray MidiEventCounter::save()
 
     //////////////////////////////////////////////////////////////////
 
-    MidiEventCounter*x=IS_SAVE?_THIS:new MidiEventCounter;
+    MidiEventCounter*x=Im_SAVE?_THIS:new MidiEventCounter;
 
     //////////////////////////////////////////////////////////////////
 

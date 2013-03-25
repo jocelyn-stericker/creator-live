@@ -29,11 +29,11 @@ class LIBLIVEWIDGETSSHARED_EXPORT ObjectChooser : public QFrame, public live_wid
     live_widgets::ToolButton* ui_minimized;
     QWidget* ui_topFrame;
     QWidget* ui_bottomFrame;
-    bool s_alignedLeft;
+    bool m_alignedLeft;
 protected:
-    int s_oldHeight;
-    int s_maximizedWidth;
-    int s_maximizedHeight;
+    int m_oldHeight;
+    int m_maximizedWidth;
+    int m_maximizedHeight;
 
 public:
     live::Bound<QString> b_trackName;
@@ -52,7 +52,7 @@ protected:
     void setMinimizedButton(live_widgets::ToolButton* u) { ui_minimized = u; }
     void setTopFrame(QWidget* u) { ui_topFrame = u; }
     void setBottomFrame(QWidget* u) { ui_bottomFrame = u; }
-    void setAlignedLeft(bool alignLeft) { s_alignedLeft = alignLeft; }
+    void setAlignedLeft(bool alignLeft) { m_alignedLeft = alignLeft; }
 
 private:
     void resizeEvent(QResizeEvent *);

@@ -14,9 +14,9 @@ using namespace live;
 
 InstrumentTester::InstrumentTester(live::ObjectPtr in, live::InstrumentInterface *inst, QWidget *parent) :
     QWidget(parent),
-    s_inst(inst),
-    s_in(in),
-    s_sett(0),
+    m_inst(inst),
+    m_in(in),
+    m_sett(0),
     ui(new Ui::InstrumentTester)
 {
     ui->setupUi(this);
@@ -34,38 +34,38 @@ void InstrumentTester::configAction(bool a)
 {
     if(!a) return;
 
-    if(s_sett) {
-        s_sett->deleteLater();
-        s_sett=0;
+    if(m_sett) {
+        m_sett->deleteLater();
+        m_sett=0;
     }
 
-    (s_sett=qobject_cast<QWidget*>(s_inst->selectionWidget(s_instObj,s_out)))->show();
-    ui->widget_configuration->layout()->addWidget(s_sett);
-    connect(s_sett,SIGNAL(instrumentUpdated(live::ObjectPtr, live::ObjectPtr)),this,SLOT(changeInst(live::ObjectPtr, live::ObjectPtr)));
+    (m_sett=qobject_cast<QWidget*>(m_inst->selectionWidget(m_instObj,m_out)))->show();
+    ui->widget_configuration->layout()->addWidget(m_sett);
+    connect(m_sett,SIGNAL(instrumentUpdated(live::ObjectPtr, live::ObjectPtr)),this,SLOT(changeInst(live::ObjectPtr, live::ObjectPtr)));
 }
 
 void InstrumentTester::setupAction(bool a)
 {
     if(!a) return;
-    if(s_sett) {
-        s_sett->deleteLater();
-        s_sett=0;
+    if(m_sett) {
+        m_sett->deleteLater();
+        m_sett=0;
     }
-    (s_sett=qobject_cast<QWidget*>(s_inst->settingsWidget()))->show();
-    ui->widget_configuration->layout()->addWidget(s_sett);
+    (m_sett=qobject_cast<QWidget*>(m_inst->settingsWidget()))->show();
+    ui->widget_configuration->layout()->addWidget(m_sett);
 }
 
 void InstrumentTester::changeInst(ObjectPtr inst, ObjectPtr loop)
 {
     qDebug() << "CHANGE_INST";
-    for (int i = 0; i < s_connections.size(); ++i) {
-        if (s_connections[i].a==s_in && s_connections[i].b == s_instObj)
-            s_connections.removeAt(i--);
-        if (s_connections[i].a==s_instObj && s_connections[i].b == s_out)
-            s_connections.removeAt(i--);
+    for (int i = 0; i < m_connections.size(); ++i) {
+        if (m_connections[i].a==m_in && m_connections[i].b == m_instObj)
+            m_connections.removeAt(i--);
+        if (m_connections[i].a==m_instObj && m_connections[i].b == m_out)
+            m_connections.removeAt(i--);
     }
-    s_instObj=inst;
-    s_out=loop;
-    if(s_in.valid()&&s_instObj.valid()) s_connections.push_back(Connection(s_in,s_instObj,live::MidiConnection));
-    if(s_instObj.valid()&&s_out.valid()) s_connections.push_back(Connection(s_instObj, s_out,live::HybridConnection));
+    m_instObj=inst;
+    m_out=loop;
+    if(m_in.valid()&&m_instObj.valid()) m_connections.push_back(Connection(m_in,m_instObj,live::MidiConnection));
+    if(m_instObj.valid()&&m_out.valid()) m_connections.push_back(Connection(m_instObj, m_out,live::HybridConnection));
 }

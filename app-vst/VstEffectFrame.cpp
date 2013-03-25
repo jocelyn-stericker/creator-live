@@ -14,7 +14,7 @@ VstEffectCreator VstEffectCreator::evil;
 
 VstEffectFrame::VstEffectFrame(VstEffectApp* capp, QWidget *parent) :
     AppFrame(parent),
-    s_app(capp),
+   m_app(capp),
     ui(new Ui::VstEffectFrame)
 {
     ui->setupUi(this);
@@ -28,7 +28,7 @@ VstEffectFrame::VstEffectFrame(VstEffectApp* capp, QWidget *parent) :
 
 void VstEffectFrame::init(QString path)
 {
-    s_app->init(path);
+   m_app->init(path);
     ui->comboBox_vstSelect->hide();
     ui->pushButton_show->show();
     ui->label->setText("Init VST...");
@@ -36,6 +36,6 @@ void VstEffectFrame::init(QString path)
 
 VstEffectFrame::~VstEffectFrame()
 {
-    delete s_app;
+    deletem_app;
     delete ui;
 }

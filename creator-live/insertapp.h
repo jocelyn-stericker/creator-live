@@ -10,7 +10,7 @@
 class InsertApp : public QQuickView
 {
     Q_OBJECT
-    static QList<InsertApp*> s_identity;
+    static QList<InsertApp*> m_identity;
 public:
     explicit InsertApp();
     virtual ~InsertApp();
@@ -19,7 +19,7 @@ public:
     Q_INVOKABLE void go(QString s) { emit invoked(s); deleteLater(); }
 
     static void quit() {
-        while (s_identity.size()) s_identity.takeLast()->deleteLater();
+        for (int i = 0; i < m_identity.size(); ++i) m_identity[i]->cancel();
     }
 
 signals:

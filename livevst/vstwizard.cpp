@@ -23,8 +23,8 @@ using namespace live;
 
 VstWizard::VstWizard(live::ObjectPtr out, live::ObjectPtr loopback, QWidget *parent) :
     QStackedWidget(parent),
-    s_out(out),
-    s_loopback(loopback),
+    m_out(out),
+    m_loopback(loopback),
     ui(new Ui::VstWizard)
 {
     ui->setupUi(this);
@@ -66,9 +66,9 @@ void VstWizard::vstChanged(int z) {
     ui->listWidget_inst->clear();
     ui->listWidget_inst->addItem("Create a New Instance");
     ui->listWidget_inst->setCurrentRow(0);
-    for (int i=0;i<Vst::s_map.size();i++) {
-        if (Vst::s_map.keys()[i]==ui->listWidget_vsti->currentItem()->text()&&Vst::s_map.values()[i].second.valid()) {
-            QString s = Vst::s_map.values()[i].first;
+    for (int i=0;i<Vst::m_map.size();i++) {
+        if (Vst::m_map.keys()[i]==ui->listWidget_vsti->currentItem()->text()&&Vst::m_map.values()[i].second.valid()) {
+            QString s = Vst::m_map.values()[i].first;
             ui->listWidget_inst->addItem(s);
         }
     }
@@ -79,15 +79,15 @@ void VstWizard::vstChanged(int z) {
         }
     }
 
-    for (int i=0;i<Vst::s_map.size();i++) {
-        Vst* v=cast<Vst*>(Vst::s_map.values()[i].second);
+    for (int i=0;i<Vst::m_map.size();i++) {
+        Vst* v=cast<Vst*>(Vst::m_map.values()[i].second);
         if (!v) continue;
         if (v->filename!=ui->listWidget_vsti->currentItem()->text()) continue;
-        for (int j=0;j<v->rep->s_sidekicks.size();j++) {
-            if (s_out==v->rep->s_sidekicks[j]) {
+        for (int j=0;j<v->rep->m_sidekicks.size();j++) {
+            if (m_out==v->rep->m_sidekicks[j]) {
                 for (int k=0;k<ui->listWidget_inst->count();k++) {
-                    qDebug() << "COMPARE"<<ui->listWidget_inst->item(k)->text()<<Vst::s_map.values()[i].first;
-                    if (ui->listWidget_inst->item(k)->text()==Vst::s_map.values()[i].first) {
+                    qDebug() << "COMPARE"<<ui->listWidget_inst->item(k)->text()<<Vst::m_map.values()[i].first;
+                    if (ui->listWidget_inst->item(k)->text()==Vst::m_map.values()[i].first) {
                         qDebug() << "Found (III)";
                         ui->listWidget_inst->setCurrentRow(k);
                     }
@@ -103,7 +103,7 @@ void VstWizard::pageChangeEvent(int page) {
         if (ui->listWidget_inst->currentRow()==0) {
             //Check INST
             QString name;
-            if (Vst::s_vst.count()) name="VST "+QString::number(Vst::s_vst.back()->getId()+2);
+            if (Vst::m_vst.count()) name="VST "+QString::number(Vst::m_vst.back()->getId()+2);
             else name="VST 1";
             QString s=QInputDialog::getText(this,"Instance Name","What name do you want to give to the new VST Window?",QLineEdit::Normal,name,&ok);
             if (ok&&s.size()) {
@@ -121,8 +121,8 @@ void VstWizard::pageChangeEvent(int page) {
                     p.setCancelButton(0);
                     p.setWindowTitle("Launching VSTi");
                     qApp->processEvents();
-                    s_vst=new Vst(ui->listWidget_vsti->currentItem()->text(),s);
-                    if (!(cast<Vst*>(s_vst)->ok())) {
+                    m_vst=new Vst(ui->listWidget_vsti->currentItem()->text(),s);
+                    if (!(cast<Vst*>(m_vst)->ok())) {
                         ok=0;
                         QMessageBox::critical(this,"Error starting VST","Could not start "+ui->listWidget_vsti->currentItem()->text());
                     }
@@ -135,14 +135,14 @@ void VstWizard::pageChangeEvent(int page) {
             }
         } else {        // Find the VST
             QList< QPair<QString, ObjectPtr > > list;
-            if (ui->listWidget_vsti->currentItem()) list=Vst::s_map.values(ui->listWidget_vsti->currentItem()->text());
+            if (ui->listWidget_vsti->currentItem()) list=Vst::m_map.values(ui->listWidget_vsti->currentItem()->text());
             for (int i=0;i<list.size();i++) {
                 if (list[i].first==ui->listWidget_inst->currentItem()->text()) {
-                    s_vst=cast<Vst*>(list[i].second);
+                    m_vst=cast<Vst*>(list[i].second);
                     break;
                 }
             }
-            if (!s_vst) {
+            if (!m_vst) {
                 QMessageBox::critical(this,"Missing VST","Creator Live seems to have lost an instance of a vst... Maybe try creating a new instance?");
                 ok=0;
                 qDebug() << "NO SUCH VST";
@@ -155,7 +155,7 @@ void VstWizard::pageChangeEvent(int page) {
         } else {
             // Add correct chans...
             ui->listWidget_chan->clear();
-            Vst* x=cast<Vst*>(s_vst);
+            Vst* x=cast<Vst*>(m_vst);
             if (!x) {
                 QMessageBox::critical(this,"Unknown Error","An unknown error occured. You could try again, or loudly complain to joshua@nettek.ca!");
                 back();
@@ -164,7 +164,7 @@ void VstWizard::pageChangeEvent(int page) {
             char c='A';
             ui->listWidget_chan->clear();
             qDebug() << "ADD0";
-            for (int i=0;i<x->rep->s_sidekicks.size();i++) {
+            for (int i=0;i<x->rep->m_sidekicks.size();i++) {
                 qDebug() << "ADD1";
                 ui->listWidget_chan->addItem("Channel "+QString(c));
                 ++c;
@@ -177,8 +177,8 @@ void VstWizard::pageChangeEvent(int page) {
                 back();
                 return;
             }
-            for (int j=0;j<x->rep->s_sidekicks.size();j++) {
-                if (s_out==x->rep->s_sidekicks[j]) {
+            for (int j=0;j<x->rep->m_sidekicks.size();j++) {
+                if (m_out==x->rep->m_sidekicks[j]) {
                     ui->listWidget_chan->setCurrentRow(j);
                 }
             }
@@ -188,13 +188,13 @@ void VstWizard::pageChangeEvent(int page) {
 
 void VstWizard::finishUp()
 {
-    Vst*a = cast<Vst*>(s_vst);
+    Vst*a = cast<Vst*>(m_vst);
     if (!a||!ui->listWidget_chan->currentItem()) {
         QMessageBox::critical(this,"Unknown Error","An unknown error occured while trying to set the VSTi.");
         return;
     }
     int z=ui->listWidget_chan->currentRow();
-    if (a->rep->s_sidekicks.size()<z) {
+    if (a->rep->m_sidekicks.size()<z) {
         QMessageBox::critical(this,"Bad channel","The channel you selected is invalid (and shouldn't have been shown to you!)...");
         return;
     }
@@ -214,7 +214,7 @@ void VstWizard::finishUp()
         return;
     }
 
-    emit instrumentUpdated(s_out=a->rep->s_sidekicks[z],s_loopback=ol[index]);
+    emit instrumentUpdated(m_out=a->rep->m_sidekicks[z],m_loopback=ol[index]);
     deleteLater();
 }
 
@@ -225,14 +225,14 @@ VstWizard::~VstWizard()
 
 void VstWizard::stockChangedEvent()
 {
-    qDebug() << "RESCAN"<<s_out.valid()<<dynamic_cast<live_private::MidiNull*>(s_out.data());
+    qDebug() << "RESCAN"<<m_out.valid()<<dynamic_cast<live_private::MidiNull*>(m_out.data());
     bool ok=(currentIndex()==2)?!ui->listWidget_inst->currentRow():(currentIndex()<2);  //before selecting inst
     ui->listWidget_vsti->clear();
     ui->listWidget_vsti->addItems(Vst::getVstPaths());
-    if (ui->listWidget_inst->currentItem()) for (int i=0;i<Vst::s_map.size();i++) {
-        Vst* v=cast<Vst*>(Vst::s_map.values()[i].second);
+    if (ui->listWidget_inst->currentItem()) for (int i=0;i<Vst::m_map.size();i++) {
+        Vst* v=cast<Vst*>(Vst::m_map.values()[i].second);
         if (!v) continue;
-        if (ui->listWidget_inst->currentItem()->text()==Vst::s_map.values()[i].first) {
+        if (ui->listWidget_inst->currentItem()->text()==Vst::m_map.values()[i].first) {
             ok=1;
         }
     }
@@ -249,7 +249,7 @@ void VstWizard::stockChangedEvent()
         ui->listWidget_out->setCurrentRow(0);
         for (int i=0;i<ol.size();i++)
         {
-            if (ol[i]==s_loopback) ui->listWidget_out->setCurrentRow(i);
+            if (ol[i]==m_loopback) ui->listWidget_out->setCurrentRow(i);
         }
     } else {
         QMessageBox::critical(this,"No Outputs","No outputs are available. Please adjust audio settings in the Creator Live menu.");

@@ -20,11 +20,11 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 namespace live_widgets {
 
 class LIBLIVEWIDGETSSHARED_EXPORT DragListFrame : public QFrame {
-    QList<DragLabel*> s_list;
-    QGridLayout* s_layout;
+    QList<DragLabel*>m_list;
+    QGridLayout*m_layout;
 public:
     DragListFrame(QStringList,QWidget*);
-    int count() const { return s_list.size(); }
+    int count() const { return m_list.size(); }
 private:
     Q_DISABLE_COPY(DragListFrame)
 };

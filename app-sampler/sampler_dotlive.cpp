@@ -138,7 +138,7 @@ QByteArray SamplerApp::save()
     {
         if (IS_SAVE)
         {
-            xba=x->s_midiTracks[i]->save();
+            xba=x->m_midiTracks[i]->save();
         }
         ret IO xba;
         if (IS_LOAD)
@@ -149,7 +149,7 @@ QByteArray SamplerApp::save()
 
         if (IS_SAVE)
         {
-            xba=x->s_audioTracks[i]->save();
+            xba=x->m_audioTracks[i]->save();
         }
         ret IO xba;
         if (IS_LOAD)
@@ -158,46 +158,46 @@ QByteArray SamplerApp::save()
         }
     }
 
-    qint32 id=IS_SAVE?x->s_id:-1;
+    qint32 id=IS_SAVE?x->m_id:-1;
     ret IO id;  /*005*/
     if (IS_LOAD)
     {
         x=new SamplerApp(midiTracks,audioTracks,0);
-        x->s_id=id;
-        x->s_lastId=qMax(x->s_lastId,id);
+        x->m_id=id;
+        x->m_lastId=qMax(x->m_lastId,id);
     }
 
-    bool record=IS_SAVE?x->s_record:0;
+    bool record=IS_SAVE?x->m_record:0;
     ret IO record;  /*006*/
     if (record&&IS_LOAD)
     {
         x->setRecordMode();
     }
 
-    bool multi=IS_SAVE?x->s_multi:0;
+    bool multi=IS_SAVE?x->m_multi:0;
     ret IO multi;   /*007*/
     if (!multi&&IS_LOAD)
     {
         x->unsetMultiMode();
     }
 
-    qint32 count=IS_SAVE?x->s_customBindings.size():0;
+    qint32 count=IS_SAVE?x->m_customBindings.size():0;
     ret IO count;   /*008*/
     for (int i=0;i<count;i++)
     {
-        QString inname=IS_SAVE?x->s_customBindings.keys()[i]->name():0;
+        QString inname=IS_SAVE?x->m_customBindings.keys()[i]->name():0;
         ret IO inname;
         ObjectPtr loadptr(0);
         int lcount=200;
         ret IO lcount;
         if (IS_LOAD)
         {
-            x->s_customBindings.insert(loadptr=object::request(inname,MidiOnly|InputOnly),new int[lcount]);
+            x->m_customBindings.insert(loadptr=object::request(inname,MidiOnly|InputOnly),new int[lcount]);
         }
         for (int j=0;j<lcount;j++)
         {
-            ret IO x->s_customBindings.values()[i][j];
-            if (x->s_customBindings.values()[i][j]!=-1&&IS_LOAD)
+            ret IO x->m_customBindings.values()[i][j];
+            if (x->m_customBindings.values()[i][j]!=-1&&IS_LOAD)
             {
                 MidiBinding::customKey->value(loadptr)[j]=x;
             }

@@ -20,12 +20,12 @@ static QProcess jackProcess;
 
 MainW::MainW(QWidget *parent)
   : QWidget(parent)
-  , s_channels()
-  , s_serverQueue()
-  , s_localQueue()
-  , s_newVerQueue()
-  , s_prog(0)
-  , s_total(1)
+  , m_channels()
+  , m_serverQueue()
+  , m_localQueue()
+  , m_newVerQueue()
+  , m_prog(0)
+  , m_total(1)
   , ui(new Ui::MainW)
 {
     qApp->setApplicationName("Live");
@@ -73,8 +73,8 @@ void MainW::gotChannel(QNetworkReply *r)
         }
         return;
     }
-    s_channels=r->readAll();
-    QStringList a=s_channels.split("\n");
+    m_channels=r->readAll();
+    QStringList a=m_channels.split("\n");
     bool begun=0;
     bool ok=1;
     do {
@@ -106,14 +106,14 @@ void MainW::gotChannel(QNetworkReply *r)
                 while(webPath.endsWith(' ')) webPath.chop(1);
                 while(localPath.endsWith(' ')) localPath.chop(1);
                 if(vm[localPath].toInt()<ver||!QFile::exists(localPath)) {
-                    s_serverQueue.push_back(webPath);
-                    s_localQueue.push_back(localPath);
-                    s_newVerQueue.push_back(ver);
+                    m_serverQueue.push_back(webPath);
+                    m_localQueue.push_back(localPath);
+                    m_newVerQueue.push_back(ver);
                 }
             }
         }
 
-        if(!s_localQueue.size()) {
+        if(!m_localQueue.size()) {
             if(!sett.value("isInstalled",false).toBool()) {
                 ui->primary_label->setText("Something got messed up either with your configuration or on the Live site. Trying to reinstall...\nIf that doesn't work, contact joshua@nettek.ca");
                 sett.setValue("vmap",QVariantMap());
@@ -174,14 +174,14 @@ void MainW::update()
         ui->widget_2->show();
     }
     ui->progressBar->show();
-    s_prog=0; s_total=s_serverQueue.size();
-    ui->progressBar->setMaximum(s_total*2);
+    m_prog=0; m_total=m_serverQueue.size();
+    ui->progressBar->setMaximum(m_total*2);
     incr(0);
 }
 
 void MainW::incr(QNetworkReply*r)
 {
-    Q_ASSERT(s_serverQueue.size()==s_localQueue.size());
+    Q_ASSERT(m_serverQueue.size()==m_localQueue.size());
     if(r) {
         Q_ASSERT(sender());
         if(r->error()!=QNetworkReply::NoError) {
@@ -208,23 +208,23 @@ void MainW::incr(QNetworkReply*r)
         f.write(r->readAll());
         f.close();
 
-        ui->progressBar->setValue(++s_prog);
-        if(s_prog>0) {
+        ui->progressBar->setValue(++m_prog);
+        if(m_prog>0) {
             ui->secondary_label->setText("...and an arpeggiator...");
         }
-        if(s_prog>1) {
+        if(m_prog>1) {
             ui->secondary_label->setText("...and a metronome...");
         }
-        if(s_prog>2) {
+        if(m_prog>2) {
             ui->secondary_label->setText("...and a beat detector...");
         }
-        if(s_prog>3) {
+        if(m_prog>3) {
             ui->secondary_label->setText("...and a really cool MIDI splitter...");
         }
-        if(s_prog>4) {
+        if(m_prog>4) {
             ui->secondary_label->setText("...and a thingy for loading VSTs...");
         }
-        if(s_prog>5) {
+        if(m_prog>5) {
             ui->secondary_label->setText("...and lots more!");
         }
 
@@ -235,16 +235,16 @@ void MainW::incr(QNetworkReply*r)
 
         QTimer::singleShot(221,this,SLOT(incr()));  //don't flood the server
         return;
-    } else if(s_serverQueue.size()) {
+    } else if(m_serverQueue.size()) {
         QNetworkAccessManager *manager = new QNetworkAccessManager(this);
         connect(manager, SIGNAL(finished(QNetworkReply*)),
                 this, SLOT(incr(QNetworkReply*)));
 
-        manager->setProperty("SERVER",s_serverQueue.first());
+        manager->setProperty("SERVER",m_serverQueue.first());
 
-        manager->setProperty("LOCAL",s_localQueue.takeFirst());
-        manager->setProperty("VERSION",s_newVerQueue.takeFirst());
-        manager->get(QNetworkRequest(QUrl(s_serverQueue.takeFirst())));
+        manager->setProperty("LOCAL",m_localQueue.takeFirst());
+        manager->setProperty("VERSION",m_newVerQueue.takeFirst());
+        manager->get(QNetworkRequest(QUrl(m_serverQueue.takeFirst())));
     } else {
         start();
     }
@@ -589,7 +589,7 @@ void MainW::start_asio(QString dev,int fp,int sr,int mode,bool again)
 //            Sleep(500);
 //        }
 //    }
-//    jack_set_process_callback( getJackClient(), SecretAudio::jackCallback, 0 );
+//    jack_set_procesm_callback( getJackClient(), SecretAudio::jackCallback, 0 );
 //    jack_activate( getJackClient() );    // before refresh
 //    SecretAudio::singleton->refresh();
 }

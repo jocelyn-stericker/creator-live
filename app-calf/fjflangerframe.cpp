@@ -29,20 +29,20 @@ using namespace live_widgets;
 
 FJFlangerFrame::FJFlangerFrame(FJFlangerApp *backend, AbstractTrack *parent)
     : AppFrame(parent)
-    , s_app(*backend)
+    , m_app(*backend)
     , ui(new Ui::FJFlangerFrame)
 {
     ui->setupUi(this);
 
-    onDelay(s_app.getDelay()*1000.0f);
-    onDepth(s_app.getDepth()*1000.0f);
-    onRate(s_app.getRate()*1000.0f);
-    onFB(s_app.getFB()*1000.0f);
-    onStereo(s_app.getStereo());
+    onDelay(m_app.getDelay()*1000.0f);
+    onDepth(m_app.getDepth()*1000.0f);
+    onRate(m_app.getRate()*1000.0f);
+    onFB(m_app.getFB()*1000.0f);
+    onStereo(m_app.getStereo());
 
-    if (s_app.getAmount() + s_app.getDryAmount() < 0.1f)
+    if (m_app.getAmount() + m_app.getDryAmount() < 0.1f)
     {
-        onWetDryBalance(s_app.getAmount() * 50.0f / 6.0f + 50.0f);
+        onWetDryBalance(m_app.getAmount() * 50.0f / 6.0f + 50.0f);
     }
     else
     {
@@ -66,42 +66,42 @@ FJFlangerFrame::FJFlangerFrame(FJFlangerApp *backend, AbstractTrack *parent)
 
 FJFlangerFrame::~FJFlangerFrame()
 {
-    s_app.deleteLater();
+    m_app.deleteLater();
     delete ui;
 }
 
 void FJFlangerFrame::onDelay(int z) { // 0.1...10, log, 1000
     ui->dial_minDelay->setValue(z);
-    s_app.setDelay(float(z)/1000.0f);
+    m_app.setDelay(float(z)/1000.0f);
 }
 
 void FJFlangerFrame::onDepth(int z) { // 0.1...10, log, 1000
     ui->dial_depth->setValue(z);
-    s_app.setDepth(float(z)/1000.0f);
+    m_app.setDepth(float(z)/1000.0f);
 }
 
 void FJFlangerFrame::onRate(int z) { // 0.01...20, log, 1000
     ui->dial_rate->setValue(z);
-    s_app.setRate(float(z)/1000.0f);
+    m_app.setRate(float(z)/1000.0f);
 }
 
 void FJFlangerFrame::onFB(int z) { // -0.99...0.99, log, 1000
     ui->dial_fb->setValue(z);
-    s_app.setRate(float(z)/1000.0f);
+    m_app.setRate(float(z)/1000.0f);
 }
 
 void FJFlangerFrame::onStereo(int z) { // 0, 360, -, 1
     ui->dial_phase->setValue(z);
-    s_app.setStereo(z);
+    m_app.setStereo(z);
 }
 
 void FJFlangerFrame::onReset() { // bool
-    s_app.setReset(1.0f);   // I think...
+    m_app.setReset(1.0f);   // I think...
 }
 
 void FJFlangerFrame::onWetDryBalance(int z) { // 0...100,
     ui->verticalSlider_amount->setValue(z);
-    s_app.setWetDryBalance(100 - z);
+    m_app.setWetDryBalance(100 - z);
 }
 
 void FJFlangerFrame::setMore(bool more)

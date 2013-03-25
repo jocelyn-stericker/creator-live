@@ -36,7 +36,7 @@ class FJReverbFrame;
 class FJReverbFrame : public live_widgets::AppFrame
 {
     Q_OBJECT
-    FJReverbApp& s_app;
+    FJReverbApp& m_app;
     
 public:
     explicit FJReverbFrame(FJReverbApp* backend, AbstractTrack *parent = 0);
@@ -73,7 +73,7 @@ public:
     FJReverbCreator()
     {
     }
-    QString name() { return "Reverb"; }
+    QString name() { return "ca.nettek.live.reverb"; }
     QString description() { return "The gaussian blur of sound..."; }
     live::ObjectPtr newBackend() { return new FJReverbApp(); }
     live::ObjectPtr loadBackend(const QByteArray &str) {

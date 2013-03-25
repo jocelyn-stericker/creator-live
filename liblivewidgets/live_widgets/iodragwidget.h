@@ -40,8 +40,8 @@ class DropFrame;
 
 class LIBLIVEWIDGETSSHARED_EXPORT InputDragWidget : public QFrame {
     Q_OBJECT
-    int s_count;
-    Ui::InputDragWidget* s_ui;
+    int m_count;
+    Ui::InputDragWidget* m_ui;
 public:
     explicit InputDragWidget(QWidget *parent = 0);
     ~InputDragWidget();
@@ -61,8 +61,8 @@ private:
 
 class LIBLIVEWIDGETSSHARED_EXPORT OutputDragWidget : public QFrame {
     Q_OBJECT
-    int s_count;
-    Ui::InputDragWidget* s_ui;
+    int m_count;
+    Ui::InputDragWidget* m_ui;
 public:
     explicit OutputDragWidget(QWidget *parent = 0);
     ~OutputDragWidget();

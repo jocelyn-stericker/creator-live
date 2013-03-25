@@ -27,7 +27,7 @@ public:
     LIVE_EFFECT
     bool mOn() const{ return 1; }
     bool aOn() const { return 0; }
-    /*003*/ Bound<int> b_curPos;       //let s_curPos rep time in msec
+    /*003*/ Bound<int> b_curPos;       //let m_curPos rep time in msec
     /*004*/ Bound<int> b_lastPos;
     /*005*/ Bound<int> b_recStart;     //msec at which recording began
     /*006*/ Bound<int> b_systemTimeStart;  //system time in msec at which recording began
@@ -36,15 +36,15 @@ public:
     /*011*/ Bound<bool> b_playback;
     /*012*/ Bound<bool> b_mute;
 private:
-    /*013*/ QList<Event*>* s_data;
+    /*013*/ QList<Event*>* m_data;
     /*014*/ int mTrack_id;
     /*015B*/ static int lastId;
-    QList<Event> s_cache;
-    bool s_thru;    /*NOT SAVED, keep it that way*/
+    QList<Event> m_cache;
+    bool m_thru;    /*NOT SAVED, keep it that way*/
 
 public:
     MidiTrack();
-    void _setThru(bool a) { s_thru=a; }
+    void _setThru(bool a) { m_thru=a; }
     const bool& isRecord() const;
     const bool& isOverdub() const;
     const bool& isPlay() const;
@@ -53,21 +53,21 @@ public:
     QList<Event> getData() {
         QList<Event> ret;
         live_mutex(x_mTrack) {
-            for(int i=0;i<s_data->size();i++) {
-                ret.push_back(*(*s_data)[i]);
+            for(int i=0;i<m_data->size();i++) {
+                ret.push_back(*(*m_data)[i]);
             }
         }
         return ret;
     }
     void remove(int a,int b) {
-        live_mutex(x_mTrack) for(int i=s_data->size()-1; i>=0; i--)
+        live_mutex(x_mTrack) for(int i=m_data->size()-1; i>=0; i--)
         {
-            if((*s_data)[i]->time.toTime_ms()>=a&&(*s_data)[i]->time.toTime_ms()<=b)
+            if((*m_data)[i]->time.toTime_ms()>=a&&(*m_data)[i]->time.toTime_ms()<=b)
             {
-                Event* buddy=(*s_data)[i]->buddy;
-                delete s_data->takeAt(i);
-                if(s_data->contains(buddy)) delete (*s_data).takeAt((*s_data).indexOf(buddy));
-                i=s_data->size();   //i.e., reset;
+                Event* buddy=(*m_data)[i]->buddy;
+                delete m_data->takeAt(i);
+                if(m_data->contains(buddy)) delete (*m_data).takeAt((*m_data).indexOf(buddy));
+                i=m_data->size();   //i.e., reset;
                 continue;
             }
         }
@@ -75,13 +75,13 @@ public:
 private:
     class EventListDeleter {
     public:
-        QList<Event*>* s_e;
-        EventListDeleter(QList<Event*>* e) : s_e(e) {}
+        QList<Event*>* m_e;
+        EventListDeleter(QList<Event*>* e) : m_e(e) {}
         void run() {
-            while (s_e->size()) {
-                delete s_e->takeFirst();
+            while (m_e->size()) {
+                delete m_e->takeFirst();
             }
-            delete s_e;
+            delete m_e;
             delete this;
         }
     };
@@ -119,10 +119,10 @@ private:
       , b_overdub(0)
       , b_playback(0)
       , b_mute(0)
-      , s_data(0)
+      , m_data(0)
       , mTrack_id(0)
-      , s_cache()
-      , s_thru(0)
+      , m_cache()
+      , m_thru(0)
       { TCRASH();
     }
 

@@ -23,7 +23,7 @@ class MidiOutputChooser : public live_widgets::ObjectChooser
 {
     Q_OBJECT
     
-    bool s_busy;
+    bool m_busy;
 
 public:
     explicit MidiOutputChooser(QWidget *parent = 0);
@@ -39,7 +39,7 @@ private:
     virtual void activateSelected() { Q_ASSERT(0); /* see step2() */ }
     virtual void updateObjects();
 
-    Ui::MidiOutputChooser *s_ui;
+    Ui::MidiOutputChooser *m_ui;
     MidiOutputChooser(const MidiOutputChooser&);
     MidiOutputChooser& operator=(const MidiOutputChooser&);
 };

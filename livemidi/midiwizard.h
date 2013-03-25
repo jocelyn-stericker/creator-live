@@ -21,13 +21,13 @@ class MidiWizard : public QStackedWidget
 {
     Q_OBJECT
     
-    QList<live::ObjectPtr> s_midiIns;
-    QList<live::ObjectPtr> s_returns;
-    QList<live::ObjectPtr> s_aOuts;
+    QList<live::ObjectPtr> m_midiIns;
+    QList<live::ObjectPtr> m_returns;
+    QList<live::ObjectPtr> m_aOuts;
 
-    live::ObjectPtr s_midiIn;
-    live::ObjectPtr s_return;
-    live::ObjectPtr s_aOut;
+    live::ObjectPtr m_midiIn;
+    live::ObjectPtr m_return;
+    live::ObjectPtr m_aOut;
 
 public:
     explicit MidiWizard(QWidget *parent = 0);

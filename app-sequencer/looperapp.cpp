@@ -12,15 +12,15 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 using namespace live;
 //using namespace live_widgets;
 
-int LooperApp::s_lastId=-1;
+int LooperApp::m_lastId=-1;
 
 LooperApp::LooperApp(MidiTrack*mt,AudioTrack*at) :
     SequencerApp("LOOPER",mt=(mt?mt:new MidiTrack),at=(at?at:new AudioTrack(2)),0),
     b_loopMode(Off),
     b_loopLength(0),
-    s_id_looper(++s_lastId)
+    m_id_looper(++m_lastId)
 {
-    s_cheat=this;
+    m_cheat=this;
 
     connect(&b_loopMode,SIGNAL(changeObserved(qint64,qint64)),this,SLOT(modeChanged(qint64)));
 }
@@ -62,8 +62,8 @@ void LooperApp::modeChanged(int now)
     case Recording:
         b_loopLength=0;
     case Replacing:
-        s_audioTrack->clearData();
-        s_midiTrack->clearData();
+        m_audioTrack->clearData();
+        m_midiTrack->clearData();
         if (now==Replacing) {
             b_loopMode=Overdubbing;
             return;
@@ -143,7 +143,7 @@ void LooperApp::aIn(const float *data, int chan, Object*p)
     if (curpos>b_loopLength)
         QMetaObject::invokeMethod(this, "looperLogic", Qt::QueuedConnection);
 //    looperLogic();
-    if (p==s_audioTrack)
+    if (p==m_audioTrack)
     {
         SequencerApp::aIn(data,chan,p);
     }
@@ -155,7 +155,7 @@ void LooperApp::aIn(const float *data, int chan, Object*p)
 
 void LooperApp::mIn(const Event *data, ObjectChain*p)
 {
-    if (p->back()==s_midiTrack)
+    if (p->back()==m_midiTrack)
     {
         SequencerApp::mIn(data,p);
         return;

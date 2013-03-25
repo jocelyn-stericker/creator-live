@@ -19,22 +19,22 @@ using namespace live;
 EffectsTab::EffectsTab(QWidget *parent)
   : QWidget(parent)
   , live_widgets::BindableParent(this)
-  , s_samplerL(*new SamplerDJ)
-  , s_samplerR(*new SamplerDJ)
+  , m_samplerL(*new SamplerDJ)
+  , m_samplerR(*new SamplerDJ)
   , ui(new Ui::effectstab)
 {
     for (int i = 0; i < 8; i++)
     {
         for (int j = 0; j < 2; j++)
         {
-            s_times[i][j] = 0;
-            s_rec[i][j] = 0;
+            m_times[i][j] = 0;
+            m_rec[i][j] = 0;
         }
     }
-    s_samplerL.setMultiMode(true);
-    s_samplerR.setMultiMode(true);
-    s_samplerL.setRecordMode(false);
-    s_samplerR.setRecordMode(false);
+    m_samplerL.setMultiMode(true);
+    m_samplerR.setMultiMode(true);
+    m_samplerL.setRecordMode(false);
+    m_samplerR.setRecordMode(false);
 
     ui->setupUi(this);
 
@@ -107,24 +107,24 @@ void EffectsTab::buttonLogic()
         QString style=button->styleSheet();
 
         removeBackground(style);
-        style=style+"background-color:"+(s_rec[num - 1][chan]?"red":"green")+";";
+        style=style+"background-color:"+(m_rec[num - 1][chan]?"red":"green")+";";
         button->setStyleSheet(style);
 
-        (chan ? s_samplerL : s_samplerR).hit(num-1);
-        s_times[num-1][chan]=midi::getTime_msec();
+        (chan ? m_samplerL : m_samplerR).hit(num-1);
+        m_times[num-1][chan]=midi::getTime_msec();
     }
-    else if ((chan ? s_samplerL : s_samplerR).isPlayMode()&&midi::getTime_msec()-s_times[num-1][chan]<100)
+    else if ((chan ? m_samplerL : m_samplerR).isPlayMode()&&midi::getTime_msec()-m_times[num-1][chan]<100)
     {
         // play it until completion
         // FIXME : add timer
-//        (offset ? s_samplerL : s_samplerR).s_audioTracks[num-1][offset]->length();
+//        (offset ? m_samplerL : m_samplerR).m_audioTracks[num-1][offset]->length();
     }
     else
     {
         QString style=button->styleSheet();
         removeBackground(style);
         button->setStyleSheet(style);
-        s_times[num-1][chan]=0;
-        (chan ? s_samplerL : s_samplerR).release(num-1);
+        m_times[num-1][chan]=0;
+        (chan ? m_samplerL : m_samplerR).release(num-1);
     }
 }

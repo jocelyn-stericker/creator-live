@@ -21,9 +21,9 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 using namespace live_private;
 
-int live::MidiFilter::ss_lastId=-1;
+int live::MidiFilter::sm_lastId=-1;
 QList<live::MidiFilter*> live::MidiFilter::_u;
-int live::MidiFilter::ss_loadState=-1;
+int live::MidiFilter::sm_loadState=-1;
 
 /*/////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -376,8 +376,8 @@ MidiIn::MidiIn(QString ccname,int devId)
   : live::Object(ccname,true,true, 2)
   , valid(1)
   , deviceId(devId)
-  , s_null(live::audio::null(2))
-  , s_connection(s_null, this, live::HybridConnection)
+  , m_null(live::audio::null(2))
+  , m_connection(m_null, this, live::HybridConnection)
   { setTemporary(0);
 
     live::ObjectPtr*x=new live::ObjectPtr[200];

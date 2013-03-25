@@ -52,11 +52,11 @@ public:
 
 class LIBLIVECORESHARED_EXPORT Ambition
 {
-    live::ObjectPtr s_input;          /*003*/
-    live::ObjectChain s_chain;        /*004*/
-    live::ObjectPtr s_output;         /*005*/
-    live::ObjectPtr s_loopbackOut;    /*006*/
-    QList<Connection*> s_connections;
+    live::ObjectPtr m_input;          /*003*/
+    live::ObjectChain m_chain;        /*004*/
+    live::ObjectPtr m_output;         /*005*/
+    live::ObjectPtr m_loopbackOut;    /*006*/
+    QList<Connection*> m_connections;
     friend class live::Object;
     QMutex x_ambition;
     ObjectPtr mef;
@@ -66,29 +66,29 @@ public:
     Ambition(live::ObjectPtr cinput=0,live::ObjectChain chain=live::ObjectChain(), live::ObjectPtr coutput=0, live::ObjectPtr cloop=0);
     ~Ambition();
 
-    QString outputName() { return s_output.valid() ? s_output->name() : "NONE"; }
+    QString outputName() { return m_output.valid() ? m_output->name() : "NONE"; }
 
     void setInput(live::ObjectPtr o)
     {
         live_mutex(x_ambition) {
-            if(s_connections.size())
+            if(m_connections.size())
             {
                 unset();
             }
-            s_input=o;
-            setChain(s_chain);
+            m_input=o;
+            setChain(m_chain);
         }
     }
 
     void setOutput(live::ObjectPtr o)
     {
         live_mutex(x_ambition) {
-            if(s_connections.size())
+            if(m_connections.size())
             {
                 unset();
             }
-            s_output=o;
-            setChain(s_chain);
+            m_output=o;
+            setChain(m_chain);
             b_output=o->name();
         }
     }
@@ -96,25 +96,25 @@ public:
     void setLoopbackOut(live::ObjectPtr o)
     {
         live_mutex(x_ambition) {
-            if(s_connections.size())
+            if(m_connections.size())
             {
                 unset();
             }
-            s_loopbackOut=o;
-            setChain(s_chain);
+            m_loopbackOut=o;
+            setChain(m_chain);
         }
     }
 
     bool setChain(live::ObjectChain c)
     {
         live_mutex(x_ambition) {
-            if(s_connections.size())
+            if(m_connections.size())
             {
                 unset();
             }
-            s_chain=c;
+            m_chain=c;
 
-            if(s_input.valid()&&s_output.valid()&&s_loopbackOut.valid()&&s_output->isMidiObject()&&s_output->isAudioObject()&&s_input->isMidiObject()&&s_loopbackOut->isAudioObject())
+            if(m_input.valid()&&m_output.valid()&&m_loopbackOut.valid()&&m_output->isMidiObject()&&m_output->isAudioObject()&&m_input->isMidiObject()&&m_loopbackOut->isAudioObject())
             {
                 qDebug() << "Establishing Hybrid Connection";
                 // Prefered type of connection for hybrid situations.
@@ -125,21 +125,21 @@ public:
 
                 bool ok=1;
                 int stage=0;
-                for(int i=0;i<s_chain.size();i++) {
-                    if(stage==0&&s_chain[i]->isAudioObject()) {
-                        if(s_chain[i]->isMidiObject()) {
+                for(int i=0;i<m_chain.size();i++) {
+                    if(stage==0&&m_chain[i]->isAudioObject()) {
+                        if(m_chain[i]->isMidiObject()) {
                             stage=1;
                         } else {
                             stage=2;
                         }
-                    } else if(stage==1&&!s_chain[i]->isMidiObject()) {
-                        if(s_chain[i]->isAudioObject()) {
+                    } else if(stage==1&&!m_chain[i]->isMidiObject()) {
+                        if(m_chain[i]->isAudioObject()) {
                             stage=2;
                         } else {
                             ok=0;
                             break;
                         }
-                    } else if(stage==2&&!s_chain[i]->isAudioObject()) {
+                    } else if(stage==2&&!m_chain[i]->isAudioObject()) {
                         ok=0;
                         break;
                     }
@@ -148,59 +148,59 @@ public:
                 if(ok) {
                     qDebug() << "(Done)";
                     stage=0;
-                    s_connections.push_back(new Connection(s_input,mef,HybridConnection));
+                    m_connections.push_back(new Connection(m_input,mef,HybridConnection));
                     live::ObjectPtr prev=mef;
-                    for(int i=0;i<s_chain.size();i++) {
-                        if(stage==0&&s_chain[i]->isAudioObject()) {
+                    for(int i=0;i<m_chain.size();i++) {
+                        if(stage==0&&m_chain[i]->isAudioObject()) {
                             qDebug() << "Stage 0";
-                            s_connections.push_back(new Connection(prev,s_output,MidiConnection));
-                            s_connections.push_back(new Connection(s_output,s_chain[i],AudioConnection));
+                            m_connections.push_back(new Connection(prev,m_output,MidiConnection));
+                            m_connections.push_back(new Connection(m_output,m_chain[i],AudioConnection));
 
-                            s_chain[i]->s_aOn=1;
-                            if(s_chain[i]->isMidiObject()) {
-                                s_connections.push_back(new Connection(prev,s_chain[i],MidiConnection));
-                                s_chain[i]->s_mOn=1;
+                            m_chain[i]->m_aOn=1;
+                            if(m_chain[i]->isMidiObject()) {
+                                m_connections.push_back(new Connection(prev,m_chain[i],MidiConnection));
+                                m_chain[i]->m_mOn=1;
                                 stage=1;
                             } else {
-                                s_chain[i]->s_mOn=0;
+                                m_chain[i]->m_mOn=0;
                                 stage=2;
                             }
-                        } else if(stage==1&&!s_chain[i]->isMidiObject()) {
+                        } else if(stage==1&&!m_chain[i]->isMidiObject()) {
                             qDebug() << "Stage 1";
-                            s_connections.push_back(new Connection(prev,s_chain[i],AudioConnection));
-                            s_chain[i]->s_aOn=1;
-                            s_chain[i]->s_mOn=0;
+                            m_connections.push_back(new Connection(prev,m_chain[i],AudioConnection));
+                            m_chain[i]->m_aOn=1;
+                            m_chain[i]->m_mOn=0;
 
-                            if(s_chain[i]->isAudioObject()) {
+                            if(m_chain[i]->isAudioObject()) {
                                 stage=2;
                             } else {
                                 ok=0;
                                 break;
                             }
-                        } else if(stage==2&&!s_chain[i]->isAudioObject()) {
+                        } else if(stage==2&&!m_chain[i]->isAudioObject()) {
                             ok=0;
                             break;
                         } else {
                             qDebug() << "Stage 2";
                             if(stage==0||stage==1) {
-                                s_chain[i]->s_aOn=0;
-                                s_chain[i]->s_mOn=1;
-                                s_connections.push_back(new Connection(prev,s_chain[i],HybridConnection));
-                            } else s_chain[i]->s_mOn=0;
+                                m_chain[i]->m_aOn=0;
+                                m_chain[i]->m_mOn=1;
+                                m_connections.push_back(new Connection(prev,m_chain[i],HybridConnection));
+                            } else m_chain[i]->m_mOn=0;
 
                             if(stage==1||stage==2) {
-                                s_connections.push_back(new Connection(prev,s_chain[i],AudioConnection));
-                                s_chain[i]->s_mOn=0;
-                                s_chain[i]->s_aOn=1;
-                            } else s_chain[i]->s_aOn=0;
+                                m_connections.push_back(new Connection(prev,m_chain[i],AudioConnection));
+                                m_chain[i]->m_mOn=0;
+                                m_chain[i]->m_aOn=1;
+                            } else m_chain[i]->m_aOn=0;
                         }
-                        prev=s_chain[i];
+                        prev=m_chain[i];
                     }
                     if(stage==0) {
-                        s_connections.push_back(new Connection(prev,s_output,MidiConnection));
-                        s_connections.push_back(new Connection(s_output,s_loopbackOut,AudioConnection));
+                        m_connections.push_back(new Connection(prev,m_output,MidiConnection));
+                        m_connections.push_back(new Connection(m_output,m_loopbackOut,AudioConnection));
                     } else {
-                        s_connections.push_back(new Connection(prev,s_loopbackOut,AudioConnection));
+                        m_connections.push_back(new Connection(prev,m_loopbackOut,AudioConnection));
                     }
 
                     Q_ASSERT(ok);
@@ -209,57 +209,57 @@ public:
                 }
             }
 
-            if(s_input.valid()&&s_output.valid()&&s_input->isMidiObject()&&s_output->isMidiObject())
+            if(m_input.valid()&&m_output.valid()&&m_input->isMidiObject()&&m_output->isMidiObject())
             {
                 qDebug() << "Establishing Midi or SIMPLE Hybrid Connection";
                 bool ok=1;
-                for(int i=0;i<s_chain.size();i++) if(!s_chain[i]->isMidiObject()) ok=0;
+                for(int i=0;i<m_chain.size();i++) if(!m_chain[i]->isMidiObject()) ok=0;
                 if(ok) {
                     qDebug() << "(Done)";
-                    s_connections.push_back(new Connection(s_input,mef,HybridConnection));
+                    m_connections.push_back(new Connection(m_input,mef,HybridConnection));
                     live::ObjectPtr mprev=mef;
-                    for(int i=0;i<s_chain.size();i++)
+                    for(int i=0;i<m_chain.size();i++)
                     {
-                        s_connections.push_back(new Connection(mprev,s_chain[i],HybridConnection));
-                        mprev=s_chain[i];
+                        m_connections.push_back(new Connection(mprev,m_chain[i],HybridConnection));
+                        mprev=m_chain[i];
                     }
-                    if(!s_loopbackOut.valid()) {
-                        s_connections.push_back(new Connection(mprev,s_output,MidiConnection));
+                    if(!m_loopbackOut.valid()) {
+                        m_connections.push_back(new Connection(mprev,m_output,MidiConnection));
                     } else {
-                        s_connections.push_back(new Connection(mprev,s_output,MidiConnection));
-                        s_connections.push_back(new Connection(s_output,s_loopbackOut,AudioConnection));
+                        m_connections.push_back(new Connection(mprev,m_output,MidiConnection));
+                        m_connections.push_back(new Connection(m_output,m_loopbackOut,AudioConnection));
                     }
                     return 1;
                 }
             }
 
-            if(s_input.valid()&&s_output.valid()&&(s_input->isAudioObject()||(s_loopbackOut.valid()&&s_loopbackOut->isAudioObject()))&&s_output->isAudioObject())
+            if(m_input.valid()&&m_output.valid()&&(m_input->isAudioObject()||(m_loopbackOut.valid()&&m_loopbackOut->isAudioObject()))&&m_output->isAudioObject())
             {
                 qDebug() << "Establishing Audio Connection";
                 bool ok=1;
-                for(int i=0;i<s_chain.size();i++) if(!s_chain[i]->isAudioObject()) ok=0;
+                for(int i=0;i<m_chain.size();i++) if(!m_chain[i]->isAudioObject()) ok=0;
                 if(ok) {
                     qDebug() << "(Done)";
-                    live::ObjectPtr aprev=s_input;
-                    if(s_loopbackOut.valid()&&s_loopbackOut->isAudioObject()) {
-                        s_connections.push_back(new Connection(aprev,s_output,AudioConnection));
-                        aprev=s_output;
+                    live::ObjectPtr aprev=m_input;
+                    if(m_loopbackOut.valid()&&m_loopbackOut->isAudioObject()) {
+                        m_connections.push_back(new Connection(aprev,m_output,AudioConnection));
+                        aprev=m_output;
                     }
-                    for(int i=0;i<s_chain.size();i++)
+                    for(int i=0;i<m_chain.size();i++)
                     {
-                        s_connections.push_back(new Connection(aprev,s_chain[i],AudioConnection));
-                        aprev=s_chain[i];
+                        m_connections.push_back(new Connection(aprev,m_chain[i],AudioConnection));
+                        aprev=m_chain[i];
                     }
-                    if(!s_loopbackOut.valid()) {
-                        s_connections.push_back(new Connection(aprev,s_output,HybridConnection));
+                    if(!m_loopbackOut.valid()) {
+                        m_connections.push_back(new Connection(aprev,m_output,HybridConnection));
                     } else {
-                        s_connections.push_back(new Connection(aprev,s_loopbackOut,AudioConnection));
+                        m_connections.push_back(new Connection(aprev,m_loopbackOut,AudioConnection));
                     }
                     return 1;
                 }
 
             }
-            else if (s_input.valid() && s_output.valid())
+            else if (m_input.valid() && m_output.valid())
             {
                 qCritical() << "No solution to audio train...";
                 return 0;
@@ -270,26 +270,26 @@ public:
 
     void unset()
     {
-        while (s_connections.size())
+        while (m_connections.size())
         {
-            live_mutex(x_ambition) delete s_connections.takeFirst();
+            live_mutex(x_ambition) delete m_connections.takeFirst();
         }
     }
 
     void set() // helper
     {
-        setChain(s_chain);
+        setChain(m_chain);
     }
 
     inline int chainSize() const
     {
-        return s_chain.size();
+        return m_chain.size();
     }
 
     void insert(int i,live::ObjectPtr b)
     {
         live_mutex(x_ambition) {
-            live::ObjectChain c2=s_chain;
+            live::ObjectChain c2=m_chain;
             c2.insert(i,b); //should be able to check
             setChain(c2);
         }
@@ -297,38 +297,38 @@ public:
 
     void removeFromChain(int i) // helper
     {
-        live::ObjectChain c2=s_chain;
+        live::ObjectChain c2=m_chain;
         c2.removeAt(i);
         setChain(c2);
     }
 
     bool inputIsAudioObject() const
     {
-        if(!s_input)
+        if(!m_input)
         {
             return 0;
         }
         else
         {
-            return s_input->isAudioObject();
+            return m_input->isAudioObject();
         }
     }
 
     bool inputIsMidiObject() const
     {
-        if(!s_input)
+        if(!m_input)
         {
             return 0;
         }
         else
         {
-            return s_input->isMidiObject();
+            return m_input->isMidiObject();
         }
     }
 
     live::ObjectPtr at(int b)
     {
-        return s_chain[b];
+        return m_chain[b];
     }
 
     void setInputId(int i, int t)
@@ -339,11 +339,11 @@ public:
 
 private:
     Ambition(const live::Ambition&)
-      : s_input()
-      , s_chain()
-      , s_output()
-      , s_loopbackOut()
-      , s_connections()
+      : m_input()
+      , m_chain()
+      , m_output()
+      , m_loopbackOut()
+      , m_connections()
       , x_ambition(QMutex::Recursive)
       , mef(new MidiEventFilter)
       , b_output()
@@ -359,7 +359,7 @@ private:
 class LIBLIVECORESHARED_EXPORT ambition : public QObject
 {
     Q_OBJECT
-    static ambition* s_self;
+    static ambition* m_self;
 public:
     static ambition* self();
     static void notifyCreated(Ambition*);

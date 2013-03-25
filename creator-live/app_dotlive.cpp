@@ -129,7 +129,7 @@ QByteArray LiveWindow::save()
     //Assertions...
     if (IS_LOAD)
     {
-        QList<live::ObjectPtr> objs=object::singleton()->s_objects;
+        QList<live::ObjectPtr> objs=object::singleton()->m_objects;
         for (int i=0;i<objs.size();i++)
         {
             Q_ASSERT(!objs[i]->aConnections.size()&&!objs[i]->mConnections.size());
@@ -342,7 +342,7 @@ QByteArray TrackGroupAudio::save()
     /*CONSTRUCT*/
     if (IS_SAVE)
     {
-        xqstring=x->s_input->name();
+        xqstring=x->m_input->name();
     }
     ret IO xqstring;
     if (IS_LOAD)
@@ -366,9 +366,9 @@ QByteArray TrackGroupAudio::save()
     qint32 ncount = 0;
     if (IS_SAVE)
     {
-        for (unsigned i=0;i<x->s_hathorView->count();i++)
+        for (unsigned i=0;i<x->m_hathorView->count();i++)
         {
-            ncount+=(qobject_cast<Track*>((*x->s_hathorView)[i]))?1:0;
+            ncount+=(qobject_cast<Track*>((*x->m_hathorView)[i]))?1:0;
         }
     }
     ret IO ncount;
@@ -382,15 +382,15 @@ QByteArray TrackGroupAudio::save()
             oc->b_trackName = t->outputName();
             oc->setMinimized(true);
             t->setOutputChooser(oc);
-            x->s_hathorView->insert(x->s_hathorView->count()-1, t);
-            x->s_hathorView->updateItems();
+            x->m_hathorView->insert(x->m_hathorView->count()-1, t);
+            x->m_hathorView->updateItems();
         }
     }
     else
     {
-        for (unsigned i=0;i<x->s_hathorView->count();i++)
+        for (unsigned i=0;i<x->m_hathorView->count();i++)
         {
-            Track*t=qobject_cast<Track*>((*x->s_hathorView)[i]);
+            Track*t=qobject_cast<Track*>((*x->m_hathorView)[i]);
             if (t)
             {
                 xba=t->save();
@@ -400,12 +400,12 @@ QByteArray TrackGroupAudio::save()
     }
 
     /*004*/
-    P_INT32(x->s_id);
-    if (x->s_id>x->s_lastId)
+    P_INT32(x->m_id);
+    if (x->m_id>x->m_lastId)
     {
-        x->s_lastId=x->s_id;
+        x->m_lastId=x->m_id;
     }
-    x->setObjectName("TrackGroup_"+QString::number(x->s_id));
+    x->setObjectName("TrackGroup_"+QString::number(x->m_id));
 
     /*005*/
     (verify(ret,(QString)"END TrackGroupAudio"));
@@ -441,7 +441,7 @@ QByteArray TrackGroupMidi::save()
     /*CONSTRUCT*/
     if (IS_SAVE)
     {
-        xqstring=x->s_input->name();
+        xqstring=x->m_input->name();
     }
     ret IO xqstring;
     if (IS_LOAD)
@@ -465,13 +465,13 @@ QByteArray TrackGroupMidi::save()
     qint32 ncount = 0;
     if (IS_SAVE)
     {
-        for (unsigned i=0;i<x->s_hathorView->count();i++)
+        for (unsigned i=0;i<x->m_hathorView->count();i++)
         {
-            if ((*x->s_hathorView)[i]->objectName()=="xpush")
+            if ((*x->m_hathorView)[i]->objectName()=="xpush")
             {
                 continue;
             }
-            ncount+=(qobject_cast<Track*>((*x->s_hathorView)[i])?1:0);
+            ncount+=(qobject_cast<Track*>((*x->m_hathorView)[i])?1:0);
         }
     }
     ret IO ncount;
@@ -481,19 +481,19 @@ QByteArray TrackGroupMidi::save()
         {
             ret IO xba;
             Track* t = 0;
-            x->s_hathorView->insert(x->s_hathorView->count()-1, t = Track::load(xba) );
+            x->m_hathorView->insert(x->m_hathorView->count()-1, t = Track::load(xba) );
             MidiOutputChooser* oc = new MidiOutputChooser(0);
             oc->b_trackName = t->outputName();
             oc->setMinimized(true);
             t->setOutputChooser(oc);
-            x->s_hathorView->updateItems();
+            x->m_hathorView->updateItems();
         }
     }
     else
     {
-        for (unsigned i=0;i<x->s_hathorView->count();i++)
+        for (unsigned i=0;i<x->m_hathorView->count();i++)
         {
-            Track*t=qobject_cast<Track*>((*x->s_hathorView)[i]);
+            Track*t=qobject_cast<Track*>((*x->m_hathorView)[i]);
             if (t)
             {
                 xba=t->save();
@@ -503,32 +503,32 @@ QByteArray TrackGroupMidi::save()
     }
 
     /*004*/
-    P_INT32(x->s_id);
-    if (x->s_id>x->s_lastId)
+    P_INT32(x->m_id);
+    if (x->m_id>x->m_lastId)
     {
-        x->s_lastId=x->s_id;
+        x->m_lastId=x->m_id;
     }
-    x->setObjectName("TrackGroup_"+QString::number(x->s_id));
+    x->setObjectName("TrackGroup_"+QString::number(x->m_id));
 
     /// FIXME ///
 
     /*005*/
-//    P_INT32(x->s_selectedFilter);
+//    P_INT32(x->m_selectedFilter);
 
     /*006*/
-//    P_INT32(x->s_selectedMode);
+//    P_INT32(x->m_selectedMode);
 
     /*007*/
 //    for (int i=0;i<5;i++) {
 //        if (IS_SAVE) {
-//            xba=x->s_midiFilters[i]->save();
+//            xba=x->m_midiFilters[i]->save();
 //        }
 //        ret IO xba;
 //        if (IS_LOAD) {
-//            x->s_midiFilters[i]=MidiFilter::load(xba);
+//            x->m_midiFilters[i]=MidiFilter::load(xba);
 //        }
 //    }
-//    x->changeActiveMode_2(x->s_selectedMode);
+//    x->changeActiveMode_2(x->m_selectedMode);
 
     /*008*/
     (verify(ret,(QString)"END TrackGroupMidi"));
@@ -563,29 +563,29 @@ QByteArray Track::save()
     Track*x=IS_SAVE?_THIS:0;
     if (IS_SAVE)
     {
-        xba=x->s_ambition.save();
+        xba=x->m_ambition.save();
     }
     ret IO xba;
     x=IS_SAVE?x:new Track(Ambition::load(xba));
 
     /*003B*/
-    qint32 size=x->s_ambition.chainSize();   //Already found
+    qint32 size=x->m_ambition.chainSize();   //Already found
     if (IS_LOAD)
     {
         for (int i=0;i<size;i++)
         {
-            x->addApp(i+1,dynamic_cast<AppFrame*>(app::newFrontend(x->s_ambition.at(i)->name(),x->s_ambition.at(i))),0);
-            //            app::newFrontend(x->s_ambition.at(i)->name,x->s_ambition.at(i))->show();
+            x->addApp(i+1,dynamic_cast<AppFrame*>(app::newFrontend(x->m_ambition.at(i)->name(),x->m_ambition.at(i))),0);
+            //            app::newFrontend(x->m_ambition.at(i)->name,x->m_ambition.at(i))->show();
         }
     }
 
     /*004*/
-    P_INT32(x->s_id);
-    if (x->s_id>x->s_lastId)
+    P_INT32(x->m_id);
+    if (x->m_id>x->m_lastId)
     {
-        x->s_lastId=x->s_id;
+        x->m_lastId=x->m_id;
     }
-    x->setObjectName("Track_"+QString::number(x->s_id));
+    x->setObjectName("Track_"+QString::number(x->m_id));
 
     /*005*/
     (verify(ret,(QString)"END Track"));

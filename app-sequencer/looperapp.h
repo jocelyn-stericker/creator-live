@@ -48,9 +48,9 @@ public:
     /*003-005 SequencerApp*/
     live::Bound<qint64> b_loopMode; /*i.e., LoopMode*/ /*009*/
     live::Bound<qint64> b_loopLength;    /*009*/
-    int s_id_looper;            /*010*/
-    static int s_lastId;
-    QList<live::Event> s_missedList;
+    int m_id_looper;            /*010*/
+    static int m_lastId;
+    QList<live::Event> m_missedList;
 
     LooperApp(live::MidiTrack*mt=0,live::AudioTrack*at=0);
 

@@ -19,8 +19,8 @@ namespace live {
  */
 class LIBLIVECORESHARED_EXPORT Mapping : public live::Object
 {
-    ObjectPtr s_other;
-    live::Connection s_connection;
+    ObjectPtr m_other;
+    live::Connection m_connection;
 public:
     /**
      * Create a Object which is just another name for a different object.

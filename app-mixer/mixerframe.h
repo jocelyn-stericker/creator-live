@@ -43,7 +43,7 @@ public:
     MixerCreator()
     {
     }
-    QString name() { return "Mixer"; }
+    QString name() { return "ca.nettek.live.mixer"; }
     QString description() { return "These things used to cost a lot."; }
     live::ObjectPtr newBackend() { return new MixerApp(); }
     live::ObjectPtr loadBackend(const QByteArray &str) {

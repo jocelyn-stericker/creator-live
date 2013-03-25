@@ -27,8 +27,8 @@ public:
     LIVE_INPUT
     bool valid;
     int deviceId;
-    live::ObjectPtr s_null;
-    live::Connection s_connection;
+    live::ObjectPtr m_null;
+    live::Connection m_connection;
     MidiIn(QString ccname,int devId);
     virtual void mIn(const live::Event *ev, live::ObjectChain*p)
     {

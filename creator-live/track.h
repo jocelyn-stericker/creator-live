@@ -40,20 +40,20 @@ class InsertButton;
 class Track : public AbstractTrack, public live_widgets::BindableParent {
     Q_OBJECT
 
-    InsertButton* s_sel;
+    InsertButton* m_sel;
 public:
-    live_widgets::TrackHint* s_th;
-    live::Ambition& s_ambition;   /*003*/
+    live_widgets::TrackHint* m_th;
+    live::Ambition& m_ambition;   /*003*/
 
-    QList<live_widgets::AppFrame*> s_appUi_;  /*003B*/    //reintegrate
-    QList<InsertButton*> s_inserts;
+    QList<live_widgets::AppFrame*> m_appUi_;  /*003B*/    //reintegrate
+    QList<InsertButton*> m_inserts;
 
     QMutex x_me;
 
-    int s_id;                   /*004*/
-    static int s_lastId;
+    int m_id;                   /*004*/
+    static int m_lastId;
 
-    bool s_busy;
+    bool m_busy;
 
     live_widgets::ObjectChooser* ui_outputChooser;
     live_widgets::ChainTypeWidget* ui_chainWidget;
@@ -105,13 +105,13 @@ private:
     Track(const Track&)
       : AbstractTrack()
       , BindableParent(this)
-      , s_sel(0)
-      , s_th(0)
-      , s_ambition(*new live::Ambition)
-      , s_appUi_()
+      , m_sel(0)
+      , m_th(0)
+      , m_ambition(*new live::Ambition)
+      , m_appUi_()
       , x_me(QMutex::Recursive)
-      , s_id(-1)
-      , s_busy(0)
+      , m_id(-1)
+      , m_busy(0)
       , ui_outputChooser(0)
       , ui_chainWidget(0)
       { TCRASH();

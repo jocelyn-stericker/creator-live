@@ -17,11 +17,11 @@ live_widgets::ObjectChooser::ObjectChooser(QWidget* parent)
   , ui_minimized(0)
   , ui_topFrame(0)
   , ui_bottomFrame(0)
-  , s_alignedLeft(0)
+  , m_alignedLeft(0)
   , b_trackName(0)
-  , s_oldHeight(0)
-  , s_maximizedWidth(400)
-  , s_maximizedHeight(-1)
+  , m_oldHeight(0)
+  , m_maximizedWidth(400)
+  , m_maximizedHeight(-1)
   {
     connect(live::object::singleton(),SIGNAL(stockChanged()),this,SLOT(updateObjects()));
 }
@@ -31,7 +31,7 @@ void live_widgets::ObjectChooser::setMinimized(bool minimized) {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     QPropertyAnimation* qaa = new QPropertyAnimation(this, "fixedWidth");
     qaa->setStartValue(width());
-    qaa->setEndValue(minimized ? 55 : s_maximizedWidth);
+    qaa->setEndValue(minimized ? 55 : m_maximizedWidth);
     qaa->setDuration(100);
     qaa->setEasingCurve(QEasingCurve::InQuad);
     qaa->start(QAbstractAnimation::DeleteWhenStopped);
@@ -41,15 +41,15 @@ void live_widgets::ObjectChooser::setMinimized(bool minimized) {
     else
         setCornersRounded(false);
 
-    if ((minimized && s_oldHeight) || (!minimized && s_maximizedHeight != -1)) {
-        if (!minimized) s_oldHeight = height();
+    if ((minimized && m_oldHeight) || (!minimized && m_maximizedHeight != -1)) {
+        if (!minimized) m_oldHeight = height();
         qaa = new QPropertyAnimation(this, "fixedHeight");
         qaa->setStartValue(height());
-        qaa->setEndValue(minimized ? s_oldHeight : qMax(height(),s_maximizedHeight));
+        qaa->setEndValue(minimized ? m_oldHeight : qMax(height(),m_maximizedHeight));
         qaa->setDuration(100);
         qaa->setEasingCurve(QEasingCurve::InQuad);
         qaa->start(QAbstractAnimation::DeleteWhenStopped);
-        if (minimized) s_oldHeight = 0;
+        if (minimized) m_oldHeight = 0;
     }
 }
 
@@ -63,12 +63,12 @@ void live_widgets::ObjectChooser::setCornersRounded(bool rounded) {
     QString alignment[2] = { "left", "right" };
 
     QString ss = ui_topFrame->styleSheet();
-    ss.replace("border-top-" + alignment[s_alignedLeft?1:0] + "-radius: " + state[rounded?0:1]
-             , "border-top-" + alignment[s_alignedLeft?1:0] + "-radius: " + state[rounded?1:0]);
+    ss.replace("border-top-" + alignment[m_alignedLeft?1:0] + "-radius: " + state[rounded?0:1]
+             , "border-top-" + alignment[m_alignedLeft?1:0] + "-radius: " + state[rounded?1:0]);
     ui_topFrame->setStyleSheet(ss);
 
     ss = ui_bottomFrame->styleSheet();
-    ss.replace("border-bottom-" + alignment[s_alignedLeft?1:0] + "-radius: " + state[rounded?0:1]
-             , "border-bottom-" + alignment[s_alignedLeft?1:0] + "-radius: " + state[rounded?1:0]);
+    ss.replace("border-bottom-" + alignment[m_alignedLeft?1:0] + "-radius: " + state[rounded?0:1]
+             , "border-bottom-" + alignment[m_alignedLeft?1:0] + "-radius: " + state[rounded?1:0]);
     ui_bottomFrame->setStyleSheet(ss);
 }

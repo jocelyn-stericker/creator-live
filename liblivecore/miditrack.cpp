@@ -24,10 +24,10 @@ void live::MidiTrack::startPlayback() {
     Time now = live::midi::getTime();
 
     if ( !b_mute ) {
-        for ( int i = s_data->size()-1; i >=0; i-- ) {
-            if ( (*s_data)[i]->time > b_curPos ) {
-                Event* ev = new Event((*s_data)[i]->message,(*s_data)[i]->data1,(*s_data)[i]->data2);
-                ev->time=(*s_data)[i]->time+now-b_curPos;
+        for ( int i = m_data->size()-1; i >=0; i-- ) {
+            if ( (*m_data)[i]->time > b_curPos ) {
+                Event* ev = new Event((*m_data)[i]->message,(*m_data)[i]->data1,(*m_data)[i]->data2);
+                ev->time=(*m_data)[i]->time+now-b_curPos;
                 ObjectChain p;
                 p.push_back(this);
                 mOut(ev,&p);
@@ -37,19 +37,19 @@ void live::MidiTrack::startPlayback() {
         }
     }
 
-    for (int i=0;i<s_cache.size();i++) {
-        if (live::midi::getTime_msec()-s_cache[i].time>120) {
-            s_cache.removeAt(i);
+    for (int i=0;i<m_cache.size();i++) {
+        if (live::midi::getTime_msec()-m_cache[i].time>120) {
+            m_cache.removeAt(i);
             --i;
         }
     }
 
 //    if ( (b_record||b_overdub) ) {
 //        ObjectChain p;
-//        while (s_cache.size()) {
-//            s_cache.front().time=Time();
-//            mIn(&s_cache.front(),p);
-//            s_cache.pop_front();
+//        while (m_cache.size()) {
+//            m_cache.front().time=Time();
+//            mIn(&m_cache.front(),p);
+//            m_cache.pop_front();
 //        }
 //    }
 
@@ -69,10 +69,10 @@ void live::MidiTrack::stopPlayback() {
     p.push_back(this);
     mOut(&can,&p);
 
-    for (int i=0; i<s_data->size(); i++) {
-        if ((*s_data)[i]->simpleStatus()==Event::NOTE_ON||(*s_data)[i]->simpleStatus()==Event::NOTE_OFF) {
+    for (int i=0; i<m_data->size(); i++) {
+        if ((*m_data)[i]->simpleStatus()==Event::NOTE_ON||(*m_data)[i]->simpleStatus()==Event::NOTE_OFF) {
             // -> I don't get this assert. I'll look at it later.
-//            Q_ASSERT(!((*s_data)[i]->velocity()&&!(*s_data)[i]->buddy));  /*all objects should have buddies via panic()*/
+//            Q_ASSERT(!((*m_data)[i]->velocity()&&!(*m_data)[i]->buddy));  /*all objects should have buddies via panic()*/
         }
     }
 
@@ -81,7 +81,7 @@ void live::MidiTrack::stopPlayback() {
 }
 
 void live::MidiTrack::mIn(const Event *ev, ObjectChain*p) {
-    if (p->size() && cast<MidiEventCounter*>(p->back()) && s_thru) {
+    if (p->size() && cast<MidiEventCounter*>(p->back()) && m_thru) {
         mOut(ev,p);
         return;
     }
@@ -92,7 +92,7 @@ void live::MidiTrack::mIn(const Event *ev, ObjectChain*p) {
         }
         Q_ASSERT(b_curPos>=0);
 
-        if (p->size()&&s_thru) {
+        if (p->size()&&m_thru) {
             p->push_back(this);
             mOut(ev,p);   //Mute applies to outgoing only (!!)
             p->pop_back();
@@ -111,13 +111,13 @@ void live::MidiTrack::mIn(const Event *ev, ObjectChain*p) {
             data->time.sec=t.sec;
 
             int i = 0;
-//            for ( i = s_data->size()-1; i>=0; i-- ) {
-//                if ( (*s_data)[i]->time > t ) break;
-//                if ( (*s_data)[i]->time.toTime_ms() <= t.toTime_ms() ) {
-//                    if ( !b_overdub && (b_recStart<(*s_data)[i]->time)) {
-//                        delete s_data->takeAt( i );
+//            for ( i = m_data->size()-1; i>=0; i-- ) {
+//                if ( (*m_data)[i]->time > t ) break;
+//                if ( (*m_data)[i]->time.toTime_ms() <= t.toTime_ms() ) {
+//                    if ( !b_overdub && (b_recStart<(*m_data)[i]->time)) {
+//                        delete m_data->takeAt( i );
 //                        emit dataUpdated();
-//                        if ( i+1 < *s_data ) {
+//                        if ( i+1 < *m_data ) {
 //                            i++;
 //                        }
 //                    }
@@ -128,26 +128,26 @@ void live::MidiTrack::mIn(const Event *ev, ObjectChain*p) {
             if ((data->simpleStatus()==Event::NOTE_ON||data->simpleStatus()==Event::NOTE_OFF)&&!data->velocity()) {
                 bool ok=0;
 
-                for (int j=0;j<s_data->size();j++)   /*Where it would go*/ {
-                    if ((*s_data)[j]->velocity()&&(*s_data)[j]->simpleStatus()==Event::NOTE_ON&&(*s_data)[j]->note()==data->note()&&!(*s_data)[j]->buddy) {
+                for (int j=0;j<m_data->size();j++)   /*Where it would go*/ {
+                    if ((*m_data)[j]->velocity()&&(*m_data)[j]->simpleStatus()==Event::NOTE_ON&&(*m_data)[j]->note()==data->note()&&!(*m_data)[j]->buddy) {
                         ok=1;
-                        (*s_data)[j]->buddy=data;
-                        data->buddy=(*s_data)[j];
-                        (*s_data)[j]->buddy=data;
+                        (*m_data)[j]->buddy=data;
+                        data->buddy=(*m_data)[j];
+                        (*m_data)[j]->buddy=data;
                         break;
                     }
                 }
                 if (ok) {
-                    s_data->insert( i+1, data );
+                    m_data->insert( i+1, data );
                 }
                 //else there _might_ be a bug...
             } else {
-                s_data->insert( i+1, data );
+                m_data->insert( i+1, data );
             }
         } else {
             Event l=*ev;
-            s_cache.push_back(l);
-            s_cache.back().time=live::midi::getTime();
+            m_cache.push_back(l);
+            m_cache.back().time=live::midi::getTime();
         }
         b_lastPos=b_curPos;
     }
@@ -165,10 +165,10 @@ live::MidiTrack::MidiTrack()
   , b_overdub(0)
   , b_playback(0)
   , b_mute(0)
-  , s_data(new QList<Event*>)
+  , m_data(new QList<Event*>)
   , mTrack_id(++lastId)
-  , s_cache()
-  , s_thru(1)
+  , m_cache()
+  , m_thru(1)
   { setTemporary(0);
 }
 
@@ -259,7 +259,7 @@ void live::MidiTrack::importFile(QString path) {
         }
         Event* mev=new Event(ev.data[0],ev.data[1],ev.data[2]);
         mev->time=Time((qint32)(mf.getTimeInSeconds(0,i)*1000.0f));
-        s_data->push_back(mev);
+        m_data->push_back(mev);
     }
 }
 
@@ -273,11 +273,11 @@ void live::MidiTrack::exportFile(QString path) {
 
     double secondsPerTick = 60.0 / (120.0f * (double) tpq);
 
-    live_mutex(x_mTrack) for (int i=0;i<s_data->size();i++) {
-        midievent[0] = (uchar)(*s_data)[i]->message;     // store a note on command (MIDI channel 1)
-        midievent[1] = (uchar)(*s_data)[i]->data1;
-        midievent[2] = (uchar)(*s_data)[i]->data2;
-        mf.addEvent(0, (int)(((double)(*s_data)[i]->time.toTime_ms()/1000.0f)/secondsPerTick), midievent);
+    live_mutex(x_mTrack) for (int i=0;i<m_data->size();i++) {
+        midievent[0] = (uchar)(*m_data)[i]->message;     // store a note on command (MIDI channel 1)
+        midievent[1] = (uchar)(*m_data)[i]->data1;
+        midievent[2] = (uchar)(*m_data)[i]->data2;
+        mf.addEvent(0, (int)(((double)(*m_data)[i]->time.toTime_ms()/1000.0f)/secondsPerTick), midievent);
     }
     mf.sortTracks();
     mf.write(path.toLatin1());
@@ -296,13 +296,13 @@ void live::MidiTrack::timeEvent() {
             Time t=pos();
 
             int i = 0;
-            for ( i = s_data->size()-1; i>=0; i-- ) {
-                if ( (*s_data)[i]->time > t ) break;
-                if ( (*s_data)[i]->time.toTime_ms() <= t.toTime_ms() ) {
-                    if ( !b_overdub && (b_recStart<(*s_data)[i]->time)) {
-                        delete s_data->takeAt( i );
+            for ( i = m_data->size()-1; i>=0; i-- ) {
+                if ( (*m_data)[i]->time > t ) break;
+                if ( (*m_data)[i]->time.toTime_ms() <= t.toTime_ms() ) {
+                    if ( !b_overdub && (b_recStart<(*m_data)[i]->time)) {
+                        delete m_data->takeAt( i );
                         emit dataUpdated();
-                        if ( i+1 < *s_data ) {
+                        if ( i+1 < *m_data ) {
                             i++;
                         }
                     }
@@ -316,8 +316,8 @@ void live::MidiTrack::timeEvent() {
 
 void live::MidiTrack::clearData() {
     live_mutex(x_mTrack) {
-        EventListDeleter* eld=new EventListDeleter(s_data);
+        EventListDeleter* eld=new EventListDeleter(m_data);
         QtConcurrent::run(eld,&EventListDeleter::run);
-        s_data=new QList<Event*>;
+        m_data=new QList<Event*>;
     }
 }

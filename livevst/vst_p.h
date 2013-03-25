@@ -27,12 +27,12 @@ class VstEditor : public QWidget
 {
     Q_OBJECT
 private:
-    AEffect* s_fx;
-    QTimer* s_timer;
-    VstR* s_parent;
+    AEffect*m_fx;
+    QTimer*m_timer;
+    VstR*m_parent;
 
 public:
-    VstEditor(AEffect*cfx,VstR* cparent) : QWidget(), s_fx(cfx), s_timer(new QTimer), s_parent(cparent)
+    VstEditor(AEffect*cfx,VstR* cparent) : QWidget(),m_fx(cfx),m_timer(new QTimer),m_parent(cparent)
     {
         init();
     }
@@ -40,7 +40,7 @@ public:
     virtual ~VstEditor()
     {
         unInit();
-        delete s_timer;
+        deletem_timer;
     }
 
     void init();
@@ -67,7 +67,7 @@ public:
     QList<live::Event*> midiQueue;
     QList<live::ObjectPtr> sourceQueue;
 
-    QList<VstSidekick*> s_sidekicks;
+    QList<VstSidekick*>m_sidekicks;
 
     VstR(Vst* cme,AEffect* cvst) :
         live::Object("VSTR", true, false, 2),
@@ -101,14 +101,14 @@ public:
 
     void deleteVst(int vst);
 
-    AEffect* s_loadPlugin(QString path);
+    AEffect*m_loadPlugin(QString path);
     static bool isValid(QString path);
 private:
-    void s_resumePlugin(AEffect*plugin);
-    void s_suspendPlugin(AEffect*plugin);
-    void s_initPlugin(AEffect*&plugin);
-    void s_getProperties(AEffect*plugin);
-    bool s_canPluginDo(AEffect*plugin,char* canDoString);
+    voidm_resumePlugin(AEffect*plugin);
+    voidm_suspendPlugin(AEffect*plugin);
+    voidm_initPlugin(AEffect*&plugin);
+    voidm_getProperties(AEffect*plugin);
+    boolm_canPluginDo(AEffect*plugin,char* canDoString);
 
 };
 

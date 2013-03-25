@@ -24,7 +24,7 @@ public:
         Minor
     };
 
-    Tonality s_tonality;    /*006*/
+    Tonality m_tonality;    /*006*/
 
     KeySignature(char croot,Accidental cacc,Tonality cton);
     KeySignature(char croot,char cacc,Tonality cton);
@@ -35,7 +35,7 @@ public:
 protected:
     KeySignature()
       : Pitch('C', ' ')
-      , s_tonality(Major)
+      , m_tonality(Major)
       {
     }
 };

@@ -28,10 +28,10 @@ class BridgeSettings : public QWidget, public live::Object, public live_widgets:
     Q_OBJECT
     LIVE_MIDI
     LIVE_INPUT
-    QList<live::ObjectPtr> s_in;
-    QList<live::ObjectPtr> s_out;
-    QList<QTcpSocket*> s_sockets;
-    QList<live::Connection> s_connections;
+    QList<live::ObjectPtr> m_in;
+    QList<live::ObjectPtr> m_out;
+    QList<QTcpSocket*> m_sockets;
+    QList<live::Connection> m_connections;
 
 public:
     explicit BridgeSettings(QWidget *parent = 0);

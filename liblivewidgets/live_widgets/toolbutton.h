@@ -17,7 +17,7 @@ namespace live_widgets {
 
 class LIBLIVEWIDGETSSHARED_EXPORT ToolButton : public QToolButton {
     Q_OBJECT
-    bool s_bindMode;
+    bool m_bindMode;
 public:
     explicit ToolButton(QWidget *parent = 0);
 

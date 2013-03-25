@@ -37,9 +37,9 @@ class FJFilterFrame : public live_widgets::AppFrame
 {
     Q_OBJECT
 
-    FJFilterApp& s_app;
+    FJFilterApp& m_app;
 public:
-    explicit FJFilterFrame(FJFilterApp* s_backend, AbstractTrack *parent = 0);
+    explicit FJFilterFrame(FJFilterApp* m_backend, AbstractTrack *parent = 0);
     ~FJFilterFrame();
 
     bool expanding() const { return false; }
@@ -64,7 +64,7 @@ public:
     FJFilterCreator()
     {
     }
-    QString name() { return "Filter"; }
+    QString name() { return "ca.nettek.live.filter"; }
     QString description() { return "No low quality equipment required..."; }
     live::ObjectPtr newBackend() { return new FJFilterApp(); }
     live::ObjectPtr loadBackend(const QByteArray &str) {

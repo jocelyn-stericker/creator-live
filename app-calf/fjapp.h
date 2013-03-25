@@ -38,10 +38,10 @@ template<class Module> class FJApp : public live::Object, public calf_plugins::p
     using Module::param_count;
     using Module::progress_report; // Wow, I'm learning lots about templates!
 
-    bool s_changed;
-    float s_param[param_count];
+    bool m_changed;
+    float m_param[param_count];
 
-    float* s_out[2];
+    float* m_out[2];
 
 public:
     LIVE_AUDIO
@@ -50,7 +50,7 @@ public:
         : live::Object(name, 0, 0, 2)
     {
         for (int i = 0; i < param_count; ++i)
-            Module::params[i] = &s_param[i];
+            Module::params[i] = &m_param[i];
 
         clear_preset(); // giface.cpp
         Module::post_instantiate();
@@ -58,13 +58,13 @@ public:
         init_module();
 
         for (int i = 0; i < 2; ++i)
-            Module::outs[i] = s_out[i] = new float[live::audio::nFrames()];
+            Module::outs[i] = m_out[i] = new float[live::audio::nFrames()];
     }
 
     virtual ~FJApp() {
         qDebug() << "~FJAPP";
         for (int i = 0; i < 2; ++i)
-            delete[] s_out[i];
+            delete[] m_out[i];
     }
 
     virtual void init_module() {
@@ -102,9 +102,9 @@ public:
         Module::ins[chan] = const_cast<float*>(data); // FIXME: Module::ins should be const.
         if (!chan) return;
 
-        if (s_changed) {
+        if (m_changed) {
             Module::params_changed();
-            s_changed = 0;
+            m_changed = 0;
         }
 
         unsigned mask = Module::process(0, live::audio::nFrames(), -1, -1); // returns mask
@@ -122,14 +122,14 @@ public:
         }
     }
 
-    virtual float *get_params() { return s_param; }
+    virtual float *get_params() { return m_param; }
     virtual bool activate_preset(int bank, int program) { return false; }
     virtual float get_param_value(int param_no) {
-        return s_param[param_no];
+        return m_param[param_no];
     }
     virtual void set_param_value(int param_no, float value) {
-        s_param[param_no] = value;
-        s_changed = 1;
+        m_param[param_no] = value;
+        m_changed = 1;
     }
     virtual void execute(int cmd_no) {
         Module::execute(cmd_no);

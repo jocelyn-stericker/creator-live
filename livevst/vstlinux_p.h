@@ -210,7 +210,7 @@ public:
     {
         live::Object::beginAsyncAction();
         kill();
-//        while (s_sidekicks.size()) delete s_sidekicks.takeFirst().data();
+//        while (s_sidekicks.size()) deletem_sidekicks.takeFirst().data();
         _magic->kill();
         live::Object::endAsyncAction(__FILE__,__LINE__);
     }
@@ -239,7 +239,7 @@ public slots:
     }
 
 public:
-    QList<live::ObjectPtr> s_sidekicks;
+    QList<live::ObjectPtr>m_sidekicks;
 };
 
 #endif //VST_RH

@@ -96,7 +96,7 @@ class LIBLIVECORESHARED_EXPORT SecretAudio : public QObject, public live::AudioI
     Q_OBJECT
     Q_INTERFACES(live::AudioInterface)
 public:
-    QString s_error;
+    QStringm_error;
     static SecretAudio* singleton;
 
     quint32 nframes;
@@ -162,7 +162,7 @@ public:
 
     virtual bool shouldDisplaySettingsWidget() { return 0; }
 
-    virtual QString errorString() { QString l=s_error; s_error=""; return l; }
+    virtual QString errorString() { QString l=s_error;m_error=""; return l; }
 
     virtual live::ObjectPtr getNull(int chans);
 

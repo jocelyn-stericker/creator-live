@@ -26,11 +26,11 @@ class LIVESF2SHARED_EXPORT LiveSF2Wizard : public QStackedWidget
 public:
     LiveSF2Wizard();
 
-    live::ObjectPtr s_out, s_loopback;
-    QList<live::ObjectPtr> s_loopbacks;
+    live::ObjectPtr m_out, m_loopback;
+    QList<live::ObjectPtr> m_loopbacks;
 
 signals:
-    void instrumentUpdated(live::ObjectPtr s_out, live::ObjectPtr s_loopback);  /*!!!*/
+    void instrumentUpdated(live::ObjectPtr m_out, live::ObjectPtr m_loopback);  /*!!!*/
 
 public slots:
     void updateLoopbacks();

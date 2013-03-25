@@ -108,11 +108,11 @@ BridgeSettings::BridgeSettings(QWidget *parent)
 void BridgeSettings::startTalking()
 {
     QTcpSocket* sock=dynamic_cast<QTcpServer*>(sender())->nextPendingConnection();
-    if (!s_in.size()) {
-        s_in=live::object::get(live::MidiOnly|live::InputOnly);
-        for (int i=0;i<s_in.size();i++) {
-            if (!s_in[i]) continue;
-            s_connections.push_back(live::Connection(s_in[i], this, live::MidiConnection));
+    if (!m_in.size()) {
+        m_in=live::object::get(live::MidiOnly|live::InputOnly);
+        for (int i=0;i<m_in.size();i++) {
+            if (!m_in[i]) continue;
+            m_connections.push_back(live::Connection(m_in[i], this, live::MidiConnection));
         }
     }
     QByteArray data;
@@ -120,22 +120,22 @@ void BridgeSettings::startTalking()
     data+="BEGIN HELLO_WORLD\n";
     data+="BEGIN MIDI_INPUT\n";
 
-    for (int i=0;i<s_in.size();i++) {
-        if (!s_in[i]) continue;
-        data+=s_in[i]->name()+"\n";
+    for (int i=0;i<m_in.size();i++) {
+        if (!m_in[i]) continue;
+        data+=m_in[i]->name()+"\n";
     }
     data+="END MIDI_INPUT\n";
-    if (!s_out.size()) s_out=live::object::get(live::MidiOnly|live::OutputOnly);
+    if (!m_out.size()) m_out=live::object::get(live::MidiOnly|live::OutputOnly);
     data+="BEGIN MIDI_OUTPUT\n";
-    for (int i=0;i<s_out.size();i++) {
-        if (!s_out[i]) continue;
-        data+=s_out[i]->name()+"\n";
+    for (int i=0;i<m_out.size();i++) {
+        if (!m_out[i]) continue;
+        data+=m_out[i]->name()+"\n";
     }
     data+="END MIDI_OUTPUT\n";
     data+="END HELLO_WORLD\n";
     sock->write(data);
 
-    s_sockets.push_back(sock);
+    m_sockets.push_back(sock);
 
     connect(sock,SIGNAL(readyRead()),this,SLOT(listen()));
 }
@@ -151,8 +151,8 @@ void BridgeSettings::mIn(const live::Event *ev, live::ObjectChain* p)
     data+="DATA3 "+QString::number(live::midi::getTime_msec()-ev->time.toTime_ms())+"\n";
     data+="END EVENT\n";
     qDebug() << "->"<<data;
-    for (int i=0;i<s_sockets.size();i++) {
-        s_sockets[i]->write(data);
+    for (int i=0;i<m_sockets.size();i++) {
+        m_sockets[i]->write(data);
     }
 }
 
@@ -173,8 +173,8 @@ void BridgeSettings::listen()
         QString from = commands.first();
         from.remove(0,3);
         live::ObjectPtr ptr;
-        for (int i=0;i<s_out.size();i++) {
-            if (s_out[i]->name()==from) ptr=s_out[i];
+        for (int i=0;i<m_out.size();i++) {
+            if (m_out[i]->name()==from) ptr=m_out[i];
         }
         if (!ptr) {
             qDebug() << "No such device "<<from;

@@ -11,7 +11,8 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #define APP_H
 
 #include <QStringList>
-#include "live/object"
+#include <live/object>
+#include <live/variantbinding>
 
 namespace live {
 
@@ -20,17 +21,18 @@ class AppInterface;
 class LIBLIVECORESHARED_EXPORT app
 {
 protected:
-    static app* s_singleton;
-    QStringList s_appNames;
-    QList<AppInterface*> s_apps;
+    static app* m_singleton;
+    QStringList m_appNames;
+    QList<AppInterface*> m_apps;
     app()
-      : s_appNames()
-      , s_apps()
+      : m_appNames()
+      , m_apps()
       { lthread::assertUi();
     }
     ~app();
 
 public:
+    static Bound<int> b_mode;
     static void registerInterface(AppInterface* c);
     static QStringList appNames();
     static QList<AppInterface*> interfaces();

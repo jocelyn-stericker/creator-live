@@ -21,19 +21,19 @@ class SequencerApp : public QObject, public live::Object
 public:
     LIVE_HYBRID
     LIVE_EFFECT
-    live::MidiTrack* s_midiTrack;                 /*003*/
-    live::Connection s_midiTrackConnection;
-    live::AudioTrack* s_audioTrack;               /*004*/
-    live::Connection s_audioTrackConnection;
-    LooperApp* s_cheat;                     /*N/A*/
+    live::MidiTrack* m_midiTrack;                 /*003*/
+    live::Connection m_midiTrackConnection;
+    live::AudioTrack* m_audioTrack;               /*004*/
+    live::Connection m_audioTrackConnection;
+    LooperApp* m_cheat;                     /*N/A*/
     live::Bound<bool> b_clipped;                  /*005*/
-    qint64 s_id;                               /*006*/ /*007 in looper*/
-    bool s_audioOverdubForced;                   /*N/A*/
-    qint64 s_scale;                            /*007*/
+    qint64 m_id;                               /*006*/ /*007 in looper*/
+    bool m_audioOverdubForced;                   /*N/A*/
+    qint64 m_scale;                            /*007*/
 
     QMutex x_sequencer;
 
-    SequencerApp(QString s_name="SEQUENCER", live::MidiTrack*cmidiTrack=new live::MidiTrack, live::AudioTrack*caudioTrack=new live::AudioTrack(2), bool newId=1);
+    SequencerApp(QString m_name="SEQUENCER", live::MidiTrack*cmidiTrack=new live::MidiTrack, live::AudioTrack*caudioTrack=new live::AudioTrack(2), bool newId=1);
 
     virtual ~SequencerApp();
 
@@ -44,7 +44,7 @@ public:
     virtual qint64 pos() const;
     bool clipped() const;
 
-    const qint64& scale() const { return s_scale; }
+    const qint64& scale() const { return m_scale; }
 
     virtual QByteArray save();
     static live::ObjectPtr load(const QByteArray&str);
@@ -73,11 +73,11 @@ public slots:
     virtual void mIn(const live::Event *data, live::ObjectChain*p);
 
     void importAudio(QString file) {
-        s_audioTrack->importFile(file);
+        m_audioTrack->importFile(file);
     }
 
     void importMidi(QString file) {
-        s_midiTrack->importFile(file);
+        m_midiTrack->importFile(file);
     }
 
 signals:

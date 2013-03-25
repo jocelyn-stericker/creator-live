@@ -10,5 +10,5 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <live/chord>
 
 QList<live::Pitch> live::SpecificChord::notes(live::KeySignature) {
-    return s_identity;
+    return m_identity;
 }

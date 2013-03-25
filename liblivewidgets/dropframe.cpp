@@ -15,12 +15,12 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QLabel>
 #include <QMimeData>
 
-live_widgets::DropFrame::DropFrame(QWidget*p) : QFrame(p), s_dl(0) {
+live_widgets::DropFrame::DropFrame(QWidget*p) : QFrame(p), m_dl(0) {
     setAcceptDrops(1);
 }
 
 live_widgets::DropFrame::~DropFrame() {
-    delete s_dl;
+    delete m_dl;
 }
 
 void live_widgets::DropFrame::dragEnterEvent(QDragEnterEvent *e) {
@@ -35,20 +35,20 @@ void live_widgets::DropFrame::dropEvent(QDropEvent *e) {
 }
 
 QString live_widgets::DropFrame::text() {
-    return(s_dl?s_dl->text():"");
+    return(m_dl?m_dl->text():"");
 }
 
 void live_widgets::DropFrame::setText(QString x) {
-    if (s_dl) {
-        delete s_dl;
-        s_dl=0;
+    if (m_dl) {
+        delete m_dl;
+        m_dl=0;
     }
-    s_dl=new QLabel;
-    s_dl->setText(x);
+    m_dl=new QLabel;
+    m_dl->setText(x);
     if (!layout()) {
         setLayout(new QVBoxLayout());
     }
     layout()->setMargin(0);
-    layout()->addWidget(s_dl);
-    layout()->setAlignment(s_dl,Qt::AlignCenter);
+    layout()->addWidget(m_dl);
+    layout()->setAlignment(m_dl,Qt::AlignCenter);
 }

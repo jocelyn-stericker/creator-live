@@ -28,22 +28,22 @@ using namespace live_widgets;
 
 FJPhaserFrame::FJPhaserFrame(FJPhaserApp* app, AbstractTrack *parent)
     : AppFrame(parent)
-    , s_app(*app)
+    , m_app(*app)
     , ui(new Ui::FJPhaserFrame)
 {
     ui->setupUi(this);
 
-    onFreq(s_app.getFreq());
-    onDepth(s_app.getDepth());
-    onRate(s_app.getRate());
-    onFB(s_app.getFB());
-    onStages(s_app.getStages());
+    onFreq(m_app.getFreq());
+    onDepth(m_app.getDepth());
+    onRate(m_app.getRate());
+    onFB(m_app.getFB());
+    onStages(m_app.getStages());
 
     setDesiredWidth(359);
 
-    if (s_app.getAmount() + s_app.getDryAmount() < 0.1f)
+    if (m_app.getAmount() + m_app.getDryAmount() < 0.1f)
     {
-        onWetDryBalance(s_app.getAmount() * 50.0f / 6.0f + 50.0f);
+        onWetDryBalance(m_app.getAmount() * 50.0f / 6.0f + 50.0f);
     }
     else
     {
@@ -57,48 +57,48 @@ FJPhaserFrame::FJPhaserFrame(FJPhaserApp* app, AbstractTrack *parent)
 
 FJPhaserFrame::~FJPhaserFrame()
 {
-    s_app.deleteLater();
+    m_app.deleteLater();
     delete ui;
 }
 
 void FJPhaserFrame::onFreq(int z)
 {
-    s_app.setFreq(z);
+    m_app.setFreq(z);
     ui->dial_center->setValue(z);
 }
 
 void FJPhaserFrame::onDepth(int z)
 {
-    s_app.setDepth(z);
+    m_app.setDepth(z);
     ui->dial_depth->setValue(z);
 }
 
 void FJPhaserFrame::onRate(int z)
 {
-    s_app.setRate(float(z)/1000.0f);
+    m_app.setRate(float(z)/1000.0f);
     ui->dial_rate->setValue(z);
 }
 
 void FJPhaserFrame::onFB(int z)
 {
-    s_app.setFB(float(z)/100.0f);
+    m_app.setFB(float(z)/100.0f);
     ui->dial_feedback->setValue(z);
 }
 
 void FJPhaserFrame::onStages(int z)
 {
-    s_app.setStages(z);
+    m_app.setStages(z);
     ui->dial_stages->setValue(z);
 }
 
 void FJPhaserFrame::onReset()
 {
-    s_app.setReset(1.0f);
+    m_app.setReset(1.0f);
 }
 
 void FJPhaserFrame::onWetDryBalance(int z)
 {
-    s_app.setWetDryBalance(z);
+    m_app.setWetDryBalance(z);
     ui->verticalSlider_amount->setValue(z);
 }
 

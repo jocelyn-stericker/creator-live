@@ -54,12 +54,12 @@ public:
         }
     };
 private:
-    QList<Patch*> s_patches;
-    int s_curPatch;
-    QString s_fileName;
-    QList< QAction* > s_recent;
-    QMenu* s_recentMenu;
-    live_widgets::IntroWizard* s_iw;
+    QList<Patch*> m_patches;
+    int m_curPatch;
+    QString m_fileName;
+    QList< QAction* > m_recent;
+    QMenu* m_recentMenu;
+    live_widgets::IntroWizard* m_iw;
 
 public:
     explicit LiveWindow(QWidget *parent = 0);
@@ -67,7 +67,7 @@ public:
     ~LiveWindow();
     bool askForClose(QString title="Quit Creator Live?",QString question="Quit anyway?");
 
-    Patch* curPatch() { return s_patches[s_curPatch]; }
+    Patch* curPatch() { return m_patches[m_curPatch]; }
     live_widgets::VScrollContainer* hathorView();
     
 public slots:
@@ -109,12 +109,12 @@ private:
     LiveWindow(const LiveWindow&)
       : QWidget()
       , BindableParent(this)
-      , s_patches()
-      , s_curPatch(-1)
-      , s_fileName("")
-      , s_recent()
-      , s_recentMenu(0)
-      , s_iw(0)
+      , m_patches()
+      , m_curPatch(-1)
+      , m_fileName("")
+      , m_recent()
+      , m_recentMenu(0)
+      , m_iw(0)
       , ui(0)
       { TCRASH();
     }

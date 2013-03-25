@@ -47,10 +47,10 @@ LiveSF2Wizard::LiveSF2Wizard()
 }
 
 void LiveSF2Wizard::updateLoopbacks() {
-    s_loopbacks = live::object::get(live::AudioOnly | live::OutputOnly);
+    m_loopbacks = live::object::get(live::AudioOnly | live::OutputOnly);
     ui->listWidget_loop->clear();
-    for (int i = 0; i < s_loopbacks.size(); ++i) {
-        ui->listWidget_loop->addItem(s_loopbacks[i]->name());
+    for (int i = 0; i < m_loopbacks.size(); ++i) {
+        ui->listWidget_loop->addItem(m_loopbacks[i]->name());
     }
 }
 
@@ -63,14 +63,14 @@ void LiveSF2Wizard::next() {
             return;
 
         qDebug() << "...";
-        emit instrumentUpdated(s_out, s_loopback =
-                s_loopbacks[ui->listWidget_loop->currentRow()]);
+        emit instrumentUpdated(m_out, m_loopback =
+                m_loopbacks[ui->listWidget_loop->currentRow()]);
         return;
     } else {
         int l = ui->listWidget_out->currentRow();
 
-        if (s_out.valid())
-            s_out.detach();
+        if (m_out.valid())
+            m_out.detach();
 
         QString dir =
 #ifndef __QNX__
@@ -79,11 +79,11 @@ void LiveSF2Wizard::next() {
 	qApp->applicationDirPath()+"/plugins/";
 #endif
         if (l < 3)
-            s_out = live::ObjectPtr(new Soundfont(dir + "grand.sf2"));
+            m_out = live::ObjectPtr(new Soundfont(dir + "grand.sf2"));
         else
-            s_out = live::ObjectPtr(new Soundfont(dir + "mustheory2.sf2"));
+            m_out = live::ObjectPtr(new Soundfont(dir + "mustheory2.sf2"));
 
-        live::cast<Soundfont*>(s_out)->setProgram(0, l);
+        live::cast<Soundfont*>(m_out)->setProgram(0, l);
     }
 
     setCurrentIndex(currentIndex() + 1);

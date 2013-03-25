@@ -20,7 +20,7 @@ namespace live_widgets {
 
 class LIBLIVEWIDGETSSHARED_EXPORT DropFrame : public QFrame {
     Q_OBJECT
-    QLabel* s_dl;
+    QLabel*m_dl;
     void dragEnterEvent(QDragEnterEvent *);
     void dropEvent(QDropEvent *);
 public:

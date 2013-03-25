@@ -23,7 +23,7 @@ namespace live_widgets {
 
 class LIBLIVEWIDGETSSHARED_EXPORT DragLabel : public QLabel {
     Q_OBJECT
-    QDrag* s_drag;
+    QDrag*m_drag;
 public:
     explicit DragLabel(QWidget *parent = 0);
     void mousePressEvent(QMouseEvent *e);
@@ -38,7 +38,7 @@ public slots:
 private:
     DragLabel(const DragLabel&)
       : QLabel()
-      , s_drag(0)
+      ,m_drag(0)
       { TCRASH();
     }
 

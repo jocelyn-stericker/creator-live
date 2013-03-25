@@ -10,7 +10,7 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <asyncconnect_p.h>
 
 LIBLIVECORESHARED_EXPORT live_private::ASyncConnectSys*
-    live_private::ASyncConnectSys::s_singleton = 0;
+    live_private::ASyncConnectSys::m_singleton = 0;
 
 bool live::async_connect(QObject* sender, const char* signal
                        , QObject* receiver, const char* method) {

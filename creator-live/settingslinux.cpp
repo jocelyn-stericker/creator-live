@@ -19,18 +19,18 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 using namespace live;
 
 bool LiveAudioSettingsWidget::started=0;
-QString LiveAudioSettingsWidget::s_in,LiveAudioSettingsWidget::s_out;
-QStringList LiveAudioSettingsWidget::s_inl, LiveAudioSettingsWidget::s_outl;
+QString LiveAudioSettingsWidget::m_in,LiveAudioSettingsWidget::m_out;
+QStringList LiveAudioSettingsWidget::m_inl, LiveAudioSettingsWidget::m_outl;
 
 LiveAudioSettingsWidget::LiveAudioSettingsWidget(QWidget *parent, bool automatic)
   : QDialog(parent)
   , live_widgets::BindableParent(this)
-  , s_inputMappings()
-  , s_inputMappingNames()
-  , s_outputMappings()
-  , s_outputMappingNames()
+  , m_inputMappings()
+  , m_inputMappingNames()
+  , m_outputMappings()
+  , m_outputMappingNames()
   , ui(new Ui::SettingsLinux)
-  , s_automatic(automatic)
+  , m_automatic(automatic)
 {
     setModal(true);
     if (!automatic)
@@ -41,29 +41,29 @@ LiveAudioSettingsWidget::LiveAudioSettingsWidget(QWidget *parent, bool automatic
     QString labelstr;
     {
         labelstr="Audio inputs are: ";
-        s_inl=audio::getInputChanStringList();
-        s_inl.replaceInStrings(":","_");
-        for (int i=0;i<s_inl;i++)
+        m_inl=audio::getInputChanStringList();
+        m_inl.replaceInStrings(":","_");
+        for (int i=0;i<m_inl;i++)
         {
             if (i)
             {
-                s_in+=",";
+                m_in+=",";
             }
-            s_in+="\""+s_inl[i]+"\" ";
+            m_in+="\""+m_inl[i]+"\" ";
         }
-        labelstr+=s_in+"\n";
+        labelstr+=m_in+"\n";
     }
     {
-        s_outl=audio::getOutputChanStringList();
-        for (int i=0;i<s_outl;i++)
+        m_outl=audio::getOutputChanStringList();
+        for (int i=0;i<m_outl;i++)
         {
             if (i)
             {
-                s_out+=",";
+                m_out+=",";
             }
-            s_out+="\""+s_outl[i]+"\" ";
+            m_out+="\""+m_outl[i]+"\" ";
         }
-        labelstr+=s_out;
+        labelstr+=m_out;
     }
     if (!automatic)
     {
@@ -129,8 +129,8 @@ void LiveAudioSettingsWidget::applyAndQuit()
         if (mapping.size())
         {
             audio::addMapping(mapping,1,ui->tabWidget->inWidget()->groupNames[i]->text());
-            s_inputMappings<<mapping;
-            s_inputMappingNames<<ui->tabWidget->inWidget()->groupNames[i]->text();
+            m_inputMappings<<mapping;
+            m_inputMappingNames<<ui->tabWidget->inWidget()->groupNames[i]->text();
         }
     }
     for (int i=0;i<ui->tabWidget->outWidget()->groupNames.size();i++)
@@ -147,17 +147,17 @@ void LiveAudioSettingsWidget::applyAndQuit()
         if (mapping.size())
         {
             audio::addMapping(mapping,0,ui->tabWidget->outWidget()->groupNames[i]->text());
-            s_outputMappings<<mapping;
-            s_outputMappingNames<<ui->tabWidget->outWidget()->groupNames[i]->text();
+            m_outputMappings<<mapping;
+            m_outputMappingNames<<ui->tabWidget->outWidget()->groupNames[i]->text();
         }
     }
     audio::refresh();
 
     QSettings settings;
-    settings.setValue("audio_inputMappingNames",s_inputMappingNames);
-    settings.setValue("audio_inputMappings",s_inputMappings);
-    settings.setValue("audio_outputMappingNames",s_outputMappingNames);
-    settings.setValue("audio_outputMappings",s_outputMappings);
+    settings.setValue("audio_inputMappingNames",m_inputMappingNames);
+    settings.setValue("audio_inputMappings",m_inputMappings);
+    settings.setValue("audio_outputMappingNames",m_outputMappingNames);
+    settings.setValue("audio_outputMappings",m_outputMappings);
     deleteLater();
 }
 

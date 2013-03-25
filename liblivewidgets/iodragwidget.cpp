@@ -31,14 +31,14 @@ void live_widgets::SpawnFrame::dropEvent(QDropEvent *e) {
 
 live_widgets::InputDragWidget::InputDragWidget(QWidget *parent)
   : QFrame(parent)
-  , s_count(-1)
-  , s_ui(new Ui::InputDragWidget)
+  , m_count(-1)
+  , m_ui(new Ui::InputDragWidget)
   , groupNames()
   , dropFrameAs()
   , dropFrameBs()
-  { s_ui->setupUi(this);
-    connect(s_ui->newMapping_frame,SIGNAL(textDropped(QString)),this,SLOT(newGroup(QString)));
-    s_ui->chans_frame_out->hide();
+  { m_ui->setupUi(this);
+    connect(m_ui->newMapping_frame,SIGNAL(textDropped(QString)),this,SLOT(newGroup(QString)));
+    m_ui->chans_frame_out->hide();
 
     QSettings settings;
     QList<QVariant> inMap=settings.value("audio_inputMappings").toList();
@@ -63,7 +63,7 @@ void live_widgets::InputDragWidget::newGroup(QString x,QString y,QString z) {
     groupNames.push_back(le);
     xf->layout()->addWidget(le);
     le->setPlaceholderText("Input name");
-    le->setText(z.size()?z:("Input Group "+QString::number(++s_count)));
+    le->setText(z.size()?z:("Input Group "+QString::number(++m_count)));
     DropFrame* df1=new DropFrame(this);
     xf->layout()->addWidget(df1);
     df1->setText(x);
@@ -107,14 +107,14 @@ live_widgets::InputDragWidget::~InputDragWidget() {
 
 live_widgets::OutputDragWidget::OutputDragWidget(QWidget *parent)
   : QFrame(parent)
-  , s_count(-1)
-  , s_ui(new Ui::InputDragWidget)
+  , m_count(-1)
+  , m_ui(new Ui::InputDragWidget)
   , groupNames()
   , dropFrameAs()
   , dropFrameBs()
-  { s_ui->setupUi(this);
-    connect(s_ui->newMapping_frame,SIGNAL(textDropped(QString)),this,SLOT(newGroup(QString)));
-    s_ui->chans_frame_in->hide();
+  { m_ui->setupUi(this);
+    connect(m_ui->newMapping_frame,SIGNAL(textDropped(QString)),this,SLOT(newGroup(QString)));
+    m_ui->chans_frame_in->hide();
 
     QSettings settings;
     QList<QVariant> outMap=settings.value("audio_outputMappings").toList();
@@ -140,7 +140,7 @@ void live_widgets::OutputDragWidget::newGroup(QString x,QString y,QString z) {
     groupNames.push_back(le);
     xf->layout()->addWidget(le);
     le->setPlaceholderText("Output name");
-    le->setText(z.size()?z:("Output Group "+QString::number(++s_count)));
+    le->setText(z.size()?z:("Output Group "+QString::number(++m_count)));
     DropFrame* df1=new DropFrame(this);
     xf->layout()->addWidget(df1);
     df1->setText(x);
@@ -170,17 +170,17 @@ void live_widgets::OutputDragWidget::newGroup(QString x,QString y,QString z) {
 }
 
 void live_widgets::InputDragWidget::refresh() {
-    delete s_ui->chans_frame_in;
-    s_ui->chans_frame_in=new InputDragListFrame(this);
-    qobject_cast<QVBoxLayout*>(layout())->insertWidget(0,s_ui->chans_frame_in);
-    s_ui->chans_frame_in->setMinimumHeight(((s_ui->chans_frame_in->count()+1)/2)*40);
+    delete m_ui->chans_frame_in;
+    m_ui->chans_frame_in=new InputDragListFrame(this);
+    qobject_cast<QVBoxLayout*>(layout())->insertWidget(0,m_ui->chans_frame_in);
+    m_ui->chans_frame_in->setMinimumHeight(((m_ui->chans_frame_in->count()+1)/2)*40);
 }
 
 void live_widgets::OutputDragWidget::refresh() {
-    delete s_ui->chans_frame_out;
-    s_ui->chans_frame_out=new OutputDragListFrame(this);
-    qobject_cast<QVBoxLayout*>(layout())->insertWidget(0,s_ui->chans_frame_out);
-    s_ui->chans_frame_out->setMinimumHeight(((s_ui->chans_frame_out->count()+1)/2)*40);
+    delete m_ui->chans_frame_out;
+    m_ui->chans_frame_out=new OutputDragListFrame(this);
+    qobject_cast<QVBoxLayout*>(layout())->insertWidget(0,m_ui->chans_frame_out);
+    m_ui->chans_frame_out->setMinimumHeight(((m_ui->chans_frame_out->count()+1)/2)*40);
 }
 
 void live_widgets::OutputDragWidget::destroyRow() {

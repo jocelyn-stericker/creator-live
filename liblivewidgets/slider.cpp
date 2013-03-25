@@ -14,13 +14,13 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 #include <QMouseEvent>
 
 live_widgets::Slider::Slider(QWidget *parent) :
-    QSlider(parent), s_bindMode(0) {
+    QSlider(parent), m_bindMode(0) {
     connect(live::bindings::me(),SIGNAL(showBindingsChanged(bool)),this,SLOT(setShowBindingsChanged(bool)));
 }
 
 void live_widgets::Slider::mousePressEvent(QMouseEvent *e) {
     if (e->button()==Qt::LeftButton) {
-        if (s_bindMode) {
+        if (m_bindMode) {
             emit customContextMenuRequested(e->pos());
         } else {
             QSlider::mousePressEvent(e);
@@ -35,7 +35,7 @@ void live_widgets::Slider::mouseReleaseEvent(QMouseEvent *) {
 
 void live_widgets::Slider::paintEvent(QPaintEvent *e) {
     QSlider::paintEvent(e);
-    if (s_bindMode) {
+    if (m_bindMode) {
         QPainter p(this);
         p.fillRect(e->rect(),QColor(0,0,255,80));
     }
@@ -45,6 +45,6 @@ void live_widgets::Slider::setShowBindingsChanged(bool ean) {
     for (int i=0;i<children().size();i++) {
         if (dynamic_cast<QWidget*>(children()[i])) dynamic_cast<QWidget*>(children()[i])->setEnabled(!ean);
     }
-    s_bindMode=ean;
+    m_bindMode=ean;
     update();
 }

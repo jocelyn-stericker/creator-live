@@ -39,12 +39,12 @@ LiveWindow* LiveWindow::singleton=0;
 LiveWindow::LiveWindow(QWidget *parent)
   : QWidget(parent)
   , BindableParent(this)
-  , s_patches()
-  , s_curPatch(0)
-  , s_fileName()
-  , s_recent()
-  , s_recentMenu(0)
-  , s_iw(0)
+  , m_patches()
+  , m_curPatch(0)
+  , m_fileName()
+  , m_recent()
+  , m_recentMenu(0)
+  , m_iw(0)
   , ui(new Ui::LiveWindow)
   { singleton=this;
     ui->setupUi(this);
@@ -55,13 +55,13 @@ LiveWindow::LiveWindow(QWidget *parent)
     m->addAction("&Save Project As...",this,SLOT(saveAs()));
 
     QMenu* recent=new QMenu("Recent Files...");
-    s_recentMenu= recent;
+    m_recentMenu= recent;
     m->addMenu(recent);
-//    s_recent.push_back(recent->addAction("File 1"));
-//    s_recent.push_back(recent->addAction("File 2"));
-//    s_recent.push_back(recent->addAction("File 3"));
-//    s_recent.push_back(recent->addAction("File 4"));
-//    s_recent.push_back(recent->addAction("File 5"));
+//    m_recent.push_back(recent->addAction("File 1"));
+//    m_recent.push_back(recent->addAction("File 2"));
+//    m_recent.push_back(recent->addAction("File 3"));
+//    m_recent.push_back(recent->addAction("File 4"));
+//    m_recent.push_back(recent->addAction("File 5"));
     updateRecent();
     m->addSeparator();
     m->addAction("New &Input...",this,SLOT(newInput()));
@@ -114,10 +114,10 @@ void LiveWindow::newProject(bool ask)
     hideInsert();
     if (ask&&!askForClose("Create new Project?","Create a new project anyway?")) return;
 
-    s_patches.clear();
-    s_curPatch=0;
+    m_patches.clear();
+    m_curPatch=0;
 
-    s_patches.push_back(new Patch);
+    m_patches.push_back(new Patch);
 
     *song::current()->keySignature=KeySignature('C', ' ', KeySignature::Major);
 
@@ -137,7 +137,7 @@ void LiveWindow::newProject(bool ask)
     connect(&song::current()->metronome->b_bpm,SIGNAL(changeObserved(int,int)),this,SLOT(setBPM(int)));
 
     if (ask) selectMode();
-    if (ask) s_fileName="";
+    if (ask) m_fileName="";
 }
 
 VScrollContainer* LiveWindow::hathorView()
@@ -147,27 +147,27 @@ VScrollContainer* LiveWindow::hathorView()
 
 void LiveWindow::selectMode()
 {
-    delete s_iw;
-    s_iw=new IntroWizard(ui->sac_contents);
+    delete m_iw;
+    m_iw=new IntroWizard(ui->sac_contents);
     ui->header->hide(); ui->header_->show();
-    connect(s_iw,SIGNAL(standardRequested()),this,SLOT(newInput()));
-    connect(s_iw,SIGNAL(quitRequested()),this,SLOT(close()));
-    connect(s_iw,SIGNAL(openRequested()),this,SLOT(open()));
-    ui->sac_contents->push_back(s_iw);
+    connect(m_iw,SIGNAL(standardRequested()),this,SLOT(newInput()));
+    connect(m_iw,SIGNAL(quitRequested()),this,SLOT(close()));
+    connect(m_iw,SIGNAL(openRequested()),this,SLOT(open()));
+    ui->sac_contents->push_back(m_iw);
     ui->sac_contents->updateItems();
-    curPatch()->widgets.push_back(s_iw);
+    curPatch()->widgets.push_back(m_iw);
 }
 
 void LiveWindow::newInput()
 {
     setUpdatesEnabled(0);
     ui->header->show(); ui->header_->hide();
-    if (s_iw) {
-        ui->sac_contents->removeOne(s_iw);
+    if (m_iw) {
+        ui->sac_contents->removeOne(m_iw);
         ui->sac_contents->updateItems();
-        curPatch()->widgets.removeOne(s_iw);
-        delete s_iw;
-        s_iw=0;
+        curPatch()->widgets.removeOne(m_iw);
+        delete m_iw;
+        m_iw=0;
     }
 
     TrackInputSelect* ni=new TrackInputSelect(ui->sac_contents, true, true, true);
@@ -233,6 +233,7 @@ void LiveWindow::showInsert()
 
 void LiveWindow::setMode(int a)
 {
+    app::b_mode = a;
     ui->comboBox_mode->setCurrentIndex(a);
     switch (a) {
     case 0:
@@ -351,19 +352,19 @@ LiveWindow::~LiveWindow()
 
 void LiveWindow::setCurrentPatch(int a)
 {
-    if (a>=s_patches.size()||a<0) {
+    if (a>=m_patches.size()||a<0) {
         insertPatch();
         return;
     }
     ui->comboBox_patch->setCurrentIndex(a);
-    s_patches[s_curPatch]->deactivate();
-    s_curPatch=a;
-    s_patches[s_curPatch]->activate();
+    m_patches[m_curPatch]->deactivate();
+    m_curPatch=a;
+    m_patches[m_curPatch]->activate();
 }
 
 void LiveWindow::setCurrentPatchName(QString s)
 {
-    ui->comboBox_patch->setItemText(s_curPatch,s);
+    ui->comboBox_patch->setItemText(m_curPatch,s);
 }
 
 void LiveWindow::editCurrentPatchName()
@@ -373,10 +374,10 @@ void LiveWindow::editCurrentPatchName()
 
 void LiveWindow::insertPatch()
 {
-    s_patches.push_back(new Patch);
-    s_patches[s_curPatch]->deactivate();
-    ui->comboBox_patch->insertItem(s_patches.size(),"New Patch");
-    setCurrentPatch(s_patches.size()-1);
+    m_patches.push_back(new Patch);
+    m_patches[m_curPatch]->deactivate();
+    ui->comboBox_patch->insertItem(m_patches.size(),"New Patch");
+    setCurrentPatch(m_patches.size()-1);
     editCurrentPatchName();
     newInput();
 }
@@ -430,10 +431,10 @@ void LiveWindow::editAudioSetupDone()
 void LiveWindow::saveAct()
 {
     bool ok=1;
-    if (!s_fileName.size()) ok=0;
+    if (!m_fileName.size()) ok=0;
     QFile* file=0;
     if (ok) {
-        file= new QFile(s_fileName);
+        file= new QFile(m_fileName);
         if (!file->open(QFile::WriteOnly)) {
             delete file;
             file=0;
@@ -442,13 +443,13 @@ void LiveWindow::saveAct()
     }
     if (!ok) {
         QString f=QFileDialog::getSaveFileName(this,"Save...","","Creator Live Project Files (*.live)");
-        s_fileName=f;
+        m_fileName=f;
         if (!f.size()) return;
-        file=new QFile(s_fileName);
+        file=new QFile(m_fileName);
         if (!file->open(QFile::WriteOnly)) {
             delete file;
             file=0;
-            QMessageBox::critical(this,"Error Opening File","Could not open "+s_fileName,QMessageBox::Ok);
+            QMessageBox::critical(this,"Error Opening File","Could not open "+m_fileName,QMessageBox::Ok);
             return;
         }
     }
@@ -459,8 +460,8 @@ void LiveWindow::saveAct()
 void LiveWindow::saveAs()
 {
     QString f=QFileDialog::getSaveFileName(this,"Save...","","Creator Live Project Files (*.live)");
-    s_fileName=f;
-    if (s_fileName.size()) saveAct();
+    m_fileName=f;
+    if (m_fileName.size()) saveAct();
 }
 
 void LiveWindow::open()
@@ -480,9 +481,9 @@ void LiveWindow::updateRecent()
 {
     QSettings settings;
     QStringList l=settings.value("Recent",QStringList()).toStringList();
-    s_recentMenu->clear();
+    m_recentMenu->clear();
     for (int i=0;i<5&&i<l.size();i++) {
-        s_recentMenu->addAction(l[i],this,SLOT(loadRecent()));
+        m_recentMenu->addAction(l[i],this,SLOT(loadRecent()));
     }
 }
 

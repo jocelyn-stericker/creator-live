@@ -13,33 +13,33 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 
 void live::Metronome::clock() {
     live::lthread::metronomeInit();
-    if (s_isActive) {
+    if (m_isActive) {
         float time( float(startTime.msecsTo(QTime::currentTime())) );
-        float bpm( (s_ts.denomenator==4) ? b_bpm : b_bpm*2.0f );
-        float ppq( (s_ts.denomenator==4) ? s_ppq : s_ppq/2.0f );
+        float bpm( (m_ts.denomenator==4) ? b_bpm : b_bpm*2.0f );
+        float ppq( (m_ts.denomenator==4) ? m_ppq : m_ppq/2.0f );
 
-        if (s_lastTime==-1) {
+        if (m_lastTime==-1) {
             float pbeat = 60000.0f/(float)bpm;
-            s_lastTime = float(time);
-            s_barStart = float(time) - pbeat;
+            m_lastTime = float(time);
+            m_barStart = float(time) - pbeat;
         }
 
-        if (time!=s_lastTime) {
+        if (time!=m_lastTime) {
             float pbeat=60000.0f/(float)bpm;
-            float curBeat=(float)(time-s_barStart)/pbeat;
-            while ((int)curBeat>s_ts.numerator) { // truncate
-                s_barStart+=float(pbeat)*(float)s_ts.numerator;
-                curBeat-=(float)s_ts.numerator;
+            float curBeat=(float)(time-m_barStart)/pbeat;
+            while ((int)curBeat>m_ts.numerator) { // truncate
+                m_barStart+=float(pbeat)*(float)m_ts.numerator;
+                curBeat-=(float)m_ts.numerator;
             }
 
             float ppb = ((float)ppq*float(fmod(curBeat,1.0f)));
 
-            if (s_lastPpq != ppb) {
-                s_lastPpq=ppb;
+            if (m_lastPpq != ppb) {
+                m_lastPpq=ppb;
 
-                SyncData data(s_ts,
+                SyncData data(m_ts,
                               b_bpm,
-                              s_ppq,
+                              m_ppq,
 
                               curBeat,
                               ppb
@@ -51,6 +51,6 @@ void live::Metronome::clock() {
             }
         }
 
-        time=s_lastTime;
+        time=m_lastTime;
     }
 }

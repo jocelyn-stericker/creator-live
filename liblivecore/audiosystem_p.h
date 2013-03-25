@@ -31,20 +31,20 @@ public:
     LIVE_INPUT
     static int lastDeviceInternalID;
     int     chans;
-    QList<jack_port_t*> s_port_;
-    QStringList s_realnames;
-    bool s_map;
-    bool s_suspend;
+    QList<jack_port_t*> m_port_;
+    QStringList m_realnames;
+    bool m_map;
+    bool m_suspend;
 
 public:
     bool mOn() const{ return 0; } bool aOn() const { return 1; }
-    AudioIn(QStringList cnames, QString cname, bool cmap) : live::Object(cname,true,false,2), chans(cnames.size()), s_port_(), s_realnames(cnames),s_map(cmap),s_suspend(0)
+    AudioIn(QStringList cnames, QString cname, bool cmap) : live::Object(cname,true,false,2), chans(cnames.size()), m_port_(), m_realnames(cnames),m_map(cmap),m_suspend(0)
     {
         setTemporary(0);
 
-        for(int i=0; i<s_realnames; i++)
+        for(int i=0; i<m_realnames; i++)
         {
-            QString& a=s_realnames[i];
+            QString& a=m_realnames[i];
             if (a.indexOf(':')==-1)
             {
                 if(a.indexOf('\"')!=-1)
@@ -56,7 +56,7 @@ public:
                 a[a.indexOf('_',a.contains("vst")?5:0)]=':';
             }
         }
-        s_name.replace(":", "_");
+        m_name.replace(":", "_");
 
         init();
     }
@@ -64,8 +64,8 @@ public:
     void init(); //Audio.cpp
     void proc();
 
-    virtual void suspend() { s_suspend=1; }
-    virtual void resume() { s_suspend=0; }
+    virtual void suspend() { m_suspend=1; }
+    virtual void resume() { m_suspend=0; }
     virtual void aIn (const float*,int, live::Object*) {}
 };
 
@@ -77,15 +77,15 @@ public:
     LIVE_OUTPUT
     bool mOn() const{ return 0; } bool aOn() const { return 1; }
     int     chans;
-    QList<jack_port_t*> s_port_[32];    //No more than 32 ports
+    QList<jack_port_t*> m_port_[32];    //No more than 32 ports
 
-    int     s_i;
-    QStringList s_realnames;
-    bool    s_map;
-    bool    s_processed;
+    int     m_i;
+    QStringList m_realnames;
+    bool    m_map;
+    bool    m_processed;
 
 public:
-    AudioOut(QStringList cnames, QString name,bool cmap) : live::Object(name,true,true,2), chans(cnames.size()), s_i(-1), s_realnames(cnames), s_map(cmap), s_processed(0)
+    AudioOut(QStringList cnames, QString name,bool cmap) : live::Object(name,true,true,2), chans(cnames.size()), m_i(-1), m_realnames(cnames), m_map(cmap), m_processed(0)
     {
         setTemporary(0);
 
@@ -132,39 +132,39 @@ class LIBLIVECORESHARED_EXPORT SecretAudio : public QObject, public live::AudioI
     Q_INTERFACES(live::AudioInterface)
 public:
     static int XRUNS;
-    QString s_error;
+    QString m_error;
     static SecretAudio* singleton;
     static QMutex x_sa;
 
-    QList< jack_port_t*> s_availInPorts;
-    QList< QString > s_availInPortIds;
+    QList< jack_port_t*> m_availInPorts;
+    QList< QString > m_availInPortIds;
 
-    QList< jack_port_t*> s_availOutPorts;
-    QList< QString > s_availOutPortIds;
+    QList< jack_port_t*> m_availOutPorts;
+    QList< QString > m_availOutPortIds;
 
     jack_port_t* getInputPort() {
-        Q_ASSERT(s_availInPorts.size());
-        if (!s_availInPorts.size())
+        Q_ASSERT(m_availInPorts.size());
+        if (!m_availInPorts.size())
             return 0;
-        return s_availInPorts.takeFirst();
+        return m_availInPorts.takeFirst();
     }
     QString getInputPortId() {
-        Q_ASSERT(s_availInPortIds.size());
-        if (!s_availInPortIds.size())
+        Q_ASSERT(m_availInPortIds.size());
+        if (!m_availInPortIds.size())
             return "NULL";
-        return s_availInPortIds.takeFirst();
+        return m_availInPortIds.takeFirst();
     }
     jack_port_t* getOutputPort() {
-        Q_ASSERT(s_availOutPorts.size());
-        if (!s_availOutPorts.size())
+        Q_ASSERT(m_availOutPorts.size());
+        if (!m_availOutPorts.size())
             return 0;
-        return s_availOutPorts.takeFirst();
+        return m_availOutPorts.takeFirst();
     }
     QString getOutputPortId() {
-        Q_ASSERT(s_availOutPortIds.size());
-        if (!s_availOutPortIds.size())
+        Q_ASSERT(m_availOutPortIds.size());
+        if (!m_availOutPortIds.size())
             return "NULL";
-        return s_availOutPortIds.takeFirst();
+        return m_availOutPortIds.takeFirst();
     }
 
     quint32 nframes;
@@ -239,7 +239,7 @@ public:
 
     virtual bool shouldDisplaySettingsWidget() { return 0; }
 
-    virtual QString errorString() { QString l=s_error; s_error=""; return l; }
+    virtual QString errorString() { QString l=m_error; m_error=""; return l; }
 
     virtual live::ObjectPtr getNull(int chans);
 
@@ -262,7 +262,7 @@ class LIBLIVECORESHARED_EXPORT NullAudio : public QObject, public live::AudioInt
     Q_INTERFACES(live::AudioInterface)
 public:
     static int XRUNS;
-    QString s_error;
+    QString m_error;
     static NullAudio* singleton;
     static QMutex x_sa;
 
@@ -306,7 +306,7 @@ public:
 
     virtual bool shouldDisplaySettingsWidget() { return 0; }
 
-    virtual QString errorString() { QString l=s_error; s_error=""; return l; }
+    virtual QString errorString() { QString l=m_error; m_error=""; return l; }
 
     virtual live::ObjectPtr getNull(int chans) { AudioNull* p = new AudioNull(chans); nulls.push_back(p); return p; }
 

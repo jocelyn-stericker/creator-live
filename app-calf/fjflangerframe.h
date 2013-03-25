@@ -37,7 +37,7 @@ class FJFlangerFrame;
 class FJFlangerFrame : public live_widgets::AppFrame
 {
     Q_OBJECT
-    FJFlangerApp& s_app;
+    FJFlangerApp& m_app;
 
 public:
     explicit FJFlangerFrame(FJFlangerApp* backend, AbstractTrack *parent = 0);
@@ -74,7 +74,7 @@ public:
     FJFlangerCreator()
     {
     }
-    QString name() { return "Flanger"; }
+    QString name() { return "ca.nettek.live.flanger"; }
     QString description() { return "Wah wah wah..."; }
     live::ObjectPtr newBackend() { return new FJFlangerApp(); }
     live::ObjectPtr loadBackend(const QByteArray &str) {

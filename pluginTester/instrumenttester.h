@@ -20,10 +20,10 @@ class InstrumentTester;
 class InstrumentTester : public QWidget
 {
     Q_OBJECT
-    live::InstrumentInterface* s_inst;
-    live::ObjectPtr s_in, s_instObj, s_out;
-    QWidget* s_sett;
-    QList<live::Connection> s_connections;
+    live::InstrumentInterface* m_inst;
+    live::ObjectPtr m_in, m_instObj, m_out;
+    QWidget* m_sett;
+    QList<live::Connection> m_connections;
 
 public:
     explicit InstrumentTester(live::ObjectPtr in,live::InstrumentInterface* inst,QWidget *parent = 0);

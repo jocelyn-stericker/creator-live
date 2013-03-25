@@ -18,11 +18,11 @@ Copyright (C) Joshua Netterfield <joshua@nettek.ca> 2012
 class Soundfont : public QObject, public live::Object
 {
     Q_OBJECT
-    fluid_settings_t* s_settings;
-    fluid_synth_t* s_synth;
+    fluid_settings_t* m_settings;
+    fluid_synth_t* m_synth;
     QMutex x_synth;
-    float* s_cache[2];
-    live::Connection s_connection;
+    float* m_cache[2];
+    live::Connection m_connection;
 public:
     LIVE_HYBRID
     LIVE_EFFECT

@@ -24,9 +24,9 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty,
   , ui_mainLayout(new QHBoxLayout)
   { ui_mainLayout->setContentsMargins(0, 0, 0, 0);
     parentWidget()->setUpdatesEnabled(false);
-    s_hathorView = new VScrollContainer(0);
-    s_hathorView->setObjectName("s_hathorView");
-    s_hathorView->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+    m_hathorView = new VScrollContainer(0);
+    m_hathorView->setObjectName("m_hathorView");
+    m_hathorView->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
 
     Q_ASSERT(instLabel);
@@ -46,17 +46,17 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty,
     instLabel->setObjectName("instLabel");
     parentWidget()->setUpdatesEnabled(true);
 
-    ui_mainLayout->addWidget(s_hathorView);
+    ui_mainLayout->addWidget(m_hathorView);
 
-    s_hathorView->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    m_hathorView->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     if (!empty) {
         Track* trk=new Track(c_input,midi::null());
-        trk->s_ambition.setInputId(instLabel->inputId(),0);
-        s_hathorView->push_back(trk);
+        trk->m_ambition.setInputId(instLabel->inputId(),0);
+        m_hathorView->push_back(trk);
     }
-    s_hathorView->back()->setMinimumWidth(400);
-    s_hathorView->compact=1;
-    s_hathorView->updateItems();
+    m_hathorView->back()->setMinimumWidth(400);
+    m_hathorView->compact=1;
+    m_hathorView->updateItems();
     //mainLayout->setSpacing(0);
 
     this->setLayout( ui_mainLayout );
@@ -74,13 +74,13 @@ TrackGroupMidi::TrackGroupMidi(ObjectPtr c_input, QWidget *c_parent, bool empty,
         connect(moc, SIGNAL(objectChosen(live::ObjectPtr, live::ObjectPtr)), this, SLOT(clearSelect()));
     } else {
         clearSelect();
-        s_hathorView->show();
+        m_hathorView->show();
         instLabel->enableAddTrackButton();
     }
 
     setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     adjustSize();
-    s_hathorView->hide();
+    m_hathorView->hide();
 }
 
 void TrackGroupMidi::newHathorAuto()

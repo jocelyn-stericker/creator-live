@@ -17,7 +17,7 @@ namespace live_widgets {
 
 class LIBLIVEWIDGETSSHARED_EXPORT ComboBox : public QComboBox {
     Q_OBJECT
-    bool s_bindMode;
+    bool m_bindMode;
 public:
     explicit ComboBox(QWidget *parent = 0);
 

@@ -21,7 +21,7 @@ class CollectionContext : public QWidget
 {
     Q_OBJECT
 
-    DJContext* s_parent;
+    DJContext* m_parent;
     
 public:
     explicit CollectionContext(DJContext* parent = 0);

@@ -25,67 +25,67 @@ typedef QList<QWidget*> ShadowContainer;
 
 class LIBLIVEWIDGETSSHARED_EXPORT VScrollContainer : public QWidget, public live_widgets::BindableParent {
     Q_OBJECT
-    QList<QWidget*> s_identity;
+    QList<QWidget*> m_identity;
 public:
 
-    ShadowContainer* s_sHathorView;
+    ShadowContainer* m_sHathorView;
     bool compact;
     int c;
-    QVBoxLayout* s_vBox;
-    bool s_resizeable;
+    QVBoxLayout* m_vBox;
+    bool m_resizeable;
 public slots:
-    void removeOne(QObject* a) { s_identity.removeOne(qobject_cast<QWidget*>(a)); }
+    void removeOne(QObject* a) { m_identity.removeOne(qobject_cast<QWidget*>(a)); }
 public:
-    QWidget*& operator[](int z) { return s_identity[z]; }
-    const QWidget* operator[](int z) const { return s_identity.at(z); }
-    const QWidget* at(int z) const { return s_identity[z]; }
-    unsigned count() const { return s_identity.size(); }
-    QWidget* takeFirst() { return s_identity.takeFirst(); }
-    void push_back(QWidget* w) { s_identity.push_back(w); }
-    void insert(const int& i, QWidget* w) { s_identity.insert(i, w); }
-    QWidget* back() { return s_identity.back(); }
-    const QWidget* back() const { return s_identity.back(); }
+    QWidget*& operator[](int z) { return m_identity[z]; }
+    const QWidget* operator[](int z) const { return m_identity.at(z); }
+    const QWidget* at(int z) const { return m_identity[z]; }
+    unsigned count() const { return m_identity.size(); }
+    QWidget* takeFirst() { return m_identity.takeFirst(); }
+    void push_back(QWidget* w) { m_identity.push_back(w); }
+    void insert(const int& i, QWidget* w) { m_identity.insert(i, w); }
+    QWidget* back() { return m_identity.back(); }
+    const QWidget* back() const { return m_identity.back(); }
 
     VScrollContainer(bool cresizeable=1)
       : BindableParent(this)
-      , s_identity()
-      , s_sHathorView(new ShadowContainer)
+      , m_identity()
+      , m_sHathorView(new ShadowContainer)
       , compact(0)
       , c(0)
-      , s_vBox(new QVBoxLayout(this))
-      , s_resizeable(cresizeable)
-      { s_vBox->setContentsMargins(0, 0, 0, 0);
+      , m_vBox(new QVBoxLayout(this))
+      , m_resizeable(cresizeable)
+      { m_vBox->setContentsMargins(0, 0, 0, 0);
         live_widgets::binding::addWidget(this);
-        s_vBox->setSizeConstraint(QLayout::SetMaximumSize);
+        m_vBox->setSizeConstraint(QLayout::SetMaximumSize);
     }
 
     ~VScrollContainer() {
-        delete s_sHathorView;
+        delete m_sHathorView;
     }
 
     void updateItems() {
-        for(int i=0;i<s_vBox->count();i++) {
-            if(s_vBox->itemAt(i)->spacerItem()) {
-                delete s_vBox->takeAt(i--);
+        for(int i=0;i< m_vBox->count();i++) {
+            if( m_vBox->itemAt(i)->spacerItem()) {
+                delete m_vBox->takeAt(i--);
             }
         }
-        for (int i=0; i<s_sHathorView->size(); i++) {
-            s_vBox->removeWidget((*s_sHathorView)[i]);
+        for (int i=0; i< m_sHathorView->size(); i++) {
+            m_vBox->removeWidget((* m_sHathorView)[i]);
         }
-        s_sHathorView->clear();
+        m_sHathorView->clear();
         float mh=0.0f;
         for (unsigned i = 0; i < count(); ++i ) {
             if(operator[](i)->objectName()=="") {
                 qCritical() << "WARNING: adding a null-named object of type"<<at(i)->metaObject()->className() << "inside"<<objectName();
                 qCritical() << "THIS IS A BUG WHICH MUST BE DEALT WITH OR SAVING WILL NOT ALWAYS WORK!";
             }
-            s_vBox->addWidget( operator [](i) );
-            s_sHathorView->push_back( operator [](i) );
+            m_vBox->addWidget( operator [](i) );
+            m_sHathorView->push_back( operator [](i) );
             mh += (float) operator[](i)->size().height();
         }
 
         if(compact) {
-            s_vBox->addSpacerItem(new QSpacerItem(0,0,QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
+            m_vBox->addSpacerItem(new QSpacerItem(0,0,QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
         }
 
         for(int i=0;i<children().size();i++) {
@@ -108,12 +108,12 @@ private:
     VScrollContainer(const VScrollContainer&)
       : QWidget()
       , BindableParent(this)
-      , s_identity()
-      , s_sHathorView(new ShadowContainer)
+      , m_identity()
+      , m_sHathorView(new ShadowContainer)
       , compact(0)
       , c(0)
-      , s_vBox(new QVBoxLayout(this))
-      , s_resizeable(0)
+      , m_vBox(new QVBoxLayout(this))
+      , m_resizeable(0)
       { TCRASH();
     }
     VScrollContainer& operator=(const VScrollContainer&) {

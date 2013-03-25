@@ -20,8 +20,8 @@ public:
     SequencerApp* app;
     SequencerGraph( QWidget* parent,SequencerApp* app );
     ~SequencerGraph();
-    bool s_bindMode;
-    qint64 scale() { return s_scale; }
+    bool m_bindMode;
+    qint64 scale() { return m_scale; }
 public slots:
     void setTime( double time );
     void updateAudioData( qint64 t1 = -1, qint64 t2 = -1 );
@@ -34,8 +34,8 @@ public slots:
     void wheelEvent(QWheelEvent *);
     void keyPressEvent(QKeyEvent *);
     void resizeEvent(QResizeEvent *);
-    void setScroll(const qint64& scroll) { s_initial=scroll; updateAudioData(); }
-    const qint64& getScroll() const { return s_initial; }
+    void setScroll(const qint64& scroll) { m_initial=scroll; updateAudioData(); }
+    const qint64& getScroll() const { return m_initial; }
     void incrScroll();
     void decrScroll();
     void setShowBindingsChanged(bool ean);
@@ -45,10 +45,10 @@ public slots:
     void setUpdatesDisabled(bool b) { QWidget::setUpdatesEnabled(!b); if(!b) updateAudioData(); }
 private:
     float selection;
-    qint64 s_initial;
-    qint64 s_redrawpos_st,s_redrawpos_nd;
-    qint64 s_leftMost, s_rightMost;
-    qint64 s_scale;
+    qint64 m_initial;
+    qint64 m_redrawpos_st,m_redrawpos_nd;
+    qint64 m_leftMost, m_rightMost;
+    qint64 m_scale;
 //Audio
     live::AudioTrack* audioTrack;
     qint64 oldBoxWidth;
