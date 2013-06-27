@@ -14,3 +14,7 @@ pluginTester/appTester
 cmake_install.cmake
 *.depends
 build
+*txt.user
+pluginTester/CTestTestfile.cmake
+plugins/
+test/CTestTestfile.cmake
